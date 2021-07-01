@@ -13,29 +13,37 @@ export enum systemPriority {
 
 const doNothing = (params: { state: State }) => params.state;
 
-type EventHandler = (params: {
+type EventHandler<ComponentData> = (params: {
   payload: any;
   state: State;
   entity: Entity;
+  component: Component<ComponentData>;
 }) => State;
 
-type TriggerSystemEvents = (params: {
+type TriggerSystemEvents = <ComponentData>(params: {
   state: State;
   eventBuffer: Dictionary<ECSEvent[]>;
   entity: Entity;
-  systemEventHandlers: System<any>['event'];
+  systemEventHandlers: System<ComponentData>['event'];
+  component: Component<ComponentData>;
 }) => State;
 export const triggerSystemEvents: TriggerSystemEvents = ({
   entity,
   eventBuffer,
   state,
   systemEventHandlers,
+  component,
 }) =>
   eventBuffer[entity]
     ? eventBuffer[entity].reduce((acc, event: ECSEvent) => {
         const eventHandler = systemEventHandlers[event.type];
         return eventHandler
-          ? eventHandler({ state: acc, payload: event.payload, entity })
+          ? eventHandler({
+              state: acc,
+              payload: event.payload,
+              entity,
+              component,
+            })
           : acc;
       }, state)
     : state;
@@ -53,7 +61,7 @@ export type CreateSystemParams<Component> = {
   tick?: (params: SystemMethodParams<Component>) => State;
   remove?: (params: SystemMethodParams<Component>) => State;
   priority?: number;
-  event?: Dictionary<EventHandler>;
+  event?: Dictionary<EventHandler<Component>>;
 };
 
 export type System<Component> = {
@@ -72,7 +80,7 @@ export type System<Component> = {
   }) => State;
   remove: (params: SystemMethodParams<Component>) => State;
   priority: number;
-  event: Dictionary<EventHandler>;
+  event: Dictionary<EventHandler<Component>>;
 };
 
 export const createSystem = <ComponentData>({
@@ -91,15 +99,18 @@ export const createSystem = <ComponentData>({
       >;
       if (component) {
         return Object.values(component).reduce(
-          (acc, component: Component<any>) => {
-            let stateAfterEvents = triggerSystemEvents({
+          (acc, component: Component<ComponentData>) => {
+            let stateAfterEvents = triggerSystemEvents<ComponentData>({
               systemEventHandlers: params.event || {},
               state: acc,
               eventBuffer,
               entity: component.entity,
+              component,
             });
 
-            return tick ? tick({ state: stateAfterEvents, component }) : stateAfterEvents;
+            return tick
+              ? tick({ state: stateAfterEvents, component })
+              : stateAfterEvents;
           },
           state
         );
@@ -124,7 +135,7 @@ export type CreateGlobalSystemParams = {
   create?: (params: { state: State }) => State;
   tick?: (params: { state: State }) => State;
   priority?: number;
-  event?: Dictionary<EventHandler>;
+  event?: Dictionary<EventHandler<any>>;
 };
 
 export type GlobalSystem = {

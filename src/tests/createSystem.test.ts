@@ -31,7 +31,7 @@ describe('createGlobalSystem', () => {
     const componentName = 'componentName';
     const entity = 'entity';
 
-    let state = setComponent(componentName, {
+    let state = setComponent({
       state: initialStateWithDisabledBabylon,
       data: { entity, name: componentName },
     });

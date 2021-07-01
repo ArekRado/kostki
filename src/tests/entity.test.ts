@@ -10,7 +10,7 @@ describe('entity', () => {
     const entity = createEntity('test');
     let state = setEntity({ state: initialStateWithDisabledBabylon, entity });
 
-    state = setComponent<Dictionary<{}>>('componentName', {
+    state = setComponent<Dictionary<{}>>({
       state,
       data: {
         name: 'componentName',

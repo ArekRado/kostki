@@ -10,6 +10,7 @@ import {
   TransformNode,
   Mesh,
   UniversalCamera,
+  Camera,
 } from 'babylonjs';
 import { createGrid } from './blueprints/createGrid';
 import { componentName, setComponent } from './ecs/component';
@@ -17,6 +18,7 @@ import { runOneFrame } from './ecs/runOneFrame';
 import { initialState } from './ecs/state';
 import { Box, State } from './ecs/type';
 import { boxSystem } from './systems/boxSystem';
+import { setCameraDistance } from './utils/setCameraDistance';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -48,9 +50,10 @@ export const camera = new UniversalCamera(
   scene
 );
 
-// This targets the camera to scene origin
-// camera.setTarget(Vector3.Zero());
-// camera.setPosition;
+camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+
+const distance = 20;
+setCameraDistance(distance, scene);
 
 // This attaches the camera to the canvas
 camera.attachControl(canvas, true);
@@ -65,7 +68,7 @@ let state: State = initialState;
 
 state = boxSystem(state);
 
-state = createGrid({ x: 10, y: 10, scene, camera, state });
+state = createGrid({ x: 5, y: 5, scene, camera, state });
 
 scene.registerBeforeRender(() => {
   //Your code here

@@ -1,6 +1,6 @@
-import { Animation, AnimationEvent } from 'babylonjs';
+import { AbstractMesh, Animation, AnimationEvent } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
-import { componentName } from '../ecs/component';
+import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, State } from '../ecs/type';
 import { scene } from '..';
 import { emitEvent } from '../ecs/emitEvent';
@@ -11,17 +11,25 @@ export const boxEvents = {
 };
 
 const frameRate = 30;
-export const createRotationBoxAnimation = (params: { entity: Entity }) => {
+const frameEnd = 0.3 * frameRate;
+
+export const createRotationBoxAnimation = (params: {
+  entity: Entity;
+  box: AbstractMesh;
+}) => {
+  const rotationDirection = Math.random() > 0.5 ? 1 : -1;
+  const rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
+
   const xSlideAnimation = new Animation(
     'xSlide',
-    'rotation.x',
+    `rotation.${rotationProperty}`,
     frameRate,
     Animation.ANIMATIONTYPE_FLOAT,
     Animation.ANIMATIONLOOPMODE_CONSTANT
   );
 
   const endEvent = new AnimationEvent(
-    frameRate,
+    frameEnd,
     () => {
       emitEvent({
         type: boxEvents.rotationEnd,
@@ -36,14 +44,17 @@ export const createRotationBoxAnimation = (params: { entity: Entity }) => {
 
   const keyFrames = [];
 
+  const currentRotation = params.box.rotation[rotationProperty];
+  const nextRotation = currentRotation + rotationDirection * 1.5;
+
   keyFrames.push({
     frame: 0,
-    value: Math.PI,
+    value: currentRotation,
   });
 
   keyFrames.push({
-    frame: 0.5 * frameRate,
-    value: Math.PI * 1.5,
+    frame: frameEnd,
+    value: nextRotation, // Math.PI * -1.5, // * (rotationDirection ? 1.5 : 1.5),
   });
 
   xSlideAnimation.setKeys(keyFrames);
@@ -56,44 +67,38 @@ export const boxSystem = (state: State) =>
     state,
     name: componentName.box,
     event: {
-      [boxEvents.onClick]: ({ state, entity }) => {
-        const box = scene.getMeshByUniqueId(parseInt(entity));
-        if (box) {
-          console.log(box.animations.)
-          box.animations.push(createRotationBoxAnimation({ entity }));
-          scene.beginAnimation(box, 0, 2 * frameRate, false);
+      [boxEvents.onClick]: ({ state, entity, component }) => {
+        if (!component.isAnimating) {
+          const box = scene.getMeshByUniqueId(parseInt(entity));
+          if (box) {
+            box.animations[0] = createRotationBoxAnimation({ entity, box });
+            scene.beginAnimation(box, 0, 2 * frameRate, false);
+          }
         }
 
-        console.log(entity);
-        return state;
+        return setComponent<Box>({
+          state,
+          data: {
+            ...component,
+            isAnimating: true,
+          },
+        });
       },
-      [boxEvents.rotationEnd]: ({ state, entity }) => {
-        console.log(entity, 'roration end');
-        return state;
+      [boxEvents.rotationEnd]: ({ state, entity, component }) => {
+        const box = scene.getMeshByUniqueId(parseInt(entity));
+
+        if (box) {
+          box.rotation.x = 0;
+          box.rotation.y = 0;
+        }
+
+        return setComponent<Box>({
+          state,
+          data: {
+            ...component,
+            isAnimating: false,
+          },
+        });
       },
     },
-    // tick: ({ state, component: collideBox }) => {
-    //   const entity = getEntity({
-    //     state,
-    //     entityId: collideBox.entityId,
-    //   });
-
-    //   if (entity) {
-    //     const collisions = findCollisionsWith({
-    //       state,
-    //       collideBox,
-    //       entity,
-    //     });
-
-    //     return setComponent<CollideBox>(componentName.collideBox, {
-    //       state,
-    //       data: {
-    //         ...collideBox,
-    //         collisions,
-    //       },
-    //     });
-    //   }
-
-    //   return state;
-    // },
   });

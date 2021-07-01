@@ -28,14 +28,14 @@ describe('component', () => {
       tick,
     });
 
-    const v3 = setComponent<Dictionary<{}>>('test', {
+    const v3 = setComponent<Dictionary<{}>>({
       state: v2,
       data: {
         entity: entity1,
         name: 'test',
       },
     });
-    const v4 = setComponent<Dictionary<{}>>('test', {
+    const v4 = setComponent<Dictionary<{}>>({
       state: v3,
       data: {
         entity: entity2,
@@ -44,14 +44,14 @@ describe('component', () => {
     });
 
     const v5 = runOneFrame({ state: v4 });
-    const v6 = removeComponent('test', { entity: entity1, state: v5 });
+    const v6 = removeComponent({ name: 'test', entity: entity1, state: v5 });
 
     expect(create).toHaveBeenCalledTimes(2);
     expect(remove).toHaveBeenCalled();
     expect(tick).toHaveBeenCalled();
 
     // create new component after remove
-    const v7 = setComponent<Partial<{}>>('test', {
+    const v7 = setComponent<Partial<{}>>({
       state: v6,
       data: {
         entity: entity1,
@@ -62,7 +62,7 @@ describe('component', () => {
     expect(create).toHaveBeenCalledTimes(3);
 
     // updating existing component
-    const v8 = setComponent<Partial<{}>>('test', {
+    const v8 = setComponent<Partial<{}>>({
       state: v7,
       data: {
         entity: entity1,

@@ -233,7 +233,7 @@ export type Entity = Guid; // {
 // }>
 
 export type Box = Component<{
-  clicked: boolean;
+  isAnimating: boolean;
 }>;
 
 // @TODO

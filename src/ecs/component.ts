@@ -1,8 +1,8 @@
-import { Guid, State } from './type'
-import { Component, Dictionary } from './type'
+import { Guid, State } from './type';
+import { Component, Dictionary } from './type';
 
 const getSystemByName = (name: string, system: State['system']) =>
-  system.find((x) => x.name === name)
+  system.find((x) => x.name === name);
 
 export enum componentName {
   box = 'box',
@@ -20,48 +20,46 @@ export enum componentName {
 }
 
 type SetComponentParams<Data> = {
-  state: State
-  data: Component<Data>
-}
-export const setComponent = <Data>(
-  name: string,
-  { state, data }: SetComponentParams<Data>,
-): State => {
+  state: State;
+  data: Component<Data>;
+};
+export const setComponent = <Data>({
+  state,
+  data,
+}: SetComponentParams<Data>): State => {
   const newState = {
     ...state,
     component: {
       ...state.component,
-      [name]: {
-        ...state.component[name],
+      [data.name]: {
+        ...state.component[data.name],
         [data.entity]: data,
       },
     },
-  }
+  };
 
-  const system = getSystemByName(name, state.system)
+  const system = getSystemByName(data.name, state.system);
 
   if (
     system !== undefined &&
-    (state.component[name] === undefined ||
-      state.component[name][data.entity] === undefined)
+    (state.component[data.name] === undefined ||
+      state.component[data.name][data.entity] === undefined)
   ) {
-    return system.create({ state: newState, component: data })
+    return system.create({ state: newState, component: data });
   }
 
-  return newState
-}
+  return newState;
+};
 
-type RemoveComponent = (
-  name: string,
-  params: {
-    entity: Guid
-    state: State
-  },
-) => State
-export const removeComponent: RemoveComponent = (name, { entity, state }) => {
+type RemoveComponent = (params: {
+  name: string;
+  entity: Guid;
+  state: State;
+}) => State;
+export const removeComponent: RemoveComponent = ({ name, entity, state }) => {
   const { [entity]: _, ...dictionaryWithoutComponent } = state.component[
     name
-  ] as Dictionary<Component<any>>
+  ] as Dictionary<Component<any>>;
 
   const newState = {
     ...state,
@@ -69,28 +67,28 @@ export const removeComponent: RemoveComponent = (name, { entity, state }) => {
       ...state.component,
       [name]: dictionaryWithoutComponent,
     },
-  }
+  };
 
-  const component = getComponent(name, { state, entity })
-  const system = getSystemByName(name, newState.system)
+  const component = getComponent({ name, state, entity });
+  const system = getSystemByName(name, newState.system);
 
   if (system && component) {
-    return system.remove({ state: newState, component })
+    return system.remove({ state: newState, component });
   }
 
-  return newState
-}
+  return newState;
+};
 
-export const getComponent = <Data>(
-  name: string,
-  {
-    entity,
-    state,
-  }: {
-    entity: Guid
-    state: State
-  },
-): Component<Data> | undefined => {
-  const c: Dictionary<Component<Data>> = state.component[name]
-  return c ? (c[entity] as Component<Data> | undefined) : undefined
-}
+export const getComponent = <Data>({
+  name,
+  entity,
+  state,
+}: {
+  name: string;
+
+  entity: Guid;
+  state: State;
+}): Component<Data> | undefined => {
+  const c: Dictionary<Component<Data>> = state.component[name];
+  return c ? (c[entity] as Component<Data> | undefined) : undefined;
+};

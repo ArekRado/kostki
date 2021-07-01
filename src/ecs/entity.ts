@@ -45,7 +45,8 @@ export const removeEntity: RemoveEntity = ({ entity, state }) => {
 
   const v1 = Object.keys(newState.component).reduce(
     (state, name) =>
-      removeComponent(name, {
+      removeComponent({
+        name,
         state,
         entity,
       }),
