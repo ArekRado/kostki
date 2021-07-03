@@ -36,7 +36,7 @@ describe('createGlobalSystem', () => {
       data: { entity, name: componentName },
     });
 
-    const testEvent: ECSEvent = {
+    const testEvent: ECSEvent<string> = {
       type: 'testEventType',
       payload: 'testEventPayload',
       entity,

@@ -22,7 +22,7 @@ type EventHandler<ComponentData> = (params: {
 
 type TriggerSystemEvents = <ComponentData>(params: {
   state: State;
-  eventBuffer: Dictionary<ECSEvent[]>;
+  eventBuffer: Dictionary<ECSEvent<any>[]>;
   entity: Entity;
   systemEventHandlers: System<ComponentData>['event'];
   component: Component<ComponentData>;
@@ -35,7 +35,7 @@ export const triggerSystemEvents: TriggerSystemEvents = ({
   component,
 }) =>
   eventBuffer[entity]
-    ? eventBuffer[entity].reduce((acc, event: ECSEvent) => {
+    ? eventBuffer[entity].reduce((acc, event: ECSEvent<any>) => {
         const eventHandler = systemEventHandlers[event.type];
         return eventHandler
           ? eventHandler({
@@ -76,7 +76,7 @@ export type System<Component> = {
   create: (params: SystemMethodParams<Component>) => State;
   tick: (params: {
     state: State;
-    eventBuffer: Dictionary<ECSEvent[]>;
+    eventBuffer: Dictionary<ECSEvent<any>[]>;
   }) => State;
   remove: (params: SystemMethodParams<Component>) => State;
   priority: number;

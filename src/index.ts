@@ -46,7 +46,7 @@ window.addEventListener('resize', () => {
 
 export const camera = new UniversalCamera(
   'UniversalCamera',
-  new Vector3(0, 0, -10),
+  new Vector3(0, 0, -1),
   scene
 );
 
@@ -56,13 +56,13 @@ const distance = 20;
 setCameraDistance(distance, scene);
 
 // This attaches the camera to the canvas
-camera.attachControl(canvas, true);
+// camera.attachControl(canvas, true);
 
 // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
+const light = new HemisphericLight('light', new Vector3(1, 1, -1), scene);
 
 // Default intensity is 1. Let's dim the light a small amount
-light.intensity = 0.7;
+light.intensity = 1;
 
 let state: State = initialState;
 

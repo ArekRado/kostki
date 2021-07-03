@@ -234,6 +234,7 @@ export type Entity = Guid; // {
 
 export type Box = Component<{
   isAnimating: boolean;
+  dots: number;
 }>;
 
 // @TODO

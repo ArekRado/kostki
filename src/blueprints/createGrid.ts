@@ -22,7 +22,7 @@ type CreateGrid = (params: {
 }) => State;
 
 export const createGrid: CreateGrid = ({ x, y, scene, camera, state }) => {
-  const gap = 1.3;
+  const gap = 1.2;
   const grid = new TransformNode('grid');
 
   const center = [((x - 1) * gap) / 2, ((y - 1) * gap) / 2];
@@ -33,7 +33,6 @@ export const createGrid: CreateGrid = ({ x, y, scene, camera, state }) => {
   camera.setTarget(new Vector3(center[0], center[1]));
 
   state = Array.from<number>({ length: x * y }).reduce((acc, _, i) => {
-    // const box = MeshBuilder.CreateBox('box', {}, scene);
     const box = boxBlueprint({ scene, state });
 
     const xx = Math.floor(i / x);
@@ -50,6 +49,7 @@ export const createGrid: CreateGrid = ({ x, y, scene, camera, state }) => {
         name: componentName.box,
         entity: box.uniqueId.toString(),
         isAnimating: false,
+        dots: 0,
       },
     });
   }, state);
