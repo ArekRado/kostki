@@ -6,17 +6,8 @@ const getSystemByName = (name: string, system: State['system']) =>
 
 export enum componentName {
   box = 'box',
-  // animation = 'animation',
-  // collideBox = 'collideBox',
-  // collideCircle = 'collideCircle',
-  // blueprint = 'blueprint',
-  // mouseInteraction = 'mouseInteraction',
-  // camera = 'camera',
-  // text = 'text',
-  // line = 'line',
-  // rectangle = 'rectangle',
-  // circle = 'circle',
-  // ellipse = 'ellipse',
+  ai = 'ai',
+  game = 'game',
 }
 
 type SetComponentParams<Data> = {
@@ -91,4 +82,14 @@ export const getComponent = <Data>({
 }): Component<Data> | undefined => {
   const c: Dictionary<Component<Data>> = state.component[name];
   return c ? (c[entity] as Component<Data> | undefined) : undefined;
+};
+
+export const getAllComponents = <Data>({
+  name,
+  state,
+}: {
+  name: string;
+  state: State;
+}): Dictionary<Component<Data>> | undefined => {
+  return state.component[name];
 };

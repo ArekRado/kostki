@@ -48,6 +48,6 @@
     "allowSyntheticDefaultImports": true,
   },
   "include": [
-    "./src/**/*",
+    "./src/**/*", "__mocks__",
   ],
 }

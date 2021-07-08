@@ -7,10 +7,6 @@ import {
   Texture,
   Vector3,
   Tools,
-  Quaternion,
-  Axis,
-  Space,
-  Vector2,
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, setComponent } from '../ecs/component';
