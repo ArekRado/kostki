@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { initialStateWithDisabledBabylon } from '../ecs/state';
+import { initialState } from '../ecs/state';
 
 import { setEntity, removeEntity, createEntity } from '../ecs/entity';
 import { setComponent } from '../ecs/component';
@@ -8,7 +8,7 @@ import { Dictionary } from '../ecs/type';
 describe('entity', () => {
   it('remove - should remove components by entity', () => {
     const entity = createEntity('test');
-    let state = setEntity({ state: initialStateWithDisabledBabylon, entity });
+    let state = setEntity({ state: initialState, entity });
 
     state = setComponent<Dictionary<{}>>({
       state,

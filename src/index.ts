@@ -8,10 +8,22 @@ import {
   NullEngine,
 } from 'babylonjs';
 import { createGrid } from './blueprints/createGrid';
+import { createPlayers } from './blueprints/createPlayers';
+import { componentName } from './ecs/component';
+import { emitEvent } from './ecs/emitEvent';
 import { runOneFrame } from './ecs/runOneFrame';
-import { State } from './ecs/type';
+import { AI, Entity, State } from './ecs/type';
+import { gameEntity, gameEvents, getGame } from './systems/gameSystem';
 import { getGameInitialState } from './utils/getGameInitialState';
 import { setCameraDistance } from './utils/setCameraDistance';
+
+import dot0 from './assets/0.png';
+import dot1 from './assets/1.png';
+import dot2 from './assets/2.png';
+import dot3 from './assets/3.png';
+import dot4 from './assets/4.png';
+import dot5 from './assets/5.png';
+import dot6 from './assets/6.png';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -63,10 +75,43 @@ light.intensity = 1;
 // Because mutations breaks everytging
 if (process.env.NODE_ENV !== 'test') {
   let state: State = getGameInitialState();
-  // Blueprints
-  state = createGrid({ dataGrid: [[]], scene, camera, state });
 
+  const emptyGrid = Array.from({ length: 5 }).map(() =>
+    Array.from({ length: 5 }).map(() => ({
+      player: undefined,
+      dots: 0,
+    }))
+  );
+
+  const basicAI = (entity: Entity, color: AI['color']): AI => ({
+    entity,
+    name: componentName.ai,
+    human: false,
+    level: 1,
+    color,
+    textureSet: [dot0, dot1, dot2, dot3, dot4, dot5, dot6],
+  });
+
+  // Blueprints
+  state = createGrid({ dataGrid: emptyGrid, scene, camera, state });
+  state = createPlayers({
+    state,
+    ai: [
+      basicAI('1', [1, 0, 0]),
+      basicAI('2', [0, 1, 0]),
+      basicAI('3', [0, 0, 1]),
+      basicAI('4', [1, 0, 1]),
+    ],
+  });
   scene.registerBeforeRender(() => {
     state = runOneFrame({ state });
   });
+
+  setTimeout(() => {
+    emitEvent({
+      type: gameEvents.startLevel,
+      entity: gameEntity,
+      payload: {},
+    });
+  }, 500);
 }

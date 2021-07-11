@@ -1,10 +1,10 @@
 import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
-import { Box, Game, Guid, State } from '../ecs/type';
+import { Box, Entity, Game, Guid, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
 import { boxBlueprint } from './boxBlueprint';
 
-export type BasicBox = { dots: number; player: Guid };
+export type BasicBox = { dots: number; player: Entity | undefined };
 
 type CreateGrid = (params: {
   dataGrid: BasicBox[][];

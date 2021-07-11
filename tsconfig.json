@@ -37,6 +37,10 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
+    "lib": [
+      "ES2019",
+      "DOM",
+    ],
     "jsx": "react",
     "strict": true,
     "noImplicitReturns": true,
@@ -48,6 +52,7 @@
     "allowSyntheticDefaultImports": true,
   },
   "include": [
-    "./src/**/*", "__mocks__",
+    "./src/**/*",
+    "__mocks__",
   ],
 }

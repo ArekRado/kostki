@@ -64,7 +64,7 @@ export const boxBlueprint = ({
           entity: box.uniqueId.toString(),
           type: boxEvents.onClick,
           payload: {
-            planeId: plane.uniqueId,
+          //   planeId: plane.uniqueId,
           },
         });
       })

@@ -70,6 +70,24 @@ export const removeComponent: RemoveComponent = ({ name, entity, state }) => {
   return newState;
 };
 
+export const removeAllComponents = <Data>({
+  state,
+  name,
+}: {
+  name: string;
+  state: State;
+}): State => {
+  const components = getAllComponents<Data>({ state, name });
+
+  if (components) {
+    return Object.keys(components).reduce((acc, entity) => {
+      return removeComponent({ name, entity, state: acc });
+    }, state);
+  }
+
+  return state;
+};
+
 export const getComponent = <Data>({
   name,
   entity,

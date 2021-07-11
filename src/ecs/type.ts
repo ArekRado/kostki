@@ -15,19 +15,22 @@ export type Box = Component<{
   isAnimating: boolean;
   gridPosition: [number, number];
   dots: number;
-  player: Guid,
+  player: Entity | undefined;
 }>;
 
 export type AI = Component<{
-  isHuman: boolean;
+  human: boolean;
   level: number;
-  color: [];
-  textureSet: string;
+  color: [number, number, number];
+  textureSet: [string, string, string, string, string, string, string];
 }>;
 
 export type Game = Component<{
   round: number;
-  grid: Guid[];
+  grid: Entity[];
+  currentPlayer: Entity;
+  playersQueue: Entity[];
+  gameStarted: boolean;
 }>;
 
 export type State = {
@@ -38,7 +41,6 @@ export type State = {
     game: Dictionary<Game>;
   };
   system: Array<System<any> | GlobalSystem>;
-  enableBabylonjs: boolean;
 };
 
 export type GetDefaultComponent<X> = (

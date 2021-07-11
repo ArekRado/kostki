@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { initialStateWithDisabledBabylon } from '../ecs/state';
+import { initialState } from '../ecs/state';
 import { setEntity, createEntity } from '../ecs/entity';
 import { runOneFrame } from '../ecs/runOneFrame';
 import { removeComponent, setComponent } from '../ecs/component';
@@ -17,7 +17,7 @@ describe('component', () => {
 
     const v1 = setEntity({
       entity: entity1,
-      state: initialStateWithDisabledBabylon,
+      state: initialState,
     });
 
     const v2 = createSystem({

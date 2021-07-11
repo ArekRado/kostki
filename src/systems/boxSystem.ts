@@ -10,20 +10,15 @@ import {
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, setComponent } from '../ecs/component';
-import { Box, Entity, State } from '../ecs/type';
+import { AI, Box, Entity, State } from '../ecs/type';
 import { scene } from '..';
 import { emitEvent } from '../ecs/emitEvent';
 
-import dot1 from '../assets/1.png';
-import dot2 from '../assets/2.png';
-import dot3 from '../assets/3.png';
-import dot4 from '../assets/4.png';
-import dot5 from '../assets/5.png';
-import dot6 from '../assets/6.png';
+import { gameEntity, gameEvents } from './gameSystem';
 
 export const boxEvents = {
-  onClick: 'onClick',
-  rotationEnd: 'rotationEnd',
+  onClick: 'box-onClick',
+  rotationEnd: 'box-rotationEnd',
 };
 
 const clampRotation = (rotation: number) => {
@@ -39,74 +34,89 @@ const frameEnd = 0.3 * frameRate;
 
 export const createRotationBoxAnimation = (params: {
   entity: Entity;
-  box: TransformNode;
   direction?: 'up' | 'down' | 'left' | 'right';
+  animationEndCallback: () => void;
+  ai: AI;
+  dots: number;
 }) => {
-  const rightAngle = Tools.ToRadians(90);
+  const box = scene.getTransformNodeByUniqueId(parseInt(params.entity));
 
-  const rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
-  const rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
+  if (box) {
+    const rightAngle = Tools.ToRadians(90);
 
-  const currentRotation = params.box.rotation;
-  const rotationVector = new Vector3(
-    rotationProperty === 'x' ? rotationDirection : 0,
-    rotationProperty === 'y' ? rotationDirection : 0,
-    0
-  );
+    const rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
+    const rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
 
-  const nnextRotation = rotationVector.add(currentRotation);
+    const currentRotation = box.rotation;
+    const rotationVector = new Vector3(
+      rotationProperty === 'x' ? rotationDirection : 0,
+      rotationProperty === 'y' ? rotationDirection : 0,
+      0
+    );
 
-  const nextRotation = new Vector3(
-    clampRotation(nnextRotation.x),
-    clampRotation(nnextRotation.y),
-    clampRotation(nnextRotation.z)
-  );
+    const nnextRotation = rotationVector.add(currentRotation);
 
+    const nextRotation = new Vector3(
+      clampRotation(nnextRotation.x),
+      clampRotation(nnextRotation.y),
+      clampRotation(nnextRotation.z)
+    );
 
-  // if (
-  //   rotationVector.x !== 0 &&
-  //   Math.abs(Tools.ToDegrees(boxRotation.y)) % 180 === 90
-  // ) {
-  //   console.log('wrong rotation');
-  // } 
+    const xSlideAnimation = new Animation(
+      'xSlide',
+      'rotation',
+      frameRate,
+      Animation.ANIMATIONTYPE_VECTOR3,
+      Animation.ANIMATIONLOOPMODE_RELATIVE
+    );
 
-  const xSlideAnimation = new Animation(
-    'xSlide',
-    'rotation',
-    frameRate,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_RELATIVE
-  );
+    const endEvent = new AnimationEvent(
+      frameEnd,
+      () => {
+        params.animationEndCallback();
+      },
+      true
+    );
 
-  const endEvent = new AnimationEvent(
-    frameEnd,
-    () => {
-      emitEvent({
-        type: boxEvents.rotationEnd,
-        entity: params.entity,
-        payload: {},
-      });
-    },
-    true
-  );
+    xSlideAnimation.addEvent(endEvent);
 
-  xSlideAnimation.addEvent(endEvent);
+    const keyFrames = [];
 
-  const keyFrames = [];
+    keyFrames.push({
+      frame: 0,
+      value: currentRotation,
+    });
 
-  keyFrames.push({
-    frame: 0,
-    value: currentRotation,
-  });
+    keyFrames.push({
+      frame: frameEnd,
+      value: nextRotation,
+    });
 
-  keyFrames.push({
-    frame: frameEnd,
-    value: nextRotation,
-  });
+    xSlideAnimation.setKeys(keyFrames);
 
-  xSlideAnimation.setKeys(keyFrames);
+    box.animations[0] = xSlideAnimation;
 
-  return xSlideAnimation;
+    scene.beginAnimation(box, 0, 2 * frameRate, false);
+
+    const children = box.getChildren();
+    const color = params.ai.color;
+
+    children.slice(0, -1).forEach((plane) => {
+      const mesh = scene.getMeshByUniqueId(plane.uniqueId);
+      if (mesh) {
+        (mesh.material as StandardMaterial).diffuseColor = new Color3(
+          color[0],
+          color[1],
+          color[2]
+        );
+
+        (mesh.material as StandardMaterial).diffuseTexture = new Texture(
+          params.ai.textureSet[params.dots],
+          scene
+        );
+      }
+    });
+  }
 };
 
 export const boxSystem = (state: State) =>
@@ -115,25 +125,52 @@ export const boxSystem = (state: State) =>
     name: componentName.box,
     event: {
       [boxEvents.onClick]: ({ state, entity, component, payload }) => {
+        let dots = component.dots;
         if (!component.isAnimating) {
-          const box = scene.getTransformNodeByUniqueId(parseInt(entity));
+          dots = component.dots === 6 ? 1 : component.dots + 1;
 
-          if (box) {
-            box.animations[0] = createRotationBoxAnimation({ entity, box });
-            scene.beginAnimation(box, 0, 2 * frameRate, false);
-
-            box.getChildren().forEach((plane) => {
-              if (plane.uniqueId !== payload.planeId) {
-                const mesh = scene.getMeshByUniqueId(plane.uniqueId);
-                if (mesh) {
-                  (mesh.material as StandardMaterial).diffuseColor =
-                    Color3.Red();
-                  (mesh.material as StandardMaterial).diffuseTexture =
-                    new Texture(dot1, scene);
-                }
-              }
+          const animationEndCallback = () => {
+            emitEvent({
+              type: boxEvents.rotationEnd,
+              entity: entity,
+              payload: { ai: payload.ai },
             });
+          };
+
+          if (process.env.NODE_ENV !== 'test') {
+            createRotationBoxAnimation({
+              entity,
+              animationEndCallback,
+              dots,
+              ai: payload.ai,
+            });
+          } else {
+            animationEndCallback();
           }
+
+          // const box = scene.getTransformNodeByUniqueId(parseInt(entity));
+
+          // if (box) {
+          //   box.animations[0] =
+          //   scene.beginAnimation(box, 0, 2 * frameRate, false);
+
+          //   const children = box.getChildren();
+          //   const color = payload.ai.color;
+
+          //   children.slice(0, -1).forEach((plane) => {
+          //     const mesh = scene.getMeshByUniqueId(plane.uniqueId);
+          //     if (mesh) {
+          //       (mesh.material as StandardMaterial).diffuseColor = new Color3(
+          //         color[0],
+          //         color[1],
+          //         color[2]
+          //       );
+
+          //       (mesh.material as StandardMaterial).diffuseTexture =
+          //         new Texture(payload.ai.textureSet[dots], scene);
+          //     }
+          //   });
+          // }
         }
 
         return setComponent<Box>({
@@ -141,27 +178,41 @@ export const boxSystem = (state: State) =>
           data: {
             ...component,
             isAnimating: true,
+            player: payload.ai.entity,
+            dots,
           },
         });
       },
-      [boxEvents.rotationEnd]: ({ state, entity, component }) => {
+      [boxEvents.rotationEnd]: ({ state, entity, component, payload }) => {
         const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
         if (box) {
           box.rotation.x = 0;
           box.rotation.y = 0;
+          const color = payload.ai.color;
+          const dots = component.dots;
 
           box.getChildren().forEach((plane) => {
             const mesh = scene.getMeshByUniqueId(plane.uniqueId);
             if (mesh) {
-              (mesh.material as StandardMaterial).diffuseColor = Color3.Red();
+              (mesh.material as StandardMaterial).diffuseColor = new Color3(
+                color[0],
+                color[1],
+                color[2]
+              );
               (mesh.material as StandardMaterial).diffuseTexture = new Texture(
-                dot1,
+                payload.ai.textureSet[dots],
                 scene
               );
             }
           });
         }
+
+        emitEvent({
+          type: gameEvents.nextTurn,
+          entity: gameEntity,
+          payload: {},
+        });
 
         return setComponent<Box>({
           state,

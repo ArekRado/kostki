@@ -1,7 +1,13 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName, getComponent } from '../ecs/component';
-import { AI, Box, State } from '../ecs/type';
+import { AI, Box, Guid, State } from '../ecs/type';
 import { getGame } from './gameSystem';
+import { emitEvent } from '../ecs/emitEvent';
+import { boxEvents } from './boxSystem';
+
+export const aiEvents = {
+  // makeMove: 'ai-makeMove',
+};
 
 const safeGet = (array: any[][], i: number, j: number) =>
   array ? (array[i] ? array[i][j] : undefined) : undefined;
@@ -87,7 +93,7 @@ type GetMovesForEmptyBoxes = (params: { dataGrid: DataGrid }) => DataGrid;
 export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({ dataGrid }) =>
   dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
-      const isEmpty = box.dots === 0 && box.player === '';
+      const isEmpty = box.player === undefined;
       const points = isEmpty ? box.points + pointsFor.emptyBox : box.points;
 
       acc2[j] = { ...box, points };
@@ -182,6 +188,7 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       // Adjacted is oponent
 
       // Player box has more dots, box is safe
+      // todo should check difference between boxes, should behave different if diff is 1 dot and when is 4
       if (boxStats === dotStats.more)
         return acc + pointsFor.diagonall.playerMoreThanOponent;
       // Oponent box has equal dots, no rush but player should start thinking to incerase dots
@@ -209,26 +216,37 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
 };
 
 type CalculateLocalStrategy = (params: {
-  state: State;
+  currentPlayer: Guid;
   dataGrid: DataGrid;
 }) => DataGrid;
 export const calculateLocalStrategy: CalculateLocalStrategy = ({
   dataGrid,
+  currentPlayer,
 }) => {
   return dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
+      if (box.player !== currentPlayer) {
+        return acc2;
+      }
+
       const grid3x3 = [
-        [safeGet(dataGrid, j - 1, i - 1)],
-        [safeGet(dataGrid, j, i - 1)],
-        [safeGet(dataGrid, j + 1, i - 1)],
+        [
+          safeGet(dataGrid, j - 1, i - 1),
+          safeGet(dataGrid, j, i - 1),
+          safeGet(dataGrid, j + 1, i - 1),
+        ],
 
-        [safeGet(dataGrid, j - 1, i)],
-        [safeGet(dataGrid, j, i)], // playerBox
-        [safeGet(dataGrid, j + 1, i)],
+        [
+          safeGet(dataGrid, j - 1, i),
+          safeGet(dataGrid, j, i), // playerBox
+          safeGet(dataGrid, j + 1, i),
+        ],
 
-        [safeGet(dataGrid, j - 1, i + 1)],
-        [safeGet(dataGrid, j, i + 1)],
-        [safeGet(dataGrid, j + 1, i + 1)],
+        [
+          safeGet(dataGrid, j - 1, i + 1),
+          safeGet(dataGrid, j, i + 1),
+          safeGet(dataGrid, j + 1, i + 1),
+        ],
       ];
 
       const points = localStrategyAdjacted(grid3x3);
@@ -240,33 +258,76 @@ export const calculateLocalStrategy: CalculateLocalStrategy = ({
   }, dataGrid);
 };
 
-type GetBestRandomBox = (dataGrid: DataGrid) => Box;
-export const getBestRandomBox: GetBestRandomBox = (dataGrid) => {
-  let highestScoreBox = dataGrid[0][0];
+type GetBestRandomBox = (params: {
+  currentPlayer: Guid;
+  dataGrid: DataGrid;
+}) => Box | undefined;
+export const getBestRandomBox: GetBestRandomBox = ({
+  currentPlayer,
+  dataGrid,
+}) => {
+  let highestScore = -Infinity;
+  let highestBox = undefined;
 
   dataGrid.forEach((row) => {
     row.forEach((box) => {
-      if (box.points > highestScoreBox.points) {
-        highestScoreBox = box;
+      const isEmpty = box.player === undefined;
+      const isPlayer = box.player === currentPlayer;
+      if ((isEmpty || isPlayer) && box.points > highestScore) {
+        highestScore = box.points;
+        highestBox = box;
       }
     });
   });
 
-  return highestScoreBox;
+  return highestBox;
 };
 
-type GetAIMoves = (params: { state: State }) => Box;
-export const GetAIMoves: GetAIMoves = ({ state }) => {
+type GetAiMove = (params: { state: State; ai: AI }) => Box | undefined;
+export const getAiMove: GetAiMove = ({ state, ai }) => {
+  const currentPlayer = ai.entity;
+
   let dataGrid = getDataGrid({ state });
 
   dataGrid = getMovesForEmptyBoxes({ dataGrid });
-  dataGrid = calculateLocalStrategy({ state, dataGrid });
+  dataGrid = calculateLocalStrategy({ currentPlayer, dataGrid });
+  const bestRandomBox = getBestRandomBox({ currentPlayer, dataGrid });
 
-  return getBestRandomBox(dataGrid);
+  return bestRandomBox;
+};
+
+type MakeMove = (params: { state: State; ai: AI }) => State;
+export const makeMove: MakeMove = ({ state, ai }) => {
+  const box = getAiMove({ state, ai });
+
+  box &&
+    emitEvent({
+      type: boxEvents.onClick,
+      entity: box?.entity,
+      payload: {
+        ai,
+      },
+    });
+
+  return state;
 };
 
 export const aiSystem = (state: State) =>
   createSystem<AI>({
     state,
     name: componentName.ai,
+    // event: {
+    //   [aiEvents.makeMove]: ({ state, component }) => {
+    //     const box = getAiMove({ state });
+
+    //     box &&
+    //       emitEvent({
+    //         type: boxEvents.onClick,
+    //         entity: box?.entity,
+    //         payload: {},
+    //       });
+
+    //     return state;
+    //   },
+    // },
   });

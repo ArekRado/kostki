@@ -12,7 +12,6 @@ let state: State = {
     [componentName.game]: {},
   },
   system: [],
-  enableBabylonjs: true,
 };
 
 // Systems
@@ -21,8 +20,3 @@ state = aiSystem(state);
 state = gameSystem(state);
 
 export const initialState = state;
-
-export const initialStateWithDisabledBabylon: State = {
-  ...initialState,
-  enableBabylonjs: false,
-};
