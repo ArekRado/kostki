@@ -1,7 +1,7 @@
 import { Dictionary, Entity } from './type';
 
-export type ECSEvent<Payload> = {
-  type: string;
+export type ECSEvent<Type, Payload> = {
+  type: Type;
   entity: Entity;
   payload: Payload;
 };
@@ -9,13 +9,13 @@ export type ECSEvent<Payload> = {
 type AcitveBuffer = 'first' | 'second';
 export let activeBuffer: AcitveBuffer = 'first';
 
-export let eventBuffer: Dictionary<ECSEvent<any>[]> = {};
+export let eventBuffer: Dictionary<ECSEvent<any, any>[]> = {};
 /**
  * events emited inside events are located in secondEventBuffer
  */
-export let secondEventBuffer: Dictionary<ECSEvent<any>[]> = {};
+export let secondEventBuffer: Dictionary<ECSEvent<any, any>[]> = {};
 
-export const emitEvent = <Payload>(event: ECSEvent<Payload>) => {
+export const emitEvent = <Event extends ECSEvent<any, any>>(event: Event) => {
   if (activeBuffer === 'first') {
     if (!eventBuffer[event.entity]) {
       eventBuffer[event.entity] = [];

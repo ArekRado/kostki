@@ -9,17 +9,24 @@ import {
   Tools,
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
-import { componentName, setComponent } from '../ecs/component';
-import { AI, Box, Entity, State } from '../ecs/type';
+import { componentName, getComponent, setComponent } from '../ecs/component';
+import { AI, Box, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
-import { emitEvent } from '../ecs/emitEvent';
+import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 
-import { gameEntity, gameEvents } from './gameSystem';
+import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
 
-export const boxEvents = {
-  onClick: 'box-onClick',
-  rotationEnd: 'box-rotationEnd',
-};
+export namespace BoxEvent {
+  export enum Type {
+    onClick = 'onClick',
+    rotationEnd = 'rotationEnd',
+  }
+
+  export type All = OnClickEvent | RotationEndEvent;
+
+  export type OnClickEvent = ECSEvent<Type.onClick, { ai: AI | undefined }>;
+  export type RotationEndEvent = ECSEvent<Type.rotationEnd, { ai: AI }>;
+}
 
 const clampRotation = (rotation: number) => {
   if (rotation > Math.PI * 2 || rotation < Math.PI * -2) {
@@ -29,8 +36,53 @@ const clampRotation = (rotation: number) => {
   return rotation;
 };
 
-const frameRate = 30;
-const frameEnd = 0.3 * frameRate;
+type PushBoxToRotationQueue = (params: {
+  entity: Entity;
+  state: State;
+}) => State;
+export const pushBoxToRotationQueue: PushBoxToRotationQueue = ({
+  entity,
+  state,
+}) => {
+  const game = getGame({ state });
+
+  if (game) {
+    return setComponent<Game>({
+      state,
+      data: {
+        ...game,
+        boxRotationQueue: [...game.boxRotationQueue, entity],
+      },
+    });
+  }
+
+  return state;
+};
+
+type RemoveBoxFromRotationQueue = (params: {
+  entity: Entity;
+  state: State;
+}) => State;
+const removeBoxFromRotationQueue: RemoveBoxFromRotationQueue = ({
+  entity,
+  state,
+}) => {
+  const game = getGame({ state });
+
+  if (game) {
+    return setComponent<Game>({
+      state,
+      data: {
+        ...game,
+        boxRotationQueue: game.boxRotationQueue.filter(
+          (boxEntity) => boxEntity !== entity
+        ),
+      },
+    });
+  }
+
+  return state;
+};
 
 export const createRotationBoxAnimation = (params: {
   entity: Entity;
@@ -39,6 +91,9 @@ export const createRotationBoxAnimation = (params: {
   ai: AI;
   dots: number;
 }) => {
+  const frameRate = 30;
+  const frameEnd = 0.3 * frameRate;
+
   const box = scene.getTransformNodeByUniqueId(parseInt(params.entity));
 
   if (box) {
@@ -119,108 +174,116 @@ export const createRotationBoxAnimation = (params: {
   }
 };
 
+const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
+  state,
+  component,
+  event,
+}) => {
+  const { payload } = event;
+  const { entity } = component;
+  const ai = payload.ai || getCurrentAi({ state });
+
+  let dots = component.dots;
+  if (!component.isAnimating && ai) {
+    dots = component.dots === 6 ? 1 : component.dots + 1;
+
+    if (component.dots === 6) {
+      emitEvent<GameEvent.BoxExplosionEvent>({
+        type: GameEvent.Type.boxExplosion,
+        entity: gameEntity,
+        payload: { ai, box: component },
+      });
+    }
+
+    const animationEndCallback = () => {
+      emitEvent<BoxEvent.RotationEndEvent>({
+        type: BoxEvent.Type.rotationEnd,
+        entity: entity,
+        payload: { ai },
+      });
+    };
+
+    if (process.env.NODE_ENV !== 'test') {
+      createRotationBoxAnimation({
+        entity,
+        animationEndCallback,
+        dots,
+        ai,
+      });
+    } else {
+      animationEndCallback();
+    }
+
+    state = pushBoxToRotationQueue({ entity, state });
+  }
+
+  return setComponent<Box>({
+    state,
+    data: {
+      ...component,
+      isAnimating: true,
+      player: ai?.entity || '',
+      dots,
+    },
+  });
+};
+
+const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
+  state,
+  component,
+  event,
+}) => {
+  const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
+
+  if (box) {
+    box.rotation.x = 0;
+    box.rotation.y = 0;
+    const color = event.payload.ai.color;
+    const dots = component.dots;
+
+    box.getChildren().forEach((plane) => {
+      const mesh = scene.getMeshByUniqueId(plane.uniqueId);
+      if (mesh) {
+        (mesh.material as StandardMaterial).diffuseColor = new Color3(
+          color[0],
+          color[1],
+          color[2]
+        );
+        (mesh.material as StandardMaterial).diffuseTexture = new Texture(
+          event.payload.ai.textureSet[dots],
+          scene
+        );
+      }
+    });
+  }
+
+  emitEvent<GameEvent.NextTurnEvent>({
+    type: GameEvent.Type.nextTurn,
+    entity: gameEntity,
+    payload: { ai: event.payload.ai },
+  });
+
+  state = removeBoxFromRotationQueue({ entity: component.entity, state });
+
+  return setComponent<Box>({
+    state,
+    data: {
+      ...component,
+      isAnimating: false,
+    },
+  });
+};
+
 export const boxSystem = (state: State) =>
-  createSystem<Box>({
+  createSystem<Box, BoxEvent.All>({
     state,
     name: componentName.box,
-    event: {
-      [boxEvents.onClick]: ({ state, entity, component, payload }) => {
-        let dots = component.dots;
-        if (!component.isAnimating) {
-          dots = component.dots === 6 ? 1 : component.dots + 1;
-
-          const animationEndCallback = () => {
-            emitEvent({
-              type: boxEvents.rotationEnd,
-              entity: entity,
-              payload: { ai: payload.ai },
-            });
-          };
-
-          if (process.env.NODE_ENV !== 'test') {
-            createRotationBoxAnimation({
-              entity,
-              animationEndCallback,
-              dots,
-              ai: payload.ai,
-            });
-          } else {
-            animationEndCallback();
-          }
-
-          // const box = scene.getTransformNodeByUniqueId(parseInt(entity));
-
-          // if (box) {
-          //   box.animations[0] =
-          //   scene.beginAnimation(box, 0, 2 * frameRate, false);
-
-          //   const children = box.getChildren();
-          //   const color = payload.ai.color;
-
-          //   children.slice(0, -1).forEach((plane) => {
-          //     const mesh = scene.getMeshByUniqueId(plane.uniqueId);
-          //     if (mesh) {
-          //       (mesh.material as StandardMaterial).diffuseColor = new Color3(
-          //         color[0],
-          //         color[1],
-          //         color[2]
-          //       );
-
-          //       (mesh.material as StandardMaterial).diffuseTexture =
-          //         new Texture(payload.ai.textureSet[dots], scene);
-          //     }
-          //   });
-          // }
-        }
-
-        return setComponent<Box>({
-          state,
-          data: {
-            ...component,
-            isAnimating: true,
-            player: payload.ai.entity,
-            dots,
-          },
-        });
-      },
-      [boxEvents.rotationEnd]: ({ state, entity, component, payload }) => {
-        const box = scene.getTransformNodeByUniqueId(parseInt(entity));
-
-        if (box) {
-          box.rotation.x = 0;
-          box.rotation.y = 0;
-          const color = payload.ai.color;
-          const dots = component.dots;
-
-          box.getChildren().forEach((plane) => {
-            const mesh = scene.getMeshByUniqueId(plane.uniqueId);
-            if (mesh) {
-              (mesh.material as StandardMaterial).diffuseColor = new Color3(
-                color[0],
-                color[1],
-                color[2]
-              );
-              (mesh.material as StandardMaterial).diffuseTexture = new Texture(
-                payload.ai.textureSet[dots],
-                scene
-              );
-            }
-          });
-        }
-
-        emitEvent({
-          type: gameEvents.nextTurn,
-          entity: gameEntity,
-          payload: {},
-        });
-
-        return setComponent<Box>({
-          state,
-          data: {
-            ...component,
-            isAnimating: false,
-          },
-        });
-      },
+    event: ({ state, component, event }) => {
+      switch (event.type) {
+        case BoxEvent.Type.onClick:
+          return onClickHandler({ state, component, event });
+        case BoxEvent.Type.rotationEnd:
+          return rotationEndHandler({ state, component, event });
+      }
     },
   });

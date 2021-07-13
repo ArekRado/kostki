@@ -12,9 +12,9 @@ import {
 import { Scene } from 'babylonjs/scene';
 import { emitEvent } from '../ecs/emitEvent';
 import { State } from '../ecs/type';
-import { boxEvents } from '../systems/boxSystem';
 
 import empty from '../assets/0.png';
+import { BoxEvent } from '../systems/boxSystem';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
 // import dot3 from '../assets/3.png';
@@ -60,10 +60,11 @@ export const boxBlueprint = ({
     plane.actionManager = new ActionManager(scene);
     plane.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
-        emitEvent({
+        emitEvent<BoxEvent.OnClickEvent>({
           entity: box.uniqueId.toString(),
-          type: boxEvents.onClick,
+          type: BoxEvent.Type.onClick,
           payload: {
+            ai: undefined
           //   planeId: plane.uniqueId,
           },
         });

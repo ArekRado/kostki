@@ -15,6 +15,7 @@ export const getGameInitialState = () => {
       level: 0,
       color: [0, 0, 1],
       textureSet: ['', '', '', '', '', '', ''],
+      active: true,
     },
   });
 
@@ -28,6 +29,7 @@ export const getGameInitialState = () => {
       currentPlayer: humanPlayerEntity,
       gameStarted: false,
       playersQueue: [],
+      boxRotationQueue: [],
     },
   });
 

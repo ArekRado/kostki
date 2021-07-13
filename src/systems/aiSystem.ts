@@ -2,20 +2,20 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName, getComponent } from '../ecs/component';
 import { AI, Box, Guid, State } from '../ecs/type';
 import { getGame } from './gameSystem';
-import { emitEvent } from '../ecs/emitEvent';
-import { boxEvents } from './boxSystem';
 
-export const aiEvents = {
-  // makeMove: 'ai-makeMove',
-};
+export namespace AiEvent {
+  export enum Type {}
 
-const safeGet = (array: any[][], i: number, j: number) =>
+  export type All = null;
+}
+
+export const safeGet = (array: any[][], i: number, j: number) =>
   array ? (array[i] ? array[i][j] : undefined) : undefined;
 
 export const pointsFor = {
   emptyBox: 10,
 
-  adjacted: {
+  adjacted: { 
     playerMoreThanOponent: 0,
     playerEqualToOponent: 5,
     playerLessThanOponent: -5,
@@ -267,20 +267,26 @@ export const getBestRandomBox: GetBestRandomBox = ({
   dataGrid,
 }) => {
   let highestScore = -Infinity;
-  let highestBox = undefined;
+  let highestBoxes: Box[] = [];
 
   dataGrid.forEach((row) => {
     row.forEach((box) => {
       const isEmpty = box.player === undefined;
       const isPlayer = box.player === currentPlayer;
-      if ((isEmpty || isPlayer) && box.points > highestScore) {
+      if (box.points > highestScore) {
+        highestBoxes = [];
+      }
+
+      if ((isEmpty || isPlayer) && box.points >= highestScore) {
         highestScore = box.points;
-        highestBox = box;
+        highestBoxes.push(box);
       }
     });
   });
 
-  return highestBox;
+  const randomIndex = Math.floor(Math.random() * highestBoxes.length);
+
+  return highestBoxes[randomIndex];
 };
 
 type GetAiMove = (params: { state: State; ai: AI }) => Box | undefined;
@@ -296,24 +302,8 @@ export const getAiMove: GetAiMove = ({ state, ai }) => {
   return bestRandomBox;
 };
 
-type MakeMove = (params: { state: State; ai: AI }) => State;
-export const makeMove: MakeMove = ({ state, ai }) => {
-  const box = getAiMove({ state, ai });
-
-  box &&
-    emitEvent({
-      type: boxEvents.onClick,
-      entity: box?.entity,
-      payload: {
-        ai,
-      },
-    });
-
-  return state;
-};
-
 export const aiSystem = (state: State) =>
-  createSystem<AI>({
+  createSystem<AI, undefined>({
     state,
     name: componentName.ai,
     // event: {

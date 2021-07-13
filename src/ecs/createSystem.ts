@@ -1,5 +1,5 @@
 import { ECSEvent } from './emitEvent';
-import { State, Dictionary, Entity, Component } from './type';
+import { State, Dictionary, Entity, Component, EventHandler } from './type';
 
 export enum systemPriority {
   last = 3,
@@ -13,35 +13,26 @@ export enum systemPriority {
 
 const doNothing = (params: { state: State }) => params.state;
 
-type EventHandler<ComponentData> = (params: {
-  payload: any;
+type TriggerSystemEvents = <ComponentData, Events>(params: {
   state: State;
+  eventBuffer: Dictionary<Events[]>;
   entity: Entity;
-  component: Component<ComponentData>;
-}) => State;
-
-type TriggerSystemEvents = <ComponentData>(params: {
-  state: State;
-  eventBuffer: Dictionary<ECSEvent<any>[]>;
-  entity: Entity;
-  systemEventHandlers: System<ComponentData>['event'];
+  eventHandler: EventHandler<ComponentData, Events> | undefined;
   component: Component<ComponentData>;
 }) => State;
 export const triggerSystemEvents: TriggerSystemEvents = ({
   entity,
   eventBuffer,
   state,
-  systemEventHandlers,
+  eventHandler,
   component,
 }) =>
   eventBuffer[entity]
-    ? eventBuffer[entity].reduce((acc, event: ECSEvent<any>) => {
-        const eventHandler = systemEventHandlers[event.type];
+    ? eventBuffer[entity].reduce((acc, event) => {
         return eventHandler
           ? eventHandler({
               state: acc,
-              payload: event.payload,
-              entity,
+              event,
               component,
             })
           : acc;
@@ -53,7 +44,7 @@ type SystemMethodParams<ComponentData> = {
   component: Component<ComponentData>;
 };
 
-export type CreateSystemParams<Component> = {
+export type CreateSystemParams<Component, Events> = {
   state: State;
   name: string;
   initialize?: (params: { state: State }) => State;
@@ -61,10 +52,10 @@ export type CreateSystemParams<Component> = {
   tick?: (params: SystemMethodParams<Component>) => State;
   remove?: (params: SystemMethodParams<Component>) => State;
   priority?: number;
-  event?: Dictionary<EventHandler<Component>>;
+  event?: EventHandler<Component, Events>;
 };
 
-export type System<Component> = {
+export type System<Component, Events> = {
   name: string;
   /**
    * Called only once when engine is initializing
@@ -74,21 +65,18 @@ export type System<Component> = {
    * Called on each component create if state.component[name] and system name are the same
    */
   create: (params: SystemMethodParams<Component>) => State;
-  tick: (params: {
-    state: State;
-    eventBuffer: Dictionary<ECSEvent<any>[]>;
-  }) => State;
+  tick: (params: { state: State; eventBuffer: Dictionary<Events[]> }) => State;
   remove: (params: SystemMethodParams<Component>) => State;
   priority: number;
-  event: Dictionary<EventHandler<Component>>;
+  event?: EventHandler<Component, Events>;
 };
 
-export const createSystem = <ComponentData>({
+export const createSystem = <ComponentData, Events>({
   state,
   tick,
   ...params
-}: CreateSystemParams<ComponentData>): State => {
-  const system: System<ComponentData> = {
+}: CreateSystemParams<ComponentData, Events>): State => {
+  const system: System<ComponentData, Events> = {
     name: params.name,
     priority: params.priority || systemPriority.zero,
     initialize: params.initialize || doNothing,
@@ -100,8 +88,8 @@ export const createSystem = <ComponentData>({
       if (component) {
         return Object.values(component).reduce(
           (acc, component: Component<ComponentData>) => {
-            let stateAfterEvents = triggerSystemEvents<ComponentData>({
-              systemEventHandlers: params.event || {},
+            let stateAfterEvents = triggerSystemEvents<ComponentData, Events>({
+              eventHandler: params.event,
               state: acc,
               eventBuffer,
               entity: component.entity,
@@ -119,7 +107,7 @@ export const createSystem = <ComponentData>({
       return state;
     },
     remove: params.remove || doNothing,
-    event: params.event || {},
+    event: params.event || doNothing,
   };
 
   return {
@@ -128,14 +116,14 @@ export const createSystem = <ComponentData>({
   };
 };
 
-export type CreateGlobalSystemParams = {
+export type CreateGlobalSystemParams<Events> = {
   state: State;
   name: string;
   initialize?: (params: { state: State }) => State;
   create?: (params: { state: State }) => State;
   tick?: (params: { state: State }) => State;
   priority?: number;
-  event?: Dictionary<EventHandler<any>>;
+  event?: EventHandler<undefined, Events>;
 };
 
 export type GlobalSystem = {
@@ -151,12 +139,12 @@ export type GlobalSystem = {
   // event: Dictionary<EventHandler>;
 };
 
-export const createGlobalSystem = ({
+export const createGlobalSystem = <Events>({
   state,
   initialize,
   tick,
   ...params
-}: CreateGlobalSystemParams): State => {
+}: CreateGlobalSystemParams<Events>): State => {
   const system: GlobalSystem = {
     name: params.name,
     priority: params.priority || systemPriority.zero,

@@ -13,7 +13,7 @@ import { componentName } from './ecs/component';
 import { emitEvent } from './ecs/emitEvent';
 import { runOneFrame } from './ecs/runOneFrame';
 import { AI, Entity, State } from './ecs/type';
-import { gameEntity, gameEvents, getGame } from './systems/gameSystem';
+import { gameEntity, GameEvent } from './systems/gameSystem';
 import { getGameInitialState } from './utils/getGameInitialState';
 import { setCameraDistance } from './utils/setCameraDistance';
 
@@ -90,6 +90,7 @@ if (process.env.NODE_ENV !== 'test') {
     level: 1,
     color,
     textureSet: [dot0, dot1, dot2, dot3, dot4, dot5, dot6],
+    active: true,
   });
 
   // Blueprints
@@ -98,9 +99,9 @@ if (process.env.NODE_ENV !== 'test') {
     state,
     ai: [
       basicAI('1', [1, 0, 0]),
-      basicAI('2', [0, 1, 0]),
-      basicAI('3', [0, 0, 1]),
-      basicAI('4', [1, 0, 1]),
+      basicAI('2', [0, 1, 1]),
+      // basicAI('3', [0, 0, 1]),
+      // basicAI('4', [1, 0, 1]),
     ],
   });
   scene.registerBeforeRender(() => {
@@ -108,8 +109,8 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
   setTimeout(() => {
-    emitEvent({
-      type: gameEvents.startLevel,
+    emitEvent<GameEvent.StartLevelEvent>({
+      type: GameEvent.Type.startLevel,
       entity: gameEntity,
       payload: {},
     });

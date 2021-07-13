@@ -36,21 +36,26 @@ describe('createGlobalSystem', () => {
       data: { entity, name: componentName },
     });
 
-    const testEvent: ECSEvent<string> = {
+    const testEvent: ECSEvent<string, any> = {
       type: 'testEventType',
       payload: 'testEventPayload',
       entity,
     };
 
-    const testEventHandler = jest.fn<State, [{ state: State }]>(
+    const testEventHandler = jest.fn<State, [{ state: State; event: any }]>(
       ({ state }) => state
     );
 
-    state = createSystem({
+    state = createSystem<any, any>({
       state,
       name: componentName,
-      event: {
-        [testEvent.type]: testEventHandler,
+      event: ({ state, event }) => {
+        switch (event.type) {
+          case testEvent.type:
+            return testEventHandler({ state, event });
+        }
+
+        return state;
       },
     });
 
@@ -63,11 +68,8 @@ describe('createGlobalSystem', () => {
     state = runOneFrame({ state });
 
     expect(testEventHandler).toHaveBeenCalledTimes(1);
-    expect((testEventHandler.mock.calls[0][0] as any).payload).toEqual(
+    expect((testEventHandler.mock.calls[0][0] as any).event.payload).toEqual(
       testEvent.payload
-    );
-    expect((testEventHandler.mock.calls[0][0] as any).entity).toEqual(
-      testEvent.entity
     );
 
     // eventBuffer should be reseted on each frame
@@ -86,13 +88,13 @@ describe('createGlobalSystem', () => {
       data: { entity, name: componentName },
     });
 
-    const testEvent1: ECSEvent<string> = {
+    const testEvent1: ECSEvent<string, any> = {
       type: 'testEventType1',
       payload: 'testEventPayload1',
       entity,
     };
 
-    const testEvent2: ECSEvent<string> = {
+    const testEvent2: ECSEvent<string, any> = {
       type: 'testEventType2',
       payload: 'testEventPayload2',
       entity,
@@ -101,21 +103,35 @@ describe('createGlobalSystem', () => {
     const testEventHandler1 = jest.fn();
     const testEventHandler2 = jest.fn();
 
-    state = createSystem({
+    state = createSystem<any, any>({
       state,
       name: componentName,
-      event: {
-        [testEvent1.type]: ({ state }) => {
-          testEventHandler1(testEvent1);
-          emitEvent(testEvent2);
-          return state;
-        },
-        [testEvent2.type]: ({ state }) => {
-          testEventHandler2(testEvent2);
-          emitEvent(testEvent1);
-          return state;
-        },
+      event: ({ state, event }) => {
+        switch (event.type) {
+          case testEvent1.type:
+            testEventHandler1(testEvent1);
+            emitEvent(testEvent2);
+            return state;
+
+          case testEvent2.type:
+            testEventHandler2(testEvent2);
+            emitEvent(testEvent1);
+            return state;
+        }
+
+        return state;
       },
+      // [testEvent1.type]: ({ state }) => {
+      //   testEventHandler1(testEvent1);
+      //   emitEvent(testEvent2);
+      //   return state;
+      // },
+      // [testEvent2.type]: ({ state }) => {
+      //   testEventHandler2(testEvent2);
+      //   emitEvent(testEvent1);
+      //   return state;
+      // },
+      // },
     });
 
     state = runOneFrame({ state });
@@ -148,6 +164,5 @@ describe('createGlobalSystem', () => {
     expect((testEventHandler2.mock.calls[0][0] as any).entity).toEqual(
       testEvent2.entity
     );
-
   });
 });

@@ -1,17 +1,3 @@
-import {
-  TransformNode,
-  Animation,
-  AnimationEvent,
-  Color3,
-  StandardMaterial,
-  Texture,
-  Vector3,
-  Tools,
-  Quaternion,
-  Axis,
-  Space,
-  Vector2,
-} from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import {
   componentName,
@@ -19,18 +5,29 @@ import {
   getComponent,
   setComponent,
 } from '../ecs/component';
-import { AI, Box, Entity, Game, State } from '../ecs/type';
-import { scene } from '..';
-import { emitEvent } from '../ecs/emitEvent';
-import { aiEvents, getAiMove, makeMove } from './aiSystem';
-import { boxEvents } from './boxSystem';
+import { AI, Box, Entity, EventHandler, Game, State } from '../ecs/type';
+import { ECSEvent, emitEvent } from '../ecs/emitEvent';
+import { getAiMove, getDataGrid, safeGet } from './aiSystem';
+import { BoxEvent, pushBoxToRotationQueue } from './boxSystem';
 
 export const gameEntity = 'game';
 
-export const gameEvents = {
-  startLevel: 'game-startLevel',
-  nextTurn: 'game-nextTurn',
-};
+export namespace GameEvent {
+  export enum Type {
+    startLevel,
+    nextTurn,
+    boxExplosion,
+  }
+
+  export type All = StartLevelEvent | NextTurnEvent | BoxExplosionEvent;
+
+  export type StartLevelEvent = ECSEvent<Type.startLevel, {}>;
+  export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
+  export type BoxExplosionEvent = ECSEvent<
+    Type.boxExplosion,
+    { ai: AI; box: Box }
+  >;
+}
 
 type GetGame = (params: { state: State }) => Game | undefined;
 export const getGame: GetGame = ({ state }) => {
@@ -41,23 +38,17 @@ export const getGame: GetGame = ({ state }) => {
   });
 };
 
-// type SetGame = (params: { state: State; game: Game }) => State;
-// export const setGame: SetGame = ({ state, game:paramGame }) => {
-//   const game = getGame({ state });
+type GetCurrentAi = (params: { state: State }) => AI | undefined;
+export const getCurrentAi: GetCurrentAi = ({ state }) => {
+  const game = getGame({ state });
+  const ai = getComponent<AI>({
+    state,
+    name: componentName.ai,
+    entity: game?.currentPlayer || '',
+  });
 
-//   if (game) {
-//     return setComponent<Game>({
-//       state,
-//       data: {
-//         ...game,
-//         ...paramGame,
-
-//       },
-//     });
-//   } else {
-//     return state;
-//   }
-// };
+  return ai;
+};
 
 const getRandomAi = ({ state }: { state: State }): AI => {
   const allAi = getAllComponents<AI>({ name: componentName.ai, state }) || {};
@@ -66,74 +57,184 @@ const getRandomAi = ({ state }: { state: State }): AI => {
   return aiList[randomIndex];
 };
 
+type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
+const aiLost: AiLost = ({ state, ai, component }) => {
+  state = setComponent<AI>({
+    state,
+    data: {
+      ...ai,
+      active: false,
+    },
+  });
+
+  const allAI = getAllComponents<AI>({
+    state,
+    name: componentName.ai,
+  });
+
+  const amountOfActivedAi = Object.values(allAI || {}).reduce(
+    (acc, ai) => (ai.active ? acc + 1 : acc),
+    0
+  );
+
+  // last player is active, time to end game
+  if (amountOfActivedAi === 1) {
+    return setComponent<Game>({
+      state,
+      data: {
+        ...component,
+        gameStarted: false,
+      },
+    });
+  } else {
+    emitEvent<GameEvent.NextTurnEvent>({
+      type: GameEvent.Type.nextTurn,
+      entity: gameEntity,
+      payload: { ai },
+    });
+  }
+
+  return state;
+};
+
+const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
+  state,
+  component,
+}) => {
+  const { currentPlayer } = component;
+
+  const currentAi = getComponent<AI>({
+    name: componentName.ai,
+    state,
+    entity: currentPlayer,
+  });
+
+  const ai = currentAi ? currentAi : getRandomAi({ state });
+
+  state = setComponent<Game>({
+    state,
+    data: {
+      ...component,
+      gameStarted: true,
+      currentPlayer: ai.entity,
+    },
+  });
+
+  const box = getAiMove({ state, ai });
+
+  box &&
+    emitEvent({
+      type: BoxEvent.Type.onClick,
+      entity: box.entity,
+      payload: {
+        ai,
+      },
+    });
+
+  return state;
+};
+
+const handleBoxExplosion: EventHandler<Game, GameEvent.BoxExplosionEvent> = ({
+  state,
+  component,
+  event,
+}) => {
+  const { ai, box } = event.payload;
+  const {
+    gridPosition: [x, y],
+  } = box;
+
+  const dataGrid = getDataGrid({ state });
+
+  state = [
+    safeGet(dataGrid, x - 1, y),
+    safeGet(dataGrid, x + 1, y),
+    safeGet(dataGrid, x, y - 1),
+    safeGet(dataGrid, x, y + 1),
+  ]
+    .filter((box) => box !== undefined)
+    .reduce((acc, box, i) => {
+      emitEvent({
+        type: BoxEvent.Type.onClick,
+        entity: box.entity,
+        payload: {
+          ai,
+        },
+      });
+
+      return pushBoxToRotationQueue({ entity: box.entity, state: acc });
+    }, state);
+
+  return state;
+};
+
+const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
+  state,
+  component,
+}) => {
+  const { currentPlayer, gameStarted, boxRotationQueue } = component;
+
+  if (gameStarted && boxRotationQueue.length === 0) {
+    const nextPlayerIndex = component.playersQueue.findIndex((entity) => {
+      const ai = getComponent<AI>({
+        state,
+        name: componentName.ai,
+        entity,
+      });
+
+      return currentPlayer === entity && ai?.active;
+    });
+
+    const nextPlayer =
+      component.playersQueue[nextPlayerIndex + 1] || component.playersQueue[0];
+
+    const ai = getComponent<AI>({
+      name: componentName.ai,
+      state,
+      entity: nextPlayer,
+    });
+
+    if (!ai) {
+      return state;
+    }
+
+    state = setComponent<Game>({
+      state,
+      data: {
+        ...component,
+        currentPlayer: ai.entity,
+      },
+    });
+
+    const box = getAiMove({ state, ai });
+
+    if (box) {
+      emitEvent<BoxEvent.OnClickEvent>({
+        type: BoxEvent.Type.onClick,
+        entity: box.entity,
+        payload: { ai },
+      });
+    } else {
+      // AI can't move which means it lost
+      return aiLost({ state, component, ai });
+    }
+  }
+
+  return state;
+};
+
 export const gameSystem = (state: State) =>
-  createSystem<Game>({
+  createSystem<Game, GameEvent.All>({
     state,
     name: componentName.game,
-    event: {
-      [gameEvents.startLevel]: ({ state, component }) => {
-        const { currentPlayer } = component;
-
-        const currentAi = getComponent<AI>({
-          name: componentName.ai,
-          state,
-          entity: currentPlayer,
-        });
-
-        const ai = currentAi ? currentAi : getRandomAi({ state });
-
-        state = setComponent<Game>({
-          state,
-          data: {
-            ...component,
-            currentPlayer: ai.entity,
-          },
-        });
-
-        state = makeMove({ state, ai });
-
-        return state;
-      },
-
-      [gameEvents.nextTurn]: ({ state, component }) => {
-        const { currentPlayer, gameStarted } = component;
-
-        if (gameStarted) {
-          const nextPlayerIndex = component.playersQueue.findIndex(
-            (entity) => currentPlayer === entity
-          );
-
-          const nextPlayer =
-            component.playersQueue[nextPlayerIndex + 1] ||
-            component.playersQueue[0];
-
-          const ai = getComponent<AI>({
-            name: componentName.ai,
-            state,
-            entity: nextPlayer,
-          });
-
-          if (!ai) {
-            return state;
-          }
-
-          state = setComponent<Game>({
-            state,
-            data: {
-              ...component,
-              currentPlayer: ai.entity,
-            },
-          });
-
-          // emitEvent({
-          //   type: aiEvents.makeMove,
-          //   entity: aiEntity,
-          //   payload: {},
-          // });
-          state = makeMove({ state, ai });
-        }
-
-        return state;
-      },
+    event: ({ state, component, event }) => {
+      switch (event.type) {
+        case GameEvent.Type.startLevel:
+          return handleStartLevel({ state, component, event });
+        case GameEvent.Type.boxExplosion:
+          return handleBoxExplosion({ state, component, event });
+        case GameEvent.Type.nextTurn:
+          return handleNextTurn({ state, component, event });
+      }
     },
   });

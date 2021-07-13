@@ -4,6 +4,12 @@ export type Dictionary<Value> = { [key: string]: Value };
 
 export type Guid = string;
 
+export type EventHandler<ComponentData, Events> = (params: {
+  event: Events;
+  state: State;
+  component: Component<ComponentData>;
+}) => State;
+
 export type Component<Data> = {
   entity: Guid;
   name: string;
@@ -20,6 +26,7 @@ export type Box = Component<{
 
 export type AI = Component<{
   human: boolean;
+  active: boolean;
   level: number;
   color: [number, number, number];
   textureSet: [string, string, string, string, string, string, string];
@@ -30,6 +37,7 @@ export type Game = Component<{
   grid: Entity[];
   currentPlayer: Entity;
   playersQueue: Entity[];
+  boxRotationQueue: Entity[];
   gameStarted: boolean;
 }>;
 
@@ -40,7 +48,7 @@ export type State = {
     ai: Dictionary<AI>;
     game: Dictionary<Game>;
   };
-  system: Array<System<any> | GlobalSystem>;
+  system: Array<System<any, any> | GlobalSystem>;
 };
 
 export type GetDefaultComponent<X> = (
