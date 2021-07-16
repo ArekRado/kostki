@@ -13,12 +13,7 @@ type CreateGrid = (params: {
   state: State;
 }) => State;
 
-export const createGrid: CreateGrid = ({
-  dataGrid,
-  scene,
-  camera,
-  state,
-}) => {
+export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
   const gap = 1.2;
   const grid = new TransformNode('grid');
 
@@ -37,7 +32,7 @@ export const createGrid: CreateGrid = ({
   state = dataGrid.reduce(
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
-        const box = boxBlueprint({ scene, state: acc2 });
+        const box = boxBlueprint({ scene, state: acc2, name: `${x}-${y}` });
 
         // const xx = Math.floor(i / x);
         // const yy = i % y;

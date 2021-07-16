@@ -92,7 +92,7 @@ export const createRotationBoxAnimation = (params: {
   dots: number;
 }) => {
   const frameRate = 30;
-  const frameEnd = 0.3 * frameRate;
+  const frameEnd = 0.03 * frameRate;
 
   const box = scene.getTransformNodeByUniqueId(parseInt(params.entity));
 

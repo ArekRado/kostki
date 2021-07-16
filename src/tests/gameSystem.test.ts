@@ -104,45 +104,45 @@ describe('game', () => {
     expect(gridAfterExplosion[2][2].dots).toBe(0);
   });
 
-  it('game 1 vs 1', () => {
-    const emptyGrid = Array.from({ length: 5 }).map(() =>
-      Array.from({ length: 5 }).map(() => ({
-        player: undefined,
-        dots: 0,
-      }))
-    );
+  // it('game 1 vs 1', () => {
+  //   const emptyGrid = Array.from({ length: 5 }).map(() =>
+  //     Array.from({ length: 5 }).map(() => ({
+  //       player: undefined,
+  //       dots: 0,
+  //     }))
+  //   );
 
-    let state = createGrid({
-      dataGrid: emptyGrid,
-      scene,
-      camera,
-      state: getGameInitialState(),
-    });
+  //   let state = createGrid({
+  //     dataGrid: emptyGrid,
+  //     scene,
+  //     camera,
+  //     state: getGameInitialState(),
+  //   });
 
-    const game = getGame({ state });
-    if (!game) {
-      return;
-    }
+  //   const game = getGame({ state });
+  //   if (!game) {
+  //     return;
+  //   }
 
-    const ai1 = basicAI('1');
-    const ai2 = basicAI('2');
-    state = createPlayers({ state, ai: [ai1, ai2] });
-    state = setComponent<Game>({
-      state,
-      data: {
-        ...game,
-        gameStarted: true,
-      },
-    });
+  //   const ai1 = basicAI('1');
+  //   const ai2 = basicAI('2');
+  //   state = createPlayers({ state, ai: [ai1, ai2] });
+  //   state = setComponent<Game>({
+  //     state,
+  //     data: {
+  //       ...game,
+  //       gameStarted: true,
+  //     },
+  //   });
 
-    Array.from({ length: 1000 }).forEach(() => {
-      state = runOneFrame({ state });
-    });
+  //   Array.from({ length: 10 }).forEach(() => {
+  //     state = runOneFrame({ state });
+  //   });
 
-    const game2 = getGame({ state });
+  //   const game2 = getGame({ state });
 
-    console.log(getDataGrid({ state }))
+  //   // console.log(getDataGrid({ state }))
 
-    expect(game2?.gameStarted).toBe(false);
-  });
+  //   expect(game2?.gameStarted).toBe(false);
+  // });
 });

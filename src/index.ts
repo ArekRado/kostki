@@ -76,17 +76,17 @@ light.intensity = 1;
 if (process.env.NODE_ENV !== 'test') {
   let state: State = getGameInitialState();
 
-  const emptyGrid = Array.from({ length: 5 }).map(() =>
-    Array.from({ length: 5 }).map(() => ({
+  const emptyGrid = Array.from({ length: 4 }).map(() =>
+    Array.from({ length: 4 }).map(() => ({
       player: undefined,
       dots: 0,
     }))
   );
 
-  const basicAI = (entity: Entity, color: AI['color']): AI => ({
+  const basicAI = (entity: Entity, color: AI['color'], human = false): AI => ({
     entity,
     name: componentName.ai,
-    human: false,
+    human,
     level: 1,
     color,
     textureSet: [dot0, dot1, dot2, dot3, dot4, dot5, dot6],
@@ -98,7 +98,7 @@ if (process.env.NODE_ENV !== 'test') {
   state = createPlayers({
     state,
     ai: [
-      basicAI('1', [1, 0, 0]),
+      basicAI('1', [1, 0, 0], true),
       basicAI('2', [0, 1, 1]),
       // basicAI('3', [0, 0, 1]),
       // basicAI('4', [1, 0, 1]),

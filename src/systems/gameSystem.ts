@@ -17,15 +17,24 @@ export namespace GameEvent {
     startLevel,
     nextTurn,
     boxExplosion,
+    playerClick,
   }
 
-  export type All = StartLevelEvent | NextTurnEvent | BoxExplosionEvent;
+  export type All =
+    | StartLevelEvent
+    | NextTurnEvent
+    | BoxExplosionEvent
+    | PlayerClickEvent;
 
   export type StartLevelEvent = ECSEvent<Type.startLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
   export type BoxExplosionEvent = ECSEvent<
     Type.boxExplosion,
     { ai: AI; box: Box }
+  >;
+  export type PlayerClickEvent = ECSEvent<
+    Type.playerClick,
+    { boxEntity: Entity }
   >;
 }
 
@@ -79,6 +88,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
+    console.log('game end', { amountOfActivedAi, allAI });
     return setComponent<Game>({
       state,
       data: {
@@ -206,6 +216,10 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       },
     });
 
+    if (ai.human) {
+      return state;
+    }
+
     const box = getAiMove({ state, ai });
 
     if (box) {
@@ -217,6 +231,32 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
     } else {
       // AI can't move which means it lost
       return aiLost({ state, component, ai });
+    }
+  }
+
+  return state;
+};
+
+const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> = ({
+  state,
+  component,
+  event,
+}) => {
+  const { currentPlayer, gameStarted, boxRotationQueue } = component;
+
+  if (gameStarted && boxRotationQueue.length === 0) {
+    const ai = getComponent<AI>({
+      name: componentName.ai,
+      state,
+      entity: currentPlayer,
+    });
+
+    if (ai?.human) {
+      emitEvent<BoxEvent.OnClickEvent>({
+        type: BoxEvent.Type.onClick,
+        entity: event.payload.boxEntity,
+        payload: { ai },
+      });
     }
   }
 
@@ -235,6 +275,8 @@ export const gameSystem = (state: State) =>
           return handleBoxExplosion({ state, component, event });
         case GameEvent.Type.nextTurn:
           return handleNextTurn({ state, component, event });
+        case GameEvent.Type.playerClick:
+          return handlePlayerClick({ state, component, event });
       }
     },
   });

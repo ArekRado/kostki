@@ -1,8 +1,11 @@
 import 'regenerator-runtime/runtime';
 import { scene, camera } from '../.';
 import { BasicBox, createGrid } from '../blueprints/createGrid';
+import { componentName, getComponent, setComponent } from '../ecs/component';
+import { AI } from '../ecs/type';
 import {
   calculateLocalStrategy,
+  getAiMove,
   getBestRandomBox,
   getDataGrid,
   getMovesForEmptyBoxes,
@@ -20,6 +23,41 @@ const player2 = 'player2';
 const basicBox: BasicBox = {
   player: undefined,
   dots: 0,
+};
+
+const expectOneOf = (
+  possiblePositions: [number, number][],
+  position: number[]
+) => {
+  const found = possiblePositions.some(
+    (p) => p[0] === position[0] && p[1] === position[1]
+  );
+
+  if (found) {
+    expect(true).toBe(found);
+  } else {
+    expect(true).toBe(position);
+  }
+};
+
+const basicAi: AI = {
+  entity: 'basicAi',
+  name: componentName.ai,
+  human: false,
+  level: 0,
+  color: [0, 0, 1],
+  textureSet: ['', '', '', '', '', '', ''],
+  active: true,
+};
+
+const basicAi2: AI = {
+  entity: 'basicAi2',
+  name: componentName.ai,
+  human: false,
+  level: 0,
+  color: [0, 1, 1],
+  textureSet: ['', '', '', '', '', '', ''],
+  active: true,
 };
 
 const basicGrid2x2 = [
@@ -146,227 +184,7 @@ describe('aiSystem', () => {
     });
   });
 
-  describe('localStrategyAdjacted', () => {
-    it('should set proper points - only equal oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 1, player: player2 },
-            { dots: 0, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 0, player: player2 },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 0, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 0, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyAdjacted(getDataGrid({ state }));
-
-      // Box is surronded by 4 equal opononents
-      // diagonall boxes should not change points
-      expect(points).toEqual(
-        pointsFor.adjacted.playerEqualToOponent +
-          pointsFor.adjacted.playerEqualToOponent +
-          pointsFor.adjacted.playerEqualToOponent +
-          pointsFor.adjacted.playerEqualToOponent
-      );
-    });
-
-    it('should set proper points - only better oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 1, player: player2 },
-            { dots: 5, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 5, player: player2 },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 5, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 5, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyAdjacted(getDataGrid({ state }));
-
-      // Box is surronded by 4 better opononents
-      // diagonall boxes should not change points
-      expect(points).toEqual(
-        pointsFor.adjacted.playerLessThanOponent +
-          pointsFor.adjacted.playerLessThanOponent +
-          pointsFor.adjacted.playerLessThanOponent +
-          pointsFor.adjacted.playerLessThanOponent
-      );
-    });
-
-    it('should set proper points - only worse oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 1, player: player2 },
-            { dots: 2, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 2, player: player2 },
-            { dots: 5, player: humanPlayerEntity }, // center
-            { dots: 2, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 2, player: player2 },
-            { dots: 1, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyAdjacted(getDataGrid({ state }));
-
-      // Box is surronded by 4 worse opononents
-      // diagonall boxes should not change points
-      expect(points).toEqual(
-        pointsFor.adjacted.playerMoreThanOponent +
-          pointsFor.adjacted.playerMoreThanOponent +
-          pointsFor.adjacted.playerMoreThanOponent +
-          pointsFor.adjacted.playerMoreThanOponent
-      );
-    });
-  });
-
-  describe('localStrategyDiagonall', () => {
-    it('should set proper points - only equal oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 0, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 0, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 0, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 0, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyDiagonall(getDataGrid({ state }));
-
-      // Box is surronded by 4 equal opononents
-      // Adjacted boxes should not change points
-      expect(points).toEqual(
-        pointsFor.diagonall.playerEqualToOponent +
-          pointsFor.diagonall.playerEqualToOponent +
-          pointsFor.diagonall.playerEqualToOponent +
-          pointsFor.diagonall.playerEqualToOponent
-      );
-    });
-
-    it('should set proper points - only better oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 5, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 5, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 5, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 5, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyDiagonall(getDataGrid({ state }));
-
-      // Box is surronded by 4 better opononents
-      // Adjacted boxes should not change points
-      expect(points).toEqual(
-        pointsFor.diagonall.playerLessThanOponent +
-          pointsFor.diagonall.playerLessThanOponent +
-          pointsFor.diagonall.playerLessThanOponent +
-          pointsFor.diagonall.playerLessThanOponent
-      );
-    });
-
-    it('should set proper points - only worse oponents', () => {
-      let state = createGrid({
-        dataGrid: [
-          [
-            { dots: 2, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 2, player: player2 },
-          ],
-          [
-            { dots: 1, player: player2 },
-            { dots: 5, player: humanPlayerEntity }, // center
-            { dots: 1, player: player2 },
-          ],
-          [
-            { dots: 2, player: player2 },
-            { dots: 1, player: player2 },
-            { dots: 2, player: player2 },
-          ],
-        ],
-        scene,
-        camera,
-        state: getGameInitialState(),
-      });
-
-      const points = localStrategyDiagonall(getDataGrid({ state }));
-
-      // Box is surronded by 4 worse opononents
-      // Adjacted boxes should not change points
-      expect(points).toEqual(
-        pointsFor.diagonall.playerMoreThanOponent +
-          pointsFor.diagonall.playerMoreThanOponent +
-          pointsFor.diagonall.playerMoreThanOponent +
-          pointsFor.diagonall.playerMoreThanOponent
-      );
-    });
-  });
-
-  describe('calculateLocalStrategy', () => {
+  describe('getAiMove', () => {
     describe('only oponent boxes', () => {
       it('should set proper points - only equal oponents', () => {
         let state = createGrid({
@@ -378,7 +196,7 @@ describe('aiSystem', () => {
             ],
             [
               { dots: 1, player: player2 },
-              { dots: 0, player: humanPlayerEntity }, // center
+              { dots: 0, player: basicAi.entity }, // center
               { dots: 1, player: player2 },
             ],
             [
@@ -392,21 +210,18 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        const newDataGrid = calculateLocalStrategy({
-          dataGrid: getDataGrid({ state }),
-          currentPlayer: humanPlayerEntity,
+        state = setComponent<AI>({
+          state,
+          data: basicAi,
         });
 
-        expect(newDataGrid[0][0].points).toEqual(0);
-        expect(newDataGrid[1][0].points).toEqual(0);
-        expect(newDataGrid[2][0].points).toEqual(0);
-        expect(newDataGrid[0][1].points).toEqual(0);
+        const box = getAiMove({
+          state,
+          ai: basicAi,
+        });
+
         // AI really don't want to click on this box because probably oponents will capture box faster than ai achieve 6 dots
-        expect(newDataGrid[1][1].points).toEqual(-20);
-        expect(newDataGrid[2][1].points).toEqual(0);
-        expect(newDataGrid[0][2].points).toEqual(0);
-        expect(newDataGrid[1][2].points).toEqual(0);
-        expect(newDataGrid[2][2].points).toEqual(0);
+        expectOneOf([[1, 1]], box?.gridPosition || []);
       });
 
       it('should set proper points - only better oponents', () => {
@@ -419,7 +234,7 @@ describe('aiSystem', () => {
             ],
             [
               { dots: 1, player: player2 },
-              { dots: 0, player: humanPlayerEntity }, // center
+              { dots: 0, player: basicAi.entity }, // center
               { dots: 1, player: player2 },
             ],
             [
@@ -433,21 +248,18 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        const newDataGrid = calculateLocalStrategy({
-          dataGrid: getDataGrid({ state }),
-          currentPlayer: humanPlayerEntity,
+        state = setComponent<AI>({
+          state,
+          data: basicAi,
         });
 
-        expect(newDataGrid[0][0].points).toEqual(0);
-        expect(newDataGrid[1][0].points).toEqual(0);
-        expect(newDataGrid[2][0].points).toEqual(0);
-        expect(newDataGrid[0][1].points).toEqual(0);
+        const box = getAiMove({
+          state,
+          ai: basicAi,
+        });
+
         // It's not worht to click on this box, ai won't capture anthing
-        expect(newDataGrid[1][1].points).toEqual(-20);
-        expect(newDataGrid[2][1].points).toEqual(0);
-        expect(newDataGrid[0][2].points).toEqual(0);
-        expect(newDataGrid[1][2].points).toEqual(0);
-        expect(newDataGrid[2][2].points).toEqual(0);
+        expect(box?.gridPosition).toEqual([1, 1]);
       });
 
       it('should set proper points - only worse oponents', () => {
@@ -460,7 +272,7 @@ describe('aiSystem', () => {
             ],
             [
               { dots: 1, player: player2 },
-              { dots: 5, player: humanPlayerEntity }, // center
+              { dots: 5, player: basicAi.entity }, // center
               { dots: 1, player: player2 },
             ],
             [
@@ -474,21 +286,18 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        const newDataGrid = calculateLocalStrategy({
-          dataGrid: getDataGrid({ state }),
-          currentPlayer: humanPlayerEntity,
+        state = setComponent<AI>({
+          state,
+          data: basicAi,
         });
 
-        expect(newDataGrid[0][0].points).toEqual(0);
-        expect(newDataGrid[1][0].points).toEqual(0);
-        expect(newDataGrid[2][0].points).toEqual(0);
-        expect(newDataGrid[0][1].points).toEqual(0);
+        const box = getAiMove({
+          state,
+          ai: basicAi,
+        });
+
         // Situation is under control, it's not worth to capture oponents because they don't have high amount of dots
-        expect(newDataGrid[1][1].points).toEqual(0);
-        expect(newDataGrid[2][1].points).toEqual(0);
-        expect(newDataGrid[0][2].points).toEqual(0);
-        expect(newDataGrid[1][2].points).toEqual(0);
-        expect(newDataGrid[2][2].points).toEqual(0);
+        expect(box?.gridPosition).toEqual([1, 1]);
       });
 
       it('should set proper points - only worse oponents', () => {
@@ -501,7 +310,7 @@ describe('aiSystem', () => {
             ],
             [
               { dots: 4, player: player2 },
-              { dots: 5, player: humanPlayerEntity }, // center
+              { dots: 5, player: basicAi.entity }, // center
               { dots: 4, player: player2 },
             ],
             [
@@ -515,21 +324,18 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        const newDataGrid = calculateLocalStrategy({
-          dataGrid: getDataGrid({ state }),
-          currentPlayer: humanPlayerEntity,
+        state = setComponent<AI>({
+          state,
+          data: basicAi,
         });
 
-        expect(newDataGrid[0][0].points).toEqual(0);
-        expect(newDataGrid[1][0].points).toEqual(0);
-        expect(newDataGrid[2][0].points).toEqual(0);
-        expect(newDataGrid[0][1].points).toEqual(0);
+        const box = getAiMove({
+          state,
+          ai: basicAi,
+        });
+
         // hmmm? todo
-        expect(newDataGrid[1][1].points).toEqual(0);
-        expect(newDataGrid[2][1].points).toEqual(0);
-        expect(newDataGrid[0][2].points).toEqual(0);
-        expect(newDataGrid[1][2].points).toEqual(0);
-        expect(newDataGrid[2][2].points).toEqual(0);
+        expect(box?.gridPosition).toEqual([1, 1]);
       });
     });
   });
@@ -539,19 +345,19 @@ describe('aiSystem', () => {
       let state = createGrid({
         dataGrid: [
           [
-            { dots: 0, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 0, player: humanPlayerEntity },
+            { dots: 0, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 0, player: basicAi.entity },
           ],
           [
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 1, player: humanPlayerEntity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 0, player: basicAi.entity }, // center
+            { dots: 1, player: basicAi.entity },
           ],
           [
-            { dots: 0, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 0, player: humanPlayerEntity },
+            { dots: 0, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 0, player: basicAi.entity },
           ],
         ],
         scene,
@@ -559,42 +365,49 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      const newDataGrid = calculateLocalStrategy({
-        dataGrid: getDataGrid({ state }),
-        currentPlayer: humanPlayerEntity,
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
       });
 
       // It's not worth to click on a boxes with 0 dots
       // they have adjacted boxes with 1 dot
       // clicking on a boxes with 1 dot is also not a huge deal
-      expect(newDataGrid[0][0].points).toEqual(-10);
-      expect(newDataGrid[1][0].points).toEqual(0);
-      expect(newDataGrid[2][0].points).toEqual(-10);
-      expect(newDataGrid[0][1].points).toEqual(0);
-      expect(newDataGrid[1][1].points).toEqual(-20);
-      expect(newDataGrid[2][1].points).toEqual(0);
-      expect(newDataGrid[0][2].points).toEqual(-10);
-      expect(newDataGrid[1][2].points).toEqual(0);
-      expect(newDataGrid[2][2].points).toEqual(-10);
+      // expect(box?.gridPosition).toEqual([1, 0]);
+      expectOneOf(
+        [
+          [0, 2],
+          [2, 1],
+          [0, 1],
+          [1, 2],
+          [1, 0],
+        ],
+        box?.gridPosition || []
+      );
     });
 
     it('should set proper points - only better boxes', () => {
       let state = createGrid({
         dataGrid: [
           [
-            { dots: 5, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 5, player: humanPlayerEntity },
+            { dots: 5, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 5, player: basicAi.entity },
           ],
           [
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 0, player: humanPlayerEntity }, // center
-            { dots: 1, player: humanPlayerEntity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 0, player: basicAi.entity }, // center
+            { dots: 1, player: basicAi.entity },
           ],
           [
-            { dots: 5, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 5, player: humanPlayerEntity },
+            { dots: 5, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 5, player: basicAi.entity },
           ],
         ],
         scene,
@@ -602,41 +415,46 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      const newDataGrid = calculateLocalStrategy({
-        dataGrid: getDataGrid({ state }),
-        currentPlayer: humanPlayerEntity,
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
       });
 
       // Center box is good place to click, is adjusted to low dot boxes
       // and diagonall boxes are high which means it's good point to continue building "defencse" grid
-      expect(newDataGrid[0][0].points).toEqual(0);
-      expect(newDataGrid[1][0].points).toEqual(-10);
-      expect(newDataGrid[2][0].points).toEqual(0);
-      expect(newDataGrid[0][1].points).toEqual(-10);
-      expect(newDataGrid[1][1].points).toEqual(-20); // todo should be higher!
-      expect(newDataGrid[2][1].points).toEqual(-10);
-      expect(newDataGrid[0][2].points).toEqual(0);
-      expect(newDataGrid[1][2].points).toEqual(-10);
-      expect(newDataGrid[2][2].points).toEqual(0);
+      expectOneOf(
+        [
+          [2, 2],
+          [2, 0],
+          [0, 0],
+          [0, 2],
+        ],
+        box?.gridPosition || []
+      );
     });
 
     it('should set proper points - only worse boxes', () => {
       let state = createGrid({
         dataGrid: [
           [
-            { dots: 2, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 2, player: humanPlayerEntity },
+            { dots: 2, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 2, player: basicAi.entity },
           ],
           [
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 5, player: humanPlayerEntity }, // center
-            { dots: 1, player: humanPlayerEntity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 5, player: basicAi.entity }, // center
+            { dots: 1, player: basicAi.entity },
           ],
           [
-            { dots: 2, player: humanPlayerEntity },
-            { dots: 1, player: humanPlayerEntity },
-            { dots: 2, player: humanPlayerEntity },
+            { dots: 2, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 2, player: basicAi.entity },
           ],
         ],
         scene,
@@ -644,41 +462,47 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      const newDataGrid = calculateLocalStrategy({
-        dataGrid: getDataGrid({ state }),
-        currentPlayer: humanPlayerEntity,
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
       });
 
       // Central box is high which means boxes adjusted are safe
       // diagonall boxes are good place to continue clicking
-      expect(newDataGrid[0][0].points).toEqual(0); // TODO should be higher!
-      expect(newDataGrid[1][0].points).toEqual(-15);
-      expect(newDataGrid[2][0].points).toEqual(0);
-      expect(newDataGrid[0][1].points).toEqual(-15);
-      expect(newDataGrid[1][1].points).toEqual(0); // TODO should be lower
-      expect(newDataGrid[2][1].points).toEqual(-15);
-      expect(newDataGrid[0][2].points).toEqual(0);
-      expect(newDataGrid[1][2].points).toEqual(-15);
-      expect(newDataGrid[2][2].points).toEqual(0);
+      // expect(box?.gridPosition).toEqual([0, 0]);
+      expectOneOf(
+        [
+          [0, 2],
+          [2, 0],
+          [0, 0],
+          [2, 2],
+        ],
+        box?.gridPosition || []
+      );
     });
 
-    it('should set proper points - every box is same', () => {
+    it('should set proper points - every box is same with low dots', () => {
       let state = createGrid({
         dataGrid: [
           [
-            { dots: 4, player: humanPlayerEntity },
-            { dots: 4, player: humanPlayerEntity },
-            { dots: 4, player: humanPlayerEntity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 2, player: basicAi.entity },
+            { dots: 3, player: basicAi.entity },
           ],
           [
-            { dots: 4, player: humanPlayerEntity },
-            { dots: 4, player: humanPlayerEntity }, // center
-            { dots: 4, player: humanPlayerEntity },
+            { dots: 3, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity }, // center
+            { dots: 2, player: basicAi.entity },
           ],
           [
-            { dots: 4, player: humanPlayerEntity },
-            { dots: 4, player: humanPlayerEntity },
-            { dots: 4, player: humanPlayerEntity },
+            { dots: 3, player: basicAi.entity },
+            { dots: 2, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
           ],
         ],
         scene,
@@ -686,21 +510,146 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      const newDataGrid = calculateLocalStrategy({
-        dataGrid: getDataGrid({ state }),
-        currentPlayer: humanPlayerEntity,
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
       });
- 
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
+      });
+
       // All are the same so it doens't matter
-      expect(newDataGrid[0][0].points).toEqual(0);
-      expect(newDataGrid[1][0].points).toEqual(0);
-      expect(newDataGrid[2][0].points).toEqual(0);
-      expect(newDataGrid[0][1].points).toEqual(0);
-      expect(newDataGrid[1][1].points).toEqual(0);
-      expect(newDataGrid[2][1].points).toEqual(0);
-      expect(newDataGrid[0][2].points).toEqual(0);
-      expect(newDataGrid[1][2].points).toEqual(0);
-      expect(newDataGrid[2][2].points).toEqual(0);
+      expectOneOf(
+        [
+          [0, 2],
+          [2, 2],
+          [0, 0],
+          [2, 0],
+        ],
+        box?.gridPosition || []
+      );
+    });
+
+    it('should set proper points - every box is same with high dots', () => {
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 6, player: basicAi.entity },
+            { dots: 4, player: basicAi.entity },
+            { dots: 5, player: basicAi.entity },
+          ],
+          [
+            { dots: 5, player: basicAi.entity },
+            { dots: 6, player: basicAi.entity }, // center
+            { dots: 4, player: basicAi.entity },
+          ],
+          [
+            { dots: 6, player: basicAi.entity },
+            { dots: 5, player: basicAi.entity },
+            { dots: 4, player: basicAi.entity },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
+      });
+
+      // All are the same so it doens't matter
+      expectOneOf(
+        [
+          [0, 2],
+          [2, 2],
+          [0, 0],
+          [2, 0],
+        ],
+        box?.gridPosition || []
+      );
+    });
+  });
+
+  describe('real game moves', () => {
+    it('player2 should not click on a 6 dots box', () => {
+      /*
+        * - basicAi2
+      
+        *1 -*1 - 2 - 6
+        6 - 1 -*4 - 1
+        *1 -*3 - 1 - 2
+        *6 -*1 -*5 - 1
+      */
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 6, player: basicAi2.entity }, //-10
+            { dots: 1, player: basicAi2.entity }, // -45
+            { dots: 6, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity }, // -65
+          ],
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 3, player: basicAi2.entity }, // -11 - eh powinno mieć więcej
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+          ],
+          [
+            { dots: 5, player: basicAi2.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 4, player: basicAi2.entity }, // -11 powinno mieć mniej
+            { dots: 2, player: basicAi.entity },
+          ],
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 2, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 6, player: basicAi.entity },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi2,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi2,
+      });
+
+
+      let dataGrid = getDataGrid({ state });
+
+      dataGrid = getMovesForEmptyBoxes({ dataGrid });
+      dataGrid = calculateLocalStrategy({ currentPlayer:basicAi2.entity, dataGrid });
+
+      console.log(dataGrid)
+
+      const gridPosition = box?.gridPosition || [];
+
+      // AI pls it's not good idea to click on safe box
+      expect(gridPosition).not.toEqual([0, 0]);
+      // [1,1] needs much more support because is diagonall to enemy 6
+      expectOneOf([[1, 1]], gridPosition);
     });
   });
 });

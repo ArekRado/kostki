@@ -15,6 +15,7 @@ import { State } from '../ecs/type';
 
 import empty from '../assets/0.png';
 import { BoxEvent } from '../systems/boxSystem';
+import { gameEntity, GameEvent } from '../systems/gameSystem';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
 // import dot3 from '../assets/3.png';
@@ -25,12 +26,14 @@ import { BoxEvent } from '../systems/boxSystem';
 export const boxBlueprint = ({
   scene,
   state,
+  name,
 }: {
   scene: Scene;
   state: State;
+  name: string;
 }): TransformNode => {
   const size = 1;
-  const box = new TransformNode('box', scene);
+  const box = new TransformNode(`box ${name}`, scene);
 
   [
     [new Vector3(-size / 2, 0, 0), new Vector3(0, Math.PI / 2, 0)], //
@@ -60,13 +63,10 @@ export const boxBlueprint = ({
     plane.actionManager = new ActionManager(scene);
     plane.actionManager.registerAction(
       new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
-        emitEvent<BoxEvent.OnClickEvent>({
-          entity: box.uniqueId.toString(),
-          type: BoxEvent.Type.onClick,
-          payload: {
-            ai: undefined
-          //   planeId: plane.uniqueId,
-          },
+        emitEvent<GameEvent.PlayerClickEvent>({
+          entity: gameEntity,
+          type: GameEvent.Type.playerClick,
+          payload: { boxEntity: box.uniqueId.toString() },
         });
       })
     );

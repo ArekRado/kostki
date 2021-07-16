@@ -13,28 +13,28 @@ export const safeGet = (array: any[][], i: number, j: number) =>
   array ? (array[i] ? array[i][j] : undefined) : undefined;
 
 export const pointsFor = {
-  emptyBox: 10,
+  emptyBox: 20,
 
-  adjacted: { 
+  adjacted: {
     playerMoreThanOponent: 0,
-    playerEqualToOponent: 5,
-    playerLessThanOponent: -5,
+    playerEqualToOponent: 10,
+    playerLessThanOponent: -15,
 
-    playerMoreThanPlayer: 0,
-    playerEqualToPlayer: 0,
-    playerLessThanPlayer: -5,
+    playerMoreThanPlayer: -5,
+    playerEqualToPlayer: -1,
+    playerLessThanPlayer: -50, // Stupid AI doens't understand this
 
     toBorder: 0,
   },
 
   diagonall: {
-    playerMoreThanOponent: 0,
-    playerEqualToOponent: 1,
+    playerMoreThanOponent: 1,
+    playerEqualToOponent: 2,
     playerLessThanOponent: 7,
 
-    playerMoreThanPlayer: 0,
-    playerEqualToPlayer: 0,
-    playerLessThanPlayer: 3,
+    playerMoreThanPlayer: -5,
+    playerEqualToPlayer: -4,
+    playerLessThanPlayer: 0,
 
     toBorder: 0,
   },
@@ -133,30 +133,54 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
         ? dotStats.more
         : dotStats.less;
 
-    if (adjactedBox.player !== playerBox.player) {
+    if (
+      adjactedBox.player !== undefined &&
+      adjactedBox.player !== playerBox.player
+    ) {
       // Adjacted is oponent
 
       // Player box has more dots, box is safe
-      if (boxStats === dotStats.more)
-        return acc + pointsFor.adjacted.playerMoreThanOponent;
+      if (boxStats === dotStats.more) {
+        const diff = playerBox.dots - adjactedBox.dots;
+        // AI really don't want to click on this box
+        // if (playerBox.dots === 6 && diff > 2) {
+        //   return acc - 10;
+        // }
+        return acc + pointsFor.adjacted.playerMoreThanOponent - diff;
+      }
       // Oponent box has equal dots, last chance to safetly incerase dots
-      if (boxStats === dotStats.equal)
-        return acc + pointsFor.adjacted.playerEqualToOponent;
+      // Importance of this box depends on how many dots have box
+      if (boxStats === dotStats.equal) {
+        return acc + pointsFor.adjacted.playerEqualToOponent * playerBox.dots;
+      }
       // Oponent box has more dots, it's not worth to click on this box
-      if (boxStats === dotStats.less)
+      if (boxStats === dotStats.less) {
         return acc + pointsFor.adjacted.playerLessThanOponent;
+      }
     } else {
       // Adjacted is player
 
+      // Do nothing if near is another player box and current has 6 dots
+      if (playerBox.dots === 6) {
+        return acc;
+      }
+
       // Current box has more dots, do nothing
-      if (boxStats === dotStats.more)
+      if (boxStats === dotStats.more) {
         return acc + pointsFor.adjacted.playerMoreThanPlayer;
-      // TODO choose which is safer
-      if (boxStats === dotStats.equal)
+      }
+
+      // Do nothing, just let other checks to decide if it's worth to click, probably it's not worth so add minus points
+      if (boxStats === dotStats.equal) {
         return acc + pointsFor.adjacted.playerEqualToPlayer;
+      }
       // Current box has less dots, maybe is protected by adjacted - TODO check it
-      if (boxStats === dotStats.less)
+      if (boxStats === dotStats.less) {
+        if (adjactedBox.dots === 6) {
+          return acc + pointsFor.adjacted.playerLessThanPlayer * 2;
+        }
         return acc + pointsFor.adjacted.playerLessThanPlayer;
+      }
     }
 
     return acc;
@@ -184,31 +208,52 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
         ? dotStats.more
         : dotStats.less;
 
-    if (diagonallBox.player !== playerBox.player) {
+    if (
+      diagonallBox.player !== undefined &&
+      diagonallBox.player !== playerBox.player
+    ) {
       // Adjacted is oponent
 
       // Player box has more dots, box is safe
-      // todo should check difference between boxes, should behave different if diff is 1 dot and when is 4
-      if (boxStats === dotStats.more)
+      if (boxStats === dotStats.more) {
+        // const dotsDiff = playerBox.dots - diagonallBox.dots;
+        // if (dotsDiff === 1) {
+        //   // diff is low, box will be unsafe soon
+        //   return acc + pointsFor.diagonall.playerLessThanOponent * 0.5;
+        // }
         return acc + pointsFor.diagonall.playerMoreThanOponent;
+      }
       // Oponent box has equal dots, no rush but player should start thinking to incerase dots
-      if (boxStats === dotStats.equal)
+      if (boxStats === dotStats.equal) {
         return acc + pointsFor.diagonall.playerEqualToOponent;
+      }
+
       // Oponent box has more dots, player box is safe but boxes around are not
-      if (boxStats === dotStats.less)
+      if (boxStats === dotStats.less) {
+        if (diagonallBox.dots === 6) {
+          return acc + pointsFor.diagonall.playerLessThanOponent * 2;
+        }
         return acc + pointsFor.diagonall.playerLessThanOponent;
+      }
     } else {
       // Adjacted is player
 
-      // TODO
+      // Do nothing if near is another player box and current has 6 dots
+      if (playerBox.dots === 6) {
+        return acc;
+      }
+
       // Current box has more dots,
-      if (boxStats === dotStats.more)
+      if (boxStats === dotStats.more) {
         return acc + pointsFor.diagonall.playerMoreThanPlayer;
-      if (boxStats === dotStats.equal)
+      }
+      if (boxStats === dotStats.equal) {
         return acc + pointsFor.diagonall.playerEqualToPlayer;
+      }
       // Player box is diagonall to another it might be a good place to set 6 dots
-      if (boxStats === dotStats.less)
+      if (boxStats === dotStats.less) {
         return acc + pointsFor.diagonall.playerLessThanPlayer;
+      }
     }
 
     return acc;
@@ -273,19 +318,21 @@ export const getBestRandomBox: GetBestRandomBox = ({
     row.forEach((box) => {
       const isEmpty = box.player === undefined;
       const isPlayer = box.player === currentPlayer;
-      if (box.points > highestScore) {
-        highestBoxes = [];
-      }
 
-      if ((isEmpty || isPlayer) && box.points >= highestScore) {
-        highestScore = box.points;
-        highestBoxes.push(box);
+      if (isEmpty || isPlayer) {
+        if (box.points > highestScore) {
+          highestBoxes = [];
+        }
+
+        if (box.points >= highestScore) {
+          highestScore = box.points;
+          highestBoxes.push(box);
+        }
       }
     });
   });
 
   const randomIndex = Math.floor(Math.random() * highestBoxes.length);
-
   return highestBoxes[randomIndex];
 };
 
@@ -297,7 +344,20 @@ export const getAiMove: GetAiMove = ({ state, ai }) => {
 
   dataGrid = getMovesForEmptyBoxes({ dataGrid });
   dataGrid = calculateLocalStrategy({ currentPlayer, dataGrid });
+
+  // Chooses one/two players and attacks them
+  // Tries to find weakes player to attack
+  // If has no good moves then tries to waste moves
+  // If is losing then prepares defense
+  // dataGrid = calculateGlobalStrategy({ currentPlayer, dataGrid });
   const bestRandomBox = getBestRandomBox({ currentPlayer, dataGrid });
+
+  // console.log(
+  //   (bestRandomBox as any).points,
+  //   dataGrid.map((x) => x.map((y) => y.points).join(', '))
+  // );
+
+  // console.log(JSON.stringify(dataGrid));
 
   return bestRandomBox;
 };
@@ -306,18 +366,4 @@ export const aiSystem = (state: State) =>
   createSystem<AI, undefined>({
     state,
     name: componentName.ai,
-    // event: {
-    //   [aiEvents.makeMove]: ({ state, component }) => {
-    //     const box = getAiMove({ state });
-
-    //     box &&
-    //       emitEvent({
-    //         type: boxEvents.onClick,
-    //         entity: box?.entity,
-    //         payload: {},
-    //       });
-
-    //     return state;
-    //   },
-    // },
   });
