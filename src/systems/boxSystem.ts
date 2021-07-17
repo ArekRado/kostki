@@ -10,20 +10,35 @@ import {
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, getComponent, setComponent } from '../ecs/component';
-import { AI, Box, Entity, EventHandler, Game, State } from '../ecs/type';
+import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 
 import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
 
+export enum Direction {
+  up,
+  down,
+  left,
+  right,
+}
 export namespace BoxEvent {
   export enum Type {
-    onClick = 'onClick',
-    rotationEnd = 'rotationEnd',
+    onClick,
+    rotationEnd,
+    rotate,
   }
 
-  export type All = OnClickEvent | RotationEndEvent;
+  export type All = OnClickEvent | RotationEndEvent | Rotate;
 
+  export type Rotate = ECSEvent<
+    Type.rotate,
+    {
+      color: [number, number, number];
+      texture: string;
+      direction: Direction;
+    }
+  >;
   export type OnClickEvent = ECSEvent<Type.onClick, { ai: AI | undefined }>;
   export type RotationEndEvent = ECSEvent<Type.rotationEnd, { ai: AI }>;
 }
@@ -84,17 +99,23 @@ const removeBoxFromRotationQueue: RemoveBoxFromRotationQueue = ({
   return state;
 };
 
-export const createRotationBoxAnimation = (params: {
+export const createRotationBoxAnimation = ({
+  entity,
+  animationEndCallback,
+  direction,
+  color,
+  texture,
+}: {
   entity: Entity;
-  direction?: 'up' | 'down' | 'left' | 'right';
+  color: Color;
+  direction?: Direction;
   animationEndCallback: () => void;
-  ai: AI;
-  dots: number;
+  texture: string;
 }) => {
   const frameRate = 30;
-  const frameEnd = 0.03 * frameRate;
+  const frameEnd = 0.3 * frameRate;
 
-  const box = scene.getTransformNodeByUniqueId(parseInt(params.entity));
+  const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
   if (box) {
     const rightAngle = Tools.ToRadians(90);
@@ -128,7 +149,7 @@ export const createRotationBoxAnimation = (params: {
     const endEvent = new AnimationEvent(
       frameEnd,
       () => {
-        params.animationEndCallback();
+        animationEndCallback();
       },
       true
     );
@@ -154,7 +175,7 @@ export const createRotationBoxAnimation = (params: {
     scene.beginAnimation(box, 0, 2 * frameRate, false);
 
     const children = box.getChildren();
-    const color = params.ai.color;
+    // const color = ai.color;
 
     children.slice(0, -1).forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
@@ -166,13 +187,16 @@ export const createRotationBoxAnimation = (params: {
         );
 
         (mesh.material as StandardMaterial).diffuseTexture = new Texture(
-          params.ai.textureSet[params.dots],
+          texture,
           scene
         );
       }
     });
   }
 };
+
+export const getNextDots = (dots: number): number =>
+  dots === 6 ? 1 : dots + 1;
 
 const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
   state,
@@ -185,7 +209,7 @@ const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
 
   let dots = component.dots;
   if (!component.isAnimating && ai) {
-    dots = component.dots === 6 ? 1 : component.dots + 1;
+    dots = getNextDots(component.dots);
 
     if (component.dots === 6) {
       emitEvent<GameEvent.BoxExplosionEvent>({
@@ -207,8 +231,8 @@ const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
       createRotationBoxAnimation({
         entity,
         animationEndCallback,
-        dots,
-        ai,
+        texture: ai.textureSet[dots],
+        color: ai.color,
       });
     } else {
       animationEndCallback();
@@ -274,6 +298,23 @@ const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
   });
 };
 
+const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
+  state,
+  component,
+  event,
+}) => {
+  if (process.env.NODE_ENV !== 'test') {
+    createRotationBoxAnimation({
+      entity: component.entity,
+      animationEndCallback: () => {},
+      texture: event.payload.texture,
+      color: event.payload.color,
+    });
+  }
+
+  return state;
+};
+
 export const boxSystem = (state: State) =>
   createSystem<Box, BoxEvent.All>({
     state,
@@ -284,6 +325,8 @@ export const boxSystem = (state: State) =>
           return onClickHandler({ state, component, event });
         case BoxEvent.Type.rotationEnd:
           return rotationEndHandler({ state, component, event });
+        case BoxEvent.Type.rotate:
+          return rotateHandler({ state, component, event });
       }
     },
   });

@@ -1,11 +1,20 @@
 import { setComponent, componentName } from '../ecs/component';
 import { initialState } from '../ecs/state';
-import { AI, Game } from '../ecs/type';
+import { AI, Game, State } from '../ecs/type';
 import { gameEntity } from '../systems/gameSystem';
 
 export const humanPlayerEntity = 'humanPlayer';
 
-export const getGameInitialState = () => {
+type GetGameInitialState = (
+  params?: Partial<{
+    game: Partial<Game>;
+  }>
+) => State;
+export const getGameInitialState: GetGameInitialState = (
+  params = {
+    game: {},
+  }
+) => {
   let state = setComponent<AI>({
     state: initialState,
     data: {
@@ -30,6 +39,9 @@ export const getGameInitialState = () => {
       gameStarted: false,
       playersQueue: [],
       boxRotationQueue: [],
+      quickStart: false,
+      colorBlindMode: false,
+      ...params?.game,
     },
   });
 

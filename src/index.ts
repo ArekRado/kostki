@@ -15,7 +15,6 @@ import { runOneFrame } from './ecs/runOneFrame';
 import { AI, Entity, State } from './ecs/type';
 import { gameEntity, GameEvent } from './systems/gameSystem';
 import { getGameInitialState } from './utils/getGameInitialState';
-import { setCameraDistance } from './utils/setCameraDistance';
 
 import dot0 from './assets/0.png';
 import dot1 from './assets/1.png';
@@ -45,7 +44,7 @@ const engine =
 
 // Scene
 export const scene = new Scene(engine);
-scene.debugLayer.show();
+// scene.debugLayer.show();
 engine.runRenderLoop(() => {
   if (scene && scene.activeCamera) {
     scene.render();
@@ -64,8 +63,7 @@ export const camera = new UniversalCamera(
   scene
 );
 camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
-const distance = 20;
-setCameraDistance(distance, scene);
+
 // camera.attachControl(canvas, true);
 
 // Light
@@ -74,10 +72,14 @@ light.intensity = 1;
 
 // Because mutations breaks everytging
 if (process.env.NODE_ENV !== 'test') {
-  let state: State = getGameInitialState();
+  let state: State = getGameInitialState({
+    game: {
+      quickStart: true,
+    },
+  });
 
-  const emptyGrid = Array.from({ length: 4 }).map(() =>
-    Array.from({ length: 4 }).map(() => ({
+  const emptyGrid = Array.from({ length: 9 }).map(() =>
+    Array.from({ length: 16 }).map(() => ({
       player: undefined,
       dots: 0,
     }))
@@ -100,10 +102,15 @@ if (process.env.NODE_ENV !== 'test') {
     ai: [
       basicAI('1', [1, 0, 0], true),
       basicAI('2', [0, 1, 1]),
-      // basicAI('3', [0, 0, 1]),
-      // basicAI('4', [1, 0, 1]),
+      basicAI('3', [0, 0, 1]),
+      basicAI('4', [1, 0, 1]),
+      basicAI('5', [1, 1, 0]),
+      basicAI('6', [0.7, 0.7, 0.7]),
+      basicAI('7', [0, 1, 0]),
+      basicAI('8', [0.8, 0.2, 0.6]),
     ],
   });
+  
   scene.registerBeforeRender(() => {
     state = runOneFrame({ state });
   });

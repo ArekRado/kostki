@@ -17,6 +17,8 @@ export type Component<Data> = {
 
 export type Entity = Guid;
 
+export type Color = [number, number, number];
+
 export type Box = Component<{
   isAnimating: boolean;
   gridPosition: [number, number];
@@ -28,7 +30,7 @@ export type AI = Component<{
   human: boolean;
   active: boolean;
   level: number;
-  color: [number, number, number];
+  color: Color;
   textureSet: [string, string, string, string, string, string, string];
 }>;
 
@@ -39,6 +41,8 @@ export type Game = Component<{
   playersQueue: Entity[];
   boxRotationQueue: Entity[];
   gameStarted: boolean;
+  colorBlindMode: boolean;
+  quickStart: boolean;
 }>;
 
 export type State = {

@@ -10,7 +10,7 @@ export namespace AiEvent {
 }
 
 export const safeGet = (array: any[][], i: number, j: number) =>
-  array ? (array[i] ? array[i][j] : undefined) : undefined;
+  array ? (array[j] ? array[j][i] : undefined) : undefined;
 
 export const pointsFor = {
   emptyBox: 20,
@@ -21,8 +21,8 @@ export const pointsFor = {
     playerLessThanOponent: -15,
 
     playerMoreThanPlayer: -5,
-    playerEqualToPlayer: -1,
-    playerLessThanPlayer: -50, // Stupid AI doens't understand this
+    playerEqualToPlayer: -4,
+    playerLessThanPlayer: -15,
 
     toBorder: 0,
   },
@@ -126,6 +126,10 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
       return acc + pointsFor.adjacted.toBorder;
     }
 
+    // if (adjactedBox.player === undefined) {
+    //   return acc;
+    // }
+
     const boxStats =
       playerBox.dots === adjactedBox.dots
         ? dotStats.equal
@@ -134,8 +138,8 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
         : dotStats.less;
 
     if (
-      adjactedBox.player !== undefined &&
-      adjactedBox.player !== playerBox.player
+      adjactedBox.player !== playerBox.player &&
+      adjactedBox.player !== undefined
     ) {
       // Adjacted is oponent
 
@@ -201,6 +205,10 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       return acc + pointsFor.adjacted.toBorder;
     }
 
+    // if (diagonallBox.player === undefined) {
+    //   return acc;
+    // }
+
     const boxStats =
       playerBox.dots === diagonallBox.dots
         ? dotStats.equal
@@ -209,8 +217,8 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
         : dotStats.less;
 
     if (
-      diagonallBox.player !== undefined &&
-      diagonallBox.player !== playerBox.player
+      diagonallBox.player !== playerBox.player &&
+      diagonallBox.player !== undefined
     ) {
       // Adjacted is oponent
 
@@ -252,7 +260,8 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       }
       // Player box is diagonall to another it might be a good place to set 6 dots
       if (boxStats === dotStats.less) {
-        return acc + pointsFor.diagonall.playerLessThanPlayer;
+        const diff = diagonallBox.dots - playerBox.dots;
+        return acc + pointsFor.diagonall.playerLessThanPlayer + diff ** 2;
       }
     }
 
@@ -270,7 +279,7 @@ export const calculateLocalStrategy: CalculateLocalStrategy = ({
 }) => {
   return dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
-      if (box.player !== currentPlayer) {
+      if (box.player !== currentPlayer && box.player !== undefined) {
         return acc2;
       }
 
@@ -294,7 +303,8 @@ export const calculateLocalStrategy: CalculateLocalStrategy = ({
         ],
       ];
 
-      const points = localStrategyAdjacted(grid3x3);
+      const points =
+        localStrategyAdjacted(grid3x3) + localStrategyDiagonall(grid3x3);
 
       acc2[j] = { ...box, points: box.points + points };
       return acc2;
@@ -353,10 +363,14 @@ export const getAiMove: GetAiMove = ({ state, ai }) => {
   const bestRandomBox = getBestRandomBox({ currentPlayer, dataGrid });
 
   // console.log(
-  //   (bestRandomBox as any).points,
-  //   dataGrid.map((x) => x.map((y) => y.points).join(', '))
+  //   JSON.stringify(
+  //     dataGrid.map((x) =>
+  //       x.map(({ points, player, dots }) => ({ dots, points, player }))
+  //     )
+  //   )
   // );
 
+  // console.log(dataGrid);
   // console.log(JSON.stringify(dataGrid));
 
   return bestRandomBox;

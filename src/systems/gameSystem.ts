@@ -8,7 +8,13 @@ import {
 import { AI, Box, Entity, EventHandler, Game, State } from '../ecs/type';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { getAiMove, getDataGrid, safeGet } from './aiSystem';
-import { BoxEvent, pushBoxToRotationQueue } from './boxSystem';
+import {
+  BoxEvent,
+  Direction,
+  getNextDots,
+  pushBoxToRotationQueue,
+} from './boxSystem';
+import { DirectionalLight } from 'babylonjs/Lights/directionalLight';
 
 export const gameEntity = 'game';
 
@@ -107,11 +113,124 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   return state;
 };
 
+type GetNextPlayer = (params: { state: State }) => AI | undefined;
+const getNextPlayer: GetNextPlayer = ({ state }) => {
+  const game = getGame({ state });
+
+  if (!game) {
+    return undefined;
+  }
+
+  const nextPlayerIndex = game.playersQueue.findIndex((entity) => {
+    const ai = getComponent<AI>({
+      state,
+      name: componentName.ai,
+      entity,
+    });
+
+    return game.currentPlayer === entity && ai?.active;
+  });
+
+  const nextPlayerEntity =
+    game.playersQueue[nextPlayerIndex + 1] || game.playersQueue[0];
+
+  return getComponent<AI>({
+    state,
+    name: componentName.ai,
+    entity: nextPlayerEntity,
+  });
+};
+
+type UpdateAllBoxes = (params: { state: State }) => void;
+const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
+  const game = getGame({ state });
+  if (!game) {
+    return undefined;
+  }
+  game.grid.forEach((boxEntity) => {
+    const box = getComponent<Box>({
+      state,
+      entity: boxEntity,
+      name: componentName.box,
+    });
+
+    const ai = getComponent<AI>({
+      state,
+      entity: box?.player || '',
+      name: componentName.ai,
+    });
+
+    if (box && ai) {
+      emitEvent<BoxEvent.Rotate>({
+        type: BoxEvent.Type.rotate,
+        entity: boxEntity,
+        payload: {
+          color: ai.color,
+          texture: ai.textureSet[box.dots],
+          direction: Direction.up,
+        },
+      });
+    }
+  });
+
+  return state;
+};
+
+type RunQuickStart = (params: { state: State }) => State;
+const runQuickStart: RunQuickStart = ({ state }) => {
+  // Run same amount of moves as boxes in a grid
+  const newState = getGame({ state })?.grid.reduce((acc) => {
+    const game = getGame({ state: acc });
+    const currentAi = getComponent<AI>({
+      state: acc,
+      name: componentName.ai,
+      entity: game?.currentPlayer || '',
+    });
+
+    if (!game || !currentAi) {
+      return acc;
+    }
+
+    const box = getAiMove({ state: acc, ai: currentAi });
+
+    if (!box) {
+      return acc;
+    }
+
+    acc = setComponent<Box>({
+      state: acc,
+      data: {
+        ...box,
+        player: currentAi.entity,
+        dots: getNextDots(box.dots),
+      },
+    });
+
+    const nextPlayer = getNextPlayer({ state: acc });
+
+    if (!nextPlayer) {
+      return acc;
+    }
+
+    acc = setComponent<Game>({
+      state: acc,
+      data: {
+        ...game,
+        currentPlayer: nextPlayer.entity,
+      },
+    });
+
+    return acc;
+  }, state);
+
+  return newState || state;
+};
+
 const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
   state,
   component,
 }) => {
-  const { currentPlayer } = component;
+  const { currentPlayer, grid, quickStart } = component;
 
   const currentAi = getComponent<AI>({
     name: componentName.ai,
@@ -130,16 +249,23 @@ const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
     },
   });
 
-  const box = getAiMove({ state, ai });
+  if (quickStart) {
+    state = runQuickStart({ state });
+    updateAllBoxes({ state });
+  }
 
-  box &&
-    emitEvent({
-      type: BoxEvent.Type.onClick,
-      entity: box.entity,
-      payload: {
-        ai,
-      },
-    });
+  if (!ai?.human) {
+    const box = getAiMove({ state, ai });
+
+    box &&
+      emitEvent<BoxEvent.OnClickEvent>({
+        type: BoxEvent.Type.onClick,
+        entity: box.entity,
+        payload: {
+          ai,
+        },
+      });
+  }
 
   return state;
 };
@@ -157,10 +283,10 @@ const handleBoxExplosion: EventHandler<Game, GameEvent.BoxExplosionEvent> = ({
   const dataGrid = getDataGrid({ state });
 
   state = [
-    safeGet(dataGrid, x - 1, y),
-    safeGet(dataGrid, x + 1, y),
-    safeGet(dataGrid, x, y - 1),
-    safeGet(dataGrid, x, y + 1),
+    safeGet(dataGrid, y, x - 1),
+    safeGet(dataGrid, y, x + 1),
+    safeGet(dataGrid, y - 1, x),
+    safeGet(dataGrid, y + 1, x),
   ]
     .filter((box) => box !== undefined)
     .reduce((acc, box, i) => {
@@ -182,26 +308,19 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
   state,
   component,
 }) => {
-  const { currentPlayer, gameStarted, boxRotationQueue } = component;
+  const { gameStarted, boxRotationQueue } = component;
 
   if (gameStarted && boxRotationQueue.length === 0) {
-    const nextPlayerIndex = component.playersQueue.findIndex((entity) => {
-      const ai = getComponent<AI>({
-        state,
-        name: componentName.ai,
-        entity,
-      });
+    const nextPlayer = getNextPlayer({ state });
 
-      return currentPlayer === entity && ai?.active;
-    });
-
-    const nextPlayer =
-      component.playersQueue[nextPlayerIndex + 1] || component.playersQueue[0];
+    if (!nextPlayer) {
+      return state;
+    }
 
     const ai = getComponent<AI>({
       name: componentName.ai,
       state,
-      entity: nextPlayer,
+      entity: nextPlayer.entity,
     });
 
     if (!ai) {
@@ -216,21 +335,19 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       },
     });
 
-    if (ai.human) {
-      return state;
-    }
+    if (!ai.human) {
+      const box = getAiMove({ state, ai });
 
-    const box = getAiMove({ state, ai });
-
-    if (box) {
-      emitEvent<BoxEvent.OnClickEvent>({
-        type: BoxEvent.Type.onClick,
-        entity: box.entity,
-        payload: { ai },
-      });
-    } else {
-      // AI can't move which means it lost
-      return aiLost({ state, component, ai });
+      if (box) {
+        emitEvent<BoxEvent.OnClickEvent>({
+          type: BoxEvent.Type.onClick,
+          entity: box.entity,
+          payload: { ai },
+        });
+      } else {
+        // AI can't move which means it lost
+        return aiLost({ state, component, ai });
+      }
     }
   }
 

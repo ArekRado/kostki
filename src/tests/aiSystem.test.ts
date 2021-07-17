@@ -1,16 +1,13 @@
 import 'regenerator-runtime/runtime';
 import { scene, camera } from '../.';
 import { BasicBox, createGrid } from '../blueprints/createGrid';
-import { componentName, getComponent, setComponent } from '../ecs/component';
+import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
 import {
-  calculateLocalStrategy,
   getAiMove,
   getBestRandomBox,
   getDataGrid,
   getMovesForEmptyBoxes,
-  localStrategyAdjacted,
-  localStrategyDiagonall,
   pointsFor,
 } from '../systems/aiSystem';
 import {
@@ -427,15 +424,7 @@ describe('aiSystem', () => {
 
       // Center box is good place to click, is adjusted to low dot boxes
       // and diagonall boxes are high which means it's good point to continue building "defencse" grid
-      expectOneOf(
-        [
-          [2, 2],
-          [2, 0],
-          [0, 0],
-          [0, 2],
-        ],
-        box?.gridPosition || []
-      );
+      expectOneOf([[1, 1]], box?.gridPosition || []);
     });
 
     it('should set proper points - only worse boxes', () => {
@@ -573,9 +562,40 @@ describe('aiSystem', () => {
           [2, 2],
           [0, 0],
           [2, 0],
+          [1, 1],
         ],
         box?.gridPosition || []
       );
+    });
+
+    it('should set points for diagonall playerLessThanPlayer', () => {
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 6, player: basicAi.entity },
+            { dots: 0, player: basicAi.entity },
+          ],
+          [
+            { dots: 0, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi,
+      });
+
+      expectOneOf([[1, 1]], box?.gridPosition || []);
     });
   });
 
@@ -585,28 +605,28 @@ describe('aiSystem', () => {
         * - basicAi2
       
         *1 -*1 - 2 - 6
-        6 - 1 -*4 - 1
+         6 - 1 -*4 - 1
         *1 -*3 - 1 - 2
         *6 -*1 -*5 - 1
       */
       let state = createGrid({
         dataGrid: [
           [
-            { dots: 6, player: basicAi2.entity }, //-10
-            { dots: 1, player: basicAi2.entity }, // -45
+            { dots: 6, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
             { dots: 6, player: basicAi.entity },
-            { dots: 1, player: basicAi2.entity }, // -65
+            { dots: 1, player: basicAi2.entity },
           ],
           [
             { dots: 1, player: basicAi.entity },
-            { dots: 3, player: basicAi2.entity }, // -11 - eh powinno mieć więcej
+            { dots: 3, player: basicAi2.entity },
             { dots: 1, player: basicAi.entity },
             { dots: 1, player: basicAi2.entity },
           ],
           [
             { dots: 5, player: basicAi2.entity },
             { dots: 1, player: basicAi.entity },
-            { dots: 4, player: basicAi2.entity }, // -11 powinno mieć mniej
+            { dots: 4, player: basicAi2.entity },
             { dots: 2, player: basicAi.entity },
           ],
           [
@@ -636,20 +656,220 @@ describe('aiSystem', () => {
         ai: basicAi2,
       });
 
-
-      let dataGrid = getDataGrid({ state });
-
-      dataGrid = getMovesForEmptyBoxes({ dataGrid });
-      dataGrid = calculateLocalStrategy({ currentPlayer:basicAi2.entity, dataGrid });
-
-      console.log(dataGrid)
-
       const gridPosition = box?.gridPosition || [];
 
       // AI pls it's not good idea to click on safe box
       expect(gridPosition).not.toEqual([0, 0]);
       // [1,1] needs much more support because is diagonall to enemy 6
       expectOneOf([[1, 1]], gridPosition);
+    });
+
+    it('player2 should click on a empty box - 1', () => {
+      /*
+        * - basicAi2
+      
+        *1 - 0 - 1 - 0
+         0 - 1 -*1 - 1
+         0 - 0 - 1 -*1
+         0 - 0 - 0 -*1
+      */
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 0, player: undefined },
+            { dots: 0, player: undefined },
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi2.entity },
+          ],
+          [
+            { dots: 0, player: undefined },
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 0, player: undefined },
+          ],
+          [
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+          ],
+          [
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 0, player: undefined },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi2,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi2,
+      });
+
+      const gridPosition = box?.gridPosition || [];
+
+      expectOneOf(
+        [
+          [0, 0],
+          [0, 1],
+          [0, 2],
+
+          [1, 0],
+          [1, 1],
+          [1, 3],
+
+          [2, 0],
+
+          [3, 3],
+        ],
+        gridPosition
+      );
+    });
+
+    it('player2 should click on a empty box - 2', () => {
+      /*
+        * - basicAi2
+      
+        1 - 0 - 0 - 1
+        0 -*1 -*1 -*1
+        1 - 1 - 1 -*1
+        0 -*1 - 1 -*1
+      */
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi.entity },
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi.entity },
+          ],
+          [
+            { dots: 0, player: undefined },
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 0, player: undefined },
+          ],
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 0, player: undefined },
+          ],
+          [
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi.entity },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi2,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi2,
+      });
+
+      const gridPosition = box?.gridPosition || [];
+
+      expectOneOf(
+        [
+          [0, 0],
+          [0, 2],
+          [1, 0],
+          [1, 3],
+          [2, 3],
+        ],
+        gridPosition
+      );
+    });
+
+    it('player2 not click on a 4 dots box', () => {
+      /*
+        * - basicAi2
+      
+         6 -*1 - 1 -*1
+        *4 - 1 - 1 -*1
+        *1 - 1 -*1 -*3
+         1 -*1 - 1 -*1
+      */
+      let state = createGrid({
+        dataGrid: [
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 4, player: basicAi2.entity },
+            { dots: 6, player: basicAi.entity },
+          ],
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+          ],
+          [
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi.entity },
+            { dots: 1, player: basicAi.entity },
+          ],
+          [
+            { dots: 1, player: basicAi2.entity },
+            { dots: 3, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+            { dots: 1, player: basicAi2.entity },
+          ],
+        ],
+        scene,
+        camera,
+        state: getGameInitialState(),
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi,
+      });
+
+      state = setComponent<AI>({
+        state,
+        data: basicAi2,
+      });
+
+      const box = getAiMove({
+        state,
+        ai: basicAi2,
+      });
+
+      const gridPosition = box?.gridPosition || [];
+
+      expect(gridPosition).not.toEqual([0, 2]);
+      expectOneOf([[1, 3]], gridPosition);
     });
   });
 });

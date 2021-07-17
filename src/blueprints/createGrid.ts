@@ -2,6 +2,7 @@ import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, Game, Guid, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
+import { setCameraDistance } from '../utils/setCameraDistance';
 import { boxBlueprint } from './boxBlueprint';
 
 export type BasicBox = { dots: number; player: Entity | undefined };
@@ -19,13 +20,16 @@ export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
 
   const gridWidth = dataGrid[0].length;
   const gridHeight = dataGrid.length;
+  const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight;
 
   const center = [((gridWidth - 1) * gap) / 2, ((gridHeight - 1) * gap) / 2];
+console.log(center)
+  camera.position.x = center[1];
+  camera.position.y = center[0];
+  camera.position.z = -10;
+  camera.setTarget(new Vector3(center[1], center[0]));
 
-  camera.position.x = center[0];
-  camera.position.y = center[1];
-  camera.position.z = -gridWidth * 3;
-  camera.setTarget(new Vector3(center[0], center[1]));
+  setCameraDistance(longerDimension * 2, scene);
 
   let gridBoxIds: Guid[] = [];
 
