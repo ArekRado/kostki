@@ -96,6 +96,7 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
+        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 
@@ -117,6 +118,7 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
+        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 
@@ -169,6 +171,7 @@ describe('aiSystem', () => {
       });
 
       const dataGrid = getMovesForEmptyBoxes({
+        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 

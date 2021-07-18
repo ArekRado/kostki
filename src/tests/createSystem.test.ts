@@ -121,17 +121,6 @@ describe('createGlobalSystem', () => {
 
         return state;
       },
-      // [testEvent1.type]: ({ state }) => {
-      //   testEventHandler1(testEvent1);
-      //   emitEvent(testEvent2);
-      //   return state;
-      // },
-      // [testEvent2.type]: ({ state }) => {
-      //   testEventHandler2(testEvent2);
-      //   emitEvent(testEvent1);
-      //   return state;
-      // },
-      // },
     });
 
     state = runOneFrame({ state });
@@ -165,4 +154,8 @@ describe('createGlobalSystem', () => {
       testEvent2.entity
     );
   });
+
+  test.todo(
+    'nested events where each event changes same component - eg add value'
+  );
 });

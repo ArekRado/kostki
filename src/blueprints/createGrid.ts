@@ -1,4 +1,5 @@
 import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
+import { light } from '..';
 import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, Game, Guid, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
@@ -23,7 +24,7 @@ export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
   const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight;
 
   const center = [((gridWidth - 1) * gap) / 2, ((gridHeight - 1) * gap) / 2];
-console.log(center)
+
   camera.position.x = center[1];
   camera.position.y = center[0];
   camera.position.z = -10;

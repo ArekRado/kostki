@@ -1,5 +1,4 @@
 import {
-  TransformNode,
   Animation,
   AnimationEvent,
   Color3,
@@ -9,12 +8,12 @@ import {
   Tools,
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
-import { componentName, getComponent, setComponent } from '../ecs/component';
+import { componentName, setComponent } from '../ecs/component';
 import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
-
 import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
+import { getDataGrid, safeGet } from './aiSystem';
 
 export enum Direction {
   up,
@@ -40,7 +39,10 @@ export namespace BoxEvent {
     }
   >;
   export type OnClickEvent = ECSEvent<Type.onClick, { ai: AI | undefined }>;
-  export type RotationEndEvent = ECSEvent<Type.rotationEnd, { ai: AI }>;
+  export type RotationEndEvent = ECSEvent<
+    Type.rotationEnd,
+    { ai: AI; shouldExplode: boolean }
+  >;
 }
 
 const clampRotation = (rotation: number) => {
@@ -113,7 +115,7 @@ export const createRotationBoxAnimation = ({
   texture: string;
 }) => {
   const frameRate = 30;
-  const frameEnd = 0.3 * frameRate;
+  const frameEnd = 0.005 * frameRate;
 
   const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
@@ -175,7 +177,6 @@ export const createRotationBoxAnimation = ({
     scene.beginAnimation(box, 0, 2 * frameRate, false);
 
     const children = box.getChildren();
-    // const color = ai.color;
 
     children.slice(0, -1).forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
@@ -208,22 +209,19 @@ const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
   const ai = payload.ai || getCurrentAi({ state });
 
   let dots = component.dots;
-  if (!component.isAnimating && ai) {
-    dots = getNextDots(component.dots);
 
-    if (component.dots === 6) {
-      emitEvent<GameEvent.BoxExplosionEvent>({
-        type: GameEvent.Type.boxExplosion,
-        entity: gameEntity,
-        payload: { ai, box: component },
-      });
-    }
+  if (component.gridPosition[0] === 1 && component.gridPosition[1] === 1) {
+    console.log(component);
+  }
+
+  if (ai) {
+    dots = getNextDots(component.dots);
 
     const animationEndCallback = () => {
       emitEvent<BoxEvent.RotationEndEvent>({
         type: BoxEvent.Type.rotationEnd,
         entity: entity,
-        payload: { ai },
+        payload: { ai, shouldExplode: component.dots === 6 },
       });
     };
 
@@ -252,18 +250,17 @@ const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
   });
 };
 
-const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
-  state,
-  component,
-  event,
-}) => {
-  const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
+type ResetBoxRotation = (params: {
+  boxEntity: Entity;
+  texture: string;
+  color: Color;
+}) => void;
+const resetBoxRotation: ResetBoxRotation = ({ boxEntity, texture, color }) => {
+  const box = scene.getTransformNodeByUniqueId(parseInt(boxEntity));
 
   if (box) {
     box.rotation.x = 0;
     box.rotation.y = 0;
-    const color = event.payload.ai.color;
-    const dots = component.dots;
 
     box.getChildren().forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
@@ -274,20 +271,91 @@ const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
           color[2]
         );
         (mesh.material as StandardMaterial).diffuseTexture = new Texture(
-          event.payload.ai.textureSet[dots],
+          texture,
           scene
         );
       }
     });
   }
+};
 
-  emitEvent<GameEvent.NextTurnEvent>({
-    type: GameEvent.Type.nextTurn,
-    entity: gameEntity,
-    payload: { ai: event.payload.ai },
-  });
+type BoxExplosion = (params: { state: State; box: Box; ai: AI }) => State;
+const boxExplosion: BoxExplosion = ({ state, ai, box }) => {
+  const {
+    gridPosition: [x, y],
+  } = box;
+
+  const dataGrid = getDataGrid({ state });
+
+  state = [
+    safeGet(dataGrid, y, x - 1),
+    safeGet(dataGrid, y, x + 1),
+    safeGet(dataGrid, y - 1, x),
+    safeGet(dataGrid, y + 1, x),
+  ]
+    .filter((box) => box !== undefined)
+    .reduce((acc, box, i) => {
+      acc = onClickHandler({
+        event: {
+          type: BoxEvent.Type.onClick,
+          entity: box.entity,
+          payload: {
+            ai,
+          },
+        },
+        state: acc,
+        component: box,
+      });
+
+      // emitEvent({
+      //   type: BoxEvent.Type.onClick,
+      //   entity: box.entity,
+      //   payload: {
+      //     ai,
+      //   },
+      // });
+
+      return pushBoxToRotationQueue({ entity: box.entity, state: acc });
+    }, state);
+
+  return state;
+};
+
+const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
+  state,
+  component,
+  event,
+}) => {
+  const { ai, shouldExplode } = event.payload;
 
   state = removeBoxFromRotationQueue({ entity: component.entity, state });
+
+  resetBoxRotation({
+    boxEntity: component.entity,
+    texture: ai.textureSet[component.dots],
+    color: ai.color,
+  });
+
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+
+  if (shouldExplode) {
+    state = boxExplosion({
+      state,
+      box: component,
+      ai,
+    });
+  } else {
+    if (game.boxRotationQueue.length === 0) {
+      emitEvent<GameEvent.NextTurnEvent>({
+        type: GameEvent.Type.nextTurn,
+        entity: gameEntity,
+        payload: { ai },
+      });
+    }
+  }
 
   return setComponent<Box>({
     state,
@@ -306,7 +374,13 @@ const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
   if (process.env.NODE_ENV !== 'test') {
     createRotationBoxAnimation({
       entity: component.entity,
-      animationEndCallback: () => {},
+      animationEndCallback: () => {
+        resetBoxRotation({
+          boxEntity: component.entity,
+          texture: event.payload.texture,
+          color: event.payload.color,
+        });
+      },
       texture: event.payload.texture,
       color: event.payload.color,
     });

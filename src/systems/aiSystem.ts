@@ -13,12 +13,12 @@ export const safeGet = (array: any[][], i: number, j: number) =>
   array ? (array[j] ? array[j][i] : undefined) : undefined;
 
 export const pointsFor = {
-  emptyBox: 20,
+  emptyBox: 50,
 
   adjacted: {
     playerMoreThanOponent: 0,
     playerEqualToOponent: 10,
-    playerLessThanOponent: -15,
+    playerLessThanOponent: -10,
 
     playerMoreThanPlayer: -5,
     playerEqualToPlayer: -4,
@@ -89,12 +89,21 @@ export const getDataGrid: GetDataGrid = ({ state }) => {
   return [];
 };
 
-type GetMovesForEmptyBoxes = (params: { dataGrid: DataGrid }) => DataGrid;
-export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({ dataGrid }) =>
+type GetMovesForEmptyBoxes = (params: {
+  dataGrid: DataGrid;
+  preferEmptyBoxes: boolean;
+}) => DataGrid;
+export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({
+  dataGrid,
+  preferEmptyBoxes,
+}) =>
   dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
       const isEmpty = box.player === undefined;
-      const points = isEmpty ? box.points + pointsFor.emptyBox : box.points;
+      const additionalPoints = preferEmptyBoxes ? 100 : 0;
+      const points = isEmpty
+        ? box.points + pointsFor.emptyBox + additionalPoints
+        : box.points;
 
       acc2[j] = { ...box, points };
 
@@ -159,7 +168,8 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
       }
       // Oponent box has more dots, it's not worth to click on this box
       if (boxStats === dotStats.less) {
-        return acc + pointsFor.adjacted.playerLessThanOponent;
+        const diff = adjactedBox.dots - playerBox.dots;
+        return acc + pointsFor.adjacted.playerLessThanOponent * diff;
       }
     } else {
       // Adjacted is player
@@ -346,13 +356,20 @@ export const getBestRandomBox: GetBestRandomBox = ({
   return highestBoxes[randomIndex];
 };
 
-type GetAiMove = (params: { state: State; ai: AI }) => Box | undefined;
-export const getAiMove: GetAiMove = ({ state, ai }) => {
+type GetAiMove = (params: {
+  state: State;
+  ai: AI;
+  preferEmptyBoxes?: boolean;
+}) => Box | undefined;
+export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
   const currentPlayer = ai.entity;
 
   let dataGrid = getDataGrid({ state });
 
-  dataGrid = getMovesForEmptyBoxes({ dataGrid });
+  dataGrid = getMovesForEmptyBoxes({
+    dataGrid,
+    preferEmptyBoxes: !!preferEmptyBoxes,
+  });
   dataGrid = calculateLocalStrategy({ currentPlayer, dataGrid });
 
   // Chooses one/two players and attacks them
@@ -380,4 +397,13 @@ export const aiSystem = (state: State) =>
   createSystem<AI, undefined>({
     state,
     name: componentName.ai,
+    create: ({ component, state }) => {
+      // preload images
+      component.textureSet.forEach((src) => {
+        const image = new Image();
+        image.src = src;
+      });
+
+      return state;
+    },
   });

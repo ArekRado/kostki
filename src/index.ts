@@ -12,9 +12,9 @@ import { createPlayers } from './blueprints/createPlayers';
 import { componentName } from './ecs/component';
 import { emitEvent } from './ecs/emitEvent';
 import { runOneFrame } from './ecs/runOneFrame';
-import { AI, Entity, State } from './ecs/type';
+import { AI, Color, Entity, State } from './ecs/type';
 import { gameEntity, GameEvent } from './systems/gameSystem';
-import { getGameInitialState } from './utils/getGameInitialState';
+import { getGameInitialState, humanPlayerEntity } from './utils/getGameInitialState';
 
 import dot0 from './assets/0.png';
 import dot1 from './assets/1.png';
@@ -44,7 +44,7 @@ const engine =
 
 // Scene
 export const scene = new Scene(engine);
-// scene.debugLayer.show();
+scene.debugLayer.show();
 engine.runRenderLoop(() => {
   if (scene && scene.activeCamera) {
     scene.render();
@@ -67,8 +67,12 @@ camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
 // camera.attachControl(canvas, true);
 
 // Light
-const light = new HemisphericLight('light', new Vector3(1, 1, -1), scene);
+export const light = new HemisphericLight('light', new Vector3(0, 0, 1), scene);
 light.intensity = 1;
+
+light.diffuse = new BABYLON.Color3(1, 1, 1);
+light.specular = new BABYLON.Color3(1, 1, 1);
+light.groundColor = new BABYLON.Color3(1, 1, 1);
 
 // Because mutations breaks everytging
 if (process.env.NODE_ENV !== 'test') {
@@ -78,14 +82,14 @@ if (process.env.NODE_ENV !== 'test') {
     },
   });
 
-  const emptyGrid = Array.from({ length: 9 }).map(() =>
-    Array.from({ length: 16 }).map(() => ({
+  const emptyGrid = Array.from({ length: 3 }).map(() =>
+    Array.from({ length: 3 }).map(() => ({
       player: undefined,
       dots: 0,
     }))
   );
 
-  const basicAI = (entity: Entity, color: AI['color'], human = false): AI => ({
+  const basicAI = (entity: Entity, color: Color, human = false): AI => ({
     entity,
     name: componentName.ai,
     human,
@@ -100,14 +104,14 @@ if (process.env.NODE_ENV !== 'test') {
   state = createPlayers({
     state,
     ai: [
-      basicAI('1', [1, 0, 0], true),
-      basicAI('2', [0, 1, 1]),
-      basicAI('3', [0, 0, 1]),
-      basicAI('4', [1, 0, 1]),
-      basicAI('5', [1, 1, 0]),
-      basicAI('6', [0.7, 0.7, 0.7]),
-      basicAI('7', [0, 1, 0]),
-      basicAI('8', [0.8, 0.2, 0.6]),
+      basicAI(humanPlayerEntity, [1, 0, 0], true),
+      // basicAI('2', [0, 1, 1]),
+      // basicAI('3', [0, 0, 1]),
+      // basicAI('4', [1, 0, 1]),
+      // basicAI('5', [1, 1, 0]),
+      // basicAI('6', [0.7, 0.7, 0.7]),
+      // basicAI('7', [0, 1, 0]),
+      // basicAI('8', [0.8, 0.2, 0.6]),
     ],
   });
   
