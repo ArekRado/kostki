@@ -6,6 +6,23 @@ import { getGame } from '../systems/gameSystem';
 import { setCameraDistance } from '../utils/setCameraDistance';
 import { boxBlueprint } from './boxBlueprint';
 
+export const boxSize = 1;
+export const boxGap = 0.2;
+
+export const getGridDimensions = (dataGrid: BasicBox[][]) => {
+  const boxWithGap = boxSize + boxGap;
+  const gridWidth = dataGrid[0].length * boxWithGap;
+  const gridHeight = dataGrid.length * boxWithGap;
+  const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight;
+
+  const center = [(gridWidth - 1 - boxGap) / 2, (gridHeight - 1 - boxGap) / 2];
+
+  return {
+    center,
+    cameraDistance: longerDimension / 2 + boxGap,
+  };
+};
+
 export type BasicBox = { dots: number; player: Entity | undefined };
 
 type CreateGrid = (params: {
@@ -16,34 +33,27 @@ type CreateGrid = (params: {
 }) => State;
 
 export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
-  const gap = 1.2;
   const grid = new TransformNode('grid');
 
-  const gridWidth = dataGrid[0].length;
-  const gridHeight = dataGrid.length;
-  const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight;
-
-  const center = [((gridWidth - 1) * gap) / 2, ((gridHeight - 1) * gap) / 2];
+  const { center, cameraDistance } = getGridDimensions(dataGrid);
 
   camera.position.x = center[1];
   camera.position.y = center[0];
   camera.position.z = -10;
   camera.setTarget(new Vector3(center[1], center[0]));
 
-  setCameraDistance(longerDimension * 2, scene);
+  setCameraDistance(cameraDistance, scene);
 
   let gridBoxIds: Guid[] = [];
+  const boxWithGap = boxSize + boxGap;
 
   state = dataGrid.reduce(
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
-        const box = boxBlueprint({ scene, state: acc2, name: `${x}-${y}` });
+        const box = boxBlueprint({ scene, name: `${x}-${y}` });
 
-        // const xx = Math.floor(i / x);
-        // const yy = i % y;
-
-        box.position.x = x * gap;
-        box.position.y = y * gap;
+        box.position.x = x * boxWithGap;
+        box.position.y = y * boxWithGap;
 
         box.setParent(grid);
 
@@ -65,34 +75,6 @@ export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
       }, acc1),
     state
   );
-
-  // state = Array.from<number>({ length: x * y }).reduce((acc, _, i) => {
-  //   const box = boxBlueprint({ scene, state: acc });
-
-  //   const xx = Math.floor(i / x);
-  //   const yy = i % y;
-
-  //   box.position.x = xx * gap;
-  //   box.position.y = yy * gap;
-
-  //   box.setParent(grid);
-
-  //   const boxId = box.uniqueId.toString();
-
-  //   gridBoxIds.push(boxId);
-
-  //   return setComponent<Box>({
-  //     state: acc,
-  //     data: {
-  //       name: componentName.box,
-  //       entity: boxId,
-  //       isAnimating: false,
-  //       dots: 0,
-  //       gridPosition: [xx, yy],
-  //       player: '',
-  //     },
-  //   });
-  // }, state);
 
   const game = getGame({ state });
 

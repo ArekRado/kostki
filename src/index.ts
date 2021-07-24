@@ -7,14 +7,14 @@ import {
   Camera,
   NullEngine,
 } from 'babylonjs';
-import { createGrid } from './blueprints/createGrid';
+import { createGrid, getGridDimensions } from './blueprints/createGrid';
 import { createPlayers } from './blueprints/createPlayers';
 import { componentName } from './ecs/component';
 import { emitEvent } from './ecs/emitEvent';
 import { runOneFrame } from './ecs/runOneFrame';
 import { AI, Color, Entity, State } from './ecs/type';
 import { gameEntity, GameEvent } from './systems/gameSystem';
-import { getGameInitialState, humanPlayerEntity } from './utils/getGameInitialState';
+import { getGameInitialState } from './utils/getGameInitialState';
 
 import dot0 from './assets/0.png';
 import dot1 from './assets/1.png';
@@ -23,8 +23,12 @@ import dot3 from './assets/3.png';
 import dot4 from './assets/4.png';
 import dot5 from './assets/5.png';
 import dot6 from './assets/6.png';
+import { getDataGrid } from './systems/aiSystem';
+import { setCameraDistance } from './utils/setCameraDistance';
+import { markerBlueprint } from './blueprints/markerBlueprint';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
+export const humanPlayerEntity = 'humanPlayer';
 
 // Engine
 const engine =
@@ -44,16 +48,11 @@ const engine =
 
 // Scene
 export const scene = new Scene(engine);
-scene.debugLayer.show();
+// scene.debugLayer.show();
 engine.runRenderLoop(() => {
   if (scene && scene.activeCamera) {
     scene.render();
   }
-});
-
-// Resize
-window.addEventListener('resize', () => {
-  engine.resize();
 });
 
 // Camera
@@ -82,8 +81,8 @@ if (process.env.NODE_ENV !== 'test') {
     },
   });
 
-  const emptyGrid = Array.from({ length: 3 }).map(() =>
-    Array.from({ length: 3 }).map(() => ({
+  const emptyGrid = Array.from({ length: 10 }).map(() =>
+    Array.from({ length: 10 }).map(() => ({
       player: undefined,
       dots: 0,
     }))
@@ -104,26 +103,38 @@ if (process.env.NODE_ENV !== 'test') {
   state = createPlayers({
     state,
     ai: [
-      basicAI(humanPlayerEntity, [1, 0, 0], true),
-      // basicAI('2', [0, 1, 1]),
-      // basicAI('3', [0, 0, 1]),
-      // basicAI('4', [1, 0, 1]),
-      // basicAI('5', [1, 1, 0]),
-      // basicAI('6', [0.7, 0.7, 0.7]),
-      // basicAI('7', [0, 1, 0]),
-      // basicAI('8', [0.8, 0.2, 0.6]),
+      basicAI(humanPlayerEntity, [1, 0, 0], false),
+      basicAI('2', [0, 1, 1]),
+      basicAI('3', [0, 0, 1]),
+      basicAI('4', [1, 0, 1]),
+      basicAI('5', [1, 1, 0]),
+      basicAI('6', [0.7, 0.7, 0.7]),
+      basicAI('7', [0, 1, 0]),
+      basicAI('8', [0.8, 0.2, 0.6]),
     ],
   });
-  
+
+  state = markerBlueprint({ scene, state });
+
   scene.registerBeforeRender(() => {
     state = runOneFrame({ state });
   });
 
-  setTimeout(() => {
-    emitEvent<GameEvent.StartLevelEvent>({
-      type: GameEvent.Type.startLevel,
-      entity: gameEntity,
-      payload: {},
-    });
-  }, 500);
+  // Resize
+  window.addEventListener('resize', () => {
+    setCameraDistance(
+      getGridDimensions(getDataGrid({ state })).cameraDistance,
+      scene
+    );
+
+    setTimeout(() => {
+      engine.resize();
+    }, 1000);
+  });
+
+  emitEvent<GameEvent.StartLevelEvent>({
+    type: GameEvent.Type.startLevel,
+    entity: gameEntity,
+    payload: {},
+  });
 }

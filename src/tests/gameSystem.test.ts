@@ -2,12 +2,12 @@ import 'regenerator-runtime/runtime';
 import { scene, camera } from '..';
 import { BasicBox, createGrid } from '../blueprints/createGrid';
 import { createPlayers } from '../blueprints/createPlayers';
-import { componentName, setComponent } from '../ecs/component';
+import { componentName, getComponent, setComponent } from '../ecs/component';
 import { emitEvent } from '../ecs/emitEvent';
 import { runOneFrame } from '../ecs/runOneFrame';
-import { AI, Entity, Game } from '../ecs/type';
+import { AI, Box, Entity, Game } from '../ecs/type';
 import { getDataGrid } from '../systems/aiSystem';
-import { BoxEvent } from '../systems/boxSystem';
+import { BoxEvent, onClickBox } from '../systems/boxSystem';
 import { getGame } from '../systems/gameSystem';
 import { getGameInitialState } from '../utils/getGameInitialState';
 
@@ -35,7 +35,7 @@ const basicGrid2x2 = [
 ];
 
 describe('game', () => {
-  it('clicking on 6 dots box should expand player color', () => {
+  it.skip('clicking on 6 dots box should expand player color', () => {
     let state = createGrid({
       dataGrid: basicGrid2x2,
       scene,
@@ -52,19 +52,31 @@ describe('game', () => {
     state = createPlayers({ state, ai: [ai] });
 
     const middleBoxEntity = getDataGrid({ state })[1][1].entity;
+    const middleBox = getComponent<Box>({
+      state,
+      name: componentName.box,
+      entity: middleBoxEntity,
+    });
+
+    if (!middleBox) {
+      throw new Error("middleBox doesn't exist");
+    }
 
     expect(getDataGrid({ state })[1][1].dots).toBe(0);
 
     // click on a box until has less than 6 dots
     [1, 2, 3, 4, 5, 6].forEach((x) => {
-      emitEvent<BoxEvent.OnClickEvent>({
-        type: BoxEvent.Type.onClick,
-        entity: middleBoxEntity,
-        payload: { ai },
+      state = onClickBox({
+        state,
+        box: middleBox,
+        ai,
       });
 
-      state = runOneFrame({ state });
-      state = runOneFrame({ state });
+      // state = runOneFrame({ state });
+      // state = runOneFrame({ state });
+      // state = runOneFrame({ state });
+      // state = runOneFrame({ state });
+      // state = runOneFrame({ state });
 
       expect(getDataGrid({ state })[1][1].dots).toBe(x);
     });
@@ -80,11 +92,12 @@ describe('game', () => {
       });
 
     // "explode"
-    emitEvent<BoxEvent.OnClickEvent>({
-      type: BoxEvent.Type.onClick,
-      entity: middleBoxEntity,
-      payload: { ai },
+    state = onClickBox({
+      state,
+      box: middleBox,
+      ai,
     });
+
     state = runOneFrame({ state });
     state = runOneFrame({ state });
     state = runOneFrame({ state });

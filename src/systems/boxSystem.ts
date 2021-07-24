@@ -28,7 +28,7 @@ export namespace BoxEvent {
     rotate,
   }
 
-  export type All = OnClickEvent | RotationEndEvent | Rotate;
+  export type All = RotationEndEvent | Rotate;
 
   export type Rotate = ECSEvent<
     Type.rotate,
@@ -38,7 +38,6 @@ export namespace BoxEvent {
       direction: Direction;
     }
   >;
-  export type OnClickEvent = ECSEvent<Type.onClick, { ai: AI | undefined }>;
   export type RotationEndEvent = ECSEvent<
     Type.rotationEnd,
     { ai: AI; shouldExplode: boolean }
@@ -114,8 +113,7 @@ export const createRotationBoxAnimation = ({
   animationEndCallback: () => void;
   texture: string;
 }) => {
-  const frameRate = 30;
-  const frameEnd = 0.005 * frameRate;
+  const frameEnd = 0.5;
 
   const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
@@ -140,23 +138,17 @@ export const createRotationBoxAnimation = ({
       clampRotation(nnextRotation.z)
     );
 
-    const xSlideAnimation = new Animation(
-      'xSlide',
+    const rotateAnimation = new Animation(
+      'rotateAnimation',
       'rotation',
-      frameRate,
+      1,
       Animation.ANIMATIONTYPE_VECTOR3,
       Animation.ANIMATIONLOOPMODE_RELATIVE
     );
 
-    const endEvent = new AnimationEvent(
-      frameEnd,
-      () => {
-        animationEndCallback();
-      },
-      true
-    );
+    const endEvent = new AnimationEvent(frameEnd, animationEndCallback, true);
 
-    xSlideAnimation.addEvent(endEvent);
+    rotateAnimation.addEvent(endEvent);
 
     const keyFrames = [];
 
@@ -170,11 +162,11 @@ export const createRotationBoxAnimation = ({
       value: nextRotation,
     });
 
-    xSlideAnimation.setKeys(keyFrames);
+    rotateAnimation.setKeys(keyFrames);
 
-    box.animations[0] = xSlideAnimation;
+    box.animations[box.animations.length] = rotateAnimation;
 
-    scene.beginAnimation(box, 0, 2 * frameRate, false);
+    scene.beginAnimation(box, 0, 1, false);
 
     const children = box.getChildren();
 
@@ -199,29 +191,20 @@ export const createRotationBoxAnimation = ({
 export const getNextDots = (dots: number): number =>
   dots === 6 ? 1 : dots + 1;
 
-const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
-  state,
-  component,
-  event,
-}) => {
-  const { payload } = event;
-  const { entity } = component;
-  const ai = payload.ai || getCurrentAi({ state });
+type OnClickBox = (params: { state: State; ai: AI; box: Box }) => State;
+export const onClickBox: OnClickBox = ({ state, ai, box }) => {
+  const { entity } = box;
 
-  let dots = component.dots;
-
-  if (component.gridPosition[0] === 1 && component.gridPosition[1] === 1) {
-    console.log(component);
-  }
+  let dots = box.dots;
 
   if (ai) {
-    dots = getNextDots(component.dots);
+    dots = getNextDots(box.dots);
 
     const animationEndCallback = () => {
       emitEvent<BoxEvent.RotationEndEvent>({
         type: BoxEvent.Type.rotationEnd,
         entity: entity,
-        payload: { ai, shouldExplode: component.dots === 6 },
+        payload: { ai, shouldExplode: box.dots === 6 },
       });
     };
 
@@ -242,7 +225,7 @@ const onClickHandler: EventHandler<Box, BoxEvent.OnClickEvent> = ({
   return setComponent<Box>({
     state,
     data: {
-      ...component,
+      ...box,
       isAnimating: true,
       player: ai?.entity || '',
       dots,
@@ -295,25 +278,11 @@ const boxExplosion: BoxExplosion = ({ state, ai, box }) => {
   ]
     .filter((box) => box !== undefined)
     .reduce((acc, box, i) => {
-      acc = onClickHandler({
-        event: {
-          type: BoxEvent.Type.onClick,
-          entity: box.entity,
-          payload: {
-            ai,
-          },
-        },
+      acc = onClickBox({
+        ai,
+        box,
         state: acc,
-        component: box,
       });
-
-      // emitEvent({
-      //   type: BoxEvent.Type.onClick,
-      //   entity: box.entity,
-      //   payload: {
-      //     ai,
-      //   },
-      // });
 
       return pushBoxToRotationQueue({ entity: box.entity, state: acc });
     }, state);
@@ -357,6 +326,11 @@ const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
     }
   }
 
+  const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
+  if (box) {
+    box.animations = [];
+  }
+
   return setComponent<Box>({
     state,
     data: {
@@ -395,8 +369,6 @@ export const boxSystem = (state: State) =>
     name: componentName.box,
     event: ({ state, component, event }) => {
       switch (event.type) {
-        case BoxEvent.Type.onClick:
-          return onClickHandler({ state, component, event });
         case BoxEvent.Type.rotationEnd:
           return rotationEndHandler({ state, component, event });
         case BoxEvent.Type.rotate:

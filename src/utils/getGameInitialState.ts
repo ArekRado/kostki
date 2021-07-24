@@ -1,9 +1,8 @@
+import { humanPlayerEntity } from '..';
 import { setComponent, componentName } from '../ecs/component';
 import { initialState } from '../ecs/state';
 import { AI, Game, State } from '../ecs/type';
 import { gameEntity } from '../systems/gameSystem';
-
-export const humanPlayerEntity = 'humanPlayer';
 
 type GetGameInitialState = (
   params?: Partial<{
@@ -41,6 +40,7 @@ export const getGameInitialState: GetGameInitialState = (
       boxRotationQueue: [],
       quickStart: false,
       colorBlindMode: false,
+      markerEntity: '',
       ...params?.game,
     },
   });

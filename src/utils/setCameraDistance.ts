@@ -1,21 +1,21 @@
 import { Scene } from 'babylonjs';
+import { getAspectRatio } from './getAspectRatio';
 
 export const setCameraDistance = (distance: number, scene: Scene) => {
-  const renderingCanvasClientRect = scene
-    .getEngine()
-    .getRenderingCanvasClientRect();
-
-  const aspect =
-    renderingCanvasClientRect !== null
-      ? renderingCanvasClientRect.height / renderingCanvasClientRect.width
-      : 0;
-
+  const aspect = getAspectRatio(scene);
   const camera = scene.activeCamera;
-  
+
   if (camera) {
-    camera.orthoLeft = -distance / 2;
-    camera.orthoRight = distance / 2;
-    camera.orthoBottom = camera.orthoLeft * aspect;
-    camera.orthoTop = camera.orthoRight * aspect;
+    if (aspect > 1) {
+      camera.orthoLeft = -distance;
+      camera.orthoRight = distance;
+      camera.orthoBottom = camera.orthoLeft * aspect;
+      camera.orthoTop = camera.orthoRight * aspect;
+    } else {
+      camera.orthoBottom = -distance;
+      camera.orthoTop = distance;
+      camera.orthoLeft = camera.orthoBottom / aspect;
+      camera.orthoRight = camera.orthoTop / aspect;
+    }
   }
 };

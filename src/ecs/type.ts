@@ -43,6 +43,7 @@ export type Game = Component<{
   gameStarted: boolean;
   colorBlindMode: boolean;
   quickStart: boolean;
+  markerEntity: Entity;
 }>;
 
 export type State = {

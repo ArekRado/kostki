@@ -1,3 +1,4 @@
+import { componentName, getComponent } from './component';
 import { ECSEvent } from './emitEvent';
 import { State, Dictionary, Entity, Component, EventHandler } from './type';
 
@@ -29,13 +30,25 @@ export const triggerSystemEvents: TriggerSystemEvents = ({
 }) =>
   eventBuffer[entity]
     ? eventBuffer[entity].reduce((acc, event) => {
-        return eventHandler
-          ? eventHandler({
-              state: acc,
-              event,
-              component,
-            })
-          : acc;
+        if (eventHandler) {
+          const updatedComponent = getComponent<any>({
+            state: acc,
+            entity,
+            name: component.name,
+          });
+
+          if (!updatedComponent) {
+            return acc;
+          }
+
+          return eventHandler({
+            state: acc,
+            event,
+            component: updatedComponent,
+          });
+        }
+
+        return acc;
       }, state)
     : state;
 

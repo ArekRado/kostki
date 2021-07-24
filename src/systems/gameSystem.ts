@@ -5,15 +5,27 @@ import {
   getComponent,
   setComponent,
 } from '../ecs/component';
-import { AI, Box, Entity, EventHandler, Game, State } from '../ecs/type';
+import {
+  AI,
+  Box,
+  Color,
+  Entity,
+  EventHandler,
+  Game,
+  Guid,
+  State,
+} from '../ecs/type';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { getAiMove } from './aiSystem';
 import {
   BoxEvent,
   Direction,
   getNextDots,
+  onClickBox,
   pushBoxToRotationQueue,
 } from './boxSystem';
+import { scene } from '..';
+import { Color3, StandardMaterial } from 'babylonjs';
 
 export const gameEntity = 'game';
 
@@ -25,10 +37,7 @@ export namespace GameEvent {
     playerClick,
   }
 
-  export type All =
-    | StartLevelEvent
-    | NextTurnEvent
-    | PlayerClickEvent;
+  export type All = StartLevelEvent | NextTurnEvent | PlayerClickEvent;
 
   export type StartLevelEvent = ECSEvent<Type.startLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
@@ -37,6 +46,25 @@ export namespace GameEvent {
     { boxEntity: Entity }
   >;
 }
+
+type MoveMarker = (params: {
+  boxEntity: Entity;
+  markerEntity: Entity;
+  color: Color;
+}) => void;
+export const moveMarker: MoveMarker = ({ boxEntity, markerEntity, color }) => {
+  const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxEntity));
+  const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
+
+  if (markerMesh && boxMesh) {
+    (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
+      color[0],
+      color[1],
+      color[2]
+    );
+    markerMesh.position = boxMesh.position;
+  }
+};
 
 type GetGame = (params: { state: State }) => Game | undefined;
 export const getGame: GetGame = ({ state }) => {
@@ -58,13 +86,6 @@ export const getCurrentAi: GetCurrentAi = ({ state }) => {
 
   return ai;
 };
-
-// const getRandomAi = ({ state }: { state: State }): AI => {
-//   const allAi = getAllComponents<AI>({ name: componentName.ai, state }) || {};
-//   const aiList = Object.values(allAi);
-//   const randomIndex = Math.floor(Math.random() * aiList.length);
-//   return aiList[randomIndex];
-// };
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
 const aiLost: AiLost = ({ state, ai, component }) => {
@@ -106,6 +127,33 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   return state;
 };
 
+type GetNextActivePlayer = (params: {
+  playersQueue: Guid[];
+  index: number;
+  state: State;
+}) => AI | undefined;
+const getNextActivePlayer: GetNextActivePlayer = ({
+  playersQueue,
+  index,
+  state,
+}) => {
+  const ai = getComponent<AI>({
+    state,
+    name: componentName.ai,
+    entity: playersQueue[index],
+  });
+
+  if (ai?.active) {
+    return ai;
+  }
+
+  return getNextActivePlayer({
+    playersQueue,
+    index: index >= playersQueue.length ? 0 : index + 1,
+    state,
+  });
+};
+
 type GetNextPlayer = (params: { state: State }) => AI | undefined;
 const getNextPlayer: GetNextPlayer = ({ state }) => {
   const game = getGame({ state });
@@ -114,24 +162,17 @@ const getNextPlayer: GetNextPlayer = ({ state }) => {
     return undefined;
   }
 
-  const nextPlayerIndex = game.playersQueue.findIndex((entity) => {
-    const ai = getComponent<AI>({
-      state,
-      name: componentName.ai,
-      entity,
-    });
-
-    return game.currentPlayer === entity && ai?.active;
+  const currentPlayerIndex = game.playersQueue.findIndex((entity) => {
+    return game.currentPlayer === entity;
   });
 
-  const nextPlayerEntity =
-    game.playersQueue[nextPlayerIndex + 1] || game.playersQueue[0];
-
-  return getComponent<AI>({
+  const nextAi = getNextActivePlayer({
+    playersQueue: game.playersQueue,
+    index: currentPlayerIndex + 1,
     state,
-    name: componentName.ai,
-    entity: nextPlayerEntity,
   });
+
+  return nextAi;
 };
 
 type UpdateAllBoxes = (params: { state: State }) => void;
@@ -255,17 +296,12 @@ const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
     updateAllBoxes({ state });
   }
 
-  if (!ai?.human) {
+  if (!ai.human) {
     const box = getAiMove({ state, ai });
 
-    box &&
-      emitEvent<BoxEvent.OnClickEvent>({
-        type: BoxEvent.Type.onClick,
-        entity: box.entity,
-        payload: {
-          ai,
-        },
-      });
+    if (box) {
+      state = onClickBox({ box, state, ai });
+    }
   }
 
   return state;
@@ -302,16 +338,16 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       },
     });
 
-    if (!ai.human) {
+    if (!ai.human && ai.active) {
       const box = getAiMove({ state, ai });
 
       if (box) {
-        emitEvent<BoxEvent.OnClickEvent>({
-          type: BoxEvent.Type.onClick,
-          entity: box.entity,
-          payload: { ai },
+        moveMarker({
+          boxEntity: box.entity,
+          color: ai.color,
+          markerEntity: component.markerEntity,
         });
-
+        state = onClickBox({ box, state, ai });
         state = pushBoxToRotationQueue({ state, entity: box.entity });
       } else {
         // AI can't move which means it lost
@@ -346,12 +382,13 @@ const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> = ({
       entity: currentPlayer,
     });
 
-    if (ai?.human) {
-      emitEvent<BoxEvent.OnClickEvent>({
-        type: BoxEvent.Type.onClick,
-        entity: event.payload.boxEntity,
-        payload: { ai },
+    if (box && ai?.human) {
+      moveMarker({
+        boxEntity: box.entity,
+        color: ai.color,
+        markerEntity: component.markerEntity,
       });
+      state = onClickBox({ box, state, ai });
     }
   }
 

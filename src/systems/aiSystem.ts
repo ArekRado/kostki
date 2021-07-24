@@ -24,6 +24,7 @@ export const pointsFor = {
     playerEqualToPlayer: -4,
     playerLessThanPlayer: -15,
 
+    sixToSix: 50,
     toBorder: 0,
   },
 
@@ -112,6 +113,20 @@ export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({
     return acc1;
   }, dataGrid);
 
+const getAdjactedBoxes = (grid3x3: EnhancedBox[][]): EnhancedBox[] => [
+  grid3x3[1][0],
+  grid3x3[0][1],
+  grid3x3[1][2],
+  grid3x3[2][1],
+];
+
+const getDiagonallBoxes = (grid3x3: EnhancedBox[][]): EnhancedBox[] => [
+  grid3x3[0][0],
+  grid3x3[0][2],
+  grid3x3[2][0],
+  grid3x3[2][2],
+];
+
 // b - player box
 // a - adjacent
 // d - diagonally
@@ -123,12 +138,7 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
   grid3x3: EnhancedBox[][]
 ) => {
   const playerBox = grid3x3[1][1];
-  const adjactedBoxes = [
-    grid3x3[1][0],
-    grid3x3[0][1],
-    grid3x3[1][2],
-    grid3x3[2][1],
-  ];
+  const adjactedBoxes = getAdjactedBoxes(grid3x3);
 
   return adjactedBoxes.reduce((acc, adjactedBox) => {
     if (!adjactedBox) {
@@ -186,6 +196,9 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
 
       // Do nothing, just let other checks to decide if it's worth to click, probably it's not worth so add minus points
       if (boxStats === dotStats.equal) {
+        if (adjactedBox.dots === 6 && playerBox.dots === 6) {
+          return acc + pointsFor.adjacted.sixToSix;
+        }
         return acc + pointsFor.adjacted.playerEqualToPlayer;
       }
       // Current box has less dots, maybe is protected by adjacted - TODO check it
@@ -203,16 +216,11 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
 
 export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
   const playerBox = grid3x3[1][1];
-  const diagonallBoxes = [
-    grid3x3[0][0],
-    grid3x3[0][2],
-    grid3x3[2][0],
-    grid3x3[2][2],
-  ];
+  const diagonallBoxes = getDiagonallBoxes(grid3x3);
 
   return diagonallBoxes.reduce((acc, diagonallBox) => {
     if (!diagonallBox) {
-      return acc + pointsFor.adjacted.toBorder;
+      return acc + pointsFor.diagonall.toBorder;
     }
 
     // if (diagonallBox.player === undefined) {
@@ -243,6 +251,9 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       }
       // Oponent box has equal dots, no rush but player should start thinking to incerase dots
       if (boxStats === dotStats.equal) {
+        if (diagonallBox.dots === 6) {
+          return acc + pointsFor.diagonall.playerEqualToOponent * -10;
+        }
         return acc + pointsFor.diagonall.playerEqualToOponent;
       }
 

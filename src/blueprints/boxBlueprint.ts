@@ -1,7 +1,6 @@
 import {
   ActionManager,
   Color3,
-  Color4,
   ExecuteCodeAction,
   Mesh,
   StandardMaterial,
@@ -11,10 +10,8 @@ import {
 } from 'babylonjs';
 import { Scene } from 'babylonjs/scene';
 import { emitEvent } from '../ecs/emitEvent';
-import { State } from '../ecs/type';
 
 import empty from '../assets/0.png';
-import { BoxEvent } from '../systems/boxSystem';
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
@@ -25,11 +22,9 @@ import { gameEntity, GameEvent } from '../systems/gameSystem';
 
 export const boxBlueprint = ({
   scene,
-  state,
   name,
 }: {
   scene: Scene;
-  state: State;
   name: string;
 }): TransformNode => {
   const size = 1;
@@ -70,16 +65,6 @@ export const boxBlueprint = ({
         });
       })
     );
-
-    // setInterval(() => {
-    //   emitEvent({
-    //     entity: box.uniqueId.toString(),
-    //     type: boxEvents.onClick,
-    //     payload: {
-    //       planeId: plane.uniqueId,
-    //     },
-    //   });
-    // }, Math.random() * 20000)
   });
 
   return box;

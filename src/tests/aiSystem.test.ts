@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { scene, camera } from '../.';
+import { scene, camera, humanPlayerEntity } from '../.';
 import { BasicBox, createGrid } from '../blueprints/createGrid';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
@@ -12,7 +12,6 @@ import {
 } from '../systems/aiSystem';
 import {
   getGameInitialState,
-  humanPlayerEntity,
 } from '../utils/getGameInitialState';
 
 const player2 = 'player2';
@@ -664,7 +663,13 @@ describe('aiSystem', () => {
       // AI pls it's not good idea to click on safe box
       expect(gridPosition).not.toEqual([0, 0]);
       // [1,1] needs much more support because is diagonall to enemy 6
-      expectOneOf([[1, 1]], gridPosition);
+      expectOneOf(
+        [
+          [1, 1],
+          [1, 3],
+        ],
+        gridPosition
+      );
     });
 
     it('player2 should click on a empty box - 1', () => {
@@ -872,7 +877,13 @@ describe('aiSystem', () => {
       const gridPosition = box?.gridPosition || [];
 
       expect(gridPosition).not.toEqual([0, 2]);
-      expectOneOf([[1, 3]], gridPosition);
+      expectOneOf(
+        [
+          [1, 3],
+          [2, 1],
+        ],
+        gridPosition
+      );
     });
   });
 });
