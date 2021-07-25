@@ -25,14 +25,14 @@ export const getGridDimensions = (dataGrid: BasicBox[][]) => {
 
 export type BasicBox = { dots: number; player: Entity | undefined };
 
-type CreateGrid = (params: {
+type GridBlueprint = (params: {
   dataGrid: BasicBox[][];
   scene: Scene;
   camera: UniversalCamera;
   state: State;
 }) => State;
 
-export const createGrid: CreateGrid = ({ dataGrid, scene, camera, state }) => {
+export const gridBlueprint: GridBlueprint = ({ dataGrid, scene, camera, state }) => {
   const grid = new TransformNode('grid');
 
   const { center, cameraDistance } = getGridDimensions(dataGrid);

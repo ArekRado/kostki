@@ -1,7 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { scene, camera } from '..';
-import { BasicBox, createGrid } from '../blueprints/createGrid';
-import { createPlayers } from '../blueprints/createPlayers';
+import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
+import { aiBlueprint } from '../blueprints/aiBlueprint';
 import { componentName, getComponent, setComponent } from '../ecs/component';
 import { emitEvent } from '../ecs/emitEvent';
 import { runOneFrame } from '../ecs/runOneFrame';
@@ -36,7 +36,7 @@ const basicGrid2x2 = [
 
 describe('game', () => {
   it.skip('clicking on 6 dots box should expand player color', () => {
-    let state = createGrid({
+    let state = gridBlueprint({
       dataGrid: basicGrid2x2,
       scene,
       camera,
@@ -49,7 +49,7 @@ describe('game', () => {
     }
 
     const ai = basicAI('1');
-    state = createPlayers({ state, ai: [ai] });
+    state = aiBlueprint({ state, ai: [ai] });
 
     const middleBoxEntity = getDataGrid({ state })[1][1].entity;
     const middleBox = getComponent<Box>({

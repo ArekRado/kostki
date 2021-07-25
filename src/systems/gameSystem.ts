@@ -21,11 +21,12 @@ import {
   BoxEvent,
   Direction,
   getNextDots,
+  getTextureSet,
   onClickBox,
   pushBoxToRotationQueue,
 } from './boxSystem';
 import { scene } from '..';
-import { Color3, StandardMaterial } from 'babylonjs';
+import { Color3, Vector3, StandardMaterial } from 'babylonjs';
 
 export const gameEntity = 'game';
 
@@ -62,7 +63,13 @@ export const moveMarker: MoveMarker = ({ boxEntity, markerEntity, color }) => {
       color[1],
       color[2]
     );
-    markerMesh.position = boxMesh.position;
+    markerMesh.position = new Vector3(
+      boxMesh.position.x,
+      boxMesh.position.y,
+      boxMesh.position.z - 1
+    );
+
+    scene.beginAnimation(markerMesh, 0, 1, false);
   }
 };
 
@@ -200,7 +207,7 @@ const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
         entity: boxEntity,
         payload: {
           color: ai.color,
-          texture: ai.textureSet[box.dots],
+          texture: getTextureSet({ state, ai })[box.dots],
           direction: Direction.up,
         },
       });

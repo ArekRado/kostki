@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 import { scene, camera, humanPlayerEntity } from '../.';
-import { BasicBox, createGrid } from '../blueprints/createGrid';
+import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
 import {
@@ -63,7 +63,7 @@ const basicGrid2x2 = [
 
 describe('aiSystem', () => {
   it('getDataGrid - should return all boxes in a matrix', () => {
-    let state = createGrid({
+    let state = gridBlueprint({
       dataGrid: basicGrid2x2,
       scene,
       camera,
@@ -87,7 +87,7 @@ describe('aiSystem', () => {
 
   describe('getMovesForEmptyBoxes', () => {
     it('all empty boxes - should return grid with points', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: basicGrid2x2,
         scene,
         camera,
@@ -106,7 +106,7 @@ describe('aiSystem', () => {
     });
 
     it('one non empty box - should return grid with points', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [basicBox, { ...basicBox, dots: 1 }],
           [{ ...basicBox, player: humanPlayerEntity }, basicBox],
@@ -130,7 +130,7 @@ describe('aiSystem', () => {
 
   describe.skip('getBestRandomBox', () => {
     it('should return best box to click', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { ...basicBox, player: humanPlayerEntity },
@@ -156,7 +156,7 @@ describe('aiSystem', () => {
     });
 
     it('should return best box to click', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { ...basicBox, dots: 1 },
@@ -186,7 +186,7 @@ describe('aiSystem', () => {
   describe('getAiMove', () => {
     describe('only oponent boxes', () => {
       it('should set proper points - only equal oponents', () => {
-        let state = createGrid({
+        let state = gridBlueprint({
           dataGrid: [
             [
               { dots: 0, player: player2 },
@@ -224,7 +224,7 @@ describe('aiSystem', () => {
       });
 
       it('should set proper points - only better oponents', () => {
-        let state = createGrid({
+        let state = gridBlueprint({
           dataGrid: [
             [
               { dots: 5, player: player2 },
@@ -262,7 +262,7 @@ describe('aiSystem', () => {
       });
 
       it('should set proper points - only worse oponents', () => {
-        let state = createGrid({
+        let state = gridBlueprint({
           dataGrid: [
             [
               { dots: 2, player: player2 },
@@ -300,7 +300,7 @@ describe('aiSystem', () => {
       });
 
       it('should set proper points - only worse oponents', () => {
-        let state = createGrid({
+        let state = gridBlueprint({
           dataGrid: [
             [
               { dots: 4, player: player2 },
@@ -341,7 +341,7 @@ describe('aiSystem', () => {
 
   describe('only player boxes', () => {
     it('should set proper points - only equal boxes', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 0, player: basicAi.entity },
@@ -391,7 +391,7 @@ describe('aiSystem', () => {
     });
 
     it('should set proper points - only better boxes', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 5, player: basicAi.entity },
@@ -430,7 +430,7 @@ describe('aiSystem', () => {
     });
 
     it('should set proper points - only worse boxes', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 2, player: basicAi.entity },
@@ -478,7 +478,7 @@ describe('aiSystem', () => {
     });
 
     it('should set proper points - every box is same with low dots', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 1, player: basicAi.entity },
@@ -524,7 +524,7 @@ describe('aiSystem', () => {
     });
 
     it('should set proper points - every box is same with high dots', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 6, player: basicAi.entity },
@@ -571,7 +571,7 @@ describe('aiSystem', () => {
     });
 
     it('should set points for diagonall playerLessThanPlayer', () => {
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 6, player: basicAi.entity },
@@ -611,7 +611,7 @@ describe('aiSystem', () => {
         *1 -*3 - 1 - 2
         *6 -*1 -*5 - 1
       */
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 6, player: basicAi2.entity },
@@ -681,7 +681,7 @@ describe('aiSystem', () => {
          0 - 0 - 1 -*1
          0 - 0 - 0 -*1
       */
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 0, player: undefined },
@@ -757,7 +757,7 @@ describe('aiSystem', () => {
         1 - 1 - 1 -*1
         0 -*1 - 1 -*1
       */
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 0, player: undefined },
@@ -827,7 +827,7 @@ describe('aiSystem', () => {
         *1 - 1 -*1 -*3
          1 -*1 - 1 -*1
       */
-      let state = createGrid({
+      let state = gridBlueprint({
         dataGrid: [
           [
             { dots: 1, player: basicAi.entity },

@@ -6,8 +6,8 @@ import {
 import { AI, Game, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
 
-type CreatePlayers = (params: { state: State; ai: AI[] }) => State;
-export const createPlayers: CreatePlayers = ({ state, ai }) => {
+type AiBlueprint = (params: { state: State; ai: AI[] }) => State;
+export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
   state = removeAllComponents<AI>({ state, name: componentName.ai });
 
   const game = getGame({ state });

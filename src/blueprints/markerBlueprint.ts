@@ -5,14 +5,66 @@ import {
   Texture,
   Scene,
   Animation,
-  Vector3
+  Vector3,
 } from 'babylonjs';
 
 import markerTexture from '../assets/marker.png';
 import { setComponent } from '../ecs/component';
 import { Game, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
-import { boxGap, boxSize } from './createGrid';
+import { boxGap, boxSize } from './gridBlueprint';
+
+export const getScaleAnimation = () => {
+  const scaleAnimation = new Animation(
+    'getScaleAnimation',
+    'scaling',
+    1,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_RELATIVE
+  );
+
+  const keyFrames = [];
+
+  keyFrames.push({
+    frame: 0,
+    value: new Vector3(2, 2, 1),
+  });
+
+  keyFrames.push({
+    frame: 0.5,
+    value: new Vector3(0.9, 0.9, 1),
+  });
+
+  scaleAnimation.setKeys(keyFrames);
+
+  return scaleAnimation;
+};
+
+export const getAlphaAnimation = () => {
+  const alphaAnimation = new Animation(
+    'getAlphaAnimation',
+    'material.alpha',
+    1,
+    Animation.ANIMATIONTYPE_FLOAT,
+    Animation.ANIMATIONLOOPMODE_RELATIVE
+  );
+
+  const keyFrames = [];
+
+  keyFrames.push({
+    frame: 0,
+    value: 0,
+  });
+
+  keyFrames.push({
+    frame: 0.5,
+    value: 1,
+  });
+
+  alphaAnimation.setKeys(keyFrames);
+
+  return alphaAnimation;
+};
 
 export const markerBlueprint = ({
   scene,
@@ -29,39 +81,16 @@ export const markerBlueprint = ({
   );
 
   marker.material = new StandardMaterial('material', scene);
+  (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
   (marker.material as StandardMaterial).diffuseColor = Color3.White();
   (marker.material as StandardMaterial).diffuseTexture = new Texture(
     markerTexture,
     scene
   );
-  marker.material.alpha = 0.5;
+  (marker.material as any).diffuseTexture.hasAlpha = true;
 
-  const frameRate = 30;
-  const frameEnd = 0.5 * frameRate;
-
-  const scaleAnimation = new Animation(
-    'rotateAnimation',
-    'rotation',
-    frameRate,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_RELATIVE
-  );
-
-  const keyFrames = [];
-
-  keyFrames.push({
-    frame: 0,
-    value: new Vector3(1.2, 1.2, 1.2),
-  });
-
-  keyFrames.push({
-    frame: frameEnd,
-    value: new Vector3(1, 1, 1),
-  });
-
-  scaleAnimation.setKeys(keyFrames);
-
-  scene.beginAnimation(marker, 0, 2 * frameRate, false);
+  marker.animations[0] = getScaleAnimation();
+  marker.animations[1] = getAlphaAnimation();
 
   const game = getGame({ state });
   if (!game) {

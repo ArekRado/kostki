@@ -14,6 +14,7 @@ import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
 import { getDataGrid, safeGet } from './aiSystem';
+import { set1 } from '../utils/textureSets';
 
 export enum Direction {
   up,
@@ -50,6 +51,18 @@ const clampRotation = (rotation: number) => {
   }
 
   return rotation;
+};
+
+export const getTextureSet = ({
+  state,
+  ai,
+}: {
+  state: State;
+  ai: AI;
+}): AI['textureSet'] => {
+  const game = getGame({ state });
+
+  return game?.colorBlindMode ? ai.textureSet : set1;
 };
 
 type PushBoxToRotationQueue = (params: {
@@ -212,7 +225,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
       createRotationBoxAnimation({
         entity,
         animationEndCallback,
-        texture: ai.textureSet[dots],
+        texture: getTextureSet({ state, ai })[dots],
         color: ai.color,
       });
     } else {
@@ -301,7 +314,7 @@ const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> = ({
 
   resetBoxRotation({
     boxEntity: component.entity,
-    texture: ai.textureSet[component.dots],
+    texture: getTextureSet({ state, ai })[component.dots],
     color: ai.color,
   });
 
@@ -367,6 +380,11 @@ export const boxSystem = (state: State) =>
   createSystem<Box, BoxEvent.All>({
     state,
     name: componentName.box,
+    create: ({ state }) => {
+      // todo create here box babylon
+      // create animation here
+      return state;
+    },
     event: ({ state, component, event }) => {
       switch (event.type) {
         case BoxEvent.Type.rotationEnd:

@@ -7,8 +7,8 @@ import {
   Camera,
   NullEngine,
 } from 'babylonjs';
-import { createGrid, getGridDimensions } from './blueprints/createGrid';
-import { createPlayers } from './blueprints/createPlayers';
+import { gridBlueprint, getGridDimensions } from './blueprints/gridBlueprint';
+import { aiBlueprint } from './blueprints/aiBlueprint';
 import { componentName } from './ecs/component';
 import { emitEvent } from './ecs/emitEvent';
 import { runOneFrame } from './ecs/runOneFrame';
@@ -16,16 +16,30 @@ import { AI, Color, Entity, State } from './ecs/type';
 import { gameEntity, GameEvent } from './systems/gameSystem';
 import { getGameInitialState } from './utils/getGameInitialState';
 
-import dot0 from './assets/0.png';
-import dot1 from './assets/1.png';
-import dot2 from './assets/2.png';
-import dot3 from './assets/3.png';
-import dot4 from './assets/4.png';
-import dot5 from './assets/5.png';
-import dot6 from './assets/6.png';
 import { getDataGrid } from './systems/aiSystem';
 import { setCameraDistance } from './utils/setCameraDistance';
 import { markerBlueprint } from './blueprints/markerBlueprint';
+import {
+  darkBlue,
+  green,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+} from './utils/colors';
+import {
+  set1,
+  set2,
+  set3,
+  set4,
+  set5,
+  set6,
+  set7,
+  set8,
+} from './utils/textureSets';
+import { backgroundBlueprint } from './blueprints/backgroundBlueprint';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -81,6 +95,8 @@ if (process.env.NODE_ENV !== 'test') {
     },
   });
 
+  backgroundBlueprint({ scene });
+
   const emptyGrid = Array.from({ length: 10 }).map(() =>
     Array.from({ length: 10 }).map(() => ({
       player: undefined,
@@ -88,29 +104,34 @@ if (process.env.NODE_ENV !== 'test') {
     }))
   );
 
-  const basicAI = (entity: Entity, color: Color, human = false): AI => ({
+  const basicAI = (
+    entity: Entity,
+    color: Color,
+    textureSet: AI['textureSet'],
+    human = false
+  ): AI => ({
     entity,
     name: componentName.ai,
     human,
     level: 1,
     color,
-    textureSet: [dot0, dot1, dot2, dot3, dot4, dot5, dot6],
+    textureSet,
     active: true,
   });
 
   // Blueprints
-  state = createGrid({ dataGrid: emptyGrid, scene, camera, state });
-  state = createPlayers({
+  state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
+  state = aiBlueprint({
     state,
     ai: [
-      basicAI(humanPlayerEntity, [1, 0, 0], false),
-      basicAI('2', [0, 1, 1]),
-      basicAI('3', [0, 0, 1]),
-      basicAI('4', [1, 0, 1]),
-      basicAI('5', [1, 1, 0]),
-      basicAI('6', [0.7, 0.7, 0.7]),
-      basicAI('7', [0, 1, 0]),
-      basicAI('8', [0.8, 0.2, 0.6]),
+      basicAI(humanPlayerEntity, teal, set1),
+      basicAI('2', red, set2),
+      basicAI('3', green, set3),
+      basicAI('4', yellow, set4),
+      basicAI('5', orange, set5),
+      basicAI('6', pink, set6),
+      basicAI('7', darkBlue, set7),
+      basicAI('8', purple, set8),
     ],
   });
 
@@ -137,4 +158,7 @@ if (process.env.NODE_ENV !== 'test') {
     entity: gameEntity,
     payload: {},
   });
+
+  // todo
+  // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
 }
