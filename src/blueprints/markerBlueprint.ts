@@ -80,6 +80,8 @@ export const markerBlueprint = ({
     true
   );
 
+  marker.position = new Vector3(9999, 9999, 9999);
+
   marker.material = new StandardMaterial('material', scene);
   (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
   (marker.material as StandardMaterial).diffuseColor = Color3.White();

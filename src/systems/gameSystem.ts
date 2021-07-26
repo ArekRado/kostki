@@ -303,6 +303,16 @@ const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
     updateAllBoxes({ state });
   }
 
+  // TODO do not repeat same code as above
+  state = setComponent<Game>({
+    state,
+    data: {
+      ...component,
+      gameStarted: true,
+      currentPlayer: ai.entity,
+    },
+  });
+
   if (!ai.human) {
     const box = getAiMove({ state, ai });
 
