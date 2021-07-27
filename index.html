@@ -1,11 +1,11 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><meta http-equiv="X-UA-Compatible" content="ie=edge"/><title>Kostki</title><script defer="defer" src="runtime.7c46e385d286ae5c9929.js"></script><script defer="defer" src="vendors.9787de5cd220734d341c.js"></script><script defer="defer" src="main.5b5e1a2fb72cefe5f89b.js"></script></head><body><style>html {
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><meta http-equiv="X-UA-Compatible" content="ie=edge"/><title>Kostki</title><script defer="defer" src="runtime.7c46e385d286ae5c9929.js"></script><script defer="defer" src="vendors.9787de5cd220734d341c.js"></script><script defer="defer" src="main.8e45bf7441d46d2aa00f.js"></script></head><body><style>html {
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
 
       body {
-        background-color: #001a3f;
+        background-color: black;
         margin: 0;
 
         width: 100%;
@@ -18,13 +18,10 @@
       }
 
       #game {
-        /* width: 100vw;
-        height: 100vh;
-        max-width: 100vw;
-        max-height: 100vh; */
         flex: 1;
         height: 100%;
         width: 100%;
+        z-index: 1;
       }
 
       #inspector-host {
@@ -33,4 +30,43 @@
       #scene-explorer-host {
         position: absolute !important;
         z-index: 1;
-      }</style><canvas id="game"></canvas></body></html>
+      }
+
+      .loader {
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+      .loader div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border: 8px solid #fff;
+        border-radius: 50%;
+        animation: loader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #fff transparent transparent transparent;
+      }
+      .loader div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+      .loader div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+      .loader div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+      @keyframes loader {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }</style><div class="loader"><div></div><div></div><div></div><div></div></div><canvas id="game"></canvas></body></html>
