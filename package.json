@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "webpack serve",
-    "build": "webpack --mode production",
+    "build": "webpack --config webpack.prod.js --mode production",
     "test": "jest --env=jsdom",
     "test:watch": "jest --env=jsdom --watch --coverage=false"
   },
@@ -36,25 +36,29 @@
     }
   ],
   "dependencies": {
-    "@types/jest": "^26.0.23",
-    "babylonjs": "^5.0.0-alpha.27",
-    "ts-jest": "^27.0.3"
+    "babylonjs": "^5.0.0-alpha.27"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.5",
+    "@types/jest": "^26.0.23",
     "babel-jest": "^27.0.2",
     "babel-loader": "^8.2.2",
     "babel-plugin-istanbul": "^6.0.0",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.1",
+    "image-minimizer-webpack-plugin": "^2.2.0",
+    "imagemin-pngquant": "^9.0.2",
     "jest": "^27.0.4",
     "prettier": "^2.3.1",
+    "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.39.1",
     "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "workbox-webpack-plugin": "^6.1.5"
   }
 }

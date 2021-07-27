@@ -58,18 +58,20 @@ export const moveMarker: MoveMarker = ({ boxEntity, markerEntity, color }) => {
   const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
 
   if (markerMesh && boxMesh) {
+    (markerMesh.material as StandardMaterial).alpha = 0;
     (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
       color[0],
       color[1],
       color[2]
     );
+
+    scene.beginAnimation(markerMesh, 0, 1, false);
+
     markerMesh.position = new Vector3(
       boxMesh.position.x,
       boxMesh.position.y,
       boxMesh.position.z - 1
     );
-
-    scene.beginAnimation(markerMesh, 0, 1, false);
   }
 };
 

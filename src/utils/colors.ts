@@ -3,7 +3,7 @@ import { Color } from '../ecs/type';
 export const darkBlue: Color = [0.13, 0.48, 0.75];
 export const green: Color = [0.11, 0.79, 0.29];
 export const teal: Color = [0.09, 0.84, 1];
-export const orange: Color = [0.100, 0.73, 0.29];
+export const orange: Color = [1, 0.73, 0.29];
 export const yellow: Color = [0.99, 0.97, 0.32];
 export const red: Color = [0.99, 0.42, 0.45];
 export const pink: Color = [0.99, 0.47, 0.94];

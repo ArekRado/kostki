@@ -12,6 +12,7 @@ import markerTexture from '../assets/marker.png';
 import { setComponent } from '../ecs/component';
 import { Game, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
+import { setMeshTexture } from '../utils/setMeshTexture';
 import { boxGap, boxSize } from './gridBlueprint';
 
 export const getScaleAnimation = () => {
@@ -84,11 +85,19 @@ export const markerBlueprint = ({
 
   marker.material = new StandardMaterial('material', scene);
   (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
-  (marker.material as StandardMaterial).diffuseColor = Color3.White();
-  (marker.material as StandardMaterial).diffuseTexture = new Texture(
-    markerTexture,
-    scene
-  );
+  // (marker.material as StandardMaterial).diffuseColor = Color3.White();
+  // (marker.material as StandardMaterial).diffuseTexture = new Texture(
+  //   markerTexture,
+  //   scene
+  // );
+
+  setMeshTexture({
+    mesh: marker,
+    color: [1, 1, 1],
+    texture: markerTexture,
+    scene,
+  });
+
   (marker.material as any).diffuseTexture.hasAlpha = true;
 
   marker.animations[0] = getScaleAnimation();

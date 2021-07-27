@@ -13,6 +13,7 @@ import { emitEvent } from '../ecs/emitEvent';
 
 import empty from '../assets/0.png';
 import { gameEntity, GameEvent } from '../systems/gameSystem';
+import { setMeshTexture } from '../utils/setMeshTexture';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
 // import dot3 from '../assets/3.png';
@@ -42,11 +43,14 @@ export const boxBlueprint = ({
     plane.parent = box;
 
     plane.material = new StandardMaterial('mat', scene);
-    (plane.material as StandardMaterial).diffuseColor = Color3.White();
-    (plane.material as StandardMaterial).diffuseTexture = new Texture(
-      empty,
-      scene
-    );
+
+    setMeshTexture({
+      mesh: plane,
+      color: [1, 1, 1],
+      texture: empty,
+      scene,
+    });
+
     plane.material.alpha = 1;
 
     plane.position = position;

@@ -15,6 +15,7 @@ import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
 import { getDataGrid, safeGet } from './aiSystem';
 import { set1 } from '../utils/textureSets';
+import { setMeshTexture } from '../utils/setMeshTexture';
 
 export enum Direction {
   up,
@@ -186,16 +187,12 @@ export const createRotationBoxAnimation = ({
     children.slice(0, -1).forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
       if (mesh) {
-        (mesh.material as StandardMaterial).diffuseColor = new Color3(
-          color[0],
-          color[1],
-          color[2]
-        );
-
-        (mesh.material as StandardMaterial).diffuseTexture = new Texture(
+        setMeshTexture({
+          mesh,
+          color,
           texture,
-          scene
-        );
+          scene,
+        });
       }
     });
   }
@@ -261,15 +258,12 @@ const resetBoxRotation: ResetBoxRotation = ({ boxEntity, texture, color }) => {
     box.getChildren().forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
       if (mesh) {
-        (mesh.material as StandardMaterial).diffuseColor = new Color3(
-          color[0],
-          color[1],
-          color[2]
-        );
-        (mesh.material as StandardMaterial).diffuseTexture = new Texture(
+        setMeshTexture({
+          mesh,
+          color,
           texture,
-          scene
-        );
+          scene,
+        });
       }
     });
   }

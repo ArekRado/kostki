@@ -97,8 +97,8 @@ if (process.env.NODE_ENV !== 'test') {
 
   backgroundBlueprint({ scene });
 
-  const emptyGrid = Array.from({ length: 7 }).map(() =>
-    Array.from({ length: 7 }).map(() => ({
+  const emptyGrid = Array.from({ length: 8 }).map(() =>
+    Array.from({ length: 8 }).map(() => ({
       player: undefined,
       dots: 0,
     }))
@@ -128,8 +128,8 @@ if (process.env.NODE_ENV !== 'test') {
       basicAI('2', red, set2),
       basicAI('3', green, set3),
       basicAI('4', yellow, set4),
-      // basicAI('5', orange, set5),
-      // basicAI('6', pink, set6),
+      basicAI('5', orange, set5),
+      basicAI('6', pink, set6),
       // basicAI('7', darkBlue, set7),
       // basicAI('8', purple, set8),
     ],
