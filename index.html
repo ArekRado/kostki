@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><meta http-equiv="X-UA-Compatible" content="ie=edge"/><title>Kostki</title><script defer="defer" src="runtime.7c46e385d286ae5c9929.js"></script><script defer="defer" src="vendors.9787de5cd220734d341c.js"></script><script defer="defer" src="main.8e45bf7441d46d2aa00f.js"></script></head><body><style>html {
+<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/><meta http-equiv="X-UA-Compatible" content="ie=edge"/><title>Kostki</title><script defer="defer" src="runtime.7c46e385d286ae5c9929.js"></script><script defer="defer" src="vendors.9787de5cd220734d341c.js"></script><script defer="defer" src="main.a8f4daf23ff8f8d753d2.js"></script></head><body><style>html {
         width: 100%;
         height: 100%;
         overflow: hidden;
@@ -69,4 +69,10 @@
         100% {
           transform: rotate(360deg);
         }
-      }</style><div class="loader"><div></div><div></div><div></div><div></div></div><canvas id="game"></canvas></body></html>
+      }</style><div class="loader"><div></div><div></div><div></div><div></div></div><canvas id="game"></canvas><script>// Check that service workers are supported
+      if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }</script></body></html>
