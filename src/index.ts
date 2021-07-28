@@ -137,9 +137,11 @@ if (process.env.NODE_ENV !== 'test') {
 
   state = markerBlueprint({ scene, state });
 
-  scene.registerBeforeRender(() => {
+  const beforeRenderCallback = () => {
     state = runOneFrame({ state });
-  });
+  };
+
+  scene.registerBeforeRender(beforeRenderCallback);
 
   // Resize
   window.addEventListener('resize', () => {
@@ -148,9 +150,7 @@ if (process.env.NODE_ENV !== 'test') {
       scene
     );
 
-    setTimeout(() => {
-      engine.resize();
-    }, 1000);
+    engine.resize();
   });
 
   emitEvent<GameEvent.StartLevelEvent>({

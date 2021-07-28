@@ -1,8 +1,6 @@
 import {
-  Color3,
   Mesh,
   StandardMaterial,
-  Texture,
   Scene,
   Animation,
   Vector3,
@@ -54,12 +52,12 @@ export const getAlphaAnimation = () => {
 
   keyFrames.push({
     frame: 0,
-    value: 0,
+    value: 1,
   });
 
   keyFrames.push({
     frame: 0.5,
-    value: 1,
+    value: 0,
   });
 
   alphaAnimation.setKeys(keyFrames);
@@ -85,11 +83,7 @@ export const markerBlueprint = ({
 
   marker.material = new StandardMaterial('material', scene);
   (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
-  // (marker.material as StandardMaterial).diffuseColor = Color3.White();
-  // (marker.material as StandardMaterial).diffuseTexture = new Texture(
-  //   markerTexture,
-  //   scene
-  // );
+
 
   setMeshTexture({
     mesh: marker,

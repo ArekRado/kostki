@@ -24,13 +24,14 @@ export const setMeshTexture: SetMeshTexture = ({
     color[1],
     color[2]
   );
-  const newTexture = new Texture(texture, scene);
+  const newTexture = new Texture(
+    texture,
+    scene,
+    undefined,
+    undefined,
+    Texture.NEAREST_NEAREST_MIPLINEAR
+  );
   (mesh.material as StandardMaterial).diffuseTexture = newTexture;
-  setTimeout(() => {
-    (
-      (mesh.material as StandardMaterial).diffuseTexture as Texture
-    ).updateSamplingMode(Texture.NEAREST_NEAREST_MIPLINEAR);
-  }, 20);
 
   return newTexture;
 };
