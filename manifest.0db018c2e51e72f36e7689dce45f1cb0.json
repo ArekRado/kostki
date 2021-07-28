@@ -1,38 +1,38 @@
 {
   "icons": [
     {
-      "src": "auto/icon_1024x1024.e912dc6fcb23897fe712c3cd6a8e4f40.png",
+      "src": "./icon_1024x1024.e912dc6fcb23897fe712c3cd6a8e4f40.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "auto/icon_512x512.c9483c1f4c75f5987050382cf3f025bd.png",
+      "src": "./icon_512x512.c9483c1f4c75f5987050382cf3f025bd.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "auto/icon_384x384.77904dab45ac067414d4a786667f8a22.png",
+      "src": "./icon_384x384.77904dab45ac067414d4a786667f8a22.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "auto/icon_256x256.b9d2347b77cba85b5ecaffb8d46b6aa1.png",
+      "src": "./icon_256x256.b9d2347b77cba85b5ecaffb8d46b6aa1.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "auto/icon_192x192.0a20d353c491ae3b3758279e182adf9b.png",
+      "src": "./icon_192x192.0a20d353c491ae3b3758279e182adf9b.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "auto/icon_128x128.b7185e64d40ec480bdf163c37df5c925.png",
+      "src": "./icon_128x128.b7185e64d40ec480bdf163c37df5c925.png",
       "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "src": "auto/icon_96x96.6a62c677f1590aebdb7b22b1173b36b8.png",
+      "src": "./icon_96x96.6a62c677f1590aebdb7b22b1173b36b8.png",
       "sizes": "96x96",
       "type": "image/png"
     }
