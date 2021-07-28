@@ -4,9 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const config = {
-  mode: 'development',
+  mode: 'production',
   devServer: {
     port: 1234,
   },
@@ -61,10 +62,31 @@ const config = {
       clientsClaim: true,
       skipWaiting: true,
     }),
-    // new WorkboxPlugin.InjectManifest({
-    //   swSrc: '/dist/service-worker.js',
-    // }),
     new CleanWebpackPlugin(),
+    new WebpackPwaManifest({
+      name: 'Kostki',
+      short_name: 'Kostki',
+      description: 'Super simple kostki game!',
+      background_color: '#000',
+      theme_color : '#000',
+      display: 'fullscreen',
+      // crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
+      icons: [
+        {
+          src: path.resolve('src/assets/icon.png'),
+          sizes: [96, 128, 192, 256, 384, 512],
+        },
+        // {
+        //   src: path.resolve('src/assets/large-icon.png'),
+        //   size: '1024x1024',
+        // },
+        {
+          src: path.resolve('src/assets/maskable-icon.png'),
+          size: '1024x1024',
+          purpose: 'maskable',
+        },
+      ],
+    }),
   ],
   optimization: {
     runtimeChunk: 'single',
