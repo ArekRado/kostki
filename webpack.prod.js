@@ -52,6 +52,7 @@ const config = {
       appMountId: 'app',
       filename: 'index.html',
       template: './src/index.html',
+      favicon: './src/assets/icon.png',
     }),
     new ImageMinimizerPlugin({
       minimizerOptions: {
@@ -68,12 +69,13 @@ const config = {
       short_name: 'Kostki',
       description: 'Super simple kostki game!',
       background_color: '#000',
-      theme_color : '#000',
+      theme_color: '#000',
       display: 'fullscreen',
+      publicPath: './',
       // crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
       icons: [
         {
-          src: path.resolve('src/assets/icon.png'),
+          src: path.resolve('./src/assets/icon.png'),
           sizes: [96, 128, 192, 256, 384, 512],
         },
         // {
@@ -81,7 +83,7 @@ const config = {
         //   size: '1024x1024',
         // },
         {
-          src: path.resolve('src/assets/maskable-icon.png'),
+          src: path.resolve('./src/assets/maskable-icon.png'),
           size: '1024x1024',
           purpose: 'maskable',
         },
