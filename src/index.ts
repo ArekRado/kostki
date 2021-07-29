@@ -40,6 +40,7 @@ import {
   set8,
 } from './utils/textureSets';
 import { backgroundBlueprint } from './blueprints/backgroundBlueprint';
+import { mainUIBlueprint } from './blueprints/ui/mainUIBlueprint';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -95,47 +96,9 @@ if (process.env.NODE_ENV !== 'test') {
     },
   });
 
-  backgroundBlueprint({ scene });
-
-  const emptyGrid = Array.from({ length: 8 }).map(() =>
-    Array.from({ length: 8 }).map(() => ({
-      player: undefined,
-      dots: 0,
-    }))
-  );
-
-  const basicAI = (
-    entity: Entity,
-    color: Color,
-    textureSet: AI['textureSet'],
-    human = false
-  ): AI => ({
-    entity,
-    name: componentName.ai,
-    human,
-    level: 1,
-    color,
-    textureSet,
-    active: true,
-  });
-
+  // backgroundBlueprint({ scene });
   // Blueprints
-  state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
-  state = aiBlueprint({
-    state,
-    ai: [
-      basicAI(humanPlayerEntity, teal, set1, true),
-      basicAI('2', red, set2),
-      basicAI('3', green, set3),
-      basicAI('4', yellow, set4),
-      basicAI('5', orange, set5),
-      basicAI('6', pink, set6),
-      // basicAI('7', darkBlue, set7),
-      // basicAI('8', purple, set8),
-    ],
-  });
-
-  state = markerBlueprint({ scene, state });
+  mainUIBlueprint({ scene });
 
   const beforeRenderCallback = () => {
     state = runOneFrame({ state });
@@ -153,11 +116,11 @@ if (process.env.NODE_ENV !== 'test') {
     engine.resize();
   });
 
-  emitEvent<GameEvent.StartLevelEvent>({
-    type: GameEvent.Type.startLevel,
-    entity: gameEntity,
-    payload: {},
-  });
+  // emitEvent<GameEvent.StartLevelEvent>({
+  //   type: GameEvent.Type.startLevel,
+  //   entity: gameEntity,
+  //   payload: {},
+  // });
 
   // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);

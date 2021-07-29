@@ -25,8 +25,32 @@ import {
   onClickBox,
   pushBoxToRotationQueue,
 } from './boxSystem';
-import { scene } from '..';
+import { humanPlayerEntity, scene } from '..';
 import { Color3, Vector3, StandardMaterial } from 'babylonjs';
+import { gridBlueprint } from '../blueprints/gridBlueprint';
+import { aiBlueprint } from '../blueprints/aiBlueprint';
+import {
+  darkBlue,
+  green,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+} from '../utils/colors';
+import {
+  set1,
+  set2,
+  set3,
+  set4,
+  set5,
+  set6,
+  set7,
+  set8,
+} from '../utils/textureSets';
+import { markerBlueprint } from '../blueprints/markerBlueprint';
+import { camera } from '../index';
 
 export const gameEntity = 'game';
 
@@ -275,32 +299,71 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 
 const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
   state,
-  component,
 }) => {
-  const { currentPlayer, grid, quickStart } = component;
+  const emptyGrid = Array.from({ length: 8 }).map(() =>
+    Array.from({ length: 8 }).map(() => ({
+      player: undefined,
+      dots: 0,
+    }))
+  );
+
+  const basicAI = (
+    entity: Entity,
+    color: Color,
+    textureSet: AI['textureSet'],
+    human = false
+  ): AI => ({
+    entity,
+    name: componentName.ai,
+    human,
+    level: 1,
+    color,
+    textureSet,
+    active: true,
+  });
+
+  state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
+  state = aiBlueprint({
+    state,
+    ai: [
+      basicAI(humanPlayerEntity, teal, set1, true),
+      basicAI('2', red, set2),
+      basicAI('3', green, set3),
+      basicAI('4', yellow, set4),
+      basicAI('5', orange, set5),
+      basicAI('6', pink, set6),
+      // basicAI('7', darkBlue, set7),
+      // basicAI('8', purple, set8),
+    ],
+  });
+
+  state = markerBlueprint({ scene, state });
+
+  const game = getGame({ state });
 
   const currentAi = getComponent<AI>({
     name: componentName.ai,
     state,
-    entity: currentPlayer,
+    entity: game?.currentPlayer || '',
   });
 
   const ai = currentAi; //? currentAi : getRandomAi({ state });
 
-  if (!ai) {
+  if (!ai || !game) {
     return state;
   }
+  console.log(getGame({ state })?.grid);
 
   state = setComponent<Game>({
     state,
     data: {
-      ...component,
+      ...game,
       gameStarted: true,
       currentPlayer: ai.entity,
     },
   });
 
-  if (quickStart) {
+  if (game.quickStart) {
     state = runQuickStart({ state });
     updateAllBoxes({ state });
   }
@@ -309,7 +372,7 @@ const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
   state = setComponent<Game>({
     state,
     data: {
-      ...component,
+      ...game,
       gameStarted: true,
       currentPlayer: ai.entity,
     },
