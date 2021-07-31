@@ -1,7 +1,7 @@
 import { createSystem } from '../ecs/createSystem';
 import {
   componentName,
-  getAllComponents,
+  getComponentsByName,
   getComponent,
   setComponent,
 } from '../ecs/component';
@@ -136,7 +136,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
     },
   });
 
-  const allAI = getAllComponents<AI>({
+  const allAI = getComponentsByName<AI>({
     state,
     name: componentName.ai,
   });

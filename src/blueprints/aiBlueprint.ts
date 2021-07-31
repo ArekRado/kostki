@@ -1,6 +1,6 @@
 import {
   componentName,
-  removeAllComponents,
+  removeComponentsByName,
   setComponent,
 } from '../ecs/component';
 import { AI, Game, State } from '../ecs/type';
@@ -8,7 +8,7 @@ import { getGame } from '../systems/gameSystem';
 
 type AiBlueprint = (params: { state: State; ai: AI[] }) => State;
 export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
-  state = removeAllComponents<AI>({ state, name: componentName.ai });
+  state = removeComponentsByName<AI>({ state, name: componentName.ai });
 
   const game = getGame({ state });
 

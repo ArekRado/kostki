@@ -156,6 +156,7 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
         ? dotStats.more
         : dotStats.less;
 
+    // todo: preferEmptyBoxes should prefer adjactedBox
     if (
       adjactedBox.player !== playerBox.player &&
       adjactedBox.player !== undefined

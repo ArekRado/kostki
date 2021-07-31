@@ -70,14 +70,14 @@ export const removeComponent: RemoveComponent = ({ name, entity, state }) => {
   return newState;
 };
 
-export const removeAllComponents = <Data>({
+export const removeComponentsByName = <Data>({
   state,
   name,
 }: {
   name: string;
   state: State;
 }): State => {
-  const components = getAllComponents<Data>({ state, name });
+  const components = getComponentsByName<Data>({ state, name });
 
   if (components) {
     return Object.keys(components).reduce((acc, entity) => {
@@ -102,7 +102,7 @@ export const getComponent = <Data>({
   return c ? (c[entity] as Component<Data> | undefined) : undefined;
 };
 
-export const getAllComponents = <Data>({
+export const getComponentsByName = <Data>({
   name,
   state,
 }: {
@@ -110,4 +110,25 @@ export const getAllComponents = <Data>({
   state: State;
 }): Dictionary<Component<Data>> | undefined => {
   return state.component[name];
+};
+
+type RecreateAllComponents = (params: { state: State }) => State;
+/**
+ * Calls create system method for all components. Useful when newly loaded components have to call side effects
+ */
+export const recreateAllComponents: RecreateAllComponents = ({ state }) => {
+  state = Object.entries(state.component).reduce((acc, [key, value]) => {
+    const system = getSystemByName(key, acc.system);
+
+    return Object.values(value).reduce(
+      (acc2, component) =>
+        system?.create({
+          state: acc2,
+          component,
+        }),
+      acc
+    );
+  }, state);
+
+  return state;
 };

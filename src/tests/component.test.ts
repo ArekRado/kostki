@@ -2,7 +2,11 @@ import 'regenerator-runtime/runtime';
 import { initialState } from '../ecs/state';
 import { setEntity, createEntity } from '../ecs/entity';
 import { runOneFrame } from '../ecs/runOneFrame';
-import { removeComponent, setComponent } from '../ecs/component';
+import {
+  recreateAllComponents,
+  removeComponent,
+  setComponent,
+} from '../ecs/component';
 import { createSystem } from '../ecs/createSystem';
 import { Dictionary, State } from '../ecs/type';
 
@@ -72,5 +76,36 @@ describe('component', () => {
 
     // Update should not trigger create
     expect(create).toHaveBeenCalledTimes(3);
+  });
+
+  it('recreateAllComponents - should call create system method for all components', () => {
+    const entity1 = createEntity('e1');
+
+    const create = jest.fn<State, [{ state: State }]>(({ state }) => state);
+
+    let state = setEntity({
+      entity: entity1,
+      state: initialState,
+    });
+
+    state = createSystem({
+      state,
+      name: 'test',
+      create,
+    });
+
+    state = setComponent<Dictionary<{}>>({
+      state,
+      data: {
+        entity: entity1,
+        name: 'test',
+      },
+    });
+
+    expect(create).toHaveBeenCalledTimes(1);
+
+    state = recreateAllComponents({ state });
+
+    expect(create).toHaveBeenCalledTimes(2);
   });
 });

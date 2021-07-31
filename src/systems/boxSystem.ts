@@ -8,7 +8,7 @@ import {
   Tools,
 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
-import { componentName, setComponent } from '../ecs/component';
+import { componentName, getComponent, setComponent } from '../ecs/component';
 import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
@@ -16,6 +16,9 @@ import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
 import { getDataGrid, safeGet } from './aiSystem';
 import { set1 } from '../utils/textureSets';
 import { setMeshTexture } from '../utils/setMeshTexture';
+import { boxBlueprint } from '../blueprints/boxBlueprint';
+import { boxWithGap, gridName } from '../blueprints/gridBlueprint';
+import empty from '../assets/0.png';
 
 export enum Direction {
   up,
@@ -374,9 +377,41 @@ export const boxSystem = (state: State) =>
   createSystem<Box, BoxEvent.All>({
     state,
     name: componentName.box,
-    create: ({ state }) => {
-      // todo create here box babylon
-      // create animation here
+    create: ({ state, component }) => {
+      const { gridPosition } = component;
+
+      const ai = getComponent<AI>({
+        state,
+        name: componentName.ai,
+        entity: component.player || '',
+      });
+
+      const box = boxBlueprint({
+        scene,
+        name: `${gridPosition[0]}-${gridPosition[1]}`,
+        position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
+        uniqueId: parseFloat(component.entity),
+        texture: ai?.textureSet[component.dots] || empty,
+        color: ai?.color || [1, 1, 1],
+      });
+
+      const grid = scene.getTransformNodeByName(gridName);
+      box.setParent(grid);
+
+      const game = getGame({ state });
+
+      if (!game) {
+        return state;
+      }
+
+      state = setComponent<Game>({
+        state,
+        data: {
+          ...game,
+          grid: [...game.grid, component.entity],
+        },
+      });
+
       return state;
     },
     event: ({ state, component, event }) => {

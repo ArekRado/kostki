@@ -11,9 +11,9 @@ import {
 import { Scene } from 'babylonjs/scene';
 import { emitEvent } from '../ecs/emitEvent';
 
-import empty from '../assets/0.png';
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
+import { Color } from '../ecs/type';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
 // import dot3 from '../assets/3.png';
@@ -24,12 +24,23 @@ import { setMeshTexture } from '../utils/setMeshTexture';
 export const boxBlueprint = ({
   scene,
   name,
+  uniqueId,
+  position,
+  color,
+  texture,
 }: {
   scene: Scene;
   name: string;
+  uniqueId: number;
+  position: [number, number];
+  color: Color;
+  texture: string;
 }): TransformNode => {
   const size = 1;
   const box = new TransformNode(`box ${name}`, scene);
+  box.uniqueId = uniqueId;
+  box.position.x = position[0];
+  box.position.y = position[1];
 
   [
     [new Vector3(-size / 2, 0, 0), new Vector3(0, Math.PI / 2, 0)], //
@@ -46,8 +57,8 @@ export const boxBlueprint = ({
 
     setMeshTexture({
       mesh: plane,
-      color: [1, 1, 1],
-      texture: empty,
+      color,
+      texture,
       scene,
     });
 

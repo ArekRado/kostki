@@ -1,5 +1,9 @@
 import { humanPlayerEntity } from '..';
-import { setComponent, componentName } from '../ecs/component';
+import {
+  setComponent,
+  componentName,
+  recreateAllComponents,
+} from '../ecs/component';
 import { initialState } from '../ecs/state';
 import { AI, Game, Scene, State } from '../ecs/type';
 import { aiSystem } from '../systems/aiSystem';
@@ -24,6 +28,8 @@ export const getGameInitialState: GetGameInitialState = () => {
       entity: savedState.entity,
       component: savedState.component,
     };
+
+    state = recreateAllComponents({ state });
   } else {
     state = setComponent<AI>({
       state,
