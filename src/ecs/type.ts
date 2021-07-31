@@ -34,7 +34,13 @@ export type AI = Component<{
   textureSet: [string, string, string, string, string, string, string];
 }>;
 
+export enum Scene {
+  mainMenu,
+  customLevel,
+}
+
 export type Game = Component<{
+  currentScene: Scene,
   round: number;
   grid: Entity[];
   currentPlayer: Entity;
@@ -44,6 +50,11 @@ export type Game = Component<{
   colorBlindMode: boolean;
   quickStart: boolean;
   markerEntity: Entity;
+  customLevelSettings: {
+    ai: AI[];
+    levelSize: number;
+  };
+  musicEnabled: boolean;
 }>;
 
 export type State = {

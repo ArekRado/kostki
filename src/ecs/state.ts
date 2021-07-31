@@ -14,9 +14,4 @@ let state: State = {
   system: [],
 };
 
-// Systems
-state = boxSystem(state);
-state = aiSystem(state);
-state = gameSystem(state);
-
 export const initialState = state;

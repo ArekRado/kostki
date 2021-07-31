@@ -7,40 +7,15 @@ import {
   Camera,
   NullEngine,
 } from 'babylonjs';
-import { gridBlueprint, getGridDimensions } from './blueprints/gridBlueprint';
-import { aiBlueprint } from './blueprints/aiBlueprint';
-import { componentName } from './ecs/component';
-import { emitEvent } from './ecs/emitEvent';
+import { getGridDimensions } from './blueprints/gridBlueprint';
 import { runOneFrame } from './ecs/runOneFrame';
-import { AI, Color, Entity, State } from './ecs/type';
-import { gameEntity, GameEvent } from './systems/gameSystem';
+import { State, Scene as GameScene } from './ecs/type';
+import { getGame } from './systems/gameSystem';
 import { getGameInitialState } from './utils/getGameInitialState';
-
 import { getDataGrid } from './systems/aiSystem';
 import { setCameraDistance } from './utils/setCameraDistance';
-import { markerBlueprint } from './blueprints/markerBlueprint';
-import {
-  darkBlue,
-  green,
-  orange,
-  pink,
-  purple,
-  red,
-  teal,
-  yellow,
-} from './utils/colors';
-import {
-  set1,
-  set2,
-  set3,
-  set4,
-  set5,
-  set6,
-  set7,
-  set8,
-} from './utils/textureSets';
-import { backgroundBlueprint } from './blueprints/backgroundBlueprint';
-import { mainUIBlueprint } from './blueprints/ui/mainUIBlueprint';
+import { mainMenuScene } from './scenes/mainMenuScene';
+import { customLevelScene } from './scenes/customLevelScene';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -90,15 +65,17 @@ light.groundColor = new BABYLON.Color3(1, 1, 1);
 
 // Because mutations breaks everytging
 if (process.env.NODE_ENV !== 'test') {
-  let state: State = getGameInitialState({
-    game: {
-      quickStart: true,
-    },
-  });
+  let state: State = getGameInitialState();
+  const game = getGame({ state });
 
-  // backgroundBlueprint({ scene });
-  // Blueprints
-  mainUIBlueprint({ scene });
+  switch (game?.currentScene) {
+    case GameScene.mainMenu:
+      state = mainMenuScene({ scene, state });
+      break;
+    case GameScene.customLevel:
+      state = customLevelScene({ camera, scene, state });
+      break;
+  }
 
   const beforeRenderCallback = () => {
     state = runOneFrame({ state });
@@ -115,12 +92,6 @@ if (process.env.NODE_ENV !== 'test') {
 
     engine.resize();
   });
-
-  // emitEvent<GameEvent.StartLevelEvent>({
-  //   type: GameEvent.Type.startLevel,
-  //   entity: gameEntity,
-  //   payload: {},
-  // });
 
   // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);

@@ -29,42 +29,26 @@ import { humanPlayerEntity, scene } from '..';
 import { Color3, Vector3, StandardMaterial } from 'babylonjs';
 import { gridBlueprint } from '../blueprints/gridBlueprint';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
-import {
-  darkBlue,
-  green,
-  orange,
-  pink,
-  purple,
-  red,
-  teal,
-  yellow,
-} from '../utils/colors';
-import {
-  set1,
-  set2,
-  set3,
-  set4,
-  set5,
-  set6,
-  set7,
-  set8,
-} from '../utils/textureSets';
+
 import { markerBlueprint } from '../blueprints/markerBlueprint';
 import { camera } from '../index';
+import { saveState } from '../utils/localDb';
+import { customLevelScene } from '../scenes/customLevelScene';
 
 export const gameEntity = 'game';
 
 export namespace GameEvent {
   export enum Type {
-    startLevel,
+    startCustomLevel,
     nextTurn,
     boxExplosion,
     playerClick,
+    saveGame,
   }
 
-  export type All = StartLevelEvent | NextTurnEvent | PlayerClickEvent;
+  export type All = StartCustomLevelEvent | NextTurnEvent | PlayerClickEvent;
 
-  export type StartLevelEvent = ECSEvent<Type.startLevel, {}>;
+  export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,
@@ -106,6 +90,28 @@ export const getGame: GetGame = ({ state }) => {
     entity: gameEntity,
     name: componentName.game,
   });
+};
+
+type SetGame = (params: {
+  state: State;
+  game: Partial<Game>;
+}) => State;
+export const setGame: SetGame = ({ state, game: gamePartial }) => {
+  const game = getGame({ state });
+
+  if (!game) {
+    return state;
+  }
+
+  state = setComponent<Game>({
+    state,
+    data: {
+      ...game,
+      ...gamePartial,
+    },
+  });
+
+  return state;
 };
 
 type GetCurrentAi = (params: { state: State }) => AI | undefined;
@@ -297,69 +303,30 @@ const runQuickStart: RunQuickStart = ({ state }) => {
   return newState || state;
 };
 
-const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
-  state,
-}) => {
-  const emptyGrid = Array.from({ length: 8 }).map(() =>
-    Array.from({ length: 8 }).map(() => ({
-      player: undefined,
-      dots: 0,
-    }))
-  );
-
-  const basicAI = (
-    entity: Entity,
-    color: Color,
-    textureSet: AI['textureSet'],
-    human = false
-  ): AI => ({
-    entity,
-    name: componentName.ai,
-    human,
-    level: 1,
-    color,
-    textureSet,
-    active: true,
-  });
-
-  state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
-  state = aiBlueprint({
-    state,
-    ai: [
-      basicAI(humanPlayerEntity, teal, set1, true),
-      basicAI('2', red, set2),
-      basicAI('3', green, set3),
-      basicAI('4', yellow, set4),
-      basicAI('5', orange, set5),
-      basicAI('6', pink, set6),
-      // basicAI('7', darkBlue, set7),
-      // basicAI('8', purple, set8),
-    ],
-  });
-
-  state = markerBlueprint({ scene, state });
-
-  const game = getGame({ state });
+const handleStartCustomLevel: EventHandler<
+  Game,
+  GameEvent.StartCustomLevelEvent
+> = ({ state, component }) => {
+  state = customLevelScene({ state, scene, camera });
 
   const currentAi = getComponent<AI>({
     name: componentName.ai,
     state,
-    entity: game?.currentPlayer || '',
+    entity: component?.currentPlayer || '',
   });
 
-  const ai = currentAi; //? currentAi : getRandomAi({ state });
+  const game = getGame({ state });
 
-  if (!ai || !game) {
+  if (!currentAi || !game) {
     return state;
   }
-  console.log(getGame({ state })?.grid);
 
   state = setComponent<Game>({
     state,
     data: {
       ...game,
       gameStarted: true,
-      currentPlayer: ai.entity,
+      currentPlayer: currentAi.entity,
     },
   });
 
@@ -374,15 +341,15 @@ const handleStartLevel: EventHandler<Game, GameEvent.StartLevelEvent> = ({
     data: {
       ...game,
       gameStarted: true,
-      currentPlayer: ai.entity,
+      currentPlayer: currentAi.entity,
     },
   });
 
-  if (!ai.human) {
-    const box = getAiMove({ state, ai });
+  if (!currentAi.human) {
+    const box = getAiMove({ state, ai: currentAi });
 
     if (box) {
-      state = onClickBox({ box, state, ai });
+      state = onClickBox({ box, state, ai: currentAi });
     }
   }
 
@@ -438,6 +405,8 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
     }
   }
 
+  saveState(state);
+
   return state;
 };
 
@@ -483,8 +452,8 @@ export const gameSystem = (state: State) =>
     name: componentName.game,
     event: ({ state, component, event }) => {
       switch (event.type) {
-        case GameEvent.Type.startLevel:
-          return handleStartLevel({ state, component, event });
+        case GameEvent.Type.startCustomLevel:
+          return handleStartCustomLevel({ state, component, event });
         case GameEvent.Type.nextTurn:
           return handleNextTurn({ state, component, event });
         case GameEvent.Type.playerClick:

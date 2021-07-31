@@ -4,6 +4,7 @@ import logoUrl from '../../assets/logo.png';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
+import { State } from '../../ecs/type';
 
 const button = (btn: BABYLON.GUI.Button) => {
   btn.width = 0.3;
@@ -17,7 +18,8 @@ const button = (btn: BABYLON.GUI.Button) => {
   return btn;
 };
 
-export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
+type MainUIBlueprint = (params: { scene: Scene; state: State }) => State;
+export const mainUIBlueprint: MainUIBlueprint = ({ state, scene }) => {
   const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
     'mainUI',
     false,
@@ -35,8 +37,8 @@ export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
     BABYLON.GUI.Button.CreateSimpleButton('continueBtn', 'Continue')
   );
   continueBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartLevelEvent>({
-      type: GameEvent.Type.startLevel,
+    emitEvent<GameEvent.StartCustomLevelEvent>({
+      type: GameEvent.Type.startCustomLevel,
       entity: gameEntity,
       payload: {},
     });
@@ -48,8 +50,8 @@ export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
     BABYLON.GUI.Button.CreateSimpleButton('startBtn', 'Start')
   );
   startBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartLevelEvent>({
-      type: GameEvent.Type.startLevel,
+    emitEvent<GameEvent.StartCustomLevelEvent>({
+      type: GameEvent.Type.startCustomLevel,
       entity: gameEntity,
       payload: {},
     });
@@ -61,8 +63,8 @@ export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
     BABYLON.GUI.Button.CreateSimpleButton('levelSelectBtn', 'Select level')
   );
   levelSelectBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartLevelEvent>({
-      type: GameEvent.Type.startLevel,
+    emitEvent<GameEvent.StartCustomLevelEvent>({
+      type: GameEvent.Type.startCustomLevel,
       entity: gameEntity,
       payload: {},
     });
@@ -74,8 +76,8 @@ export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
     BABYLON.GUI.Button.CreateSimpleButton('muteBtn', 'Mute')
   );
   muteBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartLevelEvent>({
-      type: GameEvent.Type.startLevel,
+    emitEvent<GameEvent.StartCustomLevelEvent>({
+      type: GameEvent.Type.startCustomLevel,
       entity: gameEntity,
       payload: {},
     });
@@ -124,4 +126,6 @@ export const mainUIBlueprint = ({ scene }: { scene: Scene }) => {
   // rect = new BABYLON.GUI.Rectangle();
   // rect.thickness = 0;
   // grid.addControl(rect, 1, 0);
+
+  return state;
 };

@@ -1,1 +1,1 @@
-# kostki
+[Kostki - Play online](https://arekrado.github.io/kostki/)
