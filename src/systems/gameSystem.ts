@@ -4,6 +4,7 @@ import {
   getComponentsByName,
   getComponent,
   setComponent,
+  createGetSetForUniqComponent,
 } from '../ecs/component';
 import {
   AI,
@@ -25,15 +26,14 @@ import {
   onClickBox,
   pushBoxToRotationQueue,
 } from './boxSystem';
-import { humanPlayerEntity, scene } from '..';
+import { scene } from '..';
 import { Color3, Vector3, StandardMaterial } from 'babylonjs';
-import { gridBlueprint } from '../blueprints/gridBlueprint';
-import { aiBlueprint } from '../blueprints/aiBlueprint';
 
-import { markerBlueprint } from '../blueprints/markerBlueprint';
 import { camera } from '../index';
 import { saveState } from '../utils/localDb';
 import { customLevelScene } from '../scenes/customLevelScene';
+import { setMarker } from './markerSystem';
+import { boxWithGap } from '../blueprints/gridBlueprint';
 
 export const gameEntity = 'game';
 
@@ -56,63 +56,13 @@ export namespace GameEvent {
   >;
 }
 
-type MoveMarker = (params: {
-  boxEntity: Entity;
-  markerEntity: Entity;
-  color: Color;
-}) => void;
-export const moveMarker: MoveMarker = ({ boxEntity, markerEntity, color }) => {
-  const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxEntity));
-  const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
+const gameGetSet = createGetSetForUniqComponent<Game>({
+  entity: gameEntity,
+  name: componentName.game,
+});
 
-  if (markerMesh && boxMesh) {
-    (markerMesh.material as StandardMaterial).alpha = 0;
-    (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
-      color[0],
-      color[1],
-      color[2]
-    );
-
-    scene.beginAnimation(markerMesh, 0, 1, false);
-
-    markerMesh.position = new Vector3(
-      boxMesh.position.x,
-      boxMesh.position.y,
-      boxMesh.position.z - 1
-    );
-  }
-};
-
-type GetGame = (params: { state: State }) => Game | undefined;
-export const getGame: GetGame = ({ state }) => {
-  return getComponent<Game>({
-    state,
-    entity: gameEntity,
-    name: componentName.game,
-  });
-};
-
-type SetGame = (params: {
-  state: State;
-  game: Partial<Game>;
-}) => State;
-export const setGame: SetGame = ({ state, game: gamePartial }) => {
-  const game = getGame({ state });
-
-  if (!game) {
-    return state;
-  }
-
-  state = setComponent<Game>({
-    state,
-    data: {
-      ...game,
-      ...gamePartial,
-    },
-  });
-
-  return state;
-};
+export const getGame = gameGetSet.getComponent;
+export const setGame = gameGetSet.setComponent;
 
 type GetCurrentAi = (params: { state: State }) => AI | undefined;
 export const getCurrentAi: GetCurrentAi = ({ state }) => {
@@ -391,10 +341,15 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       const box = getAiMove({ state, ai });
 
       if (box) {
-        moveMarker({
-          boxEntity: box.entity,
-          color: ai.color,
-          markerEntity: component.markerEntity,
+        state = setMarker({
+          state,
+          data: {
+            color: ai.color,
+            position: [
+              box.gridPosition[0] * boxWithGap,
+              box.gridPosition[1] * boxWithGap,
+            ],
+          },
         });
         state = onClickBox({ box, state, ai });
         state = pushBoxToRotationQueue({ state, entity: box.entity });
@@ -434,10 +389,15 @@ const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> = ({
     });
 
     if (box && ai?.human) {
-      moveMarker({
-        boxEntity: box.entity,
-        color: ai.color,
-        markerEntity: component.markerEntity,
+      state = setMarker({
+        state,
+        data: {
+          color: ai.color,
+          position: [
+            box.gridPosition[0] * boxWithGap,
+            box.gridPosition[1] * boxWithGap,
+          ],
+        },
       });
       state = onClickBox({ box, state, ai });
     }
@@ -450,6 +410,31 @@ export const gameSystem = (state: State) =>
   createSystem<Game, GameEvent.All>({
     state,
     name: componentName.game,
+    create: ({ state, component }) => {
+      component.boxRotationQueue.forEach((boxEntity) => {
+        const box = getComponent<Box>({
+          state,
+          name: componentName.box,
+          entity: boxEntity,
+        });
+
+        const ai = getComponent<AI>({
+          state,
+          name: componentName.ai,
+          entity: box?.player || '',
+        });
+
+        ai &&
+          box &&
+          emitEvent<BoxEvent.RotationEndEvent>({
+            type: BoxEvent.Type.rotationEnd,
+            entity: boxEntity,
+            payload: { ai, shouldExplode: box.dots === 6 },
+          });
+      });
+
+      return state;
+    },
     event: ({ state, component, event }) => {
       switch (event.type) {
         case GameEvent.Type.startCustomLevel:

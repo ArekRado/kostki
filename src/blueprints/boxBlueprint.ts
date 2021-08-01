@@ -13,7 +13,9 @@ import { emitEvent } from '../ecs/emitEvent';
 
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
-import { Color } from '../ecs/type';
+import { AI, Box, Color, State } from '../ecs/type';
+import { getTextureSet } from '../systems/boxSystem';
+import { componentName, getComponent } from '../ecs/component';
 // import dot1 from '../assets/1.png';
 // import dot2 from '../assets/2.png';
 // import dot3 from '../assets/3.png';
@@ -28,6 +30,9 @@ export const boxBlueprint = ({
   position,
   color,
   texture,
+  state,
+  ai,
+  box,
 }: {
   scene: Scene;
   name: string;
@@ -35,12 +40,15 @@ export const boxBlueprint = ({
   position: [number, number];
   color: Color;
   texture: string;
+  state: State;
+  ai: AI | undefined;
+  box: Box;
 }): TransformNode => {
   const size = 1;
-  const box = new TransformNode(`box ${name}`, scene);
-  box.uniqueId = uniqueId;
-  box.position.x = position[0];
-  box.position.y = position[1];
+  const boxMesh = new TransformNode(`box ${name}`, scene);
+  boxMesh.uniqueId = uniqueId;
+  boxMesh.position.x = position[0];
+  boxMesh.position.y = position[1];
 
   [
     [new Vector3(-size / 2, 0, 0), new Vector3(0, Math.PI / 2, 0)], //
@@ -51,14 +59,14 @@ export const boxBlueprint = ({
     [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)],
   ].forEach(([position, rotation], i) => {
     const plane = Mesh.CreatePlane('plane' + i, size, scene, true);
-    plane.parent = box;
+    plane.parent = boxMesh;
 
     plane.material = new StandardMaterial('mat', scene);
 
     setMeshTexture({
       mesh: plane,
       color,
-      texture,
+      texture: getTextureSet({ state, ai })[box.dots],
       scene,
     });
 
@@ -67,7 +75,7 @@ export const boxBlueprint = ({
     plane.position = position;
     plane.rotation = rotation;
 
-    plane.setParent(box);
+    plane.setParent(boxMesh);
 
     // Click event
     plane.actionManager = new ActionManager(scene);
@@ -76,11 +84,11 @@ export const boxBlueprint = ({
         emitEvent<GameEvent.PlayerClickEvent>({
           entity: gameEntity,
           type: GameEvent.Type.playerClick,
-          payload: { boxEntity: box.uniqueId.toString() },
+          payload: { boxEntity: uniqueId.toString() },
         });
       })
     );
   });
 
-  return box;
+  return boxMesh;
 };

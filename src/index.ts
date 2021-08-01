@@ -63,19 +63,9 @@ light.diffuse = new BABYLON.Color3(1, 1, 1);
 light.specular = new BABYLON.Color3(1, 1, 1);
 light.groundColor = new BABYLON.Color3(1, 1, 1);
 
-// Because mutations breaks everytging
+// Because mutations breaks everything
 if (process.env.NODE_ENV !== 'test') {
   let state: State = getGameInitialState();
-  const game = getGame({ state });
-
-  switch (game?.currentScene) {
-    case GameScene.mainMenu:
-      state = mainMenuScene({ scene, state });
-      break;
-    case GameScene.customLevel:
-      state = customLevelScene({ camera, scene, state });
-      break;
-  }
 
   const beforeRenderCallback = () => {
     state = runOneFrame({ state });

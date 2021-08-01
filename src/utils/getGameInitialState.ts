@@ -1,15 +1,25 @@
-import { humanPlayerEntity } from '..';
+import { humanPlayerEntity, scene } from '..';
 import {
   setComponent,
   componentName,
   recreateAllComponents,
+  getComponent,
 } from '../ecs/component';
 import { initialState } from '../ecs/state';
-import { AI, Game, Scene, State } from '../ecs/type';
+import { AI, Camera, Game, Marker, Scene, State } from '../ecs/type';
+import { mainMenuScene } from '../scenes/mainMenuScene';
 import { aiSystem } from '../systems/aiSystem';
-import { boxSystem } from '../systems/boxSystem';
-import { gameEntity, gameSystem } from '../systems/gameSystem';
+import { BoxEvent, boxSystem } from '../systems/boxSystem';
+import {
+  gameEntity,
+  GameEvent,
+  gameSystem,
+  getGame,
+} from '../systems/gameSystem';
+import { markerEntity, markerSystem } from '../systems/markerSystem';
+import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
 import { getSavedState } from './localDb';
+import { emitEvent } from '../ecs/emitEvent';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -19,6 +29,8 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = boxSystem(state);
   state = aiSystem(state);
   state = gameSystem(state);
+  state = markerSystem(state);
+  state = cameraSystem(state);
 
   const savedState = getSavedState();
 
@@ -58,7 +70,6 @@ export const getGameInitialState: GetGameInitialState = () => {
         boxRotationQueue: [],
         quickStart: true,
         colorBlindMode: false,
-        markerEntity: '',
         customLevelSettings: {
           ai: [],
           levelSize: 0,
@@ -66,6 +77,28 @@ export const getGameInitialState: GetGameInitialState = () => {
         musicEnabled: false,
       },
     });
+
+    state = setComponent<Camera>({
+      state,
+      data: {
+        entity: cameraEntity,
+        name: componentName.camera,
+        position: [0, 0],
+        distance: 0,
+      },
+    });
+
+    state = setComponent<Marker>({
+      state,
+      data: {
+        entity: markerEntity,
+        name: componentName.marker,
+        color: [1, 1, 1],
+        position: [0, 0],
+      },
+    });
+
+    state = mainMenuScene({ scene, state });
   }
 
   return state;

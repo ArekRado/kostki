@@ -7,5 +7,5 @@ type MainMenuScene = (params: { state: State; scene: Scene }) => State;
 export const mainMenuScene: MainMenuScene = ({ state, scene }) => {
   mainUIBlueprint({ state, scene });
 
-  return setGame({ state, game: { currentScene: GameScene.customLevel } });
+  return setGame({ state, data: { currentScene: GameScene.customLevel } });
 };

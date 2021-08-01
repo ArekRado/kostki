@@ -62,9 +62,13 @@ export const getTextureSet = ({
   ai,
 }: {
   state: State;
-  ai: AI;
+  ai: AI | undefined;
 }): AI['textureSet'] => {
   const game = getGame({ state });
+
+  if (!ai) {
+    return set1;
+  }
 
   return game?.colorBlindMode ? ai.textureSet : set1;
 };
@@ -135,6 +139,7 @@ export const createRotationBoxAnimation = ({
   const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
   if (box) {
+
     const rightAngle = Tools.ToRadians(90);
 
     const rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
@@ -379,24 +384,23 @@ export const boxSystem = (state: State) =>
     name: componentName.box,
     create: ({ state, component }) => {
       const { gridPosition } = component;
-
       const ai = getComponent<AI>({
         state,
         name: componentName.ai,
         entity: component.player || '',
       });
 
-      const box = boxBlueprint({
+      boxBlueprint({
         scene,
         name: `${gridPosition[0]}-${gridPosition[1]}`,
         position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
         uniqueId: parseFloat(component.entity),
         texture: ai?.textureSet[component.dots] || empty,
         color: ai?.color || [1, 1, 1],
+        ai,
+        box: component,
+        state,
       });
-
-      const grid = scene.getTransformNodeByName(gridName);
-      box.setParent(grid);
 
       const game = getGame({ state });
 

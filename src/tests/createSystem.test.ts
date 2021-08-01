@@ -158,4 +158,34 @@ describe('createGlobalSystem', () => {
   test.todo(
     'nested events where each event changes same component - eg add value'
   );
+
+  test('should call update method on each setComponent', () => {
+    const componentName = 'componentName';
+    const entity = 'entity';
+
+    let state = setComponent({
+      state: initialState,
+      data: { entity, name: componentName },
+    });
+
+    const updateMock = jest.fn(({ state }: any) => state);
+
+    state = createSystem<any, any>({
+      state,
+      name: componentName,
+      update: updateMock,
+    });
+
+    expect(updateMock).not.toHaveBeenCalled();
+
+    setComponent({
+      state,
+      data: {
+        name: componentName,
+        entity,
+      },
+    });
+
+    expect(updateMock).toHaveBeenCalled();
+  });
 });

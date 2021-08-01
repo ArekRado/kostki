@@ -40,7 +40,7 @@ export enum Scene {
 }
 
 export type Game = Component<{
-  currentScene: Scene,
+  currentScene: Scene;
   round: number;
   grid: Entity[];
   currentPlayer: Entity;
@@ -49,12 +49,21 @@ export type Game = Component<{
   gameStarted: boolean;
   colorBlindMode: boolean;
   quickStart: boolean;
-  markerEntity: Entity;
   customLevelSettings: {
     ai: AI[];
     levelSize: number;
   };
   musicEnabled: boolean;
+}>;
+
+export type Camera = Component<{
+  position: [number, number];
+  distance: number
+}>;
+
+export type Marker = Component<{
+  color: Color;
+  position: [number, number];
 }>;
 
 export type State = {
@@ -63,6 +72,8 @@ export type State = {
     box: Dictionary<Box>;
     ai: Dictionary<AI>;
     game: Dictionary<Game>;
+    camera: Dictionary<Camera>;
+    marker: Dictionary<Marker>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

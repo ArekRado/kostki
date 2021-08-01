@@ -1,11 +1,11 @@
 import { Scene, UniversalCamera } from 'babylonjs';
-import { StateCondition } from 'babylonjs/Actions/condition';
 import { humanPlayerEntity } from '..';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
-import { gridBlueprint } from '../blueprints/gridBlueprint';
-import { markerBlueprint } from '../blueprints/markerBlueprint';
-import { componentName } from '../ecs/component';
-import { AI, Color, Entity, State } from '../ecs/type';
+import { getGridDimensions } from '../blueprints/gridBlueprint';
+import { componentName, setComponent } from '../ecs/component';
+import { AI, Box, Color, Entity, State } from '../ecs/type';
+import { getDataGrid } from '../systems/aiSystem';
+import { setCamera } from '../systems/cameraSystem';
 import {
   darkBlue,
   green,
@@ -16,6 +16,7 @@ import {
   teal,
   yellow,
 } from '../utils/colors';
+import { generateId } from '../utils/generateId';
 import {
   set1,
   set2,
@@ -32,12 +33,29 @@ type CustomLevelScene = (params: {
   scene: Scene;
   camera: UniversalCamera;
 }) => State;
-export const customLevelScene: CustomLevelScene = ({ state, scene, camera }) => {
-  const emptyGrid = Array.from({ length: 8 }).map(() =>
-    Array.from({ length: 8 }).map(() => ({
-      player: undefined,
-      dots: 0,
-    }))
+export const customLevelScene: CustomLevelScene = ({
+  state,
+  scene,
+  camera,
+}) => {
+  state = Array.from({ length: 8 }).reduce(
+    (acc: State, _, x) =>
+      Array.from({ length: 8 }).reduce(
+        (acc2: State, _, y) =>
+          setComponent<Box>({
+            state: acc2,
+            data: {
+              name: componentName.box,
+              entity: generateId().toString(),
+              isAnimating: false,
+              dots: 0,
+              gridPosition: [y, x],
+              player: undefined,
+            },
+          }),
+        acc
+      ),
+    state
   );
 
   const basicAI = (
@@ -55,7 +73,7 @@ export const customLevelScene: CustomLevelScene = ({ state, scene, camera }) => 
     active: true,
   });
 
-  state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
+  // state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
   state = aiBlueprint({
     state,
     ai: [
@@ -70,7 +88,15 @@ export const customLevelScene: CustomLevelScene = ({ state, scene, camera }) => 
     ],
   });
 
-  state = markerBlueprint({ scene, state });
+  const { center, cameraDistance } = getGridDimensions(getDataGrid({ state }));
+
+  state = setCamera({
+    state,
+    data: {
+      position: [center[0], center[1]],
+      distance: cameraDistance,
+    },
+  });
 
   return state;
 };

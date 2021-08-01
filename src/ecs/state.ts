@@ -7,6 +7,8 @@ let state: State = {
     [componentName.box]: {},
     [componentName.ai]: {},
     [componentName.game]: {},
+    [componentName.camera]: {},
+    [componentName.marker]: {},
   },
   system: [],
 };

@@ -62,6 +62,7 @@ export type CreateSystemParams<Component, Events> = {
   name: string;
   initialize?: (params: { state: State }) => State;
   create?: (params: SystemMethodParams<Component>) => State;
+  update?: (params: SystemMethodParams<Component>) => State;
   tick?: (params: SystemMethodParams<Component>) => State;
   remove?: (params: SystemMethodParams<Component>) => State;
   priority?: number;
@@ -78,6 +79,13 @@ export type System<Component, Events> = {
    * Called on each component create if state.component[name] and system name are the same
    */
   create: (params: SystemMethodParams<Component>) => State;
+  /**
+   * Called on each setComponent
+   */
+  update?: (params: SystemMethodParams<Component>) => State;
+  /**
+   * Called on each runOneFrame
+   */
   tick: (params: { state: State; eventBuffer: Dictionary<Events[]> }) => State;
   remove: (params: SystemMethodParams<Component>) => State;
   priority: number;
@@ -119,6 +127,7 @@ export const createSystem = <ComponentData, Events>({
 
       return state;
     },
+    update: params.update,
     remove: params.remove || doNothing,
     event: params.event || doNothing,
   };
@@ -141,6 +150,7 @@ export type CreateGlobalSystemParams<Events> = {
 
 export type GlobalSystem = {
   name: string;
+  update: undefined;
   tick: (params: { state: State }) => State;
   /**
    * Called only once when engine is initializing
@@ -161,6 +171,7 @@ export const createGlobalSystem = <Events>({
   const system: GlobalSystem = {
     name: params.name,
     priority: params.priority || systemPriority.zero,
+    update: undefined,
     tick: tick || doNothing,
     initialize: initialize || doNothing,
     create: doNothing,

@@ -1,4 +1,4 @@
-import { Guid, State } from './type';
+import { Entity, Guid, State } from './type';
 import { Component, Dictionary } from './type';
 
 const getSystemByName = (name: string, system: State['system']) =>
@@ -8,6 +8,8 @@ export enum componentName {
   box = 'box',
   ai = 'ai',
   game = 'game',
+  camera = 'camera',
+  marker = 'marker',
 }
 
 type SetComponentParams<Data> = {
@@ -31,12 +33,15 @@ export const setComponent = <Data>({
 
   const system = getSystemByName(data.name, state.system);
 
-  if (
-    system !== undefined &&
-    (state.component[data.name] === undefined ||
-      state.component[data.name][data.entity] === undefined)
-  ) {
-    return system.create({ state: newState, component: data });
+  if (system !== undefined) {
+    if (
+      state.component[data.name] === undefined ||
+      state.component[data.name][data.entity] === undefined
+    ) {
+      return system.create({ state: newState, component: data });
+    } else if (system.update) {
+      return system.update({ state: newState, component: data });
+    }
   }
 
   return newState;
@@ -131,4 +136,55 @@ export const recreateAllComponents: RecreateAllComponents = ({ state }) => {
   }, state);
 
   return state;
+};
+
+/**
+ * Creates get and set component functions for unique entity. Useful when you have always one component eg game settings or camera
+ *
+ * @param param0
+ * @returns
+ */
+export const createGetSetForUniqComponent = <ComponentData>({
+  entity,
+  name,
+}: {
+  entity: Entity;
+  name: string;
+}) => {
+  type Getter = (params: { state: State }) => ComponentData | undefined;
+  const getter: Getter = ({ state }) =>
+    getComponent<Component<ComponentData>>({
+      state,
+      entity,
+      name,
+    });
+
+  type Setter = (params: {
+    state: State;
+    data: Partial<ComponentData>;
+  }) => State;
+  const setter: Setter = ({ state, data: dataPartial }) => {
+    const data = getter({ state });
+
+    if (!data) {
+      return state;
+    }
+
+    state = setComponent<Component<ComponentData>>({
+      state,
+      data: {
+        entity,
+        name,
+        ...data,
+        ...dataPartial,
+      },
+    });
+
+    return state;
+  };
+
+  return {
+    getComponent: getter,
+    setComponent: setter,
+  };
 };
