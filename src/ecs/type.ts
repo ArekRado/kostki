@@ -40,7 +40,6 @@ export enum Scene {
 }
 
 export type Game = Component<{
-  currentScene: Scene;
   round: number;
   grid: Entity[];
   currentPlayer: Entity;
@@ -66,6 +65,10 @@ export type Marker = Component<{
   position: [number, number];
 }>;
 
+export type UI = Component<{
+  type: Scene
+}>;
+
 export type State = {
   entity: Dictionary<Entity>;
   component: Dictionary<Dictionary<Component<any>>> & {
@@ -74,6 +77,7 @@ export type State = {
     game: Dictionary<Game>;
     camera: Dictionary<Camera>;
     marker: Dictionary<Marker>;
+    ui: Dictionary<UI>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

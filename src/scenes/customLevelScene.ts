@@ -2,10 +2,12 @@ import { Scene, UniversalCamera } from 'babylonjs';
 import { humanPlayerEntity } from '..';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
 import { getGridDimensions } from '../blueprints/gridBlueprint';
+import { gameUIBlueprint } from '../blueprints/ui/gameUIBlueprint';
 import { componentName, setComponent } from '../ecs/component';
-import { AI, Box, Color, Entity, State } from '../ecs/type';
+import { AI, Box, Color, Entity, State, Scene as SceneEnum } from '../ecs/type';
 import { getDataGrid } from '../systems/aiSystem';
 import { setCamera } from '../systems/cameraSystem';
+import { setUi } from '../systems/uiSystem';
 import {
   darkBlue,
   green,
@@ -95,6 +97,13 @@ export const customLevelScene: CustomLevelScene = ({
     data: {
       position: [center[0], center[1]],
       distance: cameraDistance,
+    },
+  });
+
+  state = setUi({
+    state,
+    data: {
+      type: SceneEnum.customLevel,
     },
   });
 

@@ -9,3 +9,7 @@ export const getSavedState = (): State | null => {
 export const saveState = (state: State) => {
   localStorage.setItem(localDbKey, JSON.stringify(state));
 };
+
+export const removeState = () => {
+  localStorage.removeItem(localDbKey);
+};

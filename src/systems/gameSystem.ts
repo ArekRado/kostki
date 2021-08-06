@@ -30,7 +30,7 @@ import { scene } from '..';
 import { Color3, Vector3, StandardMaterial } from 'babylonjs';
 
 import { camera } from '../index';
-import { saveState } from '../utils/localDb';
+import { removeState, saveState } from '../utils/localDb';
 import { customLevelScene } from '../scenes/customLevelScene';
 import { setMarker } from './markerSystem';
 import { boxWithGap } from '../blueprints/gridBlueprint';
@@ -98,6 +98,8 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
+    removeState();
+
     return setComponent<Game>({
       state,
       data: {

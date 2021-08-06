@@ -59,10 +59,28 @@ const config = {
         plugins: [['optipng', { optimizationLevel: 9 }]],
       },
     }),
-    new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
+    // new WorkboxPlugin.GenerateSW({
+    //   clientsClaim: true,
+    //   skipWaiting: true,
+    // }),
+    new WorkboxPlugin.InjectManifest({
+      swSrc: './src/service-worker.js',
+      dontCacheBustURLsMatching: /\.[0-9a-f]{8}\./,
+      exclude: [/\.map$/, /asset-manifest\.json$/, /LICENSE/],
+      // Bump up the default maximum size (2mb) that's precached,
+      // to make lazy-loading failure scenarios less likely.
+      // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
+      maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
     }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+    // todo
+    // new webpack.DefinePlugin({
+    //   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    //   'process.env.MY_ENV': JSON.stringify(process.env.MY_ENV),
+    //   ... and so on ...
+    // })
     new CleanWebpackPlugin(),
     new WebpackPwaManifest({
       name: 'Kostki',

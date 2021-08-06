@@ -6,8 +6,7 @@ import {
   getComponent,
 } from '../ecs/component';
 import { initialState } from '../ecs/state';
-import { AI, Camera, Game, Marker, Scene, State } from '../ecs/type';
-import { mainMenuScene } from '../scenes/mainMenuScene';
+import { AI, Camera, Game, Marker, Scene, State, UI } from '../ecs/type';
 import { aiSystem } from '../systems/aiSystem';
 import { BoxEvent, boxSystem } from '../systems/boxSystem';
 import {
@@ -20,6 +19,7 @@ import { markerEntity, markerSystem } from '../systems/markerSystem';
 import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
 import { getSavedState } from './localDb';
 import { emitEvent } from '../ecs/emitEvent';
+import { uiEntity, uiSystem } from '../systems/uiSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -31,6 +31,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = gameSystem(state);
   state = markerSystem(state);
   state = cameraSystem(state);
+  state = uiSystem(state);
 
   const savedState = getSavedState();
 
@@ -59,7 +60,6 @@ export const getGameInitialState: GetGameInitialState = () => {
     state = setComponent<Game>({
       state,
       data: {
-        currentScene: Scene.mainMenu,
         entity: gameEntity,
         name: componentName.game,
         grid: [],
@@ -75,6 +75,15 @@ export const getGameInitialState: GetGameInitialState = () => {
           levelSize: 0,
         },
         musicEnabled: false,
+      },
+    });
+
+    state = setComponent<UI>({
+      state,
+      data: {
+        entity: uiEntity,
+        name: componentName.ui,
+        type: Scene.mainMenu,
       },
     });
 
@@ -98,7 +107,6 @@ export const getGameInitialState: GetGameInitialState = () => {
       },
     });
 
-    state = mainMenuScene({ scene, state });
   }
 
   return state;

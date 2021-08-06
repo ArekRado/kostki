@@ -9,6 +9,7 @@ let state: State = {
     [componentName.game]: {},
     [componentName.camera]: {},
     [componentName.marker]: {},
+    [componentName.ui]: {},
   },
   system: [],
 };

@@ -17,7 +17,7 @@
     "build": "webpack --config webpack.prod.js --mode production",
     "test": "jest --env=jsdom",
     "test:watch": "jest --env=jsdom --watch --coverage=false",
-    "serve:local": "npx serve dist"
+    "serve": "npx serve dist"
   },
   "prettier": {
     "printWidth": 80,

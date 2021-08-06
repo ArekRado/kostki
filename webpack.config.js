@@ -1,7 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const WorkboxPlugin = require('workbox-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
+const WebpackPwaManifest = require('webpack-pwa-manifest');
 
 const config = {
   mode: 'development',
@@ -46,10 +47,9 @@ const config = {
       filename: 'index.html',
       template: './src/index.html',
     }),
-    // new WorkboxPlugin.GenerateSW({
-    //   clientsClaim: true,
-    //   skipWaiting: true,
-    // }),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
   optimization: {
     runtimeChunk: 'single',

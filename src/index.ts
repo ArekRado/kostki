@@ -9,13 +9,11 @@ import {
 } from 'babylonjs';
 import { getGridDimensions } from './blueprints/gridBlueprint';
 import { runOneFrame } from './ecs/runOneFrame';
-import { State, Scene as GameScene } from './ecs/type';
-import { getGame } from './systems/gameSystem';
+import { State } from './ecs/type';
 import { getGameInitialState } from './utils/getGameInitialState';
 import { getDataGrid } from './systems/aiSystem';
 import { setCameraDistance } from './utils/setCameraDistance';
-import { mainMenuScene } from './scenes/mainMenuScene';
-import { customLevelScene } from './scenes/customLevelScene';
+import { register } from './serviceWorkerRegistration';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -65,6 +63,11 @@ light.groundColor = new BABYLON.Color3(1, 1, 1);
 
 // Because mutations breaks everything
 if (process.env.NODE_ENV !== 'test') {
+  if ('serviceWorker' in navigator) {
+    // Use the window load event to keep the page load performant
+    register();
+  }
+
   let state: State = getGameInitialState();
 
   const beforeRenderCallback = () => {

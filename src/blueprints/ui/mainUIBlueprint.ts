@@ -5,6 +5,7 @@ import { getAspectRatio } from '../../utils/getAspectRatio';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
 import { State } from '../../ecs/type';
+import { removeState } from '../../utils/localDb';
 
 const button = (btn: BABYLON.GUI.Button) => {
   btn.width = 0.3;
@@ -50,6 +51,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({ state, scene }) => {
     BABYLON.GUI.Button.CreateSimpleButton('startBtn', 'Start')
   );
   startBtn.onPointerUpObservable.add(function () {
+    removeState()
     emitEvent<GameEvent.StartCustomLevelEvent>({
       type: GameEvent.Type.startCustomLevel,
       entity: gameEntity,

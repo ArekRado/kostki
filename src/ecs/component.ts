@@ -10,6 +10,7 @@ export enum componentName {
   game = 'game',
   camera = 'camera',
   marker = 'marker',
+  ui = 'ui',
 }
 
 type SetComponentParams<Data> = {
