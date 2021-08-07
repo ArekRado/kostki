@@ -1,9 +1,10 @@
 import { Scene } from 'babylonjs';
 import 'babylonjs-gui';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State } from '../../ecs/type';
+import { State, Scene as GameScene } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { getAspectRatio } from '../../utils/getAspectRatio';
+import { removeState } from '../../utils/localDb';
 
 type GameUIBlueprint = (params: { scene: Scene; state: State }) => State;
 export const gameUIBlueprint: GameUIBlueprint = ({ state, scene }) => {
@@ -22,11 +23,12 @@ export const gameUIBlueprint: GameUIBlueprint = ({ state, scene }) => {
 
   const xButton = BABYLON.GUI.Button.CreateSimpleButton('xButton', 'X');
   xButton.onPointerUpObservable.add(function () {
-    // emitEvent<GameEvent.StartCustomLevelEvent>({
-    //   type: GameEvent.Type.startCustomLevel,
-    //   entity: gameEntity,
-    //   payload: {},
-    // });
+    removeState();
+    emitEvent<GameEvent.CleanSceneEvent>({
+      type: GameEvent.Type.cleanScene,
+      entity: gameEntity,
+      payload: { newScene: GameScene.mainMenu },
+    });
     advancedTexture.dispose();
   });
   advancedTexture.addControl(xButton);

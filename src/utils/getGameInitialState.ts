@@ -17,13 +17,15 @@ import {
 } from '../systems/gameSystem';
 import { markerEntity, markerSystem } from '../systems/markerSystem';
 import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
-import { getSavedState } from './localDb';
+import { getSavedState, removeState } from './localDb';
 import { emitEvent } from '../ecs/emitEvent';
 import { uiEntity, uiSystem } from '../systems/uiSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
+
+  const version = '0.0.0';
 
   // Systems
   state = boxSystem(state);
@@ -34,8 +36,11 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = uiSystem(state);
 
   const savedState = getSavedState();
+  const savedStateVersion = getGame({
+    state: savedState || initialState,
+  })?.version;
 
-  if (savedState) {
+  if (savedState && savedStateVersion === version) {
     state = {
       ...state,
       entity: savedState.entity,
@@ -44,6 +49,8 @@ export const getGameInitialState: GetGameInitialState = () => {
 
     state = recreateAllComponents({ state });
   } else {
+    removeState();
+
     state = setComponent<AI>({
       state,
       data: {
@@ -60,6 +67,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     state = setComponent<Game>({
       state,
       data: {
+        version,
         entity: gameEntity,
         name: componentName.game,
         grid: [],
@@ -106,7 +114,6 @@ export const getGameInitialState: GetGameInitialState = () => {
         position: [0, 0],
       },
     });
-
   }
 
   return state;

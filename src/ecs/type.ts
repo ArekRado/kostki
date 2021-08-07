@@ -40,6 +40,7 @@ export enum Scene {
 }
 
 export type Game = Component<{
+  version: string;
   round: number;
   grid: Entity[];
   currentPlayer: Entity;

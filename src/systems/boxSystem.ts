@@ -19,6 +19,8 @@ import { setMeshTexture } from '../utils/setMeshTexture';
 import { boxBlueprint } from '../blueprints/boxBlueprint';
 import { boxWithGap, gridName } from '../blueprints/gridBlueprint';
 import empty from '../assets/0.png';
+import { Mesh } from 'babylonjs/Meshes/mesh';
+import { TransformNode } from 'babylonjs/Meshes/transformNode';
 
 export enum Direction {
   up,
@@ -139,7 +141,6 @@ export const createRotationBoxAnimation = ({
   const box = scene.getTransformNodeByUniqueId(parseInt(entity));
 
   if (box) {
-
     const rightAngle = Tools.ToRadians(90);
 
     const rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
@@ -415,6 +416,12 @@ export const boxSystem = (state: State) =>
           grid: [...game.grid, component.entity],
         },
       });
+
+      return state;
+    },
+    remove: ({ state, component }) => {
+      const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
+      box?.dispose();
 
       return state;
     },

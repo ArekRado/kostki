@@ -5,6 +5,7 @@ import {
   getComponent,
   setComponent,
   createGetSetForUniqComponent,
+  removeComponentsByName,
 } from '../ecs/component';
 import {
   AI,
@@ -15,6 +16,7 @@ import {
   Game,
   Guid,
   State,
+  Scene as GameScene,
 } from '../ecs/type';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { getAiMove } from './aiSystem';
@@ -34,6 +36,7 @@ import { removeState, saveState } from '../utils/localDb';
 import { customLevelScene } from '../scenes/customLevelScene';
 import { setMarker } from './markerSystem';
 import { boxWithGap } from '../blueprints/gridBlueprint';
+import { setUi } from './uiSystem';
 
 export const gameEntity = 'game';
 
@@ -43,16 +46,24 @@ export namespace GameEvent {
     nextTurn,
     boxExplosion,
     playerClick,
-    saveGame,
+    cleanScene,
   }
 
-  export type All = StartCustomLevelEvent | NextTurnEvent | PlayerClickEvent;
+  export type All =
+    | StartCustomLevelEvent
+    | NextTurnEvent
+    | PlayerClickEvent
+    | CleanSceneEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,
     { boxEntity: Entity }
+  >;
+  export type CleanSceneEvent = ECSEvent<
+    Type.cleanScene,
+    { newScene: GameScene }
   >;
 }
 
@@ -153,9 +164,9 @@ const getNextPlayer: GetNextPlayer = ({ state }) => {
     return undefined;
   }
 
-  const currentPlayerIndex = game.playersQueue.findIndex((entity) => {
-    return game.currentPlayer === entity;
-  });
+  const currentPlayerIndex = game.playersQueue.findIndex(
+    (entity) => game.currentPlayer === entity
+  );
 
   const nextAi = getNextActivePlayer({
     playersQueue: game.playersQueue,
@@ -206,6 +217,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
   // Run same amount of moves as boxes in a grid
   const newState = getGame({ state })?.grid.reduce((acc) => {
     const game = getGame({ state: acc });
+
     const currentAi = getComponent<AI>({
       state: acc,
       name: componentName.ai,
@@ -258,25 +270,20 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 const handleStartCustomLevel: EventHandler<
   Game,
   GameEvent.StartCustomLevelEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
   state = customLevelScene({ state, scene, camera });
 
-  const currentAi = getComponent<AI>({
-    name: componentName.ai,
-    state,
-    entity: component?.currentPlayer || '',
-  });
-
   const game = getGame({ state });
+
+  const currentAi = getNextPlayer({ state });
 
   if (!currentAi || !game) {
     return state;
   }
 
-  state = setComponent<Game>({
+  state = setGame({
     state,
     data: {
-      ...game,
       gameStarted: true,
       currentPlayer: currentAi.entity,
     },
@@ -288,10 +295,9 @@ const handleStartCustomLevel: EventHandler<
   }
 
   // TODO do not repeat same code as above
-  state = setComponent<Game>({
+  state = setGame({
     state,
     data: {
-      ...game,
       gameStarted: true,
       currentPlayer: currentAi.entity,
     },
@@ -408,6 +414,28 @@ const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> = ({
   return state;
 };
 
+const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> = ({
+  state,
+  event,
+}) => {
+  state = setUi({ state, data: { type: event.payload.newScene } });
+  state = setGame({
+    state,
+    data: {
+      round: 0,
+      grid: [],
+      currentPlayer: '',
+      playersQueue: [],
+      boxRotationQueue: [],
+      gameStarted: false,
+    },
+  });
+  state = removeComponentsByName({ state, name: componentName.box });
+  state = removeComponentsByName({ state, name: componentName.ai });
+
+  return state;
+};
+
 export const gameSystem = (state: State) =>
   createSystem<Game, GameEvent.All>({
     state,
@@ -445,6 +473,8 @@ export const gameSystem = (state: State) =>
           return handleNextTurn({ state, component, event });
         case GameEvent.Type.playerClick:
           return handlePlayerClick({ state, component, event });
+        case GameEvent.Type.cleanScene:
+          return handleCleanScene({ state, component, event });
       }
     },
   });
