@@ -5,16 +5,25 @@ import { State, Scene as GameScene } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { removeState } from '../../utils/localDb';
+import { responsive } from './responsive';
 
-type GameUIBlueprint = (params: { scene: Scene; state: State }) => State;
-export const gameUIBlueprint: GameUIBlueprint = ({ state, scene }) => {
-  const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-    'mainUI',
-    false,
-    scene as any as BABYLON.Scene
-  );
-
-  const ratio = getAspectRatio(scene);
+type GameUIBlueprint = (params: {
+  scene: Scene;
+  state: State;
+  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+  grid: BABYLON.GUI.Grid;
+}) => State;
+export const gameUIBlueprint: GameUIBlueprint = ({
+  state,
+  scene,
+  advancedTexture,
+  grid,
+}) => {
+  // const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
+  //   'mainUI',
+  //   false,
+  //   scene as any as BABYLON.Scene
+  // );
 
   // const logo = new BABYLON.GUI.Image('logo', logoUrl);
   // logo.width = 0.7;
@@ -33,17 +42,25 @@ export const gameUIBlueprint: GameUIBlueprint = ({ state, scene }) => {
   });
   advancedTexture.addControl(xButton);
 
-  xButton.width = 0.3;
-  xButton.height = 0.6;
   xButton.color = 'white';
   xButton.cornerRadius = 20;
   xButton.background = 'green';
   xButton.fontSize = 30;
   xButton.isPointerBlocker = true;
+  responsive({
+    element: xButton,
+    scene,
+    sizes: [0.7, 0.7, 0.7],
+    callback: (size) => {
+      const ratio = getAspectRatio(scene);
+      xButton.width = size;
+      xButton.height = size / ratio;
+    },
+  });
 
-  const grid = new BABYLON.GUI.Grid();
+  // const grid = new BABYLON.GUI.Grid();
   // grid.background = 'black';
-  advancedTexture.addControl(grid);
+  // advancedTexture.addControl(grid);
 
   grid.addColumnDefinition(0.9);
   grid.addColumnDefinition(0.1);

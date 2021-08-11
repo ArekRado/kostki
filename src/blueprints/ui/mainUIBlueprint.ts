@@ -2,132 +2,141 @@ import 'babylonjs-gui';
 import { Scene } from 'babylonjs';
 import logoUrl from '../../assets/logo.png';
 import { getAspectRatio } from '../../utils/getAspectRatio';
-import { gameEntity, GameEvent } from '../../systems/gameSystem';
+import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State } from '../../ecs/type';
-import { removeState } from '../../utils/localDb';
+import { State, UIButton, UIImage } from '../../ecs/type';
+import { button } from './button';
+import { Scene as GameScene } from '../../ecs/type';
+import { Breakpoints, responsive } from './responsive';
+import { componentName, setComponent } from '../../ecs/component';
+import { generateId } from '../../utils/generateId';
 
-const button = (btn: BABYLON.GUI.Button) => {
-  btn.width = 0.3;
-  btn.height = 0.6;
-  btn.color = 'white';
-  btn.cornerRadius = 20;
-  btn.background = 'green';
-  btn.fontSize = 30;
-  btn.isPointerBlocker = true;
-
-  return btn;
-};
-
-type MainUIBlueprint = (params: { scene: Scene; state: State }) => State;
-export const mainUIBlueprint: MainUIBlueprint = ({ state, scene }) => {
-  const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-    'mainUI',
-    false,
-    scene as any as BABYLON.Scene
-  );
-
-  const ratio = getAspectRatio(scene);
-
-  const logo = new BABYLON.GUI.Image('logo', logoUrl);
-  logo.width = 0.7;
-  logo.height = (0.6 * 0.7) / ratio;
-  advancedTexture.addControl(logo);
-
-  const continueBtn = button(
-    BABYLON.GUI.Button.CreateSimpleButton('continueBtn', 'Continue')
-  );
-  continueBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartCustomLevelEvent>({
-      type: GameEvent.Type.startCustomLevel,
-      entity: gameEntity,
-      payload: {},
-    });
-    advancedTexture.dispose();
-  });
-  advancedTexture.addControl(continueBtn);
-
-  const startBtn = button(
-    BABYLON.GUI.Button.CreateSimpleButton('startBtn', 'Start')
-  );
-  startBtn.onPointerUpObservable.add(function () {
-    removeState()
-    emitEvent<GameEvent.StartCustomLevelEvent>({
-      type: GameEvent.Type.startCustomLevel,
-      entity: gameEntity,
-      payload: {},
-    });
-    advancedTexture.dispose();
-  });
-  advancedTexture.addControl(startBtn);
-
-  const levelSelectBtn = button(
-    BABYLON.GUI.Button.CreateSimpleButton('levelSelectBtn', 'Select level')
-  );
-  levelSelectBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartCustomLevelEvent>({
-      type: GameEvent.Type.startCustomLevel,
-      entity: gameEntity,
-      payload: {},
-    });
-    advancedTexture.dispose();
-  });
-  advancedTexture.addControl(levelSelectBtn);
-
-  const muteBtn = button(
-    BABYLON.GUI.Button.CreateSimpleButton('muteBtn', 'Mute')
-  );
-  muteBtn.onPointerUpObservable.add(function () {
-    emitEvent<GameEvent.StartCustomLevelEvent>({
-      type: GameEvent.Type.startCustomLevel,
-      entity: gameEntity,
-      payload: {},
-    });
-    advancedTexture.dispose();
-  });
-  advancedTexture.addControl(muteBtn);
-
-  const authorText = new BABYLON.GUI.TextBlock();
-  authorText.text = 'by Arek Rado';
-  authorText.color = 'white';
-  authorText.fontSize = 24;
-  advancedTexture.addControl(authorText);
-
-  const grid = new BABYLON.GUI.Grid();
-  grid.background = 'black';
-  advancedTexture.addControl(grid);
-
-  // grid.width = '400px';
-
-  //
-  //    Kostki logo
-  //
-  //    Continue
-  //    Select level
-  //    Start new
-  //    Mute/Unmute
-  //
-  //                Author
-
+type MainUIBlueprint = (params: {
+  scene: Scene;
+  state: State;
+  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+  grid: BABYLON.GUI.Grid;
+}) => State;
+export const mainUIBlueprint: MainUIBlueprint = ({
+  state,
+  scene,
+  advancedTexture,
+  grid,
+}) => {
   grid.addColumnDefinition(1);
   grid.addRowDefinition(0.3);
   grid.addRowDefinition(0.1);
   grid.addRowDefinition(0.1);
   grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.1);
+  grid.addRowDefinition(0.3);
 
-  grid.addControl(logo, 0, 0);
-  grid.addControl(continueBtn, 1, 0);
-  grid.addControl(levelSelectBtn, 2, 0);
-  grid.addControl(startBtn, 3, 0);
-  grid.addControl(muteBtn, 4, 0);
-  grid.addControl(authorText, 5, 0);
+  // const logo = new BABYLON.GUI.Image('logo', logoUrl);
+  // logo.width = 0.7;
+  // logo.height = 0.4;
+  // advancedTexture.addControl(logo);
+  // responsive({
+  //   element: logo,
+  //   scene,
+  //   sizes: [0.7, 0.7, 0.7],
+  //   callback: (size) => {
+  //     logo.width = size;
+  //     const ratio = getAspectRatio(scene);
+  //     logo.height = (0.6 * 0.7) / ratio;
+  //   },
+  // });
 
-  // rect = new BABYLON.GUI.Rectangle();
-  // rect.thickness = 0;
-  // grid.addControl(rect, 1, 0);
+  state = setComponent<UIImage>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiImage,
+      url: logoUrl,
+      width: [0.7, 0.7, 0.7],
+      height: [0.6, 0.6, 0.6],
+      gridPosition: [0, 0],
+    },
+  });
+
+  const width: Breakpoints = [0.6, 0.4, 0.2];
+  const height: Breakpoints = [0.6, 0.6, 0.6];
+
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiButton,
+      text: 'Start',
+      width,
+      height,
+      color: 'white',
+      cornerRadius: 20,
+      background: 'green',
+      fontSize: 30,
+      isPointerBlocker: true,
+      gridPosition: [1, 0],
+    },
+  });
+
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiButton,
+      text: 'Select level',
+      width,
+      height,
+      color: 'white',
+      cornerRadius: 20,
+      background: 'green',
+      fontSize: 30,
+      isPointerBlocker: true,
+      gridPosition: [2, 0],
+    },
+  });
+
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiButton,
+      text: 'Mute',
+      width,
+      height,
+      color: 'white',
+      cornerRadius: 20,
+      background: 'green',
+      fontSize: 30,
+      isPointerBlocker: true,
+      gridPosition: [3, 0],
+    },
+  });
+
+  // authorText
+  const game = getGame({ state });
+  const authorText = new BABYLON.GUI.TextBlock();
+  authorText.text = `version ${game?.version} by Arek Rado`;
+  authorText.color = '#444';
+  authorText.fontSize = 24;
+  advancedTexture.addControl(authorText);
+
+  //
+  //    Kostki logo
+  //
+  //    Start new
+  //    Select level
+  //    Mute/Unmute
+  //
+  //                Author
+
+  // const grid = new BABYLON.GUI.Grid();
+  // grid.background = 'black';
+  // advancedTexture.addControl(grid);
+
+  // grid.addControl(logo, 0, 0);
+  // grid.addControl(startBtn, 1, 0);
+  // grid.addControl(levelSelectBtn, 2, 0);
+  // grid.addControl(muteBtn, 3, 0);
+  // grid.addControl(authorText, 4, 0);
 
   return state;
 };

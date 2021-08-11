@@ -18,8 +18,9 @@ import {
 import { markerEntity, markerSystem } from '../systems/markerSystem';
 import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
 import { getSavedState, removeState } from './localDb';
-import { emitEvent } from '../ecs/emitEvent';
 import { uiEntity, uiSystem } from '../systems/uiSystem';
+import { uiButtonSystem } from '../systems/uiButtonSystem';
+import { uiImageSystem } from '../systems/uiImageSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -34,6 +35,8 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = markerSystem(state);
   state = cameraSystem(state);
   state = uiSystem(state);
+  state = uiButtonSystem(state);
+  state = uiImageSystem(state);
 
   const savedState = getSavedState();
   const savedStateVersion = getGame({

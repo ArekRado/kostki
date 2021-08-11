@@ -1,3 +1,4 @@
+import { Breakpoints } from '../blueprints/ui/responsive';
 import { GlobalSystem, System } from './createSystem';
 
 export type Dictionary<Value> = { [key: string]: Value };
@@ -37,6 +38,7 @@ export type AI = Component<{
 export enum Scene {
   mainMenu,
   customLevel,
+  customLevelSettings,
 }
 
 export type Game = Component<{
@@ -58,7 +60,7 @@ export type Game = Component<{
 
 export type Camera = Component<{
   position: [number, number];
-  distance: number
+  distance: number;
 }>;
 
 export type Marker = Component<{
@@ -67,7 +69,27 @@ export type Marker = Component<{
 }>;
 
 export type UI = Component<{
-  type: Scene
+  type: Scene;
+}>;
+
+export type UIButton = Component<{
+  text: string;
+  gridPosition: [number, number];
+
+  width: Breakpoints;
+  height: Breakpoints;
+  color: string;
+  cornerRadius: number;
+  background: string;
+  fontSize: number;
+  isPointerBlocker: boolean;
+}>;
+
+export type UIImage = Component<{
+  url: string;
+  gridPosition: [number, number];
+  width: Breakpoints;
+  height: Breakpoints;
 }>;
 
 export type State = {
@@ -79,6 +101,8 @@ export type State = {
     camera: Dictionary<Camera>;
     marker: Dictionary<Marker>;
     ui: Dictionary<UI>;
+    uiButton: Dictionary<UIButton>;
+    uiImage: Dictionary<UIImage>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

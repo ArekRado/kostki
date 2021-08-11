@@ -11,6 +11,8 @@ export enum componentName {
   camera = 'camera',
   marker = 'marker',
   ui = 'ui',
+  uiButton = 'uiButton',
+  uiImage = 'uiImage',
 }
 
 type SetComponentParams<Data> = {

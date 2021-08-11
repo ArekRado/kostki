@@ -10,9 +10,10 @@ let state: State = {
     [componentName.camera]: {},
     [componentName.marker]: {},
     [componentName.ui]: {},
+    [componentName.uiButton]: {},
+    [componentName.uiImage]: {},
   },
   system: [],
 };
 
 export const initialState = state;
-
