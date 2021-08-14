@@ -1,77 +1,56 @@
 import { Scene } from 'babylonjs';
 import 'babylonjs-gui';
+import { componentName, setComponent } from '../../ecs/component';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, Scene as GameScene } from '../../ecs/type';
+import { State, Scene as GameScene, UIButton } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
-import { getAspectRatio } from '../../utils/getAspectRatio';
+import { generateId } from '../../utils/generateId';
 import { removeState } from '../../utils/localDb';
-import { responsive } from './responsive';
+import { attachEvent } from './attachEvent';
 
 type GameUIBlueprint = (params: {
   scene: Scene;
   state: State;
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-  grid: BABYLON.GUI.Grid;
 }) => State;
 export const gameUIBlueprint: GameUIBlueprint = ({
   state,
   scene,
   advancedTexture,
-  grid,
 }) => {
-  // const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-  //   'mainUI',
-  //   false,
-  //   scene as any as BABYLON.Scene
-  // );
+  const closeBtnEntity = generateId().toString();
 
-  // const logo = new BABYLON.GUI.Image('logo', logoUrl);
-  // logo.width = 0.7;
-  // logo.height = (0.6 * 0.7) / ratio;
-  // advancedTexture.addControl(logo);
-
-  const xButton = BABYLON.GUI.Button.CreateSimpleButton('xButton', 'X');
-  xButton.onPointerUpObservable.add(function () {
-    removeState();
-    emitEvent<GameEvent.CleanSceneEvent>({
-      type: GameEvent.Type.cleanScene,
-      entity: gameEntity,
-      payload: { newScene: GameScene.mainMenu },
-    });
-    advancedTexture.dispose();
-  });
-  advancedTexture.addControl(xButton);
-
-  xButton.color = 'white';
-  xButton.cornerRadius = 20;
-  xButton.background = 'green';
-  xButton.fontSize = 30;
-  xButton.isPointerBlocker = true;
-  responsive({
-    element: xButton,
-    scene,
-    sizes: [0.7, 0.7, 0.7],
-    callback: (size) => {
-      const ratio = getAspectRatio(scene);
-      xButton.width = size;
-      xButton.height = size / ratio;
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: closeBtnEntity,
+      name: componentName.uiButton,
+      text: 'X',
+      size: [
+        [0.1, 0.1],
+        [0.1, 0.1],
+        [0.1, 0.1],
+      ],
+      position: [
+        [0.95, 0.05],
+        [0.95, 0.05],
+        [0.95, 0.05],
+      ],
     },
   });
 
-  // const grid = new BABYLON.GUI.Grid();
-  // grid.background = 'black';
-  // advancedTexture.addControl(grid);
-
-  grid.addColumnDefinition(0.9);
-  grid.addColumnDefinition(0.1);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.9);
-
-  grid.addControl(xButton, 0, 1);
-
-  // rect = new BABYLON.GUI.Rectangle();
-  // rect.thickness = 0;
-  // grid.addControl(rect, 1, 0);
+  attachEvent({
+    advancedTexture,
+    entity: closeBtnEntity,
+    onPointerUpObservable: () => {
+      removeState();
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.mainMenu },
+      });
+    },
+  });
 
   return state;
 };

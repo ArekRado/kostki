@@ -4,139 +4,167 @@ import logoUrl from '../../assets/logo.png';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, UIButton, UIImage } from '../../ecs/type';
-import { button } from './button';
+import { State, UIButton, UIImage, UIText } from '../../ecs/type';
 import { Scene as GameScene } from '../../ecs/type';
 import { Breakpoints, responsive } from './responsive';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
+import { attachEvent } from './attachEvent';
 
 type MainUIBlueprint = (params: {
   scene: Scene;
   state: State;
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-  grid: BABYLON.GUI.Grid;
 }) => State;
 export const mainUIBlueprint: MainUIBlueprint = ({
   state,
   scene,
   advancedTexture,
-  grid,
 }) => {
-  grid.addColumnDefinition(1);
-  grid.addRowDefinition(0.3);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.1);
-  grid.addRowDefinition(0.3);
-
-  // const logo = new BABYLON.GUI.Image('logo', logoUrl);
-  // logo.width = 0.7;
-  // logo.height = 0.4;
-  // advancedTexture.addControl(logo);
-  // responsive({
-  //   element: logo,
-  //   scene,
-  //   sizes: [0.7, 0.7, 0.7],
-  //   callback: (size) => {
-  //     logo.width = size;
-  //     const ratio = getAspectRatio(scene);
-  //     logo.height = (0.6 * 0.7) / ratio;
-  //   },
-  // });
-
   state = setComponent<UIImage>({
     state,
     data: {
       entity: generateId().toString(),
       name: componentName.uiImage,
       url: logoUrl,
-      width: [0.7, 0.7, 0.7],
-      height: [0.6, 0.6, 0.6],
-      gridPosition: [0, 0],
+      size: [
+        [0.5, 0.3],
+        [0.5, 0.3],
+        [0.5, 0.3],
+      ],
+      position: [
+        [0.5, 0.15],
+        [0.5, 0.15],
+        [0.5, 0.15],
+      ],
     },
   });
 
-  const width: Breakpoints = [0.6, 0.4, 0.2];
-  const height: Breakpoints = [0.6, 0.6, 0.6];
+  const size: Breakpoints<[number, number]> = [
+    [0.6, 0.1],
+    [0.4, 0.1],
+    [0.2, 0.1],
+  ];
+
+  const startBtnEntity = generateId().toString();
+  const selectLevelBtnEntity = generateId().toString();
+  const muteBtnEntity = generateId().toString();
 
   state = setComponent<UIButton>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: startBtnEntity,
       name: componentName.uiButton,
       text: 'Start',
-      width,
-      height,
-      color: 'white',
-      cornerRadius: 20,
-      background: 'green',
-      fontSize: 30,
-      isPointerBlocker: true,
-      gridPosition: [1, 0],
+      size,
+      position: [
+        [0.5, 0.4],
+        [0.5, 0.4],
+        [0.5, 0.4],
+      ],
     },
   });
 
   state = setComponent<UIButton>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: selectLevelBtnEntity,
       name: componentName.uiButton,
       text: 'Select level',
-      width,
-      height,
-      color: 'white',
-      cornerRadius: 20,
-      background: 'green',
-      fontSize: 30,
-      isPointerBlocker: true,
-      gridPosition: [2, 0],
+      size,
+      position: [
+        [0.5, 0.6],
+        [0.5, 0.6],
+        [0.5, 0.6],
+      ],
     },
   });
 
   state = setComponent<UIButton>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: muteBtnEntity,
       name: componentName.uiButton,
       text: 'Mute',
-      width,
-      height,
-      color: 'white',
-      cornerRadius: 20,
-      background: 'green',
-      fontSize: 30,
-      isPointerBlocker: true,
-      gridPosition: [3, 0],
+      size,
+      position: [
+        [0.5, 0.8],
+        [0.5, 0.8],
+        [0.5, 0.8],
+      ],
     },
   });
 
-  // authorText
   const game = getGame({ state });
-  const authorText = new BABYLON.GUI.TextBlock();
-  authorText.text = `version ${game?.version} by Arek Rado`;
-  authorText.color = '#444';
-  authorText.fontSize = 24;
-  advancedTexture.addControl(authorText);
+  state = setComponent<UIText>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiText,
+      text: `version ${game?.version}`,
+      size,
+      color: '#444',
+      fontSize: 24,
+      position: [
+        [0.5, 0.9],
+        [0.5, 0.9],
+        [0.5, 0.9],
+      ],
+    },
+  });
 
-  //
-  //    Kostki logo
-  //
-  //    Start new
-  //    Select level
-  //    Mute/Unmute
-  //
-  //                Author
+  state = setComponent<UIText>({
+    state,
+    data: {
+      entity: generateId().toString(),
+      name: componentName.uiText,
+      text: 'created by Arek Rado',
+      size,
+      color: '#444',
+      fontSize: 24,
+      position: [
+        [0.5, 0.95],
+        [0.5, 0.95],
+        [0.5, 0.95],
+      ],
+    },
+  });
 
-  // const grid = new BABYLON.GUI.Grid();
-  // grid.background = 'black';
-  // advancedTexture.addControl(grid);
+  attachEvent({
+    advancedTexture,
+    entity: startBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
 
-  // grid.addControl(logo, 0, 0);
-  // grid.addControl(startBtn, 1, 0);
-  // grid.addControl(levelSelectBtn, 2, 0);
-  // grid.addControl(muteBtn, 3, 0);
-  // grid.addControl(authorText, 4, 0);
+  attachEvent({
+    advancedTexture,
+    entity: selectLevelBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
+
+  attachEvent({
+    advancedTexture,
+    entity: muteBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
 
   return state;
 };

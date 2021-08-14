@@ -2,8 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIImage } from '../ecs/type';
 import { scene } from '..';
-import { responsive } from '../blueprints/ui/responsive';
-import { advancedTexture, grid } from './uiSystem';
+import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { advancedTexture } from './uiSystem';
 import { getAspectRatio } from '../utils/getAspectRatio';
 
 export const uiImageSystem = (state: State) =>
@@ -16,31 +16,30 @@ export const uiImageSystem = (state: State) =>
       responsive({
         element: img,
         scene,
-        sizes: component.width,
+        sizes: component.size,
         callback: (size) => {
-          img.width = size;
+          img.width = size[0];
           const ratio = getAspectRatio(scene);
-          img.height = (component.height[0] * size) / ratio;
+          img.height = size[1] / ratio;
         },
       });
 
-      // img.height = component.height[0];
+      const [left, top] = normalizePosition(component.position[0]);
+      img.top = top;
+      img.left = left;
 
-      // if (advancedTexture) {
-      //   advancedTexture.addControl(img);
-      // }
-
-      grid.addControl(
-        img,
-        component.gridPosition[0],
-        component.gridPosition[1]
-      );
+      advancedTexture?.addControl(img);
 
       return state;
     },
     remove: ({ state, component }) => {
-      const control = grid.getChildByName(component.entity);
-      control?.dispose();
+      const control = advancedTexture
+        ?.getChildren()
+        .find((x) => x.name === component.entity);
+
+      if (control) {
+        control.dispose();
+      }
 
       return state;
     },

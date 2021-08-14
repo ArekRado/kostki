@@ -1,46 +1,48 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
-import { State, UIImage } from '../ecs/type';
+import { State, UIText } from '../ecs/type';
 import { scene } from '..';
-import { responsive } from '../blueprints/ui/responsive';
-import { advancedTexture, grid } from './uiSystem';
+import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { advancedTexture } from './uiSystem';
 import { getAspectRatio } from '../utils/getAspectRatio';
 
-export const uiImageSystem = (state: State) =>
-  createSystem<UIImage, {}>({
+export const uiTextSystem = (state: State) =>
+  createSystem<UIText, {}>({
     state,
-    name: componentName.uiImage,
+    name: componentName.uiText,
     create: ({ state, component }) => {
-      const img = new BABYLON.GUI.Image(component.entity, component.url);
+      const text = new BABYLON.GUI.TextBlock(component.entity);
+      text.text = component.text;
+      text.color = component.color;
+      text.fontSize = component.fontSize;
 
       responsive({
-        element: img,
+        element: text,
         scene,
-        sizes: component.width,
+        sizes: component.size,
         callback: (size) => {
-          img.width = size;
+          text.width = size[0];
           const ratio = getAspectRatio(scene);
-          img.height = (component.height[0] * size) / ratio;
+          text.height = size[1] / ratio;
         },
       });
 
-      // img.height = component.height[0];
+      const [left, top] = normalizePosition(component.position[0]);
+      text.top = top;
+      text.left = left;
 
-      // if (advancedTexture) {
-      //   advancedTexture.addControl(img);
-      // }
-
-      grid.addControl(
-        img,
-        component.gridPosition[0],
-        component.gridPosition[1]
-      );
+      advancedTexture?.addControl(text);
 
       return state;
     },
     remove: ({ state, component }) => {
-      const control = grid.getChildByName(component.entity);
-      control?.dispose();
+      const control = advancedTexture
+        ?.getChildren()
+        .find((x) => x.name === component.entity);
+
+      if (control) {
+        control.dispose();
+      }
 
       return state;
     },

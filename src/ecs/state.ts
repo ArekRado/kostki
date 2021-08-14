@@ -12,6 +12,7 @@ let state: State = {
     [componentName.ui]: {},
     [componentName.uiButton]: {},
     [componentName.uiImage]: {},
+    [componentName.uiText]: {},
   },
   system: [],
 };

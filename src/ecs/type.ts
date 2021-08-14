@@ -74,22 +74,27 @@ export type UI = Component<{
 
 export type UIButton = Component<{
   text: string;
-  gridPosition: [number, number];
-
-  width: Breakpoints;
-  height: Breakpoints;
-  color: string;
-  cornerRadius: number;
-  background: string;
-  fontSize: number;
-  isPointerBlocker: boolean;
+  position: Breakpoints<[number, number]>;
+  size: Breakpoints<[number, number]>;
+  color?: string;
+  cornerRadius?: number;
+  background?: string;
+  fontSize?: number;
+  isPointerBlocker?: boolean;
 }>;
 
 export type UIImage = Component<{
   url: string;
-  gridPosition: [number, number];
-  width: Breakpoints;
-  height: Breakpoints;
+  position: Breakpoints<[number, number]>;
+  size: Breakpoints<[number, number]>;
+}>;
+
+export type UIText = Component<{
+  text: string;
+  position: Breakpoints<[number, number]>;
+  size: Breakpoints<[number, number]>;
+  color: string;
+  fontSize: number;
 }>;
 
 export type State = {
@@ -103,6 +108,7 @@ export type State = {
     ui: Dictionary<UI>;
     uiButton: Dictionary<UIButton>;
     uiImage: Dictionary<UIImage>;
+    uiText: Dictionary<UIText>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };
