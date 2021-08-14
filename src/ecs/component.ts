@@ -13,6 +13,7 @@ export enum componentName {
   ui = 'ui',
   uiButton = 'uiButton',
   uiImage = 'uiImage',
+  uiText = 'uiText',
 }
 
 type SetComponentParams<Data> = {

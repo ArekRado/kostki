@@ -21,6 +21,7 @@ import { getSavedState, removeState } from './localDb';
 import { uiEntity, uiSystem } from '../systems/uiSystem';
 import { uiButtonSystem } from '../systems/uiButtonSystem';
 import { uiImageSystem } from '../systems/uiImageSystem';
+import { uiTextSystem } from '../systems/uiTextSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -37,6 +38,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = uiSystem(state);
   state = uiButtonSystem(state);
   state = uiImageSystem(state);
+  state = uiTextSystem(state);
 
   const savedState = getSavedState();
   const savedStateVersion = getGame({

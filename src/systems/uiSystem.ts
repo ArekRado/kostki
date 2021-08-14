@@ -7,6 +7,7 @@ import { mainUIBlueprint } from '../blueprints/ui/mainUIBlueprint';
 import { customLevelSettingsUIBlueprint } from '../blueprints/ui/customLevelSettingsUIBlueprint';
 
 export const uiEntity = '23505760496063488';
+export const uiRoot = 'root';
 
 const uiGetSet = createGetSetForUniqComponent<UI>({
   entity: uiEntity,
@@ -20,31 +21,28 @@ type SetBabylonUi = (params: {
   state: State;
   ui: UI;
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-  grid: BABYLON.GUI.Grid;
 }) => State;
-const setBabylonUi: SetBabylonUi = ({ state, ui, advancedTexture, grid }) => {
-  // advancedTexture.clear();
-  grid.clearControls();
+const setBabylonUi: SetBabylonUi = ({ state, ui, advancedTexture }) => {
+  advancedTexture
+    .getChildren()
+    .find((x) => x.name === uiRoot)
+    ?.clearControls();
 
   switch (ui.type) {
     case Scene.customLevel:
-      return gameUIBlueprint({ state, scene, advancedTexture, grid });
+      return gameUIBlueprint({ state, scene, advancedTexture });
     case Scene.mainMenu:
-      return mainUIBlueprint({ state, scene, advancedTexture, grid });
+      return mainUIBlueprint({ state, scene, advancedTexture });
     case Scene.customLevelSettings:
       return customLevelSettingsUIBlueprint({
         state,
         scene,
         advancedTexture,
-        grid,
       });
   }
 };
 
 export let advancedTexture: null | BABYLON.GUI.AdvancedDynamicTexture = null;
-
-export const grid = new BABYLON.GUI.Grid();
-grid.background = 'transparent';
 
 export const uiSystem = (state: State) =>
   createSystem<UI, {}>({
@@ -56,15 +54,13 @@ export const uiSystem = (state: State) =>
         false,
         scene as any as BABYLON.Scene
       );
-      advancedTexture.addControl(grid);
-    
-      state = setBabylonUi({ state, ui: component, advancedTexture, grid });
+      state = setBabylonUi({ state, ui: component, advancedTexture });
 
       return state;
     },
     update: ({ state, component }) => {
       if (advancedTexture) {
-        state = setBabylonUi({ state, ui: component, advancedTexture, grid });
+        state = setBabylonUi({ state, ui: component, advancedTexture });
       }
       return state;
     },

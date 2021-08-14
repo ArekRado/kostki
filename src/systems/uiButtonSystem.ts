@@ -2,8 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIButton } from '../ecs/type';
 import { scene } from '..';
-import { responsive } from '../blueprints/ui/responsive';
-import { grid } from './uiSystem';
+import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { advancedTexture } from './uiSystem';
 
 export const uiButtonSystem = (state: State) =>
   createSystem<UIButton, {}>({
@@ -18,30 +18,35 @@ export const uiButtonSystem = (state: State) =>
       responsive({
         element: btn,
         scene,
-        sizes: component.width,
+        sizes: component.size,
         callback: (size) => {
-          btn.width = size;
+          btn.width = size[0];
+          btn.height = size[1];
         },
       });
 
-      btn.height = component.height[0];
-      btn.color = component.color;
-      btn.cornerRadius = component.cornerRadius;
-      btn.background = component.background;
-      btn.fontSize = component.fontSize;
-      btn.isPointerBlocker = component.isPointerBlocker;
+      btn.color = component.color ?? 'white';
+      btn.cornerRadius = component.cornerRadius ?? 20;
+      btn.background = component.background ?? 'green';
+      btn.fontSize = component.fontSize ?? 30;
+      btn.isPointerBlocker = component.isPointerBlocker ?? true;
 
-      grid.addControl(
-        btn,
-        component.gridPosition[0],
-        component.gridPosition[1]
-      );
+      const [left, top] = normalizePosition(component.position[0]);
+      btn.top = top;
+      btn.left = left;
+
+      advancedTexture?.addControl(btn);
 
       return state;
     },
     remove: ({ state, component }) => {
-      const control = grid.getChildByName(component.entity);
-      control?.dispose();
+      const control = advancedTexture
+        ?.getChildren()
+        .find((x) => x.name === component.entity);
+
+      if (control) {
+        control.dispose();
+      }
 
       return state;
     },
