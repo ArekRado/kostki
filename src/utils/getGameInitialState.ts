@@ -40,6 +40,70 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = uiImageSystem(state);
   state = uiTextSystem(state);
 
+  state = setComponent<AI>({
+    state,
+    data: {
+      entity: humanPlayerEntity,
+      name: componentName.ai,
+      human: true,
+      level: 0,
+      color: [0, 0, 1],
+      textureSet: ['', '', '', '', '', '', ''],
+      active: true,
+    },
+  });
+
+  state = setComponent<Game>({
+    state,
+    data: {
+      version,
+      entity: gameEntity,
+      name: componentName.game,
+      grid: [],
+      round: 0,
+      currentPlayer: humanPlayerEntity,
+      gameStarted: false,
+      playersQueue: [],
+      boxRotationQueue: [],
+      quickStart: true,
+      colorBlindMode: false,
+      customLevelSettings: {
+        ai: [],
+        levelSize: 0,
+      },
+      musicEnabled: false,
+    },
+  });
+
+  state = setComponent<UI>({
+    state,
+    data: {
+      entity: uiEntity,
+      name: componentName.ui,
+      type: Scene.mainMenu,
+    },
+  });
+
+  state = setComponent<Camera>({
+    state,
+    data: {
+      entity: cameraEntity,
+      name: componentName.camera,
+      position: [0, 0],
+      distance: 0,
+    },
+  });
+
+  state = setComponent<Marker>({
+    state,
+    data: {
+      entity: markerEntity,
+      name: componentName.marker,
+      color: [1, 1, 1],
+      position: [0, 0],
+    },
+  });
+
   const savedState = getSavedState();
   const savedStateVersion = getGame({
     state: savedState || initialState,
@@ -52,74 +116,9 @@ export const getGameInitialState: GetGameInitialState = () => {
       component: savedState.component,
     };
 
-    state = recreateAllComponents({ state });
-  } else {
-    removeState();
-
-    state = setComponent<AI>({
-      state,
-      data: {
-        entity: humanPlayerEntity,
-        name: componentName.ai,
-        human: true,
-        level: 0,
-        color: [0, 0, 1],
-        textureSet: ['', '', '', '', '', '', ''],
-        active: true,
-      },
-    });
-
-    state = setComponent<Game>({
-      state,
-      data: {
-        version,
-        entity: gameEntity,
-        name: componentName.game,
-        grid: [],
-        round: 0,
-        currentPlayer: humanPlayerEntity,
-        gameStarted: false,
-        playersQueue: [],
-        boxRotationQueue: [],
-        quickStart: true,
-        colorBlindMode: false,
-        customLevelSettings: {
-          ai: [],
-          levelSize: 0,
-        },
-        musicEnabled: false,
-      },
-    });
-
-    state = setComponent<UI>({
-      state,
-      data: {
-        entity: uiEntity,
-        name: componentName.ui,
-        type: Scene.mainMenu,
-      },
-    });
-
-    state = setComponent<Camera>({
-      state,
-      data: {
-        entity: cameraEntity,
-        name: componentName.camera,
-        position: [0, 0],
-        distance: 0,
-      },
-    });
-
-    state = setComponent<Marker>({
-      state,
-      data: {
-        entity: markerEntity,
-        name: componentName.marker,
-        color: [1, 1, 1],
-        position: [0, 0],
-      },
-    });
+    // state = recreateAllComponents({ state });
   }
+  removeState();
 
   return state;
 };
