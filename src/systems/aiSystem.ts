@@ -411,10 +411,12 @@ export const aiSystem = (state: State) =>
     name: componentName.ai,
     create: ({ component, state }) => {
       // preload images
-      component.textureSet.forEach((src) => {
-        const image = new Image();
-        image.src = src;
-      });
+      setTimeout(() => {
+        component.textureSet.forEach((src) => {
+          const image = new Image();
+          image.src = src;
+        });
+      }, Math.random() * 2000 + 1000);
 
       return state;
     },

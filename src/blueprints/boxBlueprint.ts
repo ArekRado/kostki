@@ -1,12 +1,10 @@
 import {
   ActionManager,
-  Color3,
   ExecuteCodeAction,
   Mesh,
   StandardMaterial,
   TransformNode,
   Vector3,
-  Texture,
 } from 'babylonjs';
 import { Scene } from 'babylonjs/scene';
 import { emitEvent } from '../ecs/emitEvent';
@@ -15,13 +13,6 @@ import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Box, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem';
-import { componentName, getComponent } from '../ecs/component';
-// import dot1 from '../assets/1.png';
-// import dot2 from '../assets/2.png';
-// import dot3 from '../assets/3.png';
-// import dot4 from '../assets/4.png';
-// import dot5 from '../assets/5.png';
-// import dot6 from '../assets/6.png';
 
 export const boxBlueprint = ({
   scene,
@@ -58,7 +49,7 @@ export const boxBlueprint = ({
     [new Vector3(0, -size / 2, 0), new Vector3(-Math.PI / 2, 0, 0)], //
     [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)],
   ].forEach(([position, rotation], i) => {
-    const plane = Mesh.CreatePlane('plane' + i, size, scene, true);
+    const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
     plane.parent = boxMesh;
 
     plane.material = new StandardMaterial('mat', scene);

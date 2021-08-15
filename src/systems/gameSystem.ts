@@ -10,7 +10,6 @@ import {
 import {
   AI,
   Box,
-  Color,
   Entity,
   EventHandler,
   Game,
@@ -20,23 +19,13 @@ import {
 } from '../ecs/type';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { getAiMove } from './aiSystem';
-import {
-  BoxEvent,
-  Direction,
-  getNextDots,
-  getTextureSet,
-  onClickBox,
-  pushBoxToRotationQueue,
-} from './boxSystem';
-import { scene } from '..';
-import { Color3, Vector3, StandardMaterial } from 'babylonjs';
+import { onClickBox, pushBoxToRotationQueue } from './boxSystem';
 
-import { camera } from '../index';
 import { removeState, saveState } from '../utils/localDb';
-import { customLevelScene } from '../scenes/customLevelScene';
 import { setMarker } from './markerSystem';
 import { boxWithGap } from '../blueprints/gridBlueprint';
 import { setUi } from './uiSystem';
+import { handleStartCustomLevel } from './gameSystem/handleStartCustomLevel';
 
 export const gameEntity = 'game';
 
@@ -157,7 +146,7 @@ const getNextActivePlayer: GetNextActivePlayer = ({
 };
 
 type GetNextPlayer = (params: { state: State }) => AI | undefined;
-const getNextPlayer: GetNextPlayer = ({ state }) => {
+export const getNextPlayer: GetNextPlayer = ({ state }) => {
   const game = getGame({ state });
 
   if (!game) {
@@ -175,143 +164,6 @@ const getNextPlayer: GetNextPlayer = ({ state }) => {
   });
 
   return nextAi;
-};
-
-type UpdateAllBoxes = (params: { state: State }) => void;
-const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
-    return undefined;
-  }
-  game.grid.forEach((boxEntity) => {
-    const box = getComponent<Box>({
-      state,
-      entity: boxEntity,
-      name: componentName.box,
-    });
-
-    const ai = getComponent<AI>({
-      state,
-      entity: box?.player || '',
-      name: componentName.ai,
-    });
-
-    if (box && ai) {
-      emitEvent<BoxEvent.Rotate>({
-        type: BoxEvent.Type.rotate,
-        entity: boxEntity,
-        payload: {
-          color: ai.color,
-          texture: getTextureSet({ state, ai })[box.dots],
-          direction: Direction.up,
-        },
-      });
-    }
-  });
-
-  return state;
-};
-
-type RunQuickStart = (params: { state: State }) => State;
-const runQuickStart: RunQuickStart = ({ state }) => {
-  // Run same amount of moves as boxes in a grid
-  const newState = getGame({ state })?.grid.reduce((acc) => {
-    const game = getGame({ state: acc });
-
-    const currentAi = getComponent<AI>({
-      state: acc,
-      name: componentName.ai,
-      entity: game?.currentPlayer || '',
-    });
-
-    if (!game || !currentAi) {
-      return acc;
-    }
-
-    const box = getAiMove({
-      state: acc,
-      ai: currentAi,
-      preferEmptyBoxes: true,
-    });
-
-    if (!box) {
-      return acc;
-    }
-
-    acc = setComponent<Box>({
-      state: acc,
-      data: {
-        ...box,
-        player: currentAi.entity,
-        dots: getNextDots(box.dots),
-      },
-    });
-
-    const nextPlayer = getNextPlayer({ state: acc });
-
-    if (!nextPlayer) {
-      return acc;
-    }
-
-    acc = setComponent<Game>({
-      state: acc,
-      data: {
-        ...game,
-        currentPlayer: nextPlayer.entity,
-      },
-    });
-
-    return acc;
-  }, state);
-
-  return newState || state;
-};
-
-const handleStartCustomLevel: EventHandler<
-  Game,
-  GameEvent.StartCustomLevelEvent
-> = ({ state }) => {
-  state = customLevelScene({ state, scene, camera });
-
-  const game = getGame({ state });
-
-  const currentAi = getNextPlayer({ state });
-
-  if (!currentAi || !game) {
-    return state;
-  }
-
-  state = setGame({
-    state,
-    data: {
-      gameStarted: true,
-      currentPlayer: currentAi.entity,
-    },
-  });
-
-  if (game.quickStart) {
-    state = runQuickStart({ state });
-    updateAllBoxes({ state });
-  }
-
-  // TODO do not repeat same code as above
-  state = setGame({
-    state,
-    data: {
-      gameStarted: true,
-      currentPlayer: currentAi.entity,
-    },
-  });
-
-  if (!currentAi.human) {
-    const box = getAiMove({ state, ai: currentAi });
-
-    if (box) {
-      state = onClickBox({ box, state, ai: currentAi });
-    }
-  }
-
-  return state;
 };
 
 const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
@@ -440,31 +292,31 @@ export const gameSystem = (state: State) =>
   createSystem<Game, GameEvent.All>({
     state,
     name: componentName.game,
-    create: ({ state, component }) => {
-      component.boxRotationQueue.forEach((boxEntity) => {
-        const box = getComponent<Box>({
-          state,
-          name: componentName.box,
-          entity: boxEntity,
-        });
+    // create: ({ state, component }) => {
+    //   component.boxRotationQueue.forEach((boxEntity) => {
+    //     const box = getComponent<Box>({
+    //       state,
+    //       name: componentName.box,
+    //       entity: boxEntity,
+    //     });
 
-        const ai = getComponent<AI>({
-          state,
-          name: componentName.ai,
-          entity: box?.player || '',
-        });
+    //     const ai = getComponent<AI>({
+    //       state,
+    //       name: componentName.ai,
+    //       entity: box?.player || '',
+    //     });
 
-        ai &&
-          box &&
-          emitEvent<BoxEvent.RotationEndEvent>({
-            type: BoxEvent.Type.rotationEnd,
-            entity: boxEntity,
-            payload: { ai, shouldExplode: box.dots === 6 },
-          });
-      });
+    //     ai &&
+    //       box &&
+    //       emitEvent<BoxEvent.RotationEndEvent>({
+    //         type: BoxEvent.Type.rotationEnd,
+    //         entity: boxEntity,
+    //         payload: { ai, shouldExplode: box.dots === 6 },
+    //       });
+    //   });
 
-      return state;
-    },
+    //   return state;
+    // },
     event: ({ state, component, event }) => {
       switch (event.type) {
         case GameEvent.Type.startCustomLevel:
