@@ -11,20 +11,62 @@ import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from './attachEvent';
 
-type MainUIBlueprint = (params: {
-  scene: Scene;
-  state: State;
+const logoImgEntity = generateId().toString();
+
+const startBtnEntity = generateId().toString();
+const selectLevelBtnEntity = generateId().toString();
+const muteBtnEntity = generateId().toString();
+
+const versionTextEntity = generateId().toString();
+const authorTextEntity = generateId().toString();
+
+type MainUIAttachEvents = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-}) => State;
-export const mainUIBlueprint: MainUIBlueprint = ({
-  state,
-  scene,
-  advancedTexture,
-}) => {
+}) => void;
+export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
+  attachEvent({
+    advancedTexture,
+    entity: startBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
+
+  attachEvent({
+    advancedTexture,
+    entity: selectLevelBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
+
+  attachEvent({
+    advancedTexture,
+    entity: muteBtnEntity,
+    onPointerUpObservable: () => {
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.customLevelSettings },
+      });
+    },
+  });
+};
+
+type MainUIBlueprint = (params: { state: State }) => State;
+export const mainUIBlueprint: MainUIBlueprint = ({ state }) => {
   state = setComponent<UIImage>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: logoImgEntity,
       name: componentName.uiImage,
       url: logoUrl,
       size: [
@@ -45,10 +87,6 @@ export const mainUIBlueprint: MainUIBlueprint = ({
     [0.4, 0.1],
     [0.2, 0.1],
   ];
-
-  const startBtnEntity = generateId().toString();
-  const selectLevelBtnEntity = generateId().toString();
-  const muteBtnEntity = generateId().toString();
 
   state = setComponent<UIButton>({
     state,
@@ -99,7 +137,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   state = setComponent<UIText>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: versionTextEntity,
       name: componentName.uiText,
       text: `version ${game?.version}`,
       size,
@@ -116,7 +154,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   state = setComponent<UIText>({
     state,
     data: {
-      entity: generateId().toString(),
+      entity: authorTextEntity,
       name: componentName.uiText,
       text: 'created by Arek Rado',
       size,
@@ -127,42 +165,6 @@ export const mainUIBlueprint: MainUIBlueprint = ({
         [0.5, 0.95],
         [0.5, 0.95],
       ],
-    },
-  });
-
-  attachEvent({
-    advancedTexture,
-    entity: startBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
-      });
-    },
-  });
-
-  attachEvent({
-    advancedTexture,
-    entity: selectLevelBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
-      });
-    },
-  });
-
-  attachEvent({
-    advancedTexture,
-    entity: muteBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
-      });
     },
   });
 

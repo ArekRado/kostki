@@ -6,6 +6,7 @@ import {
   Texture,
 } from 'babylonjs';
 import { Color } from '../ecs/type';
+import { getTextureFromCache } from './textureCache';
 
 type SetMeshTexture = (params: {
   mesh: AbstractMesh;
@@ -24,13 +25,9 @@ export const setMeshTexture: SetMeshTexture = ({
     color[1],
     color[2]
   );
-  const newTexture = new Texture(
-    texture,
-    scene,
-    undefined,
-    undefined,
-    Texture.NEAREST_NEAREST_MIPLINEAR
-  );
+ 
+  const newTexture = getTextureFromCache({ textureUrl: texture, scene });
+
   (mesh.material as StandardMaterial).diffuseTexture = newTexture;
 
   return newTexture;

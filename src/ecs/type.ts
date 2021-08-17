@@ -93,8 +93,8 @@ export type UIText = Component<{
   text: string;
   position: Breakpoints<[number, number]>;
   size: Breakpoints<[number, number]>;
-  color: string;
-  fontSize: number;
+  color?: string;
+  fontSize?: number;
 }>;
 
 export type State = {

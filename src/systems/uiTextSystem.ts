@@ -13,8 +13,8 @@ export const uiTextSystem = (state: State) =>
     create: ({ state, component }) => {
       const text = new BABYLON.GUI.TextBlock(component.entity);
       text.text = component.text;
-      text.color = component.color;
-      text.fontSize = component.fontSize;
+      text.color = component.color ?? '#fff';
+      text.fontSize = component.fontSize ?? 24;
 
       responsive({
         element: text,

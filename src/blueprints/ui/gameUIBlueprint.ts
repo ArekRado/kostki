@@ -8,18 +8,28 @@ import { generateId } from '../../utils/generateId';
 import { removeState } from '../../utils/localDb';
 import { attachEvent } from './attachEvent';
 
-type GameUIBlueprint = (params: {
-  scene: Scene;
-  state: State;
-  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-}) => State;
-export const gameUIBlueprint: GameUIBlueprint = ({
-  state,
-  scene,
-  advancedTexture,
-}) => {
-  const closeBtnEntity = generateId().toString();
+const closeBtnEntity = generateId().toString();
 
+type GameUIAttachEvents = (params: {
+  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+}) => void;
+export const gameUIAttachEvents: GameUIAttachEvents = ({ advancedTexture }) => {
+  attachEvent({
+    advancedTexture,
+    entity: closeBtnEntity,
+    onPointerUpObservable: () => {
+      removeState();
+      emitEvent<GameEvent.CleanSceneEvent>({
+        type: GameEvent.Type.cleanScene,
+        entity: gameEntity,
+        payload: { newScene: GameScene.mainMenu },
+      });
+    },
+  });
+};
+
+type GameUIBlueprint = (params: { state: State }) => State;
+export const gameUIBlueprint: GameUIBlueprint = ({ state }) => {
   state = setComponent<UIButton>({
     state,
     data: {
@@ -36,19 +46,6 @@ export const gameUIBlueprint: GameUIBlueprint = ({
         [0.95, 0.05],
         [0.95, 0.05],
       ],
-    },
-  });
-
-  attachEvent({
-    advancedTexture,
-    entity: closeBtnEntity,
-    onPointerUpObservable: () => {
-      removeState();
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.mainMenu },
-      });
     },
   });
 

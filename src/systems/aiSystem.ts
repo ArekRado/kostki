@@ -2,6 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName, getComponent } from '../ecs/component';
 import { AI, Box, Guid, State } from '../ecs/type';
 import { getGame } from './gameSystem';
+import { setTextureCache } from '../utils/textureCache';
+import { scene } from '..';
 
 export namespace AiEvent {
   export enum Type {}
@@ -415,6 +417,10 @@ export const aiSystem = (state: State) =>
         component.textureSet.forEach((src) => {
           const image = new Image();
           image.src = src;
+
+          image.onload = () => {
+            setTextureCache({ textureUrl: src, scene });
+          };
         });
       }, Math.random() * 2000 + 1000);
 

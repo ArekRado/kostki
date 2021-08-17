@@ -193,7 +193,7 @@ export const createRotationBoxAnimation = ({
 
     const children = box.getChildren();
 
-    children.slice(0, -1).forEach((plane) => {
+    children.slice(1, children.length).forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
       if (mesh) {
         setMeshTexture({

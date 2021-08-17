@@ -1,10 +1,23 @@
 import { createSystem } from '../ecs/createSystem';
-import { componentName, createGetSetForUniqComponent } from '../ecs/component';
+import {
+  componentName,
+  createGetSetForUniqComponent,
+  removeComponentsByName,
+} from '../ecs/component';
 import { Scene, State, UI } from '../ecs/type';
 import { scene } from '..';
-import { gameUIBlueprint } from '../blueprints/ui/gameUIBlueprint';
-import { mainUIBlueprint } from '../blueprints/ui/mainUIBlueprint';
-import { customLevelSettingsUIBlueprint } from '../blueprints/ui/customLevelSettingsUIBlueprint';
+import {
+  gameUIAttachEvents,
+  gameUIBlueprint,
+} from '../blueprints/ui/gameUIBlueprint';
+import {
+  mainUIAttachEvents,
+  mainUIBlueprint,
+} from '../blueprints/ui/mainUIBlueprint';
+import {
+  customLevelSettingsUIAttachEvents,
+  customLevelSettingsUIBlueprint,
+} from '../blueprints/ui/customLevelSettingsUIBlueprint';
 
 export const uiEntity = '23505760496063488';
 export const uiRoot = 'root';
@@ -17,29 +30,53 @@ const uiGetSet = createGetSetForUniqComponent<UI>({
 export const getUi = uiGetSet.getComponent;
 export const setUi = uiGetSet.setComponent;
 
-type SetBabylonUi = (params: {
-  state: State;
-  ui: UI;
+type CleanControls = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+  state: State;
 }) => State;
-const setBabylonUi: SetBabylonUi = ({ state, ui, advancedTexture }) => {
+const cleanControls: CleanControls = ({ state, advancedTexture }) => {
   advancedTexture
     .getChildren()
     .find((x) => x.name === uiRoot)
     ?.clearControls();
 
+  state = removeComponentsByName({ state, name: componentName.uiImage });
+  state = removeComponentsByName({ state, name: componentName.uiButton });
+  state = removeComponentsByName({ state, name: componentName.uiText });
+
+  return state;
+};
+
+type SetBabylonUi = (params: {
+  state: State;
+  ui: UI;
+  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+  attachEvents: boolean;
+}) => State;
+const setBabylonUi: SetBabylonUi = ({
+  state,
+  ui,
+  advancedTexture,
+  attachEvents,
+}) => {
   switch (ui.type) {
     case Scene.customLevel:
-      return gameUIBlueprint({ state, scene, advancedTexture });
+      state = gameUIBlueprint({ state });
+      attachEvents && gameUIAttachEvents({ advancedTexture });
+      break;
     case Scene.mainMenu:
-      return mainUIBlueprint({ state, scene, advancedTexture });
+      state = mainUIBlueprint({ state });
+      attachEvents && mainUIAttachEvents({ advancedTexture });
+      break;
     case Scene.customLevelSettings:
-      return customLevelSettingsUIBlueprint({
+      state = customLevelSettingsUIBlueprint({
         state,
-        scene,
-        advancedTexture,
       });
+      attachEvents && customLevelSettingsUIAttachEvents({ advancedTexture });
+      break;
   }
+
+  return state;
 };
 
 export let advancedTexture: null | BABYLON.GUI.AdvancedDynamicTexture = null;
@@ -54,13 +91,37 @@ export const uiSystem = (state: State) =>
         false,
         scene as any as BABYLON.Scene
       );
-      state = setBabylonUi({ state, ui: component, advancedTexture });
+
+      state = cleanControls({ advancedTexture, state });
+      state = setBabylonUi({
+        state,
+        ui: component,
+        advancedTexture,
+        attachEvents: true,
+      });
 
       return state;
     },
     update: ({ state, component }) => {
       if (advancedTexture) {
-        state = setBabylonUi({ state, ui: component, advancedTexture });
+        state = cleanControls({ advancedTexture, state });
+        state = setBabylonUi({
+          state,
+          ui: component,
+          advancedTexture,
+          attachEvents: true,
+        });
+      }
+      return state;
+    },
+    tick: ({ state, component }) => {
+      if (advancedTexture) {
+        state = setBabylonUi({
+          state,
+          ui: component,
+          advancedTexture,
+          attachEvents: false,
+        });
       }
       return state;
     },

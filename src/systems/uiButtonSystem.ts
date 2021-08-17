@@ -26,8 +26,8 @@ export const uiButtonSystem = (state: State) =>
       });
 
       btn.color = component.color ?? 'white';
-      btn.cornerRadius = component.cornerRadius ?? 20;
-      btn.background = component.background ?? 'green';
+      btn.cornerRadius = component.cornerRadius ?? 0;
+      btn.background = component.background ?? 'transparent';
       btn.fontSize = component.fontSize ?? 30;
       btn.isPointerBlocker = component.isPointerBlocker ?? true;
 

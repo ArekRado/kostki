@@ -42,42 +42,49 @@ export const boxBlueprint = ({
   boxMesh.position.y = position[1];
 
   [
+    [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)], // front
     [new Vector3(-size / 2, 0, 0), new Vector3(0, Math.PI / 2, 0)], //
     [new Vector3(0, 0, size / 2), new Vector3(0, Math.PI, 0)],
     [new Vector3(size / 2, 0, 0), new Vector3(0, -Math.PI / 2, 0)], //
     [new Vector3(0, size / 2, 0), new Vector3(Math.PI / 2, 0, 0)], //
     [new Vector3(0, -size / 2, 0), new Vector3(-Math.PI / 2, 0, 0)], //
-    [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)],
   ].forEach(([position, rotation], i) => {
-    const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
-    plane.parent = boxMesh;
+    const isFront = i === 0;
+    setTimeout(
+      () => {
+        const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
 
-    plane.material = new StandardMaterial('mat', scene);
+        plane.parent = boxMesh;
+        plane.material = new StandardMaterial('mat', scene);
 
-    setMeshTexture({
-      mesh: plane,
-      color,
-      texture: getTextureSet({ state, ai })[box.dots],
-      scene,
-    });
+        isFront &&
+          setMeshTexture({
+            mesh: plane,
+            color,
+            texture: getTextureSet({ state, ai })[box.dots],
+            scene,
+          });
 
-    plane.material.alpha = 1;
+        plane.material.alpha = 1;
 
-    plane.position = position;
-    plane.rotation = rotation;
+        plane.position = position;
+        plane.rotation = rotation;
 
-    plane.setParent(boxMesh);
+        plane.setParent(boxMesh);
 
-    // Click event
-    plane.actionManager = new ActionManager(scene);
-    plane.actionManager.registerAction(
-      new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
-        emitEvent<GameEvent.PlayerClickEvent>({
-          entity: gameEntity,
-          type: GameEvent.Type.playerClick,
-          payload: { boxEntity: uniqueId.toString() },
-        });
-      })
+        // Click event
+        plane.actionManager = new ActionManager(scene);
+        plane.actionManager.registerAction(
+          new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
+            emitEvent<GameEvent.PlayerClickEvent>({
+              entity: gameEntity,
+              type: GameEvent.Type.playerClick,
+              payload: { boxEntity: uniqueId.toString() },
+            });
+          })
+        );
+      },
+      isFront ? 0 : Math.random() * 400 + 100
     );
   });
 
