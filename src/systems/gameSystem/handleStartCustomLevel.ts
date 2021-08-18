@@ -23,8 +23,26 @@ import { camera, humanPlayerEntity, scene } from '../../index';
 import { Scene, UniversalCamera } from 'babylonjs';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
-import { green, orange, pink, red, teal, yellow } from '../../utils/colors';
-import { set1, set2, set3, set4, set5, set6 } from '../../utils/textureSets';
+import {
+  gray,
+  green,
+  orange,
+  pink,
+  purple,
+  red,
+  teal,
+  yellow,
+} from '../../utils/colors';
+import {
+  set1,
+  set2,
+  set3,
+  set4,
+  set5,
+  set6,
+  set7,
+  set8,
+} from '../../utils/textureSets';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
@@ -84,8 +102,8 @@ export const setLevelFromSettings: setLevelFromSettings = ({
       basicAI('4', yellow, set4),
       basicAI('5', orange, set5),
       basicAI('6', pink, set6),
-      // basicAI('7', darkBlue, set7),
-      // basicAI('8', purple, set8),
+      basicAI('7', gray, set7),
+      basicAI('8', purple, set8),
     ],
   });
 
@@ -147,54 +165,58 @@ const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
 type RunQuickStart = (params: { state: State }) => State;
 const runQuickStart: RunQuickStart = ({ state }) => {
   // Run same amount of moves as boxes in a grid
-  const newState = getGame({ state })?.grid.reduce((acc) => {
-    const game = getGame({ state: acc });
+  const movesAmout = getGame({ state })?.grid.length || 1;
+  const newState = Array.from({ length: movesAmout * 2 }).reduce(
+    (acc: State) => {
+      const game = getGame({ state: acc });
 
-    const currentAi = getComponent<AI>({
-      state: acc,
-      name: componentName.ai,
-      entity: game?.currentPlayer || '',
-    });
+      const currentAi = getComponent<AI>({
+        state: acc,
+        name: componentName.ai,
+        entity: game?.currentPlayer || '',
+      });
 
-    if (!game || !currentAi) {
+      if (!game || !currentAi) {
+        return acc;
+      }
+
+      const box = getAiMove({
+        state: acc,
+        ai: currentAi,
+        preferEmptyBoxes: true,
+      });
+
+      if (!box) {
+        return acc;
+      }
+
+      acc = setComponent<Box>({
+        state: acc,
+        data: {
+          ...box,
+          player: currentAi.entity,
+          dots: getNextDots(box.dots),
+        },
+      });
+
+      const nextPlayer = getNextPlayer({ state: acc });
+
+      if (!nextPlayer) {
+        return acc;
+      }
+
+      acc = setComponent<Game>({
+        state: acc,
+        data: {
+          ...game,
+          currentPlayer: nextPlayer.entity,
+        },
+      });
+
       return acc;
-    }
-
-    const box = getAiMove({
-      state: acc,
-      ai: currentAi,
-      preferEmptyBoxes: true,
-    });
-
-    if (!box) {
-      return acc;
-    }
-
-    acc = setComponent<Box>({
-      state: acc,
-      data: {
-        ...box,
-        player: currentAi.entity,
-        dots: getNextDots(box.dots),
-      },
-    });
-
-    const nextPlayer = getNextPlayer({ state: acc });
-
-    if (!nextPlayer) {
-      return acc;
-    }
-
-    acc = setComponent<Game>({
-      state: acc,
-      data: {
-        ...game,
-        currentPlayer: nextPlayer.entity,
-      },
-    });
-
-    return acc;
-  }, state);
+    },
+    state
+  );
 
   return newState || state;
 };

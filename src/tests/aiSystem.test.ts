@@ -10,9 +10,7 @@ import {
   getMovesForEmptyBoxes,
   pointsFor,
 } from '../systems/aiSystem';
-import {
-  getGameInitialState,
-} from '../utils/getGameInitialState';
+import { getGameInitialState } from '../utils/getGameInitialState';
 
 const player2 = 'player2';
 
@@ -95,7 +93,6 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
-        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 
@@ -117,7 +114,6 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
-        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 
@@ -170,7 +166,6 @@ describe('aiSystem', () => {
       });
 
       const dataGrid = getMovesForEmptyBoxes({
-        preferEmptyBoxes: false,
         dataGrid: getDataGrid({ state }),
       });
 

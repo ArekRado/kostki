@@ -16,6 +16,7 @@ export const safeGet = (array: any[][], i: number, j: number) =>
 
 export const pointsFor = {
   emptyBox: 50,
+  preferEmptyBoxes: 15,
 
   adjacted: {
     playerMoreThanOponent: 0,
@@ -92,21 +93,12 @@ export const getDataGrid: GetDataGrid = ({ state }) => {
   return [];
 };
 
-type GetMovesForEmptyBoxes = (params: {
-  dataGrid: DataGrid;
-  preferEmptyBoxes: boolean;
-}) => DataGrid;
-export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({
-  dataGrid,
-  preferEmptyBoxes,
-}) =>
+type GetMovesForEmptyBoxes = (params: { dataGrid: DataGrid }) => DataGrid;
+export const getMovesForEmptyBoxes: GetMovesForEmptyBoxes = ({ dataGrid }) =>
   dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
       const isEmpty = box.player === undefined;
-      const additionalPoints = preferEmptyBoxes ? 100 : 0;
-      const points = isEmpty
-        ? box.points + pointsFor.emptyBox + additionalPoints
-        : box.points;
+      const points = isEmpty ? box.points + pointsFor.emptyBox : box.points;
 
       acc2[j] = { ...box, points };
 
@@ -135,11 +127,17 @@ const getDiagonallBoxes = (grid3x3: EnhancedBox[][]): EnhancedBox[] => [
 // d a d
 // a b a
 // d a d
-type LocalStrategyAdjacted = (grid3x3: EnhancedBox[][]) => number;
-export const localStrategyAdjacted: LocalStrategyAdjacted = (
-  grid3x3: EnhancedBox[][]
-) => {
-  const playerBox = grid3x3[1][1];
+type LocalStrategyAdjacted = (params: {
+  grid3x3: EnhancedBox[][];
+  preferEmptyBoxes: boolean;
+  currentPlayer: AI;
+}) => number;
+export const localStrategyAdjacted: LocalStrategyAdjacted = ({
+  grid3x3,
+  preferEmptyBoxes,
+  currentPlayer,
+}) => {
+  const currentBox = grid3x3[1][1];
   const adjactedBoxes = getAdjactedBoxes(grid3x3);
 
   return adjactedBoxes.reduce((acc, adjactedBox) => {
@@ -147,29 +145,33 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
       return acc + pointsFor.adjacted.toBorder;
     }
 
-    // if (adjactedBox.player === undefined) {
-    //   return acc;
-    // }
-
     const boxStats =
-      playerBox.dots === adjactedBox.dots
+      currentBox.dots === adjactedBox.dots
         ? dotStats.equal
-        : playerBox.dots > adjactedBox.dots
+        : currentBox.dots > adjactedBox.dots
         ? dotStats.more
         : dotStats.less;
 
-    // todo: preferEmptyBoxes should prefer adjactedBox
     if (
-      adjactedBox.player !== playerBox.player &&
+      adjactedBox.player !== currentBox.player &&
       adjactedBox.player !== undefined
     ) {
+      if (
+        preferEmptyBoxes &&
+        currentBox.player === undefined &&
+        adjactedBox.player === currentPlayer.entity
+      ) {
+        // preferEmptyBoxes creates "islands" of boxes with the same color
+        // Math.random produces more noise 
+        return Math.random() > 0.5 ? acc + pointsFor.preferEmptyBoxes : acc;
+      }
       // Adjacted is oponent
 
       // Player box has more dots, box is safe
       if (boxStats === dotStats.more) {
-        const diff = playerBox.dots - adjactedBox.dots;
+        const diff = currentBox.dots - adjactedBox.dots;
         // AI really don't want to click on this box
-        // if (playerBox.dots === 6 && diff > 2) {
+        // if (currentBox.dots === 6 && diff > 2) {
         //   return acc - 10;
         // }
         return acc + pointsFor.adjacted.playerMoreThanOponent - diff;
@@ -177,18 +179,18 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
       // Oponent box has equal dots, last chance to safetly incerase dots
       // Importance of this box depends on how many dots have box
       if (boxStats === dotStats.equal) {
-        return acc + pointsFor.adjacted.playerEqualToOponent * playerBox.dots;
+        return acc + pointsFor.adjacted.playerEqualToOponent * currentBox.dots;
       }
       // Oponent box has more dots, it's not worth to click on this box
       if (boxStats === dotStats.less) {
-        const diff = adjactedBox.dots - playerBox.dots;
+        const diff = adjactedBox.dots - currentBox.dots;
         return acc + pointsFor.adjacted.playerLessThanOponent * diff;
       }
     } else {
       // Adjacted is player
 
       // Do nothing if near is another player box and current has 6 dots
-      if (playerBox.dots === 6) {
+      if (currentBox.dots === 6) {
         return acc;
       }
 
@@ -199,7 +201,7 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
 
       // Do nothing, just let other checks to decide if it's worth to click, probably it's not worth so add minus points
       if (boxStats === dotStats.equal) {
-        if (adjactedBox.dots === 6 && playerBox.dots === 6) {
+        if (adjactedBox.dots === 6 && currentBox.dots === 6) {
           return acc + pointsFor.adjacted.sixToSix;
         }
         return acc + pointsFor.adjacted.playerEqualToPlayer;
@@ -217,8 +219,17 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = (
   }, 0);
 };
 
-export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
-  const playerBox = grid3x3[1][1];
+type LocalStrategyDiagonall = (params: {
+  grid3x3: EnhancedBox[][];
+  preferEmptyBoxes: boolean;
+  currentPlayer: AI;
+}) => number;
+export const localStrategyDiagonall: LocalStrategyDiagonall = ({
+  grid3x3,
+  preferEmptyBoxes,
+  currentPlayer,
+}) => {
+  const currentBox = grid3x3[1][1];
   const diagonallBoxes = getDiagonallBoxes(grid3x3);
 
   return diagonallBoxes.reduce((acc, diagonallBox) => {
@@ -226,26 +237,22 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       return acc + pointsFor.diagonall.toBorder;
     }
 
-    // if (diagonallBox.player === undefined) {
-    //   return acc;
-    // }
-
     const boxStats =
-      playerBox.dots === diagonallBox.dots
+      currentBox.dots === diagonallBox.dots
         ? dotStats.equal
-        : playerBox.dots > diagonallBox.dots
+        : currentBox.dots > diagonallBox.dots
         ? dotStats.more
         : dotStats.less;
 
     if (
-      diagonallBox.player !== playerBox.player &&
+      diagonallBox.player !== currentBox.player &&
       diagonallBox.player !== undefined
     ) {
       // Adjacted is oponent
 
       // Player box has more dots, box is safe
       if (boxStats === dotStats.more) {
-        // const dotsDiff = playerBox.dots - diagonallBox.dots;
+        // const dotsDiff = currentBox.dots - diagonallBox.dots;
         // if (dotsDiff === 1) {
         //   // diff is low, box will be unsafe soon
         //   return acc + pointsFor.diagonall.playerLessThanOponent * 0.5;
@@ -271,7 +278,7 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       // Adjacted is player
 
       // Do nothing if near is another player box and current has 6 dots
-      if (playerBox.dots === 6) {
+      if (currentBox.dots === 6) {
         return acc;
       }
 
@@ -284,7 +291,7 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
       }
       // Player box is diagonall to another it might be a good place to set 6 dots
       if (boxStats === dotStats.less) {
-        const diff = diagonallBox.dots - playerBox.dots;
+        const diff = diagonallBox.dots - currentBox.dots;
         return acc + pointsFor.diagonall.playerLessThanPlayer + diff ** 2;
       }
     }
@@ -294,16 +301,18 @@ export const localStrategyDiagonall = (grid3x3: EnhancedBox[][]) => {
 };
 
 type CalculateLocalStrategy = (params: {
-  currentPlayer: Guid;
+  currentPlayer: AI;
   dataGrid: DataGrid;
+  preferEmptyBoxes: boolean;
 }) => DataGrid;
 export const calculateLocalStrategy: CalculateLocalStrategy = ({
   dataGrid,
   currentPlayer,
+  preferEmptyBoxes,
 }) => {
   return dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
-      if (box.player !== currentPlayer && box.player !== undefined) {
+      if (box.player !== currentPlayer.entity && box.player !== undefined) {
         return acc2;
       }
 
@@ -328,7 +337,8 @@ export const calculateLocalStrategy: CalculateLocalStrategy = ({
       ];
 
       const points =
-        localStrategyAdjacted(grid3x3) + localStrategyDiagonall(grid3x3);
+        localStrategyAdjacted({ grid3x3, preferEmptyBoxes, currentPlayer }) +
+        localStrategyDiagonall({ grid3x3, preferEmptyBoxes, currentPlayer });
 
       acc2[j] = { ...box, points: box.points + points };
       return acc2;
@@ -382,9 +392,12 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
 
   dataGrid = getMovesForEmptyBoxes({
     dataGrid,
+  });
+  dataGrid = calculateLocalStrategy({
+    currentPlayer: ai,
+    dataGrid,
     preferEmptyBoxes: !!preferEmptyBoxes,
   });
-  dataGrid = calculateLocalStrategy({ currentPlayer, dataGrid });
 
   // Chooses one/two players and attacks them
   // Tries to find weakes player to attack

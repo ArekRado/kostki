@@ -1,6 +1,6 @@
 import { Color } from '../ecs/type';
 
-export const darkBlue: Color = [0.13, 0.48, 0.75];
+export const gray: Color = [0.6, 0.6, 0.6];
 export const green: Color = [0.11, 0.79, 0.29];
 export const teal: Color = [0.09, 0.84, 1];
 export const orange: Color = [1, 0.73, 0.29];
@@ -11,7 +11,7 @@ export const purple: Color = [0.67, 0.23, 0.94];
 
 
 // [
-//   [34, 124, 193],
+//   [28, 99, 154],
 //   [29, 203, 75],
 //   [23, 216, 255],
 //   [255, 187, 74],

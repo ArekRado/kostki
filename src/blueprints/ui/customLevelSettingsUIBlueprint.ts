@@ -99,7 +99,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state,
 }) => {
   const size: Breakpoints<[number, number]> = [
-    [0.9, 0.1],
+    [0.5, 0.1],
     [0.4, 0.1],
     [0.3, 0.1],
   ];
@@ -131,13 +131,13 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
       text: '<',
       size: [
         [0.1, 0.5],
-        [0.1, 0.5],
-        [0.1, 0.5],
+        [0.2, 0.5],
+        [0.2, 0.5],
       ],
       position: [
         [0.1, 0.25],
-        [0.1, 0.25],
-        [0.1, 0.25],
+        [0.4, 0.25],
+        [0.4, 0.25],
       ],
     },
   });
@@ -150,13 +150,13 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
       text: '>',
       size: [
         [0.1, 0.5],
-        [0.1, 0.5],
-        [0.1, 0.5],
+        [0.2, 0.5],
+        [0.2, 0.5],
       ],
       position: [
         [0.9, 0.25],
-        [0.9, 0.25],
-        [0.9, 0.25],
+        [0.8, 0.25],
+        [0.8, 0.25],
       ],
     },
   });
@@ -164,7 +164,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
-      entity: playersBtnEntity,
+      entity: startBtnEntity,
       name: componentName.uiButton,
       text: 'Start >',
       size,
@@ -181,12 +181,42 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: difficultyBtnEntity,
       name: componentName.uiButton,
-      text: '[x] Difficulty',
+      text: 'Difficulty: Hard',
       size,
       position: [
-        [0.5, 0.75],
-        [0.5, 0.75],
-        [0.5, 0.75],
+        [0.25, 0.75],
+        [0.25, 0.75],
+        [0.25, 0.75],
+      ],
+    },
+  });
+
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: difficultyBtnEntity,
+      name: componentName.uiButton,
+      text: 'Difficulty: Hard',
+      size,
+      position: [
+        [0.25, 0.75],
+        [0.25, 0.75],
+        [0.25, 0.75],
+      ],
+    },
+  });
+
+  state = setComponent<UIButton>({
+    state,
+    data: {
+      entity: playersBtnEntity,
+      name: componentName.uiButton,
+      text: 'Players: 6',
+      size,
+      position: [
+        [0.25, 0.85],
+        [0.25, 0.85],
+        [0.25, 0.85],
       ],
     },
   });
@@ -199,9 +229,9 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
       text: '[x] Quick Start',
       size,
       position: [
-        [0.5, 0.85],
-        [0.5, 0.85],
-        [0.5, 0.85],
+        [0.75, 0.75],
+        [0.75, 0.75],
+        [0.75, 0.75],
       ],
     },
   });
@@ -214,9 +244,9 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
       text: '[x] Color blind mode',
       size,
       position: [
-        [0.5, 0.95],
-        [0.5, 0.95],
-        [0.5, 0.95],
+        [0.75, 0.85],
+        [0.75, 0.85],
+        [0.75, 0.85],
       ],
     },
   });
