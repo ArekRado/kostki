@@ -1,11 +1,12 @@
 import 'babylonjs-gui';
-import { gameEntity, GameEvent } from '../../systems/gameSystem';
+import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
 import { State, UIButton, Scene as GameScene, UIText } from '../../ecs/type';
 import { Breakpoints } from './responsive';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from './attachEvent';
+import { AIDifficulty } from '../../systems/aiSystem';
 
 const playersBtnEntity = generateId().toString();
 const difficultyBtnEntity = generateId().toString();
@@ -16,6 +17,22 @@ const nextMapBtnEntity = generateId().toString();
 const prevMapBtnEntity = generateId().toString();
 const startBtnEntity = generateId().toString();
 
+const mapDifficultyToText = (difficulty: AIDifficulty): string => {
+  switch (difficulty) {
+    case AIDifficulty.disabled:
+      return 'Disabled';
+    case AIDifficulty.random:
+      return 'Random';
+
+    case AIDifficulty.easy:
+      return 'Easy';
+    case AIDifficulty.medium:
+      return 'Medium';
+    case AIDifficulty.hard:
+      return 'Hard';
+  }
+};
+
 type customLevelSettingsUIAttachEvents = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
 }) => void;
@@ -25,8 +42,8 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       advancedTexture,
       entity: playersBtnEntity,
       onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
+        emitEvent<GameEvent.ChangePlayersEvent>({
+          type: GameEvent.Type.changePlayers,
           entity: gameEntity,
           payload: {},
         });
@@ -37,8 +54,8 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       advancedTexture,
       entity: difficultyBtnEntity,
       onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
+        emitEvent<GameEvent.ChangeDifficultyEvent>({
+          type: GameEvent.Type.changeDifficulty,
           entity: gameEntity,
           payload: {},
         });
@@ -49,8 +66,8 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       advancedTexture,
       entity: quickStartBtnEntity,
       onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
+        emitEvent<GameEvent.ChangeQuickStartEvent>({
+          type: GameEvent.Type.changeQuickStart,
           entity: gameEntity,
           payload: {},
         });
@@ -61,8 +78,8 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       advancedTexture,
       entity: colorBlindModeBtnEntity,
       onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
+        emitEvent<GameEvent.ChangeColorBlindModeEvent>({
+          type: GameEvent.Type.changeColorBlindMode,
           entity: gameEntity,
           payload: {},
         });
@@ -73,8 +90,32 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       advancedTexture,
       entity: mapTypeBtnEntity,
       onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
+        emitEvent<GameEvent.ChangeMapTypeEvent>({
+          type: GameEvent.Type.changeMapType,
+          entity: gameEntity,
+          payload: {},
+        });
+      },
+    });
+
+    attachEvent({
+      advancedTexture,
+      entity: nextMapBtnEntity,
+      onPointerUpObservable: () => {
+        emitEvent<GameEvent.ChangeNextMapEvent>({
+          type: GameEvent.Type.changeNextMap,
+          entity: gameEntity,
+          payload: {},
+        });
+      },
+    });
+
+    attachEvent({
+      advancedTexture,
+      entity: prevMapBtnEntity,
+      onPointerUpObservable: () => {
+        emitEvent<GameEvent.ChangePrevMapEvent>({
+          type: GameEvent.Type.changePrevMap,
           entity: gameEntity,
           payload: {},
         });
@@ -98,6 +139,8 @@ type CustomLevelSettingsUIBlueprint = (params: { state: State }) => State;
 export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state,
 }) => {
+  const game = getGame({ state });
+
   const size: Breakpoints<[number, number]> = [
     [0.5, 0.1],
     [0.4, 0.1],
@@ -136,8 +179,8 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
       ],
       position: [
         [0.1, 0.25],
-        [0.4, 0.25],
-        [0.4, 0.25],
+        [0.2, 0.25],
+        [0.2, 0.25],
       ],
     },
   });
@@ -181,22 +224,11 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: difficultyBtnEntity,
       name: componentName.uiButton,
-      text: 'Difficulty: Hard',
-      size,
-      position: [
-        [0.25, 0.75],
-        [0.25, 0.75],
-        [0.25, 0.75],
-      ],
-    },
-  });
-
-  state = setComponent<UIButton>({
-    state,
-    data: {
-      entity: difficultyBtnEntity,
-      name: componentName.uiButton,
-      text: 'Difficulty: Hard',
+      text: `Difficulty: ${
+        game?.customLevelSettings.difficulty
+          ? mapDifficultyToText(game?.customLevelSettings.difficulty)
+          : '-'
+      }`,
       size,
       position: [
         [0.25, 0.75],
@@ -211,7 +243,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: playersBtnEntity,
       name: componentName.uiButton,
-      text: 'Players: 6',
+      text: `Players: ${game?.customLevelSettings.players.length}`,
       size,
       position: [
         [0.25, 0.85],
@@ -226,7 +258,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: quickStartBtnEntity,
       name: componentName.uiButton,
-      text: '[x] Quick Start',
+      text: `[${game?.customLevelSettings.quickStart ? 'x' : ' '}] Quick Start`,
       size,
       position: [
         [0.75, 0.75],
@@ -241,7 +273,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: colorBlindModeBtnEntity,
       name: componentName.uiButton,
-      text: '[x] Color blind mode',
+      text: `[${game?.colorBlindMode ? 'x' : ' '}] Color blind mode`,
       size,
       position: [
         [0.75, 0.85],

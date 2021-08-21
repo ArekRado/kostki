@@ -1,20 +1,10 @@
-import { humanPlayerEntity, scene } from '..';
-import {
-  setComponent,
-  componentName,
-  recreateAllComponents,
-  getComponent,
-} from '../ecs/component';
+import { humanPlayerEntity } from '..';
+import { setComponent, componentName } from '../ecs/component';
 import { initialState } from '../ecs/state';
 import { AI, Camera, Game, Marker, Scene, State, UI } from '../ecs/type';
-import { aiSystem } from '../systems/aiSystem';
-import { BoxEvent, boxSystem } from '../systems/boxSystem';
-import {
-  gameEntity,
-  GameEvent,
-  gameSystem,
-  getGame,
-} from '../systems/gameSystem';
+import { AIDifficulty, aiSystem } from '../systems/aiSystem';
+import { boxSystem } from '../systems/boxSystem';
+import { gameEntity, gameSystem, getGame } from '../systems/gameSystem';
 import { markerEntity, markerSystem } from '../systems/markerSystem';
 import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
 import { getSavedState, removeState } from './localDb';
@@ -22,6 +12,7 @@ import { uiEntity, uiSystem } from '../systems/uiSystem';
 import { uiButtonSystem } from '../systems/uiButtonSystem';
 import { uiImageSystem } from '../systems/uiImageSystem';
 import { uiTextSystem } from '../systems/uiTextSystem';
+import { playersList } from '../systems/gameSystem/handleChangeSettings';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -65,11 +56,12 @@ export const getGameInitialState: GetGameInitialState = () => {
       gameStarted: false,
       playersQueue: [],
       boxRotationQueue: [],
-      quickStart: true,
       colorBlindMode: false,
       customLevelSettings: {
-        ai: [],
-        levelSize: 0,
+        players: playersList().slice(0, 8),
+        difficulty: AIDifficulty.easy,
+        quickStart: true,
+        mapType: '',
       },
       musicEnabled: false,
     },

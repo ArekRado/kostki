@@ -4,6 +4,7 @@ import { State, UIButton } from '../ecs/type';
 import { scene } from '..';
 import { normalizePosition, responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
+import { getUI } from '../blueprints/ui/getUI';
 
 export const uiButtonSystem = (state: State) =>
   createSystem<UIButton, {}>({
@@ -16,13 +17,9 @@ export const uiButtonSystem = (state: State) =>
       );
 
       responsive({
-        element: btn,
+        element: component,
+        babylonElement: btn,
         scene,
-        sizes: component.size,
-        callback: (size) => {
-          btn.width = size[0];
-          btn.height = size[1];
-        },
       });
 
       btn.color = component.color ?? 'white';
@@ -31,18 +28,21 @@ export const uiButtonSystem = (state: State) =>
       btn.fontSize = component.fontSize ?? 30;
       btn.isPointerBlocker = component.isPointerBlocker ?? true;
 
-      const [left, top] = normalizePosition(component.position[0]);
-      btn.top = top;
-      btn.left = left;
-
       advancedTexture?.addControl(btn);
 
       return state;
     },
+    update: ({ state, component }) => {
+      const control = getUI({ entity: component.entity }) as BABYLON.GUI.Button;
+
+      if (control && control.textBlock) {
+        control.textBlock.text = component.text;
+      }
+
+      return state;
+    },
     remove: ({ state, component }) => {
-      const control = advancedTexture
-        ?.getChildren()
-        .find((x) => x.name === component.entity);
+      const control = getUI({ entity: component.entity });
 
       if (control) {
         control.dispose();

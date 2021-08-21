@@ -4,7 +4,19 @@ import { AI, Box, Guid, State } from '../ecs/type';
 import { getGame } from './gameSystem';
 import { setTextureCache } from '../utils/textureCache';
 import { scene } from '..';
+import { addNoise } from './aiSystem/addNoise';
+import { disabledAIMove } from './aiSystem/disabledAIMove';
 
+export enum AIDifficulty {
+  // campaign ai
+  disabled,
+  random,
+
+  //
+  easy,
+  medium,
+  hard,
+}
 export namespace AiEvent {
   export enum Type {}
 
@@ -56,7 +68,7 @@ type EnhancedBox = Box & {
    */
   points: number;
 };
-type DataGrid = EnhancedBox[][];
+export type DataGrid = EnhancedBox[][];
 
 type GetDataGrid = (params: { state: State }) => DataGrid;
 export const getDataGrid: GetDataGrid = ({ state }) => {
@@ -162,7 +174,7 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = ({
         adjactedBox.player === currentPlayer.entity
       ) {
         // preferEmptyBoxes creates "islands" of boxes with the same color
-        // Math.random produces more noise 
+        // Math.random produces more noise
         return Math.random() > 0.5 ? acc + pointsFor.preferEmptyBoxes : acc;
       }
       // Adjacted is oponent
@@ -399,13 +411,39 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
     preferEmptyBoxes: !!preferEmptyBoxes,
   });
 
+  // Todo
   // Chooses one/two players and attacks them
+  // or
   // Tries to find weakes player to attack
   // If has no good moves then tries to waste moves
-  // If is losing then prepares defense
-  // dataGrid = calculateGlobalStrategy({ currentPlayer, dataGrid });
-  const bestRandomBox = getBestRandomBox({ currentPlayer, dataGrid });
+  // Detect patterns:
+  // - should prefer to attack when 6 dots can safetly capture 3,4,5 dots
+  // - should be able to do combo strikes so can double click on 5 dots box
+  if (!preferEmptyBoxes) {
+    switch (ai.level) {
+      case AIDifficulty.disabled:
+        dataGrid = disabledAIMove({ dataGrid });
+        break;
+      case AIDifficulty.random:
+        // Every box is clicked by random
+        dataGrid = addNoise({ dataGrid, minNoise: 100, currentPlayer });
+        break;
 
+      case AIDifficulty.easy:
+        // Boxes points values are reduced by 100-70 percentages
+        dataGrid = addNoise({ dataGrid, minNoise: 70, currentPlayer });
+        break;
+      case AIDifficulty.medium:
+        // Boxes points values are reduced by 100-0 percentages
+        dataGrid = addNoise({ dataGrid, minNoise: 0, currentPlayer });
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  const bestRandomBox = getBestRandomBox({ currentPlayer, dataGrid });
   // console.log(
   //   JSON.stringify(
   //     dataGrid.map((x) =>

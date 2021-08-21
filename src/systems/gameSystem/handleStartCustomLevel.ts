@@ -3,8 +3,6 @@ import { emitEvent } from '../../ecs/emitEvent';
 import {
   AI,
   Box,
-  Color,
-  Entity,
   EventHandler,
   Game,
   State,
@@ -19,44 +17,17 @@ import {
   onClickBox,
 } from '../boxSystem';
 import { GameEvent, getGame, getNextPlayer, setGame } from '../gameSystem';
-import { camera, humanPlayerEntity, scene } from '../../index';
+import { camera, scene } from '../../index';
 import { Scene, UniversalCamera } from 'babylonjs';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
-import {
-  gray,
-  green,
-  orange,
-  pink,
-  purple,
-  red,
-  teal,
-  yellow,
-} from '../../utils/colors';
-import {
-  set1,
-  set2,
-  set3,
-  set4,
-  set5,
-  set6,
-  set7,
-  set8,
-} from '../../utils/textureSets';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
+import { logWrongPath } from '../../utils/logWrongPath';
 
-type setLevelFromSettings = (params: {
-  state: State;
-  scene: Scene;
-  camera: UniversalCamera;
-}) => State;
-export const setLevelFromSettings: setLevelFromSettings = ({
-  state,
-  scene,
-  camera,
-}) => {
+type setLevelFromSettings = (params: { state: State; game: Game }) => State;
+export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
   state = Array.from({ length: 8 }).reduce(
     (acc: State, _, x) =>
       Array.from({ length: 8 }).reduce(
@@ -77,34 +48,12 @@ export const setLevelFromSettings: setLevelFromSettings = ({
     state
   );
 
-  const basicAI = (
-    entity: Entity,
-    color: Color,
-    textureSet: AI['textureSet'],
-    human = false
-  ): AI => ({
-    entity,
-    name: componentName.ai,
-    human,
-    level: 1,
-    color,
-    textureSet,
-    active: true,
-  });
-
-  // state = gridBlueprint({ dataGrid: emptyGrid, scene, camera, state });
   state = aiBlueprint({
     state,
-    ai: [
-      basicAI(humanPlayerEntity, teal, set1, true),
-      basicAI('2', red, set2),
-      basicAI('3', green, set3),
-      basicAI('4', yellow, set4),
-      basicAI('5', orange, set5),
-      basicAI('6', pink, set6),
-      basicAI('7', gray, set7),
-      basicAI('8', purple, set8),
-    ],
+    ai: game.customLevelSettings.players.map((ai) => ({
+      ...ai,
+      // level: game.customLevelSettings.difficulty,
+    })),
   });
 
   const { center, cameraDistance } = getGridDimensions(getDataGrid({ state }));
@@ -177,7 +126,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
       });
 
       if (!game || !currentAi) {
-        return acc;
+        return logWrongPath(acc);
       }
 
       const box = getAiMove({
@@ -187,7 +136,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
       });
 
       if (!box) {
-        return acc;
+        return logWrongPath(acc);
       }
 
       acc = setComponent<Box>({
@@ -224,38 +173,39 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 export const handleStartCustomLevel: EventHandler<
   Game,
   GameEvent.StartCustomLevelEvent
-> = ({ state }) => {
-  state = setLevelFromSettings({ state, scene, camera });
-
-  const game = getGame({ state });
+> = ({ state, component }) => {
+  state = setLevelFromSettings({ state, game: component });
 
   const currentAi = getNextPlayer({ state });
 
-  if (!currentAi || !game) {
-    return state;
+  if (!currentAi) {
+    return logWrongPath(state);
   }
 
   state = setGame({
     state,
     data: {
-      gameStarted: true,
       currentPlayer: currentAi.entity,
     },
   });
 
-  if (game.quickStart) {
+  const game = getGame({ state });
+
+  if (!game) {
+    return logWrongPath(state);
+  }
+
+  if (game.customLevelSettings.quickStart) {
     state = runQuickStart({ state });
     setTimeout(() => {
       updateAllBoxes({ state });
     }, 500);
   }
 
-  // TODO do not repeat same code as above
   state = setGame({
     state,
     data: {
       gameStarted: true,
-      currentPlayer: currentAi.entity,
     },
   });
 

@@ -26,6 +26,7 @@ import { setMarker } from './markerSystem';
 import { boxWithGap } from '../blueprints/gridBlueprint';
 import { setUi } from './uiSystem';
 import { handleStartCustomLevel } from './gameSystem/handleStartCustomLevel';
+import { handleChangeColorBlindMode, handleChangeDifficulty, handleChangeMapType, handleChangeNextMap, handleChangePlayers, handleChangePrevMap, handleChangeQuickStart } from './gameSystem/handleChangeSettings';
 
 export const gameEntity = 'game';
 
@@ -36,13 +37,28 @@ export namespace GameEvent {
     boxExplosion,
     playerClick,
     cleanScene,
+
+    changePlayers,
+    changeDifficulty,
+    changeQuickStart,
+    changeColorBlindMode,
+    changeMapType,
+    changeNextMap,
+    changePrevMap,
   }
 
   export type All =
     | StartCustomLevelEvent
     | NextTurnEvent
     | PlayerClickEvent
-    | CleanSceneEvent;
+    | CleanSceneEvent
+    | ChangePlayersEvent
+    | ChangeDifficultyEvent
+    | ChangeQuickStartEvent
+    | ChangeColorBlindModeEvent
+    | ChangeMapTypeEvent
+    | ChangeNextMapEvent
+    | ChangePrevMapEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
@@ -54,6 +70,17 @@ export namespace GameEvent {
     Type.cleanScene,
     { newScene: GameScene }
   >;
+
+  export type ChangePlayersEvent = ECSEvent<Type.changePlayers, {}>;
+  export type ChangeDifficultyEvent = ECSEvent<Type.changeDifficulty, {}>;
+  export type ChangeQuickStartEvent = ECSEvent<Type.changeQuickStart, {}>;
+  export type ChangeColorBlindModeEvent = ECSEvent<
+    Type.changeColorBlindMode,
+    {}
+  >;
+  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>;
+  export type ChangeNextMapEvent = ECSEvent<Type.changeNextMap, {}>;
+  export type ChangePrevMapEvent = ECSEvent<Type.changePrevMap, {}>;
 }
 
 const gameGetSet = createGetSetForUniqComponent<Game>({
@@ -327,6 +354,21 @@ export const gameSystem = (state: State) =>
           return handlePlayerClick({ state, component, event });
         case GameEvent.Type.cleanScene:
           return handleCleanScene({ state, component, event });
+
+        case GameEvent.Type.changePlayers:
+          return handleChangePlayers({ state, component, event });
+        case GameEvent.Type.changeDifficulty:
+          return handleChangeDifficulty({ state, component, event });
+        case GameEvent.Type.changeQuickStart:
+          return handleChangeQuickStart({ state, component, event });
+        case GameEvent.Type.changeColorBlindMode:
+          return handleChangeColorBlindMode({ state, component, event });
+        case GameEvent.Type.changeMapType:
+          return handleChangeMapType({ state, component, event });
+        case GameEvent.Type.changeNextMap:
+          return handleChangeNextMap({ state, component, event });
+        case GameEvent.Type.changePrevMap:
+          return handleChangePrevMap({ state, component, event });
       }
     },
   });

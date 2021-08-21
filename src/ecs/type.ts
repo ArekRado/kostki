@@ -1,4 +1,5 @@
 import { Breakpoints } from '../blueprints/ui/responsive';
+import { AIDifficulty } from '../systems/aiSystem';
 import { GlobalSystem, System } from './createSystem';
 
 export type Dictionary<Value> = { [key: string]: Value };
@@ -30,7 +31,7 @@ export type Box = Component<{
 export type AI = Component<{
   human: boolean;
   active: boolean;
-  level: number;
+  level: AIDifficulty;
   color: Color;
   textureSet: [string, string, string, string, string, string, string];
 }>;
@@ -49,12 +50,14 @@ export type Game = Component<{
   playersQueue: Entity[];
   boxRotationQueue: Entity[];
   gameStarted: boolean;
-  colorBlindMode: boolean;
-  quickStart: boolean;
+  
   customLevelSettings: {
-    ai: AI[];
-    levelSize: number;
+    players: AI[];
+    difficulty: AIDifficulty;
+    quickStart: boolean;
+    mapType: string;
   };
+  colorBlindMode: boolean;
   musicEnabled: boolean;
 }>;
 
@@ -72,30 +75,38 @@ export type UI = Component<{
   type: Scene;
 }>;
 
-export type UIButton = Component<{
-  text: string;
+export type UIElement = {
   position: Breakpoints<[number, number]>;
   size: Breakpoints<[number, number]>;
-  color?: string;
-  cornerRadius?: number;
-  background?: string;
-  fontSize?: number;
-  isPointerBlocker?: boolean;
-}>;
+  maxSize?: Breakpoints<[number, number]>;
+  minSize?: Breakpoints<[number, number]>;
+  aspectRation?: number; // 1 is square
+};
 
-export type UIImage = Component<{
-  url: string;
-  position: Breakpoints<[number, number]>;
-  size: Breakpoints<[number, number]>;
-}>;
+export type UIButton = Component<
+  UIElement & {
+    text: string;
+    color?: string;
+    cornerRadius?: number;
+    background?: string;
+    fontSize?: number;
+    isPointerBlocker?: boolean;
+  }
+>;
 
-export type UIText = Component<{
-  text: string;
-  position: Breakpoints<[number, number]>;
-  size: Breakpoints<[number, number]>;
-  color?: string;
-  fontSize?: number;
-}>;
+export type UIImage = Component<
+  UIElement & {
+    url: string;
+  }
+>;
+
+export type UIText = Component<
+  UIElement & {
+    text: string;
+    color?: string;
+    fontSize?: number;
+  }
+>;
 
 export type State = {
   entity: Dictionary<Entity>;

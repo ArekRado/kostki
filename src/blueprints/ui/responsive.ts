@@ -1,4 +1,7 @@
 import { Scene } from 'babylonjs';
+import { UIElement } from '../../ecs/type';
+import { clapm } from '../../utils/clamp';
+import { getAspectRatio } from '../../utils/getAspectRatio';
 
 export type Breakpoints<Value = number> = [Value, Value, Value];
 
@@ -13,31 +16,61 @@ export const getResonsiveSize: GetBreakpoint = (containerSize, sizes) =>
   sizes.find((_, index) => containerSize < breakpoints[index]) ||
   sizes[sizes.length - 1];
 
-type Responsive = <X, Size>(params: {
-  element: X & { onDisposeObservable: BABYLON.Observable<BABYLON.GUI.Control> };
+export const normalizePosition = (position: [number, number]) => [
+  `${(position[0] - 0.5) * 100}%`,
+  `${(position[1] - 0.5) * 100}%`,
+];
+
+type Responsive = (params: {
+  element: UIElement;
+  babylonElement: BABYLON.GUI.Control & {
+    onDisposeObservable: BABYLON.Observable<BABYLON.GUI.Control>;
+  };
   scene: Scene;
-  callback: (responsiveSize: Size) => void;
-  sizes: Breakpoints<Size>;
-}) => X;
-export const responsive: Responsive = ({ element, callback, scene, sizes }) => {
+}) => UIElement;
+export const responsive: Responsive = ({ element, babylonElement, scene }) => {
   const engine = scene.getEngine();
 
   const resize = () => {
     const canvas = engine.getRenderingCanvasClientRect();
-    const newSize = getResonsiveSize(canvas ? canvas.width : 1, sizes);
-    callback(newSize);
+    const canvasWidth = canvas ? canvas.width : 1;
+    const ratio = element.aspectRation ? getAspectRatio(scene) : 1;
+
+    const newPosition = getResonsiveSize(canvasWidth, element.position);
+    const [left, top] = normalizePosition(newPosition);
+
+    const newSize = getResonsiveSize(canvasWidth, element.size);
+    const newSizeWithAspectRatio = [newSize[0], newSize[1] / ratio];
+    const newMinSize = element.minSize
+      ? getResonsiveSize(canvasWidth, element.minSize)
+      : [0, 0];
+    const newMaxSize = element.maxSize
+      ? getResonsiveSize(canvasWidth, element.maxSize)
+      : [1, 1];
+
+    const width = clapm({
+      value: newSizeWithAspectRatio[0],
+      min: newMinSize[0],
+      max: newMaxSize[0],
+    });
+
+    const height = clapm({
+      value: newSizeWithAspectRatio[1],
+      min: newMinSize[1],
+      max: newMaxSize[1],
+    });
+
+    babylonElement.width = width;
+    babylonElement.height = height;
+    babylonElement.top = top;
+    babylonElement.left = left;
   };
   resize();
 
   engine.onResizeObservable.add(resize);
-  element.onDisposeObservable.add(() =>
+  babylonElement.onDisposeObservable.add(() =>
     engine.onResizeObservable.removeCallback(resize)
   );
 
   return element;
 };
-
-export const normalizePosition = (position: [number, number]) => [
-  `${(position[0] - 0.5) * 100}%`,
-  `${(position[1] - 0.5) * 100}%`,
-];

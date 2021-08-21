@@ -5,6 +5,7 @@ import { scene } from '..';
 import { normalizePosition, responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
 import { getAspectRatio } from '../utils/getAspectRatio';
+import { getUI } from '../blueprints/ui/getUI';
 
 export const uiTextSystem = (state: State) =>
   createSystem<UIText, {}>({
@@ -17,28 +18,17 @@ export const uiTextSystem = (state: State) =>
       text.fontSize = component.fontSize ?? 24;
 
       responsive({
-        element: text,
+        element: component,
+        babylonElement: text,
         scene,
-        sizes: component.size,
-        callback: (size) => {
-          text.width = size[0];
-          const ratio = getAspectRatio(scene);
-          text.height = size[1] / ratio;
-        },
       });
-
-      const [left, top] = normalizePosition(component.position[0]);
-      text.top = top;
-      text.left = left;
 
       advancedTexture?.addControl(text);
 
       return state;
     },
     remove: ({ state, component }) => {
-      const control = advancedTexture
-        ?.getChildren()
-        .find((x) => x.name === component.entity);
+      const control = getUI({ entity: component.entity });
 
       if (control) {
         control.dispose();

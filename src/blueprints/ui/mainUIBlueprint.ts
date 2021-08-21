@@ -1,12 +1,10 @@
 import 'babylonjs-gui';
-import { Scene } from 'babylonjs';
 import logoUrl from '../../assets/logo.png';
-import { getAspectRatio } from '../../utils/getAspectRatio';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
 import { State, UIButton, UIImage, UIText } from '../../ecs/type';
 import { Scene as GameScene } from '../../ecs/type';
-import { Breakpoints, responsive } from './responsive';
+import { Breakpoints } from './responsive';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from './attachEvent';
@@ -74,11 +72,17 @@ export const mainUIBlueprint: MainUIBlueprint = ({ state }) => {
         [0.5, 0.3],
         [0.5, 0.3],
       ],
+      maxSize: [
+        [0.5, 0.3],
+        [0.5, 0.3],
+        [0.5, 0.3],
+      ],
       position: [
         [0.5, 0.15],
         [0.5, 0.15],
         [0.5, 0.15],
       ],
+      aspectRation: 1,
     },
   });
 
