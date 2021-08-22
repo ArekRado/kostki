@@ -8,7 +8,7 @@ import {
   State,
   Scene as GameScene,
 } from '../../ecs/type';
-import { getAiMove, getDataGrid } from '../aiSystem';
+import { getAiMove } from '../aiSystem';
 import {
   BoxEvent,
   Direction,
@@ -17,14 +17,13 @@ import {
   onClickBox,
 } from '../boxSystem';
 import { GameEvent, getGame, getNextPlayer, setGame } from '../gameSystem';
-import { camera, scene } from '../../index';
-import { Scene, UniversalCamera } from 'babylonjs';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
+import { getDataGrid } from '../aiSystem/getDataGrid';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -52,7 +51,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
     state,
     ai: game.customLevelSettings.players.map((ai) => ({
       ...ai,
-      // level: game.customLevelSettings.difficulty,
+      level: game.customLevelSettings.difficulty,
     })),
   });
 

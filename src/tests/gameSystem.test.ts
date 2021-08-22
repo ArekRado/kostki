@@ -2,14 +2,14 @@ import 'regenerator-runtime/runtime';
 import { scene, camera } from '..';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
-import { componentName, getComponent, setComponent } from '../ecs/component';
-import { emitEvent } from '../ecs/emitEvent';
+import { componentName, getComponent } from '../ecs/component';
 import { runOneFrame } from '../ecs/runOneFrame';
-import { AI, Box, Entity, Game } from '../ecs/type';
-import { getDataGrid } from '../systems/aiSystem';
-import { BoxEvent, onClickBox } from '../systems/boxSystem';
+import { AI, Box, Entity } from '../ecs/type';
+import { AIDifficulty } from '../systems/aiSystem';
+import {  onClickBox } from '../systems/boxSystem';
 import { getGame } from '../systems/gameSystem';
 import { getGameInitialState } from '../utils/getGameInitialState';
+import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 
 const player2 = 'player2';
 
@@ -17,7 +17,7 @@ const basicAI = (entity: Entity): AI => ({
   entity,
   name: componentName.ai,
   human: false,
-  level: 1,
+  level: AIDifficulty.hard,
   color: [0, 0, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,

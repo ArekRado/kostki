@@ -13,7 +13,6 @@ import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
 import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
-import { getDataGrid, safeGet } from './aiSystem';
 import { set1 } from '../utils/textureSets';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { boxBlueprint } from '../blueprints/boxBlueprint';
@@ -21,6 +20,8 @@ import { boxWithGap, gridName } from '../blueprints/gridBlueprint';
 import empty from '../assets/0.png';
 import { Mesh } from 'babylonjs/Meshes/mesh';
 import { TransformNode } from 'babylonjs/Meshes/transformNode';
+import { safeGet } from './aiSystem/calculateLocalStrategy';
+import { getDataGrid } from './aiSystem/getDataGrid';
 
 export enum Direction {
   up,

@@ -37,7 +37,7 @@ export const getGameInitialState: GetGameInitialState = () => {
       entity: humanPlayerEntity,
       name: componentName.ai,
       human: true,
-      level: 0,
+      level: AIDifficulty.hard,
       color: [0, 0, 1],
       textureSet: ['', '', '', '', '', '', ''],
       active: true,

@@ -41,14 +41,14 @@ export const basicAI = (
 });
 
 export const playersList = () => [
-  basicAI(humanPlayerEntity, teal, set1, true, AIDifficulty.hard),
-  basicAI('2', red, set2, false, AIDifficulty.hard),
-  basicAI('3', green, set3, false, AIDifficulty.medium),
-  basicAI('4', yellow, set4),
-  basicAI('5', orange, set5),
-  basicAI('6', pink, set6),
-  basicAI('7', gray, set7),
-  basicAI('8', purple, set8),
+  basicAI(humanPlayerEntity, teal, set1, true, AIDifficulty.easy),
+  basicAI('2', red, set2, false, AIDifficulty.easy),
+  basicAI('3', green, set3, false, AIDifficulty.easy),
+  basicAI('4', yellow, set4, false, AIDifficulty.easy),
+  basicAI('5', orange, set5, false, AIDifficulty.easy),
+  basicAI('6', pink, set6, false, AIDifficulty.easy),
+  basicAI('7', gray, set7, false, AIDifficulty.easy),
+  basicAI('8', purple, set8, false, AIDifficulty.easy),
 ];
 
 export const handleChangePlayers: EventHandler<

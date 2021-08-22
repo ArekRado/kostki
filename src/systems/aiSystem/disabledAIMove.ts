@@ -1,4 +1,3 @@
-import { Guid } from '../../ecs/type';
 import { DataGrid } from '../aiSystem';
 
 type DisabledAIMove = (params: { dataGrid: DataGrid }) => DataGrid;

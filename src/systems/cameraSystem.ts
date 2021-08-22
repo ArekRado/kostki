@@ -3,9 +3,7 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { Camera, State } from '../ecs/type';
 import { camera, scene } from '..';
-import { getGridDimensions } from '../blueprints/gridBlueprint';
 import { setCameraDistance } from '../utils/setCameraDistance';
-import { getDataGrid } from './aiSystem';
 
 export const cameraEntity = 'cameraEntity';
 

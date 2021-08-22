@@ -4,12 +4,13 @@ import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
 import {
+  AIDifficulty,
   getAiMove,
-  getBestRandomBox,
-  getDataGrid,
-  getMovesForEmptyBoxes,
-  pointsFor,
 } from '../systems/aiSystem';
+import { hardAIGridPoints } from '../systems/aiSystem/aiGridPoints';
+import { getBestRandomBox } from '../systems/aiSystem/getBestRandomBox';
+import { getDataGrid } from '../systems/aiSystem/getDataGrid';
+import { getMovesForEmptyBoxes } from '../systems/aiSystem/getMovesForEmptyBoxes';
 import { getGameInitialState } from '../utils/getGameInitialState';
 
 const player2 = 'player2';
@@ -38,7 +39,7 @@ const basicAi: AI = {
   entity: 'basicAi',
   name: componentName.ai,
   human: false,
-  level: 0,
+  level: AIDifficulty.hard,
   color: [0, 0, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,
@@ -48,7 +49,7 @@ const basicAi2: AI = {
   entity: 'basicAi2',
   name: componentName.ai,
   human: false,
-  level: 0,
+  level: AIDifficulty.hard,
   color: [0, 1, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,
@@ -93,13 +94,14 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
+        aIGridPoints: hardAIGridPoints,
         dataGrid: getDataGrid({ state }),
       });
 
-      expect(grid[0][0].points).toEqual(pointsFor.emptyBox);
-      expect(grid[0][1].points).toEqual(pointsFor.emptyBox);
-      expect(grid[1][0].points).toEqual(pointsFor.emptyBox);
-      expect(grid[1][1].points).toEqual(pointsFor.emptyBox);
+      expect(grid[0][0].points).toEqual(hardAIGridPoints.emptyBox);
+      expect(grid[0][1].points).toEqual(hardAIGridPoints.emptyBox);
+      expect(grid[1][0].points).toEqual(hardAIGridPoints.emptyBox);
+      expect(grid[1][1].points).toEqual(hardAIGridPoints.emptyBox);
     });
 
     it('one non empty box - should return grid with points', () => {
@@ -114,13 +116,14 @@ describe('aiSystem', () => {
       });
 
       const grid = getMovesForEmptyBoxes({
+        aIGridPoints: hardAIGridPoints,
         dataGrid: getDataGrid({ state }),
       });
 
-      expect(grid[0][0].points).toEqual(pointsFor.emptyBox);
-      expect(grid[0][1].points).toEqual(pointsFor.emptyBox);
+      expect(grid[0][0].points).toEqual(hardAIGridPoints.emptyBox);
+      expect(grid[0][1].points).toEqual(hardAIGridPoints.emptyBox);
       expect(grid[1][0].points).toEqual(0);
-      expect(grid[1][1].points).toEqual(pointsFor.emptyBox);
+      expect(grid[1][1].points).toEqual(hardAIGridPoints.emptyBox);
     });
   });
 
@@ -166,6 +169,7 @@ describe('aiSystem', () => {
       });
 
       const dataGrid = getMovesForEmptyBoxes({
+        aIGridPoints: hardAIGridPoints,
         dataGrid: getDataGrid({ state }),
       });
 
