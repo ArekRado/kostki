@@ -85,8 +85,8 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = ({
       }
       // Oponent box has more dots, it's not worth to click on this box
       if (boxStats === dotStats.less) {
-        const diff = adjactedBox.dots - currentBox.dots;
-        return acc + aIGridPoints.adjacted.playerLessThanOponent * diff;
+        const diff = currentBox.dots - adjactedBox.dots - adjactedBox.dots;
+        return acc + aIGridPoints.adjacted.playerLessThanOponent * Math.abs(diff);
       }
     } else {
       // Adjacted is player

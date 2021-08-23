@@ -23,6 +23,7 @@ import {
 } from '../../utils/textureSets';
 import { GameEvent, setGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
+import { setUi } from '../uiSystem';
 
 export const basicAI = (
   entity: Entity,
@@ -56,11 +57,11 @@ export const handleChangePlayers: EventHandler<
   GameEvent.ChangePlayersEvent
 > = ({ state, component }) => {
   const playersAmount =
-    component.customLevelSettings.players.length === 8
+    component.customLevelSettings.players?.length === 8
       ? 2
-      : component.customLevelSettings.players.length + 1;
+      : component.customLevelSettings.players?.length + 1;
 
-  return setGame({
+  state = setGame({
     state,
     data: {
       customLevelSettings: {
@@ -69,6 +70,8 @@ export const handleChangePlayers: EventHandler<
       },
     },
   });
+
+  return setUi({ state, data: {} });
 };
 
 export const handleChangeDifficulty: EventHandler<
@@ -90,7 +93,7 @@ export const handleChangeDifficulty: EventHandler<
       ? difficultyList[0]
       : difficultyList[index + 1] ?? difficultyList[0];
 
-  return setGame({
+  state = setGame({
     state,
     data: {
       customLevelSettings: {
@@ -99,6 +102,8 @@ export const handleChangeDifficulty: EventHandler<
       },
     },
   });
+
+  return setUi({ state, data: {} });
 };
 
 export const handleChangeQuickStart: EventHandler<
@@ -120,31 +125,33 @@ export const handleChangeColorBlindMode: EventHandler<
   Game,
   GameEvent.ChangeColorBlindModeEvent
 > = ({ state, component }) => {
-  return setGame({
+  state = setGame({
     state,
     data: {
       colorBlindMode: !component.colorBlindMode,
     },
   });
+
+  return setUi({ state, data: {} });
 };
 
 export const handleChangeMapType: EventHandler<
   Game,
   GameEvent.ChangeMapTypeEvent
 > = ({ state, component }) => {
-  return state;
+  return setUi({ state, data: {} });
 };
 
 export const handleChangeNextMap: EventHandler<
   Game,
   GameEvent.ChangeNextMapEvent
 > = ({ state, component }) => {
-  return state;
+  return setUi({ state, data: {} });
 };
 
 export const handleChangePrevMap: EventHandler<
   Game,
   GameEvent.ChangePrevMapEvent
 > = ({ state, component }) => {
-  return state;
+  return setUi({ state, data: {} });
 };

@@ -26,7 +26,15 @@ import { setMarker } from './markerSystem';
 import { boxWithGap } from '../blueprints/gridBlueprint';
 import { setUi } from './uiSystem';
 import { handleStartCustomLevel } from './gameSystem/handleStartCustomLevel';
-import { handleChangeColorBlindMode, handleChangeDifficulty, handleChangeMapType, handleChangeNextMap, handleChangePlayers, handleChangePrevMap, handleChangeQuickStart } from './gameSystem/handleChangeSettings';
+import {
+  handleChangeColorBlindMode,
+  handleChangeDifficulty,
+  handleChangeMapType,
+  handleChangeNextMap,
+  handleChangePlayers,
+  handleChangePrevMap,
+  handleChangeQuickStart,
+} from './gameSystem/handleChangeSettings';
 
 export const gameEntity = 'game';
 
@@ -297,7 +305,10 @@ const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> = ({
   state,
   event,
 }) => {
-  state = setUi({ state, data: { type: event.payload.newScene } });
+  state = setUi({
+    state,
+    data: { type: event.payload.newScene, cleanControls: true },
+  });
   state = setGame({
     state,
     data: {

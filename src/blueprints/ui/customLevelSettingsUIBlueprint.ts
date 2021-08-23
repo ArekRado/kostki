@@ -243,7 +243,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     data: {
       entity: playersBtnEntity,
       name: componentName.uiButton,
-      text: `Players: ${game?.customLevelSettings.players.length}`,
+      text: `Players: ${game?.customLevelSettings.players?.length}`,
       size,
       position: [
         [0.25, 0.85],

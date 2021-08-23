@@ -2,9 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIImage } from '../ecs/type';
 import { scene } from '..';
-import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getAspectRatio } from '../utils/getAspectRatio';
 import { getUI } from '../blueprints/ui/getUI';
 
 export const uiImageSystem = (state: State) =>
@@ -16,7 +15,7 @@ export const uiImageSystem = (state: State) =>
 
       responsive({
         element: component,
-        babylonElement:img,
+        babylonElement: img,
         scene,
       });
 
@@ -34,3 +33,4 @@ export const uiImageSystem = (state: State) =>
       return state;
     },
   });
+

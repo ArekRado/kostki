@@ -69,6 +69,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
     state,
     data: {
       type: GameScene.customLevel,
+      cleanControls: true,
     },
   });
 

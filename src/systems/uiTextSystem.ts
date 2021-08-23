@@ -2,9 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIText } from '../ecs/type';
 import { scene } from '..';
-import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getAspectRatio } from '../utils/getAspectRatio';
 import { getUI } from '../blueprints/ui/getUI';
 
 export const uiTextSystem = (state: State) =>

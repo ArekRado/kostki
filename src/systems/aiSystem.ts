@@ -74,14 +74,6 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
     aIGridPoints,
   });
 
-  // Todo
-  // Chooses one/two players and attacks them
-  // or
-  // Tries to find weakes player to attack
-  // If has no good moves then tries to waste moves
-  // Detect patterns:
-  // - should prefer to attack when 6 dots can safetly capture 3,4,5 dots
-  // - should be able to do combo strikes so can double click on 5 dots box
   if (!preferEmptyBoxes) {
     switch (ai.level) {
       case AIDifficulty.disabled:
@@ -90,6 +82,14 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
       case AIDifficulty.random:
         // Every box is clicked by random
         dataGrid = randomizeGrid({ dataGrid, currentPlayer });
+        break;
+      case AIDifficulty.hard:
+        // Todo
+        // If has no good moves then tries to waste moves
+        // Detect patterns:
+        // - should prefer to attack when 6 dots can safetly capture 3,4,5 dots
+        // - should be able to do combo strikes so can double click on 5 dots box
+        // dataGrid = randomizeGrid({ dataGrid, currentPlayer });
         break;
 
       default:

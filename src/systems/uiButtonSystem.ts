@@ -2,7 +2,7 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIButton } from '../ecs/type';
 import { scene } from '..';
-import { normalizePosition, responsive } from '../blueprints/ui/responsive';
+import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
 import { getUI } from '../blueprints/ui/getUI';
 

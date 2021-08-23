@@ -73,6 +73,7 @@ export type Marker = Component<{
 
 export type UI = Component<{
   type: Scene;
+  cleanControls: boolean;
 }>;
 
 export type UIElement = {
