@@ -1,7 +1,7 @@
 import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
-import { Box, Camera, Entity, State } from '../ecs/type';
-import { cameraEntity, setCamera } from '../systems/cameraSystem';
+import { Box, Entity, State } from '../ecs/type';
+import { setCamera } from '../systems/cameraSystem';
 import { setCameraDistance } from '../utils/setCameraDistance';
 
 export const boxSize = 1;
@@ -51,22 +51,9 @@ export const gridBlueprint: GridBlueprint = ({
 
   setCameraDistance(cameraDistance, scene);
 
-  // let gridBoxIds: Guid[] = [];
-
   state = dataGrid.reduce(
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
-        // const box = boxBlueprint({ scene, name: `${x}-${y}` });
-
-        // box.position.x = x * boxWithGap;
-        // box.position.y = y * boxWithGap;
-
-        // box.setParent(grid);
-
-        // const boxEntity = ;
-
-        // gridBoxIds.push(boxEntity);
-
         return setComponent<Box>({
           state: acc2,
           data: {
@@ -81,22 +68,6 @@ export const gridBlueprint: GridBlueprint = ({
       }, acc1),
     state
   );
-
-  // const game = getGame({ state });
-
-  // if (!game) {
-  //   return state;
-  // }
-
-  // state = setComponent<Game>({
-  //   state,
-  //   data: {
-  //     ...game,
-  //     grid: gridBoxIds,
-  //   },
-  // });
-
-  // state = setGame({ state, game: { grid: gridBoxIds } });
 
   return state;
 };

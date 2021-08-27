@@ -14,6 +14,7 @@ import { calculateLocalStrategy } from './aiSystem/calculateLocalStrategy';
 import { getDataGrid } from './aiSystem/getDataGrid';
 import { getMovesForEmptyBoxes } from './aiSystem/getMovesForEmptyBoxes';
 import { getBestRandomBox } from './aiSystem/getBestRandomBox';
+import { advancedAttackAdjacted } from './aiSystem/advancedAttackAdjacted';
 
 export enum AIDifficulty {
   // campaign ai
@@ -24,6 +25,8 @@ export enum AIDifficulty {
   easy = 'easy',
   medium = 'medium',
   hard = 'hard',
+
+  experimental = 'experimental',
 }
 export namespace AiEvent {
   export enum Type {}
@@ -59,6 +62,8 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
     [AIDifficulty.easy]: easyAIGridPoints,
     [AIDifficulty.medium]: mediumAIGridPoints,
     [AIDifficulty.hard]: hardAIGridPoints,
+
+    [AIDifficulty.experimental]: hardAIGridPoints,
   }[ai.level];
 
   let dataGrid = getDataGrid({ state });
@@ -83,11 +88,12 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
         // Every box is clicked by random
         dataGrid = randomizeGrid({ dataGrid, currentPlayer });
         break;
-      case AIDifficulty.hard:
+      case AIDifficulty.experimental:
+        dataGrid = advancedAttackAdjacted({ dataGrid, currentPlayer });
         // Todo
         // If has no good moves then tries to waste moves
         // Detect patterns:
-        // - should prefer to attack when 6 dots can safetly capture 3,4,5 dots
+        // wip - should prefer to attack when 6 dots can safetly capture 3,4,5 dots
         // - should be able to do combo strikes so can double click on 5 dots box
         // dataGrid = randomizeGrid({ dataGrid, currentPlayer });
         break;

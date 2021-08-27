@@ -20,7 +20,7 @@ const basicBox: BasicBox = {
   dots: 0,
 };
 
-const expectOneOf = (
+export const expectOneOf = (
   possiblePositions: [number, number][],
   position: number[]
 ) => {

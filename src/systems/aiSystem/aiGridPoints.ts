@@ -1,6 +1,7 @@
 export type AIGridPoints = {
   emptyBox: number;
   preferEmptyBoxes: number;
+  advancedAttack: number;
 
   adjacted: {
     playerMoreThanOponent: number;
@@ -31,6 +32,7 @@ export type AIGridPoints = {
 export const hardAIGridPoints: AIGridPoints = {
   emptyBox: 50,
   preferEmptyBoxes: 15,
+  advancedAttack: 20,
 
   adjacted: {
     playerMoreThanOponent: 0,
@@ -61,6 +63,7 @@ export const hardAIGridPoints: AIGridPoints = {
 export const mediumAIGridPoints: AIGridPoints = {
   emptyBox: 50,
   preferEmptyBoxes: 15,
+  advancedAttack: 0,
 
   adjacted: {
     playerMoreThanOponent: 0,
@@ -91,6 +94,7 @@ export const mediumAIGridPoints: AIGridPoints = {
 export const easyAIGridPoints: AIGridPoints = {
   emptyBox: 50,
   preferEmptyBoxes: 15,
+  advancedAttack: 0,
 
   adjacted: {
     playerMoreThanOponent: 0,

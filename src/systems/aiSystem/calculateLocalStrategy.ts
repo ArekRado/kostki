@@ -5,18 +5,45 @@ import { DataGrid, dotStats, EnhancedBox } from '../aiSystem';
 export const safeGet = (array: any[][], i: number, j: number) =>
   array ? (array[j] ? array[j][i] : undefined) : undefined;
 
-const getAdjactedBoxes = (grid3x3: EnhancedBox[][]): EnhancedBox[] => [
+export const getAdjactedBoxes = (
+  grid3x3: EnhancedBox[][]
+): (EnhancedBox | undefined)[] => [
   grid3x3[1][0],
   grid3x3[0][1],
   grid3x3[1][2],
   grid3x3[2][1],
 ];
 
-const getDiagonallBoxes = (grid3x3: EnhancedBox[][]): EnhancedBox[] => [
+export const getDiagonallBoxes = (
+  grid3x3: EnhancedBox[][]
+): (EnhancedBox | undefined)[] => [
   grid3x3[0][0],
   grid3x3[0][2],
   grid3x3[2][0],
   grid3x3[2][2],
+];
+
+export const getGrid3x3 = (
+  dataGrid: EnhancedBox[][],
+  [i, j]: [number, number]
+): EnhancedBox[][] => [
+  [
+    safeGet(dataGrid, j - 1, i - 1),
+    safeGet(dataGrid, j, i - 1),
+    safeGet(dataGrid, j + 1, i - 1),
+  ],
+
+  [
+    safeGet(dataGrid, j - 1, i),
+    safeGet(dataGrid, j, i), // playerBox
+    safeGet(dataGrid, j + 1, i),
+  ],
+
+  [
+    safeGet(dataGrid, j - 1, i + 1),
+    safeGet(dataGrid, j, i + 1),
+    safeGet(dataGrid, j + 1, i + 1),
+  ],
 ];
 
 // b - player box
@@ -86,7 +113,9 @@ export const localStrategyAdjacted: LocalStrategyAdjacted = ({
       // Oponent box has more dots, it's not worth to click on this box
       if (boxStats === dotStats.less) {
         const diff = currentBox.dots - adjactedBox.dots - adjactedBox.dots;
-        return acc + aIGridPoints.adjacted.playerLessThanOponent * Math.abs(diff);
+        return (
+          acc + aIGridPoints.adjacted.playerLessThanOponent * Math.abs(diff)
+        );
       }
     } else {
       // Adjacted is player
@@ -225,25 +254,7 @@ export const calculateLocalStrategy: CalculateLocalStrategy = ({
         return acc2;
       }
 
-      const grid3x3 = [
-        [
-          safeGet(dataGrid, j - 1, i - 1),
-          safeGet(dataGrid, j, i - 1),
-          safeGet(dataGrid, j + 1, i - 1),
-        ],
-
-        [
-          safeGet(dataGrid, j - 1, i),
-          safeGet(dataGrid, j, i), // playerBox
-          safeGet(dataGrid, j + 1, i),
-        ],
-
-        [
-          safeGet(dataGrid, j - 1, i + 1),
-          safeGet(dataGrid, j, i + 1),
-          safeGet(dataGrid, j + 1, i + 1),
-        ],
-      ];
+      const grid3x3 = getGrid3x3(dataGrid, [i, j]);
 
       const points =
         localStrategyAdjacted({
