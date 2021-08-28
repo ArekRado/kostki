@@ -111,7 +111,7 @@ export const handleChangeQuickStart: EventHandler<
   Game,
   GameEvent.ChangeQuickStartEvent
 > = ({ state, component }) => {
-  return setGame({
+  state = setGame({
     state,
     data: {
       customLevelSettings: {
@@ -120,6 +120,8 @@ export const handleChangeQuickStart: EventHandler<
       },
     },
   });
+
+  return setUi({ state, data: {} });
 };
 
 export const handleChangeColorBlindMode: EventHandler<

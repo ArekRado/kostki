@@ -1,4 +1,4 @@
-import { AI, Entity } from '../../ecs/type';
+import { Entity } from '../../ecs/type';
 import { DataGrid, EnhancedBox } from '../aiSystem';
 import { hardAIGridPoints } from './aiGridPoints';
 import { getAdjactedBoxes, getGrid3x3 } from './calculateLocalStrategy';
@@ -111,6 +111,13 @@ export const advancedAttackAdjacted: AdvancedAttackAdjacted = ({
 
         return acc;
       }, 0);
+
+      // // Check if all branches are not protected
+      // const branchIsProtected = points.some((point) => point === 0);
+      // const totalPoints = branchIsProtected
+      //   ? 0
+      //   : points.reduce((acc, point) => acc + point, 0);
+
       acc2[j] = { ...box, points: box.points + points };
       return acc2;
     }, row);

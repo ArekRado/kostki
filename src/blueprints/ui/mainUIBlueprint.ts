@@ -148,26 +148,9 @@ export const mainUIBlueprint: MainUIBlueprint = ({ state }) => {
       color: '#444',
       fontSize: 24,
       position: [
-        [0.5, 0.9],
-        [0.5, 0.9],
-        [0.5, 0.9],
-      ],
-    },
-  });
-
-  state = setComponent<UIText>({
-    state,
-    data: {
-      entity: authorTextEntity,
-      name: componentName.uiText,
-      text: 'created by Arek Rado',
-      size,
-      color: '#444',
-      fontSize: 24,
-      position: [
-        [0.5, 0.95],
-        [0.5, 0.95],
-        [0.5, 0.95],
+        [0.9, 0.9],
+        [0.9, 0.9],
+        [0.9, 0.9],
       ],
     },
   });

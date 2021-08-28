@@ -69,6 +69,22 @@ if (process.env.NODE_ENV !== 'test') {
       onUpdate: () => {},
       onSuccess: () => {},
     });
+
+    navigator.serviceWorker.addEventListener('message', async (event) => {
+      // Optional: ensure the message came from workbox-broadcast-update
+      if (event.data.meta === 'workbox-broadcast-update') {
+        const { cacheName, updatedURL } = event.data.payload;
+  
+        // Do something with cacheName and updatedURL.
+        // For example, get the cached content and update
+        // the content on the page.
+        const cache = await caches.open(cacheName);
+        const updatedResponse = await cache.match(updatedURL);
+        const updatedText = await updatedResponse?.text();
+  
+        console.log(updatedText)
+      }
+    });
   }
 
   let state: State = getGameInitialState();
@@ -90,5 +106,5 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
   // todo
-  // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+  window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
 }
