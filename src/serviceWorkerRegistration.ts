@@ -20,7 +20,7 @@ const isLocalhost = Boolean(
     )
 );
 
-process.env.PUBLIC_URL = '';
+process.env.PUBLIC_URL = '/kostki';
 
 type Config = {
   onUpdate: () => void;

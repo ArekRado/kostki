@@ -106,5 +106,5 @@ if (process.env.NODE_ENV !== 'test') {
   });
 
   // todo
-  window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+  // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
 }
