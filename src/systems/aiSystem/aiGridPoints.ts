@@ -32,7 +32,7 @@ export type AIGridPoints = {
 export const hardAIGridPoints: AIGridPoints = {
   emptyBox: 50,
   preferEmptyBoxes: 15,
-  advancedAttack: 10,
+  advancedAttack: 7,
 
   adjacted: {
     playerMoreThanOponent: 0,
