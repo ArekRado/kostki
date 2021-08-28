@@ -14,6 +14,8 @@ import { getGameInitialState } from './utils/getGameInitialState';
 import { setCameraDistance } from './utils/setCameraDistance';
 import { register } from './serviceWorkerRegistration';
 import { getDataGrid } from './systems/aiSystem/getDataGrid';
+import { gameEntity, GameEvent } from './systems/gameSystem';
+import { emitEvent } from './ecs/emitEvent';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -74,15 +76,19 @@ if (process.env.NODE_ENV !== 'test') {
       // Optional: ensure the message came from workbox-broadcast-update
       if (event.data.meta === 'workbox-broadcast-update') {
         const { cacheName, updatedURL } = event.data.payload;
-  
+
         // Do something with cacheName and updatedURL.
         // For example, get the cached content and update
         // the content on the page.
         const cache = await caches.open(cacheName);
         const updatedResponse = await cache.match(updatedURL);
         const updatedText = await updatedResponse?.text();
-  
-        console.log(updatedText)
+
+        emitEvent<GameEvent.ShowNewVersionEvent>({
+          type: GameEvent.Type.showNewVersion,
+          entity: gameEntity,
+          payload: {},
+        });
       }
     });
   }

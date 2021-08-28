@@ -16,7 +16,7 @@ const selectLevelBtnEntity = generateId().toString();
 const muteBtnEntity = generateId().toString();
 
 const versionTextEntity = generateId().toString();
-const authorTextEntity = generateId().toString();
+const newVersionBtnEntity = generateId().toString();
 
 type MainUIAttachEvents = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
@@ -59,8 +59,14 @@ export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
   });
 };
 
-type MainUIBlueprint = (params: { state: State }) => State;
-export const mainUIBlueprint: MainUIBlueprint = ({ state }) => {
+type MainUIBlueprint = (params: {
+  state: State;
+  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
+}) => State;
+export const mainUIBlueprint: MainUIBlueprint = ({
+  state,
+  advancedTexture,
+}) => {
   state = setComponent<UIImage>({
     state,
     data: {
@@ -154,6 +160,39 @@ export const mainUIBlueprint: MainUIBlueprint = ({ state }) => {
       ],
     },
   });
+
+  if (game?.newVersionAvailable) {
+    state = setComponent<UIButton>({
+      state,
+      data: {
+        entity: newVersionBtnEntity,
+        name: componentName.uiButton,
+        text: 'New version available. Click here to reload',
+        size: [
+          [0.2, 0.2],
+          [0.2, 0.2],
+          [0.2, 0.2],
+        ],
+        position: [
+          [0.1, 0.1],
+          [0.1, 0.1],
+          [0.1, 0.1],
+        ],
+      },
+    });
+
+    attachEvent({
+      advancedTexture,
+      entity: newVersionBtnEntity,
+      onPointerUpObservable: () => {
+        emitEvent<GameEvent.ReloadEvent>({
+          type: GameEvent.Type.reload,
+          entity: gameEntity,
+          payload: {},
+        });
+      },
+    });
+  }
 
   return state;
 };

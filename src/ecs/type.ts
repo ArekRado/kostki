@@ -44,13 +44,14 @@ export enum Scene {
 
 export type Game = Component<{
   version: string;
+  newVersionAvailable: boolean;
   round: number;
   grid: Entity[];
   currentPlayer: Entity;
   playersQueue: Entity[];
   boxRotationQueue: Entity[];
   gameStarted: boolean;
-  
+
   customLevelSettings: {
     players: AI[];
     difficulty: AIDifficulty;

@@ -48,6 +48,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     state,
     data: {
       version,
+      newVersionAvailable: false,
       entity: gameEntity,
       name: componentName.game,
       grid: [],

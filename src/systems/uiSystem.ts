@@ -67,7 +67,7 @@ export const setBabylonUi: SetBabylonUi = ({
       attachEvents && gameUIAttachEvents({ advancedTexture });
       break;
     case Scene.mainMenu:
-      state = mainUIBlueprint({ state });
+      state = mainUIBlueprint({ state, advancedTexture });
       attachEvents && mainUIAttachEvents({ advancedTexture });
       break;
     case Scene.customLevelSettings:

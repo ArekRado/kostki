@@ -158,3 +158,22 @@ export const handleChangePrevMap: EventHandler<
 > = ({ state, component }) => {
   return setUi({ state, data: {} });
 };
+
+export const handleShowNewVersion: EventHandler<
+  Game,
+  GameEvent.ShowNewVersionEvent
+> = ({ state }) => {
+  state = setGame({
+    state,
+    data: { newVersionAvailable: true },
+  });
+  return setUi({ state, data: {} });
+};
+
+export const handleReload: EventHandler<
+  Game,
+  GameEvent.ReloadEvent
+> = ({ state }) => {
+  window.location.reload();
+  return state;
+};

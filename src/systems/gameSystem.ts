@@ -34,6 +34,8 @@ import {
   handleChangePlayers,
   handleChangePrevMap,
   handleChangeQuickStart,
+  handleReload,
+  handleShowNewVersion,
 } from './gameSystem/handleChangeSettings';
 
 export const gameEntity = 'game';
@@ -53,6 +55,8 @@ export namespace GameEvent {
     changeMapType,
     changeNextMap,
     changePrevMap,
+    showNewVersion,
+    reload,
   }
 
   export type All =
@@ -66,7 +70,9 @@ export namespace GameEvent {
     | ChangeColorBlindModeEvent
     | ChangeMapTypeEvent
     | ChangeNextMapEvent
-    | ChangePrevMapEvent;
+    | ChangePrevMapEvent
+    | ShowNewVersionEvent
+    | ReloadEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
@@ -89,6 +95,9 @@ export namespace GameEvent {
   export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>;
   export type ChangeNextMapEvent = ECSEvent<Type.changeNextMap, {}>;
   export type ChangePrevMapEvent = ECSEvent<Type.changePrevMap, {}>;
+
+  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, {}>;
+  export type ReloadEvent = ECSEvent<Type.reload, {}>;
 }
 
 const gameGetSet = createGetSetForUniqComponent<Game>({
@@ -380,6 +389,10 @@ export const gameSystem = (state: State) =>
           return handleChangeNextMap({ state, component, event });
         case GameEvent.Type.changePrevMap:
           return handleChangePrevMap({ state, component, event });
+        case GameEvent.Type.showNewVersion:
+          return handleShowNewVersion({ state, component, event });
+        case GameEvent.Type.reload:
+          return handleReload({ state, component, event });
       }
     },
   });
