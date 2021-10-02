@@ -1,10 +1,10 @@
 import { Entity } from '../../ecs/type';
 import { advancedTexture, uiRoot } from '../../systems/uiSystem';
 
-type GetUI = (params: {
+type GetUiControl = (params: {
   entity: Entity;
 }) => BABYLON.Nullable<BABYLON.GUI.Control> | undefined;
-export const getUI: GetUI = ({ entity }) => {
+export const getUiControl: GetUiControl = ({ entity }) => {
   const control = advancedTexture
     ?.getChildren()
     .find((x) => x.name === uiRoot)

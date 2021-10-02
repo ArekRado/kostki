@@ -1,7 +1,16 @@
 import { humanPlayerEntity } from '..';
 import { setComponent, componentName } from '../ecs/component';
 import { initialState } from '../ecs/state';
-import { AI, Camera, Game, Marker, Scene, State, UI } from '../ecs/type';
+import {
+  AI,
+  Background,
+  Camera,
+  Game,
+  Marker,
+  Scene,
+  State,
+  UI,
+} from '../ecs/type';
 import { AIDifficulty, aiSystem } from '../systems/aiSystem';
 import { boxSystem } from '../systems/boxSystem';
 import { gameEntity, gameSystem, getGame } from '../systems/gameSystem';
@@ -13,6 +22,10 @@ import { uiButtonSystem } from '../systems/uiButtonSystem';
 import { uiImageSystem } from '../systems/uiImageSystem';
 import { uiTextSystem } from '../systems/uiTextSystem';
 import { playersList } from '../systems/gameSystem/handleChangeSettings';
+import {
+  backgroundEntity,
+  backgroundSystem,
+} from '../systems/backgroundSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -21,15 +34,16 @@ export const getGameInitialState: GetGameInitialState = () => {
   const version = '0.0.0';
 
   // Systems
-  state = boxSystem(state);
-  state = aiSystem(state);
-  state = gameSystem(state);
-  state = markerSystem(state);
+  // state = boxSystem(state);
+  // state = aiSystem(state);
+  // state = gameSystem(state);
+  // state = markerSystem(state);
   state = cameraSystem(state);
-  state = uiSystem(state);
-  state = uiButtonSystem(state);
-  state = uiImageSystem(state);
-  state = uiTextSystem(state);
+  // state = uiSystem(state);
+  // state = uiButtonSystem(state);
+  // state = uiImageSystem(state);
+  // state = uiTextSystem(state);
+  state = backgroundSystem(state);
 
   state = setComponent<AI>({
     state,
@@ -97,6 +111,16 @@ export const getGameInitialState: GetGameInitialState = () => {
       position: [0, 0],
     },
   });
+
+  state = setComponent<Background>({
+    state,
+    data: {
+      entity: backgroundEntity,
+      name: componentName.background,
+    },
+  });
+
+  // TODO turn indicator
 
   const savedState = getSavedState();
   const savedStateVersion = getGame({

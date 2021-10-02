@@ -110,6 +110,8 @@ export type UIText = Component<
   }
 >;
 
+export type Background = Component<{}>;
+
 export type State = {
   entity: Dictionary<Entity>;
   component: Dictionary<Dictionary<Component<any>>> & {
@@ -122,6 +124,7 @@ export type State = {
     uiButton: Dictionary<UIButton>;
     uiImage: Dictionary<UIImage>;
     uiText: Dictionary<UIText>;
+    background: Dictionary<Background>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

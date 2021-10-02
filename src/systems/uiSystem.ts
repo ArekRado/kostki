@@ -90,7 +90,7 @@ export const uiSystem = (state: State) =>
     create: ({ state, component }) => {
       advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
         'ui',
-        false,
+        true,
         scene as any as BABYLON.Scene
       );
 

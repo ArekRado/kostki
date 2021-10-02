@@ -14,6 +14,7 @@ export enum componentName {
   uiButton = 'uiButton',
   uiImage = 'uiImage',
   uiText = 'uiText',
+  background = 'background',
 }
 
 type SetComponentParams<Data> = {

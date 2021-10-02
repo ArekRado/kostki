@@ -4,7 +4,7 @@ import { State, UIButton } from '../ecs/type';
 import { scene } from '..';
 import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getUI } from '../blueprints/ui/getUI';
+import { getUiControl } from '../blueprints/ui/getUI';
 
 export const uiButtonSystem = (state: State) =>
   createSystem<UIButton, {}>({
@@ -33,7 +33,7 @@ export const uiButtonSystem = (state: State) =>
       return state;
     },
     update: ({ state, component }) => {
-      const control = getUI({ entity: component.entity }) as BABYLON.GUI.Button;
+      const control = getUiControl({ entity: component.entity }) as BABYLON.GUI.Button;
 
       if (control && control.textBlock) {
         control.textBlock.text = component.text;
@@ -42,7 +42,7 @@ export const uiButtonSystem = (state: State) =>
       return state;
     },
     remove: ({ state, component }) => {
-      const control = getUI({ entity: component.entity });
+      const control = getUiControl({ entity: component.entity });
 
       if (control) {
         control.dispose();

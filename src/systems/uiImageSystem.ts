@@ -4,7 +4,7 @@ import { State, UIImage } from '../ecs/type';
 import { scene } from '..';
 import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getUI } from '../blueprints/ui/getUI';
+import { getUiControl } from '../blueprints/ui/getUI';
 
 export const uiImageSystem = (state: State) =>
   createSystem<UIImage, {}>({
@@ -24,7 +24,7 @@ export const uiImageSystem = (state: State) =>
       return state;
     },
     remove: ({ state, component }) => {
-      const control = getUI({ entity: component.entity });
+      const control = getUiControl({ entity: component.entity });
 
       if (control) {
         control.dispose();

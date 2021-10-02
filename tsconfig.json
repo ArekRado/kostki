@@ -38,8 +38,11 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "lib": [
-      "ES2019",
-      "DOM",
+      "es6",
+      "dom",
+      "es2015",
+      "es2017.object",
+      "ES2019"
     ],
     "jsx": "react",
     "strict": true,
