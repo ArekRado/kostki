@@ -47,21 +47,29 @@ export const setBackground = backgroundGetSet.setComponent;
 // (5 + 9) * 2
 // (3 * 9) + 2
 
-const gridSize = [9, 9];
+const gridSize = [3, 3];
 const gridColors = [
-  // [8, 7, 6, 5, 4, 3, 2, 1, 0],
-  // [0, 1, 2, 3, 4, 5, 6, 7, 8],
-  // [8, 7, 6, 5, 4, 3, 2, 1, 0],
-  // [0, 1, 2, 3, 4, 5, 6, 7, 8],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 0, 0, 0, 1],
-  [1, 1, 0, 1, 1, 0, 1, 0, 1],
-  [1, 1, 1, 1, 1, 0, 0, 0, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 1, 1, 1, 1],
+  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  // [1, 1, 1, 1, 1, 0, 0, 0, 1],
+  // [1, 1, 0, 1, 1, 0, 1, 0, 1],
+  // [1, 1, 1, 1, 1, 0, 0, 0, 1],
+  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
+  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
+  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
+  [0, 0, 0],
+  [0, 1, 0],
+  [0, 0, 0],
+  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
+  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
+  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
+  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
+  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
+  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
+  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
+  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
+  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
 ].flat();
 // .map((i) => Math.floor(Math.random() * 9));
 
@@ -100,154 +108,146 @@ export const backgroundSystem = (state: State) =>
         uniform vec3[8]   colors;
         uniform float[81]   gridColors;
 
-        int gridColorsLength = 81;
-        int gridSideLength = 9; // 9*9===81
+        // int gridColorsLength = 81;
+        // int gridSideLength = 9; // 9*9===81
+        int gridColorsLength = 9;
+        int gridSideLength = 3; // 9*9===81
 
         vec2 floatPositionToIntPosition(vec2 position) {
           return vec2(int(position.x), int(position.y));
         }
-
-        vec3 positionToColor(vec2 position, vec3 mainColor) {
+        
+        vec3 positionToColor(
+            vec2 position, 
+            vec3 mainColor
+        ) {
           int x = int(position.x);
           int y = int(position.y);
-
+        
           int gridColorsIndex = (y * int(gridSize.x)) + x;
-          vec3 color = vec3(1.0,1.0,1.0);
-
+        
           // checks if color is inside grid
           if(x >= 0 && y >= 0 && x < gridSideLength && y < gridSideLength) {
             int colorIndex = int(gridColors[gridColorsIndex]);
             return colors[colorIndex];
           }
-
+        
           return mainColor;
         }
-
-        float getValueBetween(
-          float valueA,
-          float valueB,
-          float percentage
+        
+        vec3 getColor(
+            vec2 position, 
+            vec3 mainColor
         ) {
-          // returns value between A and B basing on a percentage where
-          // 0.0 is A and 1.0 is B
-
-          // if(valueA > valueB) {
-          //   return valueB + ((valueA - valueB) * percentage);
-          // } else {
-          return valueA + ((valueB - valueA) * percentage);
-          // }
-        }
-
-        vec3 blendColors(
-          vec3 mainColor, 
-          vec3 color, 
-          float colorDistance
-          ) {
-          // float normalizedDistance = clamp(sqrt(colorDistance), 0.0, 1.0);
-          // float normalizedDistance = clamp(colorDistance, 0.0, 1.0);
-          float normalizedDistance = colorDistance;
-
-          // vec3 colorBetween = vec3(
-          //   getValueBetween(mainColor.x, color.x, normalizedDistance),
-          //   getValueBetween(mainColor.y, color.y, normalizedDistance),
-          //   getValueBetween(mainColor.z, color.z, normalizedDistance)
-          // );
-
-          vec3 colorBetween = mix(mainColor, color, normalizedDistance);
-
-          return colorBetween;
+          return positionToColor(
+            floatPositionToIntPosition(position), 
+            mainColor
+          );
         }
 
         void main(void) {
-            float seconds = time / 1000.0;
-            // vec3 tileSize = resolution / float(gridSideLength);
-            // float tileDiagonal = sqrt(tileSize.x*tileSize.x + tileSize.y*tileSize.y);
-            
-            // Normalized pixel coordinates (from 0 to 1)
-            vec2 uv = gl_FragCoord.xy / resolution.xy;
-
-            vec2 center = vec2(0.5, 0.5);
-
-            vec2 mainPosition = vec2(uv.x * gridSize.x, uv.y * gridSize.y);
-            vec2 centerPosition = floatPositionToIntPosition(mainPosition) + center;
-            float mainColorDistance = distance(mainPosition, centerPosition);
-
-            vec3 mainColor = positionToColor(mainPosition, vec3(0,0,0));
-
-            // int[18] colorsAround = [
-            //    -1,1,   0,1,   1,1,
-            //    -1,0,   0,0,   1,0,
-            //   -1,-1,  0,-1,  1,-1,
-            // ];
-
-            int amount = 4;
-
-            vec2[8] positions;
-            vec2[8] positionsCenters;
-
-
-             positions[0] = vec2(0.0,  1.0); // up
-             positions[1] = vec2(0.0, -1.0); // down
-
-             positions[2] = vec2(-1.0, 0.0); // left
-             positions[3] = vec2(1.0,  0.0); // right
+          // Normalized pixel coordinates (from 0 to 1)
+          vec2 uv = gl_FragCoord.xy / resolution.xy;
+          vec2 center = vec2(0.5, 0.5);
+      
+          vec2 mainPosition = vec2(uv.x * gridSize.x, uv.y * gridSize.y);
+          vec2 centerPosition = floatPositionToIntPosition(mainPosition) + center;
+          vec2 positionDiff = centerPosition - mainPosition;
+          float mainColorDistance = distance(mainPosition, centerPosition);
           
-            //  positions[4] = vec2(-1.0, 1.0); // up-left
-            //  positions[5] = vec2(1.0,  1.0); // up-right
-            //  positions[6] = vec2(-1.0,-1.0); // down-left
-            //  positions[7] = vec2(1.0, -1.0); // up-right
+          vec3 mainColor = positionToColor(mainPosition, vec3(0,0,0));
+          
 
+          // int[18] colorsAround = [
+          //    -1,1,   0,1,   1,1,
+          //    -1,0,   0,0,   1,0,
+          //   -1,-1,  0,-1,  1,-1,
+          // ];
+      
+          vec3 tl = mainColor;
+          vec3 bl = mainColor;
+          vec3 br = mainColor;
+          vec3 tr = mainColor;
+      
+          if(positionDiff.x > 0.0 && positionDiff.y > 0.0) { // bottom-left
+              // tl = getColor(mainPosition + vec2( 0,  0), mainColor);
+              // tr = getColor(mainPosition + vec2( 0,  0), mainColor);
+              // bl = (getColor(mainPosition + vec2( 0, -1), mainColor) +
+              //       getColor(mainPosition + vec2(-1, -1), mainColor) +
+              //       getColor(mainPosition + vec2(-1,  0), mainColor)
+              //       ) / 3.0;
+              // br = getColor(mainPosition + vec2( 1,  0), mainColor);
 
-             positionsCenters[0] = vec2(0.5, 0.0); // up
-             positionsCenters[1] = vec2(0.5, 1.0); // down
+              tl = vec3(1,1,1);
+              tr = vec3(1,1,1);
+              bl = vec3(0,0,0);
+              br = vec3(0,0,0);
+          } else if(positionDiff.x < 0.0 && positionDiff.y > 0.0) { // bottom-right
+              // tl = getColor(mainPosition + vec2( 0,  0), mainColor);
+              // tr = getColor(mainPosition + vec2( 1,  0), mainColor);
+              // bl = getColor(mainPosition + vec2( 0, -1), mainColor);
+              // br = (getColor(mainPosition + vec2( 1,  0), mainColor) +
+              //       getColor(mainPosition + vec2( 1, -1), mainColor) +
+              //       getColor(mainPosition + vec2( 0, -1), mainColor)
+              //       ) / 3.0;
+              
+              tl = vec3(1,1,1);
+              tr = vec3(1,1,1);
+              bl = vec3(0,0,0);
+              br = vec3(0,0,0);
+          } else if(positionDiff.x > 0.0 && positionDiff.y < 0.0) { // top-left
+              // tl = (getColor(mainPosition + vec2(-1,  0), mainColor) +
+              //       getColor(mainPosition + vec2(-1,  1), mainColor) +
+              //       getColor(mainPosition + vec2( 0,  1), mainColor)
+              //       ) / 3.0;
+              // tr = getColor(mainPosition + vec2( 0,  1), mainColor);
+              // bl = getColor(mainPosition + vec2(-1,  0), mainColor);
+              // br = getColor(mainPosition + vec2( 0,  0), mainColor);
 
-             positionsCenters[2] = vec2(1.0, 0.5); // left
-             positionsCenters[3] = vec2(0.0, 0.5); // right
+              tl = vec3(1,1,1);
+              tr = vec3(1,1,1);
+              bl = vec3(0,0,0);
+              br = vec3(0,0,0);
+          // } else if(positionDiff.x < 0.0 && positionDiff.y < 0.0) { // top-right
+          } else { // top-right
+              // tl = getColor(mainPosition + vec2(-1,  0), mainColor);
+              // tr = (getColor(mainPosition + vec2( 0,  1), mainColor) +
+              //       getColor(mainPosition + vec2( 1,  1), mainColor) +
+              //       getColor(mainPosition + vec2( 1,  0), mainColor)
+              //       ) / 3.0;
+              // bl = getColor(mainPosition + vec2(-1, -1), mainColor);
+              // br = getColor(mainPosition + vec2( 0, -1), mainColor);
 
-            //  positionsCenters[4] = vec2(0.0, 1.0); // up-left
-            //  positionsCenters[5] = vec2(1.0, 1.0); // up-right
-            //  positionsCenters[6] = vec2(0.0, 0.0); // down-left
-            //  positionsCenters[7] = vec2(1.0, 0.0); // up-right
+              tl = vec3(1,1,1);
+              tr = vec3(1,1,1);
+              bl = vec3(0,0,0);
+              br = vec3(0,0,0);
+          }
 
-           vec3 blendedColors = vec3(0,0,0);
-
-           for(int i = 0; i < amount; i++) {
-              vec2 position = mainPosition + positions[i];
-              vec2 colorCenter = floatPositionToIntPosition(position);
-              vec3 color = positionToColor(colorCenter, mainColor);
-              float colorDistance = distance(position, colorCenter + positionsCenters[i]);
-
-              // float xD = abs(sin(seconds)) * 2.0;
-
-              // if(colorDistance > xD && colorDistance < xD + 0.05) {
-              //   vec3 xd = vec3(0.0, 0.0, 0.0);
-
-              //   blendedColors += 
-              //     blendColors(
-              //       mainColor, 
-              //       xd, 
-              //       colorDistance
-              //       );
-              // } 
-
-              float normalizedDistance = clamp(colorDistance * 4.0, 0.0, 1.0);
-              // float normalizedDistance = colorDistance;
-    
-              blendedColors += mix(mainColor, color, normalizedDistance);
-           }
-
-            // gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-            // Time varying pixel color
-            // vec3 col = 0.5 + 0.5 * sin(seconds + uv.xyx + vec3(0, 2, 4));
-        
-            // if(x > 2.0) {
-            // gl_FragColor = vec4(0.0,0.0,0.0, 1.0);
-            // } else {
-              // gl_FragColor = vec4(blendedColors.xyz * sin(seconds) / 9.0, 1.0);
-              gl_FragColor = vec4(blendedColors.xyz / float(amount), 1.0);
-            // }
+          vec3 l = mix(bl, tl, mainPosition.y);
+          vec3 r = mix(br, tr, mainPosition.x);
+          gl_FragColor = vec4(mix(r, l, mainPosition.y), 1);
         }
       `;
+
+      // precision highp float;
+      // varying vec2 vUV;
+      // // uniform sampler2D textureSampler;
+
+      // uniform vec3      resolution;           // viewport resolution (in pixels)
+      // uniform float     time;                 // shader playback time (in seconds)
+      // uniform vec2      gridSize;
+      // uniform vec3[8]   colors;
+      // uniform float[81]   gridColors;
+
+      // int gridColorsLength = 81;
+      // int gridSideLength = 9; // 9*9===81
+
+      // void mainImage()
+      // {
+      //     vec3 blendedColors = vec3(0,0,0);
+      //     gl_FragColor = vec4(blendedColors.xyz / 1.0, 1.0);
+      // }
 
       const shaderMaterial = new ShaderMaterial(
         'shader',
