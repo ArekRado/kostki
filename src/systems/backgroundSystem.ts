@@ -5,26 +5,25 @@ import {
   Effect,
   Vector3,
   ShaderMaterial,
-  Scene,
-  Texture,
   MeshBuilder,
   Vector2,
   Color3,
 } from 'babylonjs';
 import { scene } from '..';
-import set16 from '../assets/6/1.png';
 import { setCamera } from './cameraSystem';
 import {
-  gray,
-  green,
-  teal,
-  orange,
-  yellow,
-  red,
-  pink,
-  purple,
+  grayGradient,
+  greenGradient,
+  tealGradient,
+  orangeGradient,
+  yellowGradient,
+  redGradient,
+  pinkGradient,
+  purpleGradient,
 } from '../utils/colors';
 import { playersList } from './gameSystem/handleChangeSettings';
+import { camera } from '..';
+import { getCameraSize } from '../utils/setCameraDistance';
 
 export const backgroundEntity = '17818552155683748';
 
@@ -36,49 +35,12 @@ const backgroundGetSet = createGetSetForUniqComponent<Background>({
 export const getBackground = backgroundGetSet.getComponent;
 export const setBackground = backgroundGetSet.setComponent;
 
-// x = 5
-// y = 2
-// i = 22
-
-// x = 2
-// y = 3
-// i = 29
-
-// (5 + 9) * 2
-// (3 * 9) + 2
-
-const gridSize = [3, 3];
-const gridColors = [
-  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  // [1, 1, 1, 1, 1, 0, 0, 0, 1],
-  // [1, 1, 0, 1, 1, 0, 1, 0, 1],
-  // [1, 1, 1, 1, 1, 0, 0, 0, 1],
-  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  // [1, 1, 1, 1, 1, 1, 1, 1, 1],
-  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
-  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
-  // [0, 0, 0, 0, 0, 1, 1, 1, 1],
-  [0, 0, 0],
-  [0, 1, 0],
-  [0, 0, 0],
-  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
-  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
-  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
-  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
-  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
-  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
-  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
-  // [0, 1, 0, 1, 0, 1, 0, 1, 0],
-  // [1, 0, 1, 0, 1, 0, 1, 0, 1],
-].flat();
-// .map((i) => Math.floor(Math.random() * 9));
-
 export const backgroundSystem = (state: State) =>
   createSystem<Background, {}>({
     state,
     name: componentName.background,
     create: ({ state, component }) => {
-      Effect.ShadersStore['customVertexShader'] = `
+      Effect.ShadersStore['customVertexShader'] = ` 
         precision highp float;
 
         // Attributes
@@ -99,155 +61,82 @@ export const backgroundSystem = (state: State) =>
 
       Effect.ShadersStore['customFragmentShader'] = `
         precision highp float;
-        varying vec2 vUV;
-        // uniform sampler2D textureSampler;
+  
+        // out vec4 fragColor;
+        
+        uniform float iTime;
+        uniform vec2 iResolution;
+        uniform float[30] iColors;
 
-        uniform vec3      resolution;           // viewport resolution (in pixels)
-        uniform float     time;                 // shader playback time (in seconds)
-        uniform vec2      gridSize;
-        uniform vec3[8]   colors;
-        uniform float[81]   gridColors;
-
-        // int gridColorsLength = 81;
-        // int gridSideLength = 9; // 9*9===81
-        int gridColorsLength = 9;
-        int gridSideLength = 3; // 9*9===81
-
-        vec2 floatPositionToIntPosition(vec2 position) {
-          return vec2(int(position.x), int(position.y));
-        }
+        // const vec2 iResolution = vec2(512, 512);
         
-        vec3 positionToColor(
-            vec2 position, 
-            vec3 mainColor
-        ) {
-          int x = int(position.x);
-          int y = int(position.y);
-        
-          int gridColorsIndex = (y * int(gridSize.x)) + x;
-        
-          // checks if color is inside grid
-          if(x >= 0 && y >= 0 && x < gridSideLength && y < gridSideLength) {
-            int colorIndex = int(gridColors[gridColorsIndex]);
-            return colors[colorIndex];
-          }
-        
-          return mainColor;
-        }
-        
-        vec3 getColor(
-            vec2 position, 
-            vec3 mainColor
-        ) {
-          return positionToColor(
-            floatPositionToIntPosition(position), 
-            mainColor
-          );
-        }
-
+        struct RadialGradient {
+            float radius;
+            vec4 color;
+            vec2 point;
+        };
+      
         void main(void) {
-          // Normalized pixel coordinates (from 0 to 1)
-          vec2 uv = gl_FragCoord.xy / resolution.xy;
-          vec2 center = vec2(0.5, 0.5);
+            float w = iResolution.x / 2.;
+            float h = iResolution.y / 2.;
       
-          vec2 mainPosition = vec2(uv.x * gridSize.x, uv.y * gridSize.y);
-          vec2 centerPosition = floatPositionToIntPosition(mainPosition) + center;
-          vec2 positionDiff = centerPosition - mainPosition;
-          float mainColorDistance = distance(mainPosition, centerPosition);
-          
-          vec3 mainColor = positionToColor(mainPosition, vec3(0,0,0));
-          
-
-          // int[18] colorsAround = [
-          //    -1,1,   0,1,   1,1,
-          //    -1,0,   0,0,   1,0,
-          //   -1,-1,  0,-1,  1,-1,
-          // ];
+            float fill = max(iResolution.x, iResolution.y);
+            // float contain = min(iResolution.x, iResolution.y);
       
-          vec3 tl = mainColor;
-          vec3 bl = mainColor;
-          vec3 br = mainColor;
-          vec3 tr = mainColor;
+            // colors
+            // vec4 colors[] = vec4[](
+            //     vec4(.604,.816,1.00,.7),
+            //     vec4(.125,.310,.725,.7),
+            //     vec4(.482,.357,.784,.7),
+            //     vec4(.580,.702,.988,.7),
+            //     vec4(.161,.302,.827,.7),
+            //     vec4(.137,.467,.729,.7),
+            //     vec4(.114,.686,.925,.7),
+            //     vec4(.216,.412,.745,.7),
+            //     vec4(.616,.792,.992,.7),
+            //     vec4(.353,.906,.992,.7)
+            // );
+
+            vec4 colors[] = vec4[](
+                vec4(iColors[0],iColors[1],iColors[2], .7),
+                vec4(iColors[3],iColors[4],iColors[5], .7),
+                vec4(iColors[6],iColors[7],iColors[8], .7),
+                vec4(iColors[9],iColors[10],iColors[11], .7),
+                vec4(iColors[12],iColors[13],iColors[14], .7),
+                vec4(iColors[15],iColors[16],iColors[17], .7),
+                vec4(iColors[18],iColors[19],iColors[20], .7),
+                vec4(iColors[21],iColors[22],iColors[23], .7),
+                vec4(iColors[24],iColors[25],iColors[26], .7),
+                vec4(iColors[27],iColors[28],iColors[29], .7)
+            );
       
-          if(positionDiff.x > 0.0 && positionDiff.y > 0.0) { // bottom-left
-              // tl = getColor(mainPosition + vec2( 0,  0), mainColor);
-              // tr = getColor(mainPosition + vec2( 0,  0), mainColor);
-              // bl = (getColor(mainPosition + vec2( 0, -1), mainColor) +
-              //       getColor(mainPosition + vec2(-1, -1), mainColor) +
-              //       getColor(mainPosition + vec2(-1,  0), mainColor)
-              //       ) / 3.0;
-              // br = getColor(mainPosition + vec2( 1,  0), mainColor);
-
-              tl = vec3(1,1,1);
-              tr = vec3(1,1,1);
-              bl = vec3(0,0,0);
-              br = vec3(0,0,0);
-          } else if(positionDiff.x < 0.0 && positionDiff.y > 0.0) { // bottom-right
-              // tl = getColor(mainPosition + vec2( 0,  0), mainColor);
-              // tr = getColor(mainPosition + vec2( 1,  0), mainColor);
-              // bl = getColor(mainPosition + vec2( 0, -1), mainColor);
-              // br = (getColor(mainPosition + vec2( 1,  0), mainColor) +
-              //       getColor(mainPosition + vec2( 1, -1), mainColor) +
-              //       getColor(mainPosition + vec2( 0, -1), mainColor)
-              //       ) / 3.0;
-              
-              tl = vec3(1,1,1);
-              tr = vec3(1,1,1);
-              bl = vec3(0,0,0);
-              br = vec3(0,0,0);
-          } else if(positionDiff.x > 0.0 && positionDiff.y < 0.0) { // top-left
-              // tl = (getColor(mainPosition + vec2(-1,  0), mainColor) +
-              //       getColor(mainPosition + vec2(-1,  1), mainColor) +
-              //       getColor(mainPosition + vec2( 0,  1), mainColor)
-              //       ) / 3.0;
-              // tr = getColor(mainPosition + vec2( 0,  1), mainColor);
-              // bl = getColor(mainPosition + vec2(-1,  0), mainColor);
-              // br = getColor(mainPosition + vec2( 0,  0), mainColor);
-
-              tl = vec3(1,1,1);
-              tr = vec3(1,1,1);
-              bl = vec3(0,0,0);
-              br = vec3(0,0,0);
-          // } else if(positionDiff.x < 0.0 && positionDiff.y < 0.0) { // top-right
-          } else { // top-right
-              // tl = getColor(mainPosition + vec2(-1,  0), mainColor);
-              // tr = (getColor(mainPosition + vec2( 0,  1), mainColor) +
-              //       getColor(mainPosition + vec2( 1,  1), mainColor) +
-              //       getColor(mainPosition + vec2( 1,  0), mainColor)
-              //       ) / 3.0;
-              // bl = getColor(mainPosition + vec2(-1, -1), mainColor);
-              // br = getColor(mainPosition + vec2( 0, -1), mainColor);
-
-              tl = vec3(1,1,1);
-              tr = vec3(1,1,1);
-              bl = vec3(0,0,0);
-              br = vec3(0,0,0);
-          }
-
-          vec3 l = mix(bl, tl, mainPosition.y);
-          vec3 r = mix(br, tr, mainPosition.x);
-          gl_FragColor = vec4(mix(r, l, mainPosition.y), 1);
+            // gradients
+            RadialGradient gradients[] = RadialGradient[](
+                RadialGradient(1.0, colors[0], vec2(0.5 * w * sin(.13 * iTime - 0.44) + w, 0.5 * h * sin(.34 * iTime - 2.41) + h)),
+                RadialGradient(1.0, colors[1], vec2(0.5 * w * sin(.93 * iTime - 5.58) + w, 1.0 * h * sin(.82 * iTime - 3.04) + h)),
+                RadialGradient(1.0, colors[2], vec2(1.0 * w * sin(.45 * iTime - 2.70) + w, 0.5 * h * sin(.94 * iTime - 5.24) + h)),
+                RadialGradient(1.0, colors[3], vec2(1.0 * w * sin(.15 * iTime - 3.59) + w, 1.0 * h * sin(.96 * iTime - 5.11) + h)),
+                RadialGradient(1.0, colors[4], vec2(0.5 * w * sin(.35 * iTime - 4.73) + w, 0.5 * h * sin(.42 * iTime - 3.87) + h)),
+                RadialGradient(1.0, colors[5], vec2(0.5 * w * sin(.62 * iTime - 4.81) + w, 1.0 * h * sin(.19 * iTime - 1.17) + h)),
+                RadialGradient(1.0, colors[6], vec2(1.0 * w * sin(.58 * iTime - 5.13) + w, 0.5 * h * sin(.10 * iTime - 2.08) + h)),
+                RadialGradient(0.5, colors[7], vec2(1.5 * w * sin(.12 * iTime - 4.36) + w * 2., 0.5 * h * sin(.08 * iTime - 1.48) + h * 2.)),
+                RadialGradient(0.6, colors[8], vec2(1.5 * w * sin(.07 * iTime - 3.94) + w * 2., 0.6 * h * sin(.03 * iTime - 2.03) + h * 2.)),
+                RadialGradient(0.5, colors[9], vec2(1.5 * w * sin(.01 * iTime - 3.74) + w * 2., 0.5 * h * sin(.12 * iTime - 0.62) + h * 2.))
+            );
+      
+            vec3 color = vec3(0.);
+      
+            for(int i = 0; i < gradients.length(); ++i) {
+                color = mix(
+                    gradients[i].color.rgb,
+                    color,
+                    gradients[i].color.a * distance(gradients[i].point, gl_FragCoord.xy) / ( fill * gradients[i].radius)
+                );
+            }
+      
+            gl_FragColor = vec4(color,1.0);
         }
       `;
-
-      // precision highp float;
-      // varying vec2 vUV;
-      // // uniform sampler2D textureSampler;
-
-      // uniform vec3      resolution;           // viewport resolution (in pixels)
-      // uniform float     time;                 // shader playback time (in seconds)
-      // uniform vec2      gridSize;
-      // uniform vec3[8]   colors;
-      // uniform float[81]   gridColors;
-
-      // int gridColorsLength = 81;
-      // int gridSideLength = 9; // 9*9===81
-
-      // void mainImage()
-      // {
-      //     vec3 blendedColors = vec3(0,0,0);
-      //     gl_FragColor = vec4(blendedColors.xyz / 1.0, 1.0);
-      // }
 
       const shaderMaterial = new ShaderMaterial(
         'shader',
@@ -284,8 +173,6 @@ export const backgroundSystem = (state: State) =>
       );
       background.uniqueId = parseFloat(backgroundEntity);
       background.material = shaderMaterial;
-      background.position = new Vector3(0, 0, 5);
-      background.scaling = new Vector3(20, 20, 1);
 
       const colors = playersList();
 
@@ -294,6 +181,9 @@ export const backgroundSystem = (state: State) =>
         colors.map(({ color: [r, g, b] }) => new Color3(r, g, b))
       );
 
+      background.position = new Vector3(4.2, 4.2, 5);
+
+      // todo move camera on camera system start
       state = setCamera({
         state,
         data: {
@@ -301,6 +191,14 @@ export const backgroundSystem = (state: State) =>
           distance: 5,
         },
       });
+
+      // todo update it on each tick and camera update
+      const size = getCameraSize(5, scene);
+      background.scaling = new Vector3(
+        Math.abs(size.left) + Math.abs(size.right),
+        Math.abs(size.bottom) + Math.abs(size.top),
+        1
+      );
 
       return state;
     },
@@ -311,21 +209,16 @@ export const backgroundSystem = (state: State) =>
       const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
 
       if (background && background.material) {
-        (background.material as ShaderMaterial).setFloat(
-          'time',
-          performance.now()
-        );
-        (background.material as ShaderMaterial).setVector3(
-          'resolution',
-          new Vector3(window.innerWidth, window.innerHeight, 0)
-        );
+        (background.material as ShaderMaterial).setFloat('iTime', Date.now());
+
         (background.material as ShaderMaterial).setVector2(
-          'gridSize',
-          new Vector2(gridSize[0], gridSize[1])
+          'iResolution',
+          new Vector2(window.innerWidth, window.innerHeight)
         );
+
         (background.material as ShaderMaterial).setFloats(
-          'gridColors',
-          gridColors
+          'iColors',
+          tealGradient.flat()
         );
       }
 

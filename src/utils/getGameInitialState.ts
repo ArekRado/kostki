@@ -34,15 +34,15 @@ export const getGameInitialState: GetGameInitialState = () => {
   const version = '0.0.0';
 
   // Systems
-  // state = boxSystem(state);
-  // state = aiSystem(state);
-  // state = gameSystem(state);
-  // state = markerSystem(state);
+  state = boxSystem(state);
+  state = aiSystem(state);
+  state = gameSystem(state);
+  state = markerSystem(state);
   state = cameraSystem(state);
-  // state = uiSystem(state);
-  // state = uiButtonSystem(state);
-  // state = uiImageSystem(state);
-  // state = uiTextSystem(state);
+  state = uiSystem(state);
+  state = uiButtonSystem(state);
+  state = uiImageSystem(state);
+  state = uiTextSystem(state);
   state = backgroundSystem(state);
 
   state = setComponent<AI>({

@@ -1,6 +1,6 @@
 import { Scene } from 'babylonjs';
 import { UIElement } from '../../ecs/type';
-import { clapm } from '../../utils/clamp';
+import { clamp } from '../../utils/clamp';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 
 export type Breakpoints<Value = number> = [Value, Value, Value];
@@ -48,13 +48,13 @@ export const responsive: Responsive = ({ element, babylonElement, scene }) => {
       ? getResonsiveSize(canvasWidth, element.maxSize)
       : [1, 1];
 
-    const width = clapm({
+    const width = clamp({
       value: newSizeWithAspectRatio[0],
       min: newMinSize[0],
       max: newMaxSize[0],
     });
 
-    const height = clapm({
+    const height = clamp({
       value: newSizeWithAspectRatio[1],
       min: newMinSize[1],
       max: newMaxSize[1],
