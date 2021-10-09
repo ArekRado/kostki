@@ -7,15 +7,13 @@ import {
   Camera,
   NullEngine,
 } from 'babylonjs';
-import { getGridDimensions } from './blueprints/gridBlueprint';
 import { runOneFrame } from './ecs/runOneFrame';
 import { State } from './ecs/type';
 import { getGameInitialState } from './utils/getGameInitialState';
-import { setCameraDistance } from './utils/setCameraDistance';
 import { register } from './serviceWorkerRegistration';
-import { getDataGrid } from './systems/aiSystem/getDataGrid';
 import { gameEntity, GameEvent } from './systems/gameSystem';
 import { emitEvent } from './ecs/emitEvent';
+import { cameraEntity, CameraEvent } from './systems/cameraSystem';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -103,10 +101,11 @@ if (process.env.NODE_ENV !== 'test') {
 
   // Resize
   window.addEventListener('resize', () => {
-    setCameraDistance(
-      getGridDimensions(getDataGrid({ state })).cameraDistance,
-      scene
-    );
+    emitEvent<CameraEvent.ResizeEvent>({
+      type: CameraEvent.Type.resize,
+      entity: cameraEntity,
+      payload: {},
+    });
 
     engine.resize();
   });

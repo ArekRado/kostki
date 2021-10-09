@@ -65,6 +65,12 @@ export type Game = Component<{
 export type Camera = Component<{
   position: [number, number];
   distance: number;
+
+  // ortho 
+  bottom: number;
+  top: number;
+  left: number;
+  right: number;
 }>;
 
 export type Marker = Component<{

@@ -1,4 +1,4 @@
-import { humanPlayerEntity } from '..';
+import { humanPlayerEntity, scene } from '..';
 import { setComponent, componentName } from '../ecs/component';
 import { initialState } from '../ecs/state';
 import {
@@ -15,7 +15,11 @@ import { AIDifficulty, aiSystem } from '../systems/aiSystem';
 import { boxSystem } from '../systems/boxSystem';
 import { gameEntity, gameSystem, getGame } from '../systems/gameSystem';
 import { markerEntity, markerSystem } from '../systems/markerSystem';
-import { cameraEntity, cameraSystem } from '../systems/cameraSystem';
+import {
+  cameraEntity,
+  cameraSystem,
+  getCameraSize,
+} from '../systems/cameraSystem';
 import { getSavedState, removeState } from './localDb';
 import { uiEntity, uiSystem } from '../systems/uiSystem';
 import { uiButtonSystem } from '../systems/uiButtonSystem';
@@ -98,7 +102,8 @@ export const getGameInitialState: GetGameInitialState = () => {
       entity: cameraEntity,
       name: componentName.camera,
       position: [0, 0],
-      distance: 0,
+      distance: 5,
+      ...getCameraSize(5, scene),
     },
   });
 

@@ -2,7 +2,6 @@ import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, State } from '../ecs/type';
 import { setCamera } from '../systems/cameraSystem';
-import { setCameraDistance } from '../utils/setCameraDistance';
 
 export const boxSize = 1;
 export const boxGap = 0.2;
@@ -41,15 +40,15 @@ export const gridBlueprint: GridBlueprint = ({
   const grid = new TransformNode(gridName);
 
   const { center, cameraDistance } = getGridDimensions(dataGrid);
-  
+
   setCamera({
     state,
-    data: { position: [center[0], center[1]] },
+    data: { position: [center[0], center[1]], distance: cameraDistance },
   });
-  
-  camera.setTarget(new Vector3(center[1], center[0]));
 
-  setCameraDistance(cameraDistance, scene);
+  // camera.setTarget(new Vector3(center[1], center[0]));
+
+  // setCameraDistance(cameraDistance, scene);
 
   state = dataGrid.reduce(
     (acc1, row, x) =>

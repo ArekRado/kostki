@@ -10,7 +10,7 @@ import {
   Color3,
 } from 'babylonjs';
 import { scene } from '..';
-import { setCamera } from './cameraSystem';
+import { getCamera, getCameraSize } from './cameraSystem';
 import {
   grayGradient,
   greenGradient,
@@ -22,8 +22,6 @@ import {
   purpleGradient,
 } from '../utils/colors';
 import { playersList } from './gameSystem/handleChangeSettings';
-import { camera } from '..';
-import { getCameraSize } from '../utils/setCameraDistance';
 
 export const backgroundEntity = '17818552155683748';
 
@@ -34,6 +32,26 @@ const backgroundGetSet = createGetSetForUniqComponent<Background>({
 
 export const getBackground = backgroundGetSet.getComponent;
 export const setBackground = backgroundGetSet.setComponent;
+
+const resizeBackground = (state: State): State => {
+  const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
+  const camera = getCamera({ state });
+
+  if (background && camera) {
+    const size = getCameraSize(camera.distance, scene);
+
+    background.position.x = camera.position[0];
+    background.position.y = camera.position[1];
+
+    background.scaling = new Vector3(
+      Math.abs(size.left) + Math.abs(size.right),
+      Math.abs(size.bottom) + Math.abs(size.top),
+      1
+    );
+  }
+
+  return state;
+};
 
 export const backgroundSystem = (state: State) =>
   createSystem<Background, {}>({
@@ -181,35 +199,19 @@ export const backgroundSystem = (state: State) =>
         colors.map(({ color: [r, g, b] }) => new Color3(r, g, b))
       );
 
-      background.position = new Vector3(4.2, 4.2, 5);
-
-      // todo move camera on camera system start
-      state = setCamera({
-        state,
-        data: {
-          position: [4.2, 4.2],
-          distance: 5,
-        },
-      });
-
-      // todo update it on each tick and camera update
-      const size = getCameraSize(5, scene);
-      background.scaling = new Vector3(
-        Math.abs(size.left) + Math.abs(size.right),
-        Math.abs(size.bottom) + Math.abs(size.top),
-        1
-      );
-
-      return state;
+      return resizeBackground(state);
     },
     update: ({ state, component }) => {
-      return state;
+      return resizeBackground(state);
     },
     tick: ({ state }) => {
       const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
 
       if (background && background.material) {
-        (background.material as ShaderMaterial).setFloat('iTime', Date.now());
+        (background.material as ShaderMaterial).setFloat(
+          'iTime',
+          performance.now() / 1000
+        );
 
         (background.material as ShaderMaterial).setVector2(
           'iResolution',
