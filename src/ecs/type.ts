@@ -66,7 +66,7 @@ export type Camera = Component<{
   position: [number, number];
   distance: number;
 
-  // ortho 
+  // ortho
   bottom: number;
   top: number;
   left: number;
@@ -116,7 +116,15 @@ export type UIText = Component<
   }
 >;
 
-export type Background = Component<{}>;
+export type Background = Component<{
+  gradientTime: number;
+}>;
+
+export type TurnIndicator = Component<{
+  position: [number, number];
+  boxes: Entity[];
+  texts: Entity[];
+}>;
 
 export type State = {
   entity: Dictionary<Entity>;
@@ -131,6 +139,7 @@ export type State = {
     uiImage: Dictionary<UIImage>;
     uiText: Dictionary<UIText>;
     background: Dictionary<Background>;
+    turnIndicator: Dictionary<TurnIndicator>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

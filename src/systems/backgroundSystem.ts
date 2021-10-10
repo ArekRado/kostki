@@ -79,9 +79,7 @@ export const backgroundSystem = (state: State) =>
 
       Effect.ShadersStore['customFragmentShader'] = `
         precision highp float;
-  
-        // out vec4 fragColor;
-        
+                
         uniform float iTime;
         uniform vec2 iResolution;
         uniform float[30] iColors;
@@ -100,20 +98,6 @@ export const backgroundSystem = (state: State) =>
       
             float fill = max(iResolution.x, iResolution.y);
             // float contain = min(iResolution.x, iResolution.y);
-      
-            // colors
-            // vec4 colors[] = vec4[](
-            //     vec4(.604,.816,1.00,.7),
-            //     vec4(.125,.310,.725,.7),
-            //     vec4(.482,.357,.784,.7),
-            //     vec4(.580,.702,.988,.7),
-            //     vec4(.161,.302,.827,.7),
-            //     vec4(.137,.467,.729,.7),
-            //     vec4(.114,.686,.925,.7),
-            //     vec4(.216,.412,.745,.7),
-            //     vec4(.616,.792,.992,.7),
-            //     vec4(.353,.906,.992,.7)
-            // );
 
             vec4 colors[] = vec4[](
                 vec4(iColors[0],iColors[1],iColors[2], .7),
@@ -204,13 +188,13 @@ export const backgroundSystem = (state: State) =>
     update: ({ state, component }) => {
       return resizeBackground(state);
     },
-    tick: ({ state }) => {
+    tick: ({ state, component }) => {
       const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
 
       if (background && background.material) {
         (background.material as ShaderMaterial).setFloat(
           'iTime',
-          performance.now() / 1000
+          performance.now() / 1000 + component.gradientTime
         );
 
         (background.material as ShaderMaterial).setVector2(

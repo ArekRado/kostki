@@ -15,6 +15,7 @@ export enum componentName {
   uiImage = 'uiImage',
   uiText = 'uiText',
   background = 'background',
+  turnIndicator = 'turnIndicator',
 }
 
 type SetComponentParams<Data> = {
@@ -47,6 +48,8 @@ export const setComponent = <Data>({
     } else if (system.update) {
       return system.update({ state: newState, component: data });
     }
+  } else {
+    // todo log error
   }
 
   return newState;

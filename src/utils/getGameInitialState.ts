@@ -30,6 +30,7 @@ import {
   backgroundEntity,
   backgroundSystem,
 } from '../systems/backgroundSystem';
+import { turnIndicatorSystem } from '../systems/turnIndicator';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -48,6 +49,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = uiImageSystem(state);
   state = uiTextSystem(state);
   state = backgroundSystem(state);
+  state = turnIndicatorSystem(state);
 
   state = setComponent<AI>({
     state,
@@ -122,6 +124,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     data: {
       entity: backgroundEntity,
       name: componentName.background,
+      gradientTime: 500 * Math.random(),
     },
   });
 

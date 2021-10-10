@@ -14,6 +14,7 @@ let state: State = {
     [componentName.uiImage]: {},
     [componentName.uiText]: {},
     [componentName.background]: {},
+    [componentName.turnIndicator]: {},
   },
   system: [],
 };

@@ -11,7 +11,7 @@ import { emitEvent } from '../ecs/emitEvent';
 
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
-import { AI, Box, Color, State } from '../ecs/type';
+import { AI, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem';
 
 export const boxBlueprint = ({
@@ -20,20 +20,20 @@ export const boxBlueprint = ({
   uniqueId,
   position,
   color,
-  texture,
   state,
   ai,
-  box,
+  dots,
+  isClickable,
 }: {
   scene: Scene;
   name: string;
   uniqueId: number;
   position: [number, number];
   color: Color;
-  texture: string;
   state: State;
   ai: AI | undefined;
-  box: Box;
+  dots: number;
+  isClickable: boolean;
 }): TransformNode => {
   const size = 1;
   const boxMesh = new TransformNode(`box ${name}`, scene);
@@ -49,43 +49,38 @@ export const boxBlueprint = ({
     [new Vector3(0, size / 2, 0), new Vector3(Math.PI / 2, 0, 0)], //
     [new Vector3(0, -size / 2, 0), new Vector3(-Math.PI / 2, 0, 0)], //
   ].forEach(([position, rotation], i) => {
-    const isFront = i === 0;
-    setTimeout(
-      () => {
-        const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
+    const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
 
-        plane.parent = boxMesh;
-        plane.material = new StandardMaterial('mat', scene);
+    plane.parent = boxMesh;
+    plane.material = new StandardMaterial('mat', scene);
 
-        isFront &&
-          setMeshTexture({
-            mesh: plane,
-            color,
-            texture: getTextureSet({ state, ai })[box.dots],
-            scene,
+    setMeshTexture({
+      mesh: plane,
+      color,
+      texture: getTextureSet({ state, ai })[dots],
+      scene,
+    });
+
+    plane.material.alpha = 1;
+
+    plane.position = position;
+    plane.rotation = rotation;
+
+    plane.setParent(boxMesh);
+
+    if (isClickable) {
+      // Click event
+      plane.actionManager = new ActionManager(scene);
+      plane.actionManager.registerAction(
+        new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
+          emitEvent<GameEvent.PlayerClickEvent>({
+            entity: gameEntity,
+            type: GameEvent.Type.playerClick,
+            payload: { boxEntity: uniqueId.toString() },
           });
-
-        plane.material.alpha = 1;
-
-        plane.position = position;
-        plane.rotation = rotation;
-
-        plane.setParent(boxMesh);
-
-        // Click event
-        plane.actionManager = new ActionManager(scene);
-        plane.actionManager.registerAction(
-          new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
-            emitEvent<GameEvent.PlayerClickEvent>({
-              entity: gameEntity,
-              type: GameEvent.Type.playerClick,
-              payload: { boxEntity: uniqueId.toString() },
-            });
-          })
-        );
-      },
-      isFront ? 0 : Math.random() * 400 + 100
-    );
+        })
+      );
+    }
   });
 
   return boxMesh;

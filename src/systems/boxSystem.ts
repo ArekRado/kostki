@@ -12,14 +12,11 @@ import { componentName, getComponent, setComponent } from '../ecs/component';
 import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';
 import { scene } from '..';
 import { ECSEvent, emitEvent } from '../ecs/emitEvent';
-import { gameEntity, GameEvent, getCurrentAi, getGame } from './gameSystem';
+import { gameEntity, GameEvent, getGame } from './gameSystem';
 import { set1 } from '../utils/textureSets';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { boxBlueprint } from '../blueprints/boxBlueprint';
-import { boxWithGap, gridName } from '../blueprints/gridBlueprint';
-import empty from '../assets/0.png';
-import { Mesh } from 'babylonjs/Meshes/mesh';
-import { TransformNode } from 'babylonjs/Meshes/transformNode';
+import { boxWithGap } from '../blueprints/gridBlueprint';
 import { safeGet } from './aiSystem/calculateLocalStrategy';
 import { getDataGrid } from './aiSystem/getDataGrid';
 
@@ -397,11 +394,12 @@ export const boxSystem = (state: State) =>
         name: `${gridPosition[0]}-${gridPosition[1]}`,
         position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
         uniqueId: parseFloat(component.entity),
-        texture: ai?.textureSet[component.dots] || empty,
+        // texture: ai?.textureSet[component.dots] || empty,
         color: ai?.color || [1, 1, 1],
         ai,
-        box: component,
+        dots: component.dots,
         state,
+        isClickable: true,
       });
 
       const game = getGame({ state });

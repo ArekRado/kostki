@@ -5,7 +5,11 @@ import { Camera, State } from '../ecs/type';
 import { getAspectRatio } from '../utils/getAspectRatio';
 import { setBackground } from './backgroundSystem';
 import { ECSEvent } from '../ecs/emitEvent';
-import { handleResize } from './camera/handleResize';
+import {
+  adjustBabylonCameraToComponentCamera,
+  handleResize,
+} from './camera/handleResize';
+import { setTurnIndicator } from './turnIndicator';
 
 export const cameraEntity = 'cameraEntity';
 export namespace CameraEvent {
@@ -24,7 +28,17 @@ const cameraGetSet = createGetSetForUniqComponent<Camera>({
 });
 
 export const getCamera = cameraGetSet.getComponent;
-export const setCamera = cameraGetSet.setComponent;
+export const setCamera = ({
+  state,
+  data,
+}: {
+  state: State;
+  data: Partial<Camera>;
+}) => {
+  const size = adjustBabylonCameraToComponentCamera({ component: data });
+
+  return cameraGetSet.setComponent({ state, data: { ...size, ...data } });
+};
 
 export const getCameraSize = (distance: number, scene: Scene) => {
   const aspect = getAspectRatio(scene);
@@ -51,28 +65,13 @@ export const cameraSystem = (state: State) =>
     state,
     name: componentName.camera,
     create: ({ state, component }) => {
-      state = handleResize({
-        component,
-        state,
-        event: {
-          entity: component.entity,
-          type: CameraEvent.Type.resize,
-          payload: {},
-        },
-      });
+      state = setCamera({ state, data: component });
 
       return state;
     },
-    update: ({ state, component }) => {
-      state = handleResize({
-        component,
-        state,
-        event: {
-          entity: component.entity,
-          type: CameraEvent.Type.resize,
-          payload: {},
-        },
-      });
+    update: ({ state }) => {
+      state = setBackground({ state, data: {} });
+      state = setTurnIndicator({ state, data: {} });
 
       return state;
     },

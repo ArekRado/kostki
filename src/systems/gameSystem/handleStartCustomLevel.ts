@@ -7,6 +7,7 @@ import {
   Game,
   State,
   Scene as GameScene,
+  TurnIndicator,
 } from '../../ecs/type';
 import { getAiMove } from '../aiSystem';
 import {
@@ -24,6 +25,7 @@ import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
 import { getDataGrid } from '../aiSystem/getDataGrid';
+import { turnIndicatorEntity } from '../turnIndicator';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -216,6 +218,17 @@ export const handleStartCustomLevel: EventHandler<
       state = onClickBox({ box, state, ai: currentAi });
     }
   }
+
+  state = setComponent<TurnIndicator>({
+    state,
+    data: {
+      entity: turnIndicatorEntity,
+      name: componentName.turnIndicator,
+      position: [0, 0],
+      boxes: [],
+      texts: [],
+    },
+  });
 
   return state;
 };
