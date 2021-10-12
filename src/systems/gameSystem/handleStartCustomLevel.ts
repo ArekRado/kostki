@@ -227,6 +227,7 @@ export const handleStartCustomLevel: EventHandler<
       position: [0, 0],
       boxes: [],
       texts: [],
+      highlighter: '',
     },
   });
 

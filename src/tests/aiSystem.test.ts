@@ -3,10 +3,7 @@ import { scene, camera, humanPlayerEntity } from '../.';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
-import {
-  AIDifficulty,
-  getAiMove,
-} from '../systems/aiSystem';
+import { AIDifficulty, getAiMove } from '../systems/aiSystem';
 import { hardAIGridPoints } from '../systems/aiSystem/aiGridPoints';
 import { getBestRandomBox } from '../systems/aiSystem/getBestRandomBox';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
@@ -64,8 +61,7 @@ describe('aiSystem', () => {
   it('getDataGrid - should return all boxes in a matrix', () => {
     let state = gridBlueprint({
       dataGrid: basicGrid2x2,
-      scene,
-      camera,
+
       state: getGameInitialState(),
     });
 
@@ -88,8 +84,7 @@ describe('aiSystem', () => {
     it('all empty boxes - should return grid with points', () => {
       let state = gridBlueprint({
         dataGrid: basicGrid2x2,
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -110,8 +105,7 @@ describe('aiSystem', () => {
           [basicBox, { ...basicBox, dots: 1 }],
           [{ ...basicBox, player: humanPlayerEntity }, basicBox],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -140,8 +134,7 @@ describe('aiSystem', () => {
             { ...basicBox, player: player2 },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -163,8 +156,7 @@ describe('aiSystem', () => {
           ],
           [basicBox, basicBox],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -203,8 +195,7 @@ describe('aiSystem', () => {
               { dots: 0, player: player2 },
             ],
           ],
-          scene,
-          camera,
+
           state: getGameInitialState(),
         });
 
@@ -241,8 +232,7 @@ describe('aiSystem', () => {
               { dots: 5, player: player2 },
             ],
           ],
-          scene,
-          camera,
+
           state: getGameInitialState(),
         });
 
@@ -279,8 +269,7 @@ describe('aiSystem', () => {
               { dots: 2, player: player2 },
             ],
           ],
-          scene,
-          camera,
+
           state: getGameInitialState(),
         });
 
@@ -317,8 +306,7 @@ describe('aiSystem', () => {
               { dots: 4, player: player2 },
             ],
           ],
-          scene,
-          camera,
+
           state: getGameInitialState(),
         });
 
@@ -358,8 +346,7 @@ describe('aiSystem', () => {
             { dots: 0, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -408,8 +395,7 @@ describe('aiSystem', () => {
             { dots: 5, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -447,8 +433,7 @@ describe('aiSystem', () => {
             { dots: 2, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -495,8 +480,7 @@ describe('aiSystem', () => {
             { dots: 1, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -541,8 +525,7 @@ describe('aiSystem', () => {
             { dots: 4, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -581,8 +564,7 @@ describe('aiSystem', () => {
             { dots: 1, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -637,8 +619,7 @@ describe('aiSystem', () => {
             { dots: 6, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -707,8 +688,7 @@ describe('aiSystem', () => {
             { dots: 0, player: undefined },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -783,8 +763,7 @@ describe('aiSystem', () => {
             { dots: 1, player: basicAi.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 
@@ -853,8 +832,7 @@ describe('aiSystem', () => {
             { dots: 1, player: basicAi2.entity },
           ],
         ],
-        scene,
-        camera,
+
         state: getGameInitialState(),
       });
 

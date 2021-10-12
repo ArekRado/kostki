@@ -25,16 +25,9 @@ export type BasicBox = { dots: number; player: Entity | undefined };
 
 type GridBlueprint = (params: {
   dataGrid: BasicBox[][];
-  scene: Scene;
-  camera: UniversalCamera;
   state: State;
 }) => State;
-export const gridBlueprint: GridBlueprint = ({
-  dataGrid,
-  scene,
-  camera,
-  state,
-}) => {
+export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
   const { center, cameraDistance } = getGridDimensions(dataGrid);
 
   setCamera({

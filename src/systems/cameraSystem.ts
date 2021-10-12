@@ -36,8 +36,7 @@ export const setCamera = ({
   data: Partial<Camera>;
 }) => {
   const size = adjustBabylonCameraToComponentCamera({ component: data });
-
-  return cameraGetSet.setComponent({ state, data: { ...size, ...data } });
+  return cameraGetSet.setComponent({ state, data: { ...data, ...size } });
 };
 
 export const getCameraSize = (distance: number, scene: Scene) => {
