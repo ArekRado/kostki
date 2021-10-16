@@ -37,6 +37,7 @@ import {
   handleReload,
   handleShowNewVersion,
 } from './gameSystem/handleChangeSettings';
+import { moveHighlighter } from './turnIndicator/moveHighlighter';
 
 export const gameEntity = 'game';
 
@@ -265,6 +266,7 @@ const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
   }
 
   saveState(state);
+  moveHighlighter({ state });
 
   return state;
 };

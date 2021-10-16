@@ -1,6 +1,7 @@
 // import { v4 } from 'uuid';
 import { Entity, Guid, State } from './type';
 import { removeComponent } from './component';
+import { generateId } from '../utils/generateId';
 
 type CreateEntity = (
   name: string,
@@ -18,7 +19,7 @@ type CreateEntity = (
 export const createEntity: CreateEntity = (
   name: string,
   options = {}
-): Entity => Math.random().toString();
+): Entity => generateId().toString();
 
 type SetEntity = (params: { entity: Entity; state: State }) => State;
 
