@@ -1,8 +1,8 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { State, TurnIndicator } from '../ecs/type';
-import { create } from './turnIndicator/create';
-import { updateIndicatorPosition } from './turnIndicator/updateIndicatorPosition';
+import { create } from './turnIndicatorSystem/create';
+import { updateIndicatorPosition } from './turnIndicatorSystem/updateIndicatorPosition';
 
 export const turnIndicatorEntity = '68127445920450266';
 

@@ -30,7 +30,7 @@ import {
   backgroundEntity,
   backgroundSystem,
 } from '../systems/backgroundSystem';
-import { turnIndicatorSystem } from '../systems/turnIndicator';
+import { turnIndicatorSystem } from '../systems/turnIndicatorSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {

@@ -9,7 +9,6 @@ import {
   Scene as GameScene,
   TurnIndicator,
 } from '../../ecs/type';
-import { getAiMove } from '../aiSystem';
 import {
   BoxEvent,
   Direction,
@@ -17,7 +16,7 @@ import {
   getTextureSet,
   onClickBox,
 } from '../boxSystem';
-import { GameEvent, getGame, getNextPlayer, setGame } from '../gameSystem';
+import { GameEvent, getGame, setGame } from '../gameSystem';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
@@ -25,7 +24,9 @@ import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
 import { getDataGrid } from '../aiSystem/getDataGrid';
-import { turnIndicatorEntity } from '../turnIndicator';
+import { turnIndicatorEntity } from '../turnIndicatorSystem';
+import { getNextPlayer } from './getNextPlayer';
+import { getAiMove } from '../aiSystem/getAiMove';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {

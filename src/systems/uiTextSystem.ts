@@ -10,7 +10,7 @@ const createTextControl = ({ component }: { component: UIText }) => {
   const text = new BABYLON.GUI.TextBlock(component.entity);
   text.text = component.text;
   text.color = component.color ?? '#fff';
-  text.fontSize = component.fontSize ?? 24;
+  text.fontSize = component.fontSize ? component.fontSize[0] : 24;
   text.textHorizontalAlignment = 0;
 
   responsive({

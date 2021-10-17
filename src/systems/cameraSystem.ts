@@ -8,8 +8,8 @@ import { ECSEvent } from '../ecs/emitEvent';
 import {
   adjustBabylonCameraToComponentCamera,
   handleResize,
-} from './camera/handleResize';
-import { setTurnIndicator } from './turnIndicator';
+} from './cameraSystem/handleResize';
+import { setTurnIndicator } from './turnIndicatorSystem';
 
 export const cameraEntity = 'cameraEntity';
 export namespace CameraEvent {

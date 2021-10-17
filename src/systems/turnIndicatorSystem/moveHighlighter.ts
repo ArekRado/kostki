@@ -1,7 +1,7 @@
 import { scene } from "../..";
 import { State } from "../../ecs/type";
 import { getGame } from "../gameSystem";
-import { getTurnIndicator } from "../turnIndicator";
+import { getTurnIndicator } from "../turnIndicatorSystem";
 import { getIndicatorSizes } from "./getIndicatorSizes";
 
 export const moveHighlighter = ({ state }: { state: State }): State => {

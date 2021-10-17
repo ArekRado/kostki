@@ -12,7 +12,7 @@ export const breakpoints: Breakpoints = [
 ];
 
 type GetBreakpoint = <X>(containerSize: number, sizes: Breakpoints<X>) => X;
-export const getResonsiveSize: GetBreakpoint = (containerSize, sizes) =>
+export const getResonsiveValue: GetBreakpoint = (containerSize, sizes) =>
   sizes.find((_, index) => containerSize < breakpoints[index]) ||
   sizes[sizes.length - 1];
 
@@ -36,16 +36,16 @@ export const responsive: Responsive = ({ element, babylonElement, scene }) => {
     const canvasWidth = canvas ? canvas.width : 1;
     const ratio = element.aspectRation ? getAspectRatio(scene) : 1;
 
-    const newPosition = getResonsiveSize(canvasWidth, element.position);
+    const newPosition = getResonsiveValue(canvasWidth, element.position);
     const [left, top] = normalizePosition(newPosition);
 
-    const newSize = getResonsiveSize(canvasWidth, element.size);
+    const newSize = getResonsiveValue(canvasWidth, element.size);
     const newSizeWithAspectRatio = [newSize[0], newSize[1] / ratio];
     const newMinSize = element.minSize
-      ? getResonsiveSize(canvasWidth, element.minSize)
+      ? getResonsiveValue(canvasWidth, element.minSize)
       : [0, 0];
     const newMaxSize = element.maxSize
-      ? getResonsiveSize(canvasWidth, element.maxSize)
+      ? getResonsiveValue(canvasWidth, element.maxSize)
       : [1, 1];
 
     const width = clamp({

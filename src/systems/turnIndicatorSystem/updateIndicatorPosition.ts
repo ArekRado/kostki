@@ -12,8 +12,6 @@ export const updateIndicatorPosition = ({
   state: State;
   component: TurnIndicator;
 }): State => {
-  console.log('updateIndicatorPosition');
-
   const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({ state });
 
   component.boxes.forEach((boxEntity, i) => {

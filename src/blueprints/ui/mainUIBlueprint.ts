@@ -152,7 +152,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({
       text: `version ${game?.version}`,
       size,
       color: '#444',
-      fontSize: 24,
+      fontSize: [24, 24, 24],
       position: [
         [0.9, 0.9],
         [0.9, 0.9],

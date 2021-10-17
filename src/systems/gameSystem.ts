@@ -1,30 +1,11 @@
 import { createSystem } from '../ecs/createSystem';
 import {
   componentName,
-  getComponentsByName,
   getComponent,
-  setComponent,
   createGetSetForUniqComponent,
-  removeComponentsByName,
 } from '../ecs/component';
-import {
-  AI,
-  Box,
-  Entity,
-  EventHandler,
-  Game,
-  Guid,
-  State,
-  Scene as GameScene,
-} from '../ecs/type';
-import { ECSEvent, emitEvent } from '../ecs/emitEvent';
-import { getAiMove } from './aiSystem';
-import { onClickBox, pushBoxToRotationQueue } from './boxSystem';
-
-import { removeState, saveState } from '../utils/localDb';
-import { setMarker } from './markerSystem';
-import { boxWithGap } from '../blueprints/gridBlueprint';
-import { setUi } from './uiSystem';
+import { AI, Entity, Game, State, Scene as GameScene } from '../ecs/type';
+import { ECSEvent } from '../ecs/emitEvent';
 import { handleStartCustomLevel } from './gameSystem/handleStartCustomLevel';
 import {
   handleChangeColorBlindMode,
@@ -37,7 +18,9 @@ import {
   handleReload,
   handleShowNewVersion,
 } from './gameSystem/handleChangeSettings';
-import { moveHighlighter } from './turnIndicator/moveHighlighter';
+import { handleCleanScene } from './gameSystem/handleCleanScene';
+import { handlePlayerClick } from './gameSystem/handlePlayerClick';
+import { handleNextTurn } from './gameSystem/handleNextTurn';
 
 export const gameEntity = 'game';
 
@@ -119,222 +102,6 @@ export const getCurrentAi: GetCurrentAi = ({ state }) => {
   });
 
   return ai;
-};
-
-type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
-const aiLost: AiLost = ({ state, ai, component }) => {
-  state = setComponent<AI>({
-    state,
-    data: {
-      ...ai,
-      active: false,
-    },
-  });
-
-  const allAI = getComponentsByName<AI>({
-    state,
-    name: componentName.ai,
-  });
-
-  const amountOfActivedAi = Object.values(allAI || {}).reduce(
-    (acc, ai) => (ai.active ? acc + 1 : acc),
-    0
-  );
-
-  // last player is active, time to end game
-  if (amountOfActivedAi === 1) {
-    removeState();
-
-    return setComponent<Game>({
-      state,
-      data: {
-        ...component,
-        gameStarted: false,
-      },
-    });
-  } else {
-    emitEvent<GameEvent.NextTurnEvent>({
-      type: GameEvent.Type.nextTurn,
-      entity: gameEntity,
-      payload: { ai },
-    });
-  }
-
-  return state;
-};
-
-type GetNextActivePlayer = (params: {
-  playersQueue: Guid[];
-  index: number;
-  state: State;
-}) => AI | undefined;
-const getNextActivePlayer: GetNextActivePlayer = ({
-  playersQueue,
-  index,
-  state,
-}) => {
-  const ai = getComponent<AI>({
-    state,
-    name: componentName.ai,
-    entity: playersQueue[index],
-  });
-
-  if (ai?.active) {
-    return ai;
-  }
-
-  return getNextActivePlayer({
-    playersQueue,
-    index: index >= playersQueue.length ? 0 : index + 1,
-    state,
-  });
-};
-
-type GetNextPlayer = (params: { state: State }) => AI | undefined;
-export const getNextPlayer: GetNextPlayer = ({ state }) => {
-  const game = getGame({ state });
-
-  if (!game) {
-    return undefined;
-  }
-
-  const currentPlayerIndex = game.playersQueue.findIndex(
-    (entity) => game.currentPlayer === entity
-  );
-
-  const nextAi = getNextActivePlayer({
-    playersQueue: game.playersQueue,
-    index: currentPlayerIndex + 1,
-    state,
-  });
-
-  return nextAi;
-};
-
-const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
-  state,
-  component,
-}) => {
-  const { gameStarted, boxRotationQueue } = component;
-
-  if (gameStarted && boxRotationQueue.length === 0) {
-    const nextPlayer = getNextPlayer({ state });
-
-    if (!nextPlayer) {
-      return state;
-    }
-
-    const ai = getComponent<AI>({
-      name: componentName.ai,
-      state,
-      entity: nextPlayer.entity,
-    });
-
-    if (!ai) {
-      return state;
-    }
-
-    state = setComponent<Game>({
-      state,
-      data: {
-        ...component,
-        currentPlayer: ai.entity,
-      },
-    });
-
-    if (!ai.human && ai.active) {
-      const box = getAiMove({ state, ai });
-
-      if (box) {
-        state = setMarker({
-          state,
-          data: {
-            color: ai.color,
-            position: [
-              box.gridPosition[0] * boxWithGap,
-              box.gridPosition[1] * boxWithGap,
-            ],
-          },
-        });
-        state = onClickBox({ box, state, ai });
-        state = pushBoxToRotationQueue({ state, entity: box.entity });
-      } else {
-        // AI can't move which means it lost
-        return aiLost({ state, component, ai });
-      }
-    }
-  }
-
-  saveState(state);
-  moveHighlighter({ state });
-
-  return state;
-};
-
-const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> = ({
-  state,
-  component,
-  event,
-}) => {
-  const { currentPlayer, gameStarted, boxRotationQueue } = component;
-
-  const box = getComponent<Box>({
-    state,
-    name: componentName.box,
-    entity: event.payload.boxEntity,
-  });
-
-  const canClickOnBox =
-    box?.player === undefined || box?.player === currentPlayer;
-
-  if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
-    const ai = getComponent<AI>({
-      name: componentName.ai,
-      state,
-      entity: currentPlayer,
-    });
-
-    if (box && ai?.human) {
-      state = setMarker({
-        state,
-        data: {
-          color: ai.color,
-          position: [
-            box.gridPosition[0] * boxWithGap,
-            box.gridPosition[1] * boxWithGap,
-          ],
-        },
-      });
-      state = onClickBox({ box, state, ai });
-    }
-  }
-
-  return state;
-};
-
-const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> = ({
-  state,
-  event,
-}) => {
-  state = setUi({
-    state,
-    data: { type: event.payload.newScene, cleanControls: true },
-  });
-  state = setGame({
-    state,
-    data: {
-      round: 0,
-      grid: [],
-      currentPlayer: '',
-      playersQueue: [],
-      boxRotationQueue: [],
-      gameStarted: false,
-    },
-  });
-  state = removeComponentsByName({ state, name: componentName.box });
-  state = removeComponentsByName({ state, name: componentName.ai });
-
-  return state;
 };
 
 export const gameSystem = (state: State) =>
