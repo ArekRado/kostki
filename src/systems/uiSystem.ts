@@ -18,6 +18,7 @@ import {
   customLevelSettingsUIAttachEvents,
   customLevelSettingsUIBlueprint,
 } from '../blueprints/ui/customLevelSettingsUIBlueprint';
+import { uiResize } from './uiSystem/uiResize';
 
 export const uiEntity = '23505760496063488';
 export const uiRoot = 'root';
@@ -27,14 +28,11 @@ const uiGetSet = createGetSetForUniqComponent<UI>({
   name: componentName.ui,
 });
 
-export const getUi = uiGetSet.getComponent;
-export const setUi = uiGetSet.setComponent;
-
-type CleanControls = (params: {
+type RemoveAllControls = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
   state: State;
 }) => State;
-const cleanControls: CleanControls = ({ state, advancedTexture }) => {
+const removeAllControls: RemoveAllControls = ({ state, advancedTexture }) => {
   advancedTexture
     .getChildren()
     .find((x) => x.name === uiRoot)
@@ -47,21 +45,54 @@ const cleanControls: CleanControls = ({ state, advancedTexture }) => {
   return state;
 };
 
+export const getUi = uiGetSet.getComponent;
+export const setUi = ({
+  state,
+  data,
+  cleanControls,
+}: {
+  state: State;
+  data: Partial<UI>;
+  cleanControls: boolean;
+}) => {
+  if (advancedTexture) {
+    if (cleanControls) {
+      state = removeAllControls({ advancedTexture, state });
+      // state = setUi({ state, data: { cleanControls: false } });
+      state = setBabylonUi({
+        state,
+        advancedTexture,
+        attachEvents: true,
+        uiType: data?.type,
+      });
+    } else {
+      state = setBabylonUi({
+        state,
+        advancedTexture,
+        attachEvents: false,
+        uiType: data?.type,
+      });
+    }
+  }
+
+  uiResize({ state, scene });
+
+  return uiGetSet.setComponent({ state, data });
+};
+
 type SetBabylonUi = (params: {
   state: State;
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
   attachEvents: boolean;
+  uiType: UI['type'] | undefined;
 }) => State;
-export const setBabylonUi: SetBabylonUi = ({
+const setBabylonUi: SetBabylonUi = ({
   state,
   advancedTexture,
   attachEvents,
+  uiType,
 }) => {
-  const ui = getUi({
-    state,
-  });
-
-  switch (ui?.type) {
+  switch (uiType) {
     case Scene.customLevel:
       state = gameUIBlueprint({ state });
       attachEvents && gameUIAttachEvents({ advancedTexture });
@@ -94,33 +125,16 @@ export const uiSystem = (state: State) =>
         scene as any as BABYLON.Scene
       );
 
-      state = cleanControls({ advancedTexture, state });
+      state = removeAllControls({ advancedTexture, state });
       state = setBabylonUi({
         state,
         advancedTexture,
         attachEvents: true,
+        uiType: getUi({ state })?.type,
       });
 
-      return state;
-    },
-    update: ({ state, component }) => {
-      if (advancedTexture) {
-        if (component.cleanControls) {
-          state = cleanControls({ advancedTexture, state });
-          state = setUi({ state, data: { cleanControls: false } });
-          state = setBabylonUi({
-            state,
-            advancedTexture,
-            attachEvents: true,
-          });
-        } else {
-          state = setBabylonUi({
-            state,
-            advancedTexture,
-            attachEvents: false,
-          });
-        }
-      }
+      uiResize({ state, scene });
+
       return state;
     },
   });

@@ -1,20 +1,21 @@
-import { scene } from "../..";
-import { Breakpoints } from "../../blueprints/ui/responsive";
-import { componentName, getComponent, setComponent } from "../../ecs/component";
-import { State, TurnIndicator, UIText } from "../../ecs/type";
-import { logWrongPath } from "../../utils/logWrongPath";
-import { getIndicatorSizes } from "./getIndicatorSizes";
+import { scene } from '../..';
+import { componentName, getComponent, setComponent } from '../../ecs/component';
+import { Breakpoints, State, TurnIndicator, UIText } from '../../ecs/type';
+import { logWrongPath } from '../../utils/logWrongPath';
+import { getIndicatorSizes } from './getIndicatorSizes';
 
 export const updateIndicatorPosition = ({
   state,
   component,
 }: {
   state: State;
-  component: TurnIndicator;
+  component: Partial<TurnIndicator>;
 }): State => {
-  const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({ state });
+  const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({
+    state,
+  });
 
-  component.boxes.forEach((boxEntity, i) => {
+  component.boxes?.forEach((boxEntity, i) => {
     const boxPosition: [number, number] = [
       leftEdge + boxSize,
       topEdge - i * boxSize - boxSize,
@@ -42,7 +43,7 @@ export const updateIndicatorPosition = ({
     const text = getComponent<UIText>({
       state,
       name: componentName.uiText,
-      entity: component.texts[i],
+      entity: component.texts ? component.texts[i] : '',
     });
 
     if (text) {
@@ -63,7 +64,7 @@ export const updateIndicatorPosition = ({
   });
 
   const highlighter = scene.getMeshByUniqueId(
-    parseFloat(component.highlighter)
+    parseFloat(component.highlighter || '')
   );
 
   if (highlighter) {

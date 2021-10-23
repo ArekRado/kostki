@@ -2,12 +2,11 @@ import 'babylonjs-gui';
 import logoUrl from '../../assets/logo.png';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, UIButton, UIImage, UIText } from '../../ecs/type';
+import { Breakpoints, State, UIButton, UIImage, UIText } from '../../ecs/type';
 import { Scene as GameScene } from '../../ecs/type';
-import { Breakpoints } from './responsive';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
-import { attachEvent } from './attachEvent';
+import { attachEvent } from '../../systems/uiSystem/attachEvent';
 
 const logoImgEntity = generateId().toString();
 

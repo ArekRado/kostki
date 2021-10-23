@@ -2,9 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIButton } from '../ecs/type';
 import { scene } from '..';
-import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getUiControl } from '../blueprints/ui/getUI';
+import { getUiControl } from './uiSystem/getUiControl';
 
 export const uiButtonSystem = (state: State) =>
   createSystem<UIButton, {}>({
@@ -16,11 +15,11 @@ export const uiButtonSystem = (state: State) =>
         component.text
       );
 
-      responsive({
-        element: component,
-        babylonElement: btn,
-        scene,
-      });
+      // responsive({
+      //   element: component,
+      //   babylonElement: btn,
+      //   scene,
+      // });
 
       btn.color = component.color ?? 'white';
       btn.cornerRadius = component.cornerRadius ?? 0;

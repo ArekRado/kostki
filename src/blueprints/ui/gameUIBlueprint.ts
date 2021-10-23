@@ -6,7 +6,7 @@ import { State, Scene as GameScene, UIButton } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { generateId } from '../../utils/generateId';
 import { removeState } from '../../utils/localDb';
-import { attachEvent } from './attachEvent';
+import { attachEvent } from '../../systems/uiSystem/attachEvent';
 
 const closeBtnEntity = generateId().toString();
 

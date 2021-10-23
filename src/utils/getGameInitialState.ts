@@ -94,7 +94,7 @@ export const getGameInitialState: GetGameInitialState = () => {
       entity: uiEntity,
       name: componentName.ui,
       type: Scene.mainMenu,
-      cleanControls: false,
+      // cleanControls: false,
     },
   });
 

@@ -1,5 +1,5 @@
 import { Entity } from '../../ecs/type';
-import { advancedTexture, uiRoot } from '../../systems/uiSystem';
+import { advancedTexture, uiRoot } from '../uiSystem';
 
 type GetUiControl = (params: {
   entity: Entity;

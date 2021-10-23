@@ -1,5 +1,5 @@
 import { Entity } from '../../ecs/type';
-import { uiRoot } from '../../systems/uiSystem';
+import { uiRoot } from '../uiSystem';
 
 type AttachEvent = (params: {
   entity: Entity;

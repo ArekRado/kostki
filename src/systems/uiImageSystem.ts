@@ -2,9 +2,8 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIImage } from '../ecs/type';
 import { scene } from '..';
-import { responsive } from '../blueprints/ui/responsive';
 import { advancedTexture } from './uiSystem';
-import { getUiControl } from '../blueprints/ui/getUI';
+import { getUiControl } from './uiSystem/getUiControl';
 
 export const uiImageSystem = (state: State) =>
   createSystem<UIImage, {}>({
@@ -13,11 +12,11 @@ export const uiImageSystem = (state: State) =>
     create: ({ state, component }) => {
       const img = new BABYLON.GUI.Image(component.entity, component.url);
 
-      responsive({
-        element: component,
-        babylonElement: img,
-        scene,
-      });
+      // responsive({
+      //   element: component,
+      //   babylonElement: img,
+      //   scene,
+      // });
 
       advancedTexture?.addControl(img);
 

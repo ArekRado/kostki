@@ -81,7 +81,6 @@ export type Breakpoints<Value = number> = [Value, Value, Value];
 
 export type UI = Component<{
   type: Scene;
-  cleanControls: boolean;
 }>;
 
 export type UIElement = {

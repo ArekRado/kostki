@@ -1,11 +1,10 @@
 import 'babylonjs-gui';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, UIButton, Scene as GameScene, UIText } from '../../ecs/type';
-import { Breakpoints } from './responsive';
+import { State, UIButton, Scene as GameScene, UIText, Breakpoints } from '../../ecs/type';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
-import { attachEvent } from './attachEvent';
+import { attachEvent } from '../../systems/uiSystem/attachEvent';
 import { AIDifficulty } from '../../systems/aiSystem';
 
 const playersBtnEntity = generateId().toString();

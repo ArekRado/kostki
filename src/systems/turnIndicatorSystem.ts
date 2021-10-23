@@ -12,15 +12,21 @@ const turnIndicatorGetSet = createGetSetForUniqComponent<TurnIndicator>({
 });
 
 export const getTurnIndicator = turnIndicatorGetSet.getComponent;
-export const setTurnIndicator = turnIndicatorGetSet.setComponent;
+export const setTurnIndicator = ({
+  state,
+  data,
+}: {
+  state: State;
+  data: Partial<TurnIndicator>;
+}) => {
+  state = updateIndicatorPosition({ state, component: data });
+
+  return turnIndicatorGetSet.setComponent({ state, data });
+};
 
 export const turnIndicatorSystem = (state: State) =>
   createSystem<TurnIndicator, {}>({
     state,
     name: componentName.turnIndicator,
     create,
-    update: ({ state, component }) => {
-      state = updateIndicatorPosition({ state, component });
-      return state;
-    },
   });

@@ -11,7 +11,7 @@ import {
 import { clamp } from '../../utils/clamp';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { componentName, getComponentsByName } from '../../ecs/component';
-import { getUiControl } from '../../blueprints/ui/getUI';
+import { getUiControl } from './getUiControl';
 
 export const breakpoints: Breakpoints = [
   768, // Small
@@ -43,7 +43,10 @@ const getResponsivePositionAndSize: GetResponsivePositionAndSize = ({
   const [left, top] = normalizePosition(newPosition);
 
   const newSize = getResonsiveValue(canvasWidth, element.size);
-  const newSizeWithAspectRatio = [newSize[0], newSize[1] / ratio];
+  const newSizeWithAspectRatio = element.aspectRation
+    ? [newSize[0], newSize[1] / ratio]
+    : [newSize[0], newSize[1]];
+    
   const newMinSize = element.minSize
     ? getResonsiveValue(canvasWidth, element.minSize)
     : [0, 0];
@@ -179,7 +182,7 @@ export const uiResize = ({
     canvasWidth,
   });
 
-  updateResponsiveProperty<UIText>({
+  state = updateResponsiveProperty<UIText>({
     state,
     elements: texts,
     callback: (acc, [entity, component], control) => {

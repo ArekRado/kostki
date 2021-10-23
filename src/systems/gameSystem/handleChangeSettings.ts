@@ -71,7 +71,7 @@ export const handleChangePlayers: EventHandler<
     },
   });
 
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeDifficulty: EventHandler<
@@ -104,7 +104,7 @@ export const handleChangeDifficulty: EventHandler<
     },
   });
 
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeQuickStart: EventHandler<
@@ -121,7 +121,7 @@ export const handleChangeQuickStart: EventHandler<
     },
   });
 
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeColorBlindMode: EventHandler<
@@ -135,28 +135,28 @@ export const handleChangeColorBlindMode: EventHandler<
     },
   });
 
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeMapType: EventHandler<
   Game,
   GameEvent.ChangeMapTypeEvent
 > = ({ state, component }) => {
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeNextMap: EventHandler<
   Game,
   GameEvent.ChangeNextMapEvent
 > = ({ state, component }) => {
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangePrevMap: EventHandler<
   Game,
   GameEvent.ChangePrevMapEvent
 > = ({ state, component }) => {
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleShowNewVersion: EventHandler<
@@ -167,13 +167,12 @@ export const handleShowNewVersion: EventHandler<
     state,
     data: { newVersionAvailable: true },
   });
-  return setUi({ state, data: {} });
+  return setUi({ state, data: {}, cleanControls: false });
 };
 
-export const handleReload: EventHandler<
-  Game,
-  GameEvent.ReloadEvent
-> = ({ state }) => {
+export const handleReload: EventHandler<Game, GameEvent.ReloadEvent> = ({
+  state,
+}) => {
   window.location.reload();
   return state;
 };

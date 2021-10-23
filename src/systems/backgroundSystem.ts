@@ -31,7 +31,17 @@ const backgroundGetSet = createGetSetForUniqComponent<Background>({
 });
 
 export const getBackground = backgroundGetSet.getComponent;
-export const setBackground = backgroundGetSet.setComponent;
+export const setBackground = ({
+  state,
+  data,
+}: {
+  state: State;
+  data: Partial<Background>;
+}) => {
+  resizeBackground(state);
+
+  return backgroundGetSet.setComponent({ state, data });
+};
 
 const resizeBackground = (state: State): State => {
   const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
@@ -183,9 +193,6 @@ export const backgroundSystem = (state: State) =>
         colors.map(({ color: [r, g, b] }) => new Color3(r, g, b))
       );
 
-      return resizeBackground(state);
-    },
-    update: ({ state, component }) => {
       return resizeBackground(state);
     },
     tick: ({ state, component }) => {

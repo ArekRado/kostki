@@ -6,6 +6,7 @@ import { createEntity } from '../../ecs/entity';
 import { AI, State, TurnIndicator, UIText } from '../../ecs/type';
 import { getCamera } from '../cameraSystem';
 import { getGame } from '../gameSystem';
+import { updateIndicatorPosition } from './updateIndicatorPosition';
 
 export const create = ({
   state,
@@ -70,9 +71,7 @@ export const create = ({
           [0.1, 0.1],
         ],
         color: '#444',
-        fontSize: [
-          24,24,24
-        ],
+        fontSize: [24, 24, 24],
         position: [
           [0, 0],
           [0, 0],
@@ -90,15 +89,19 @@ export const create = ({
     entity: highlighterEntity,
   });
 
+  const newComponent = {
+    ...component,
+    boxes,
+    texts,
+    highlighter: highlighterEntity,
+  };
+
   state = setComponent<TurnIndicator>({
     state,
-    data: {
-      ...component,
-      boxes,
-      texts,
-      highlighter: highlighterEntity,
-    },
+    data: newComponent,
   });
+
+  state = updateIndicatorPosition({ state, component: newComponent });
 
   return state;
 };
