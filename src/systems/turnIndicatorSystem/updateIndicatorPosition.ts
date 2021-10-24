@@ -2,6 +2,7 @@ import { Scene } from 'babylonjs';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, TurnIndicator, UIText } from '../../ecs/type';
 import { getIndicatorSizes } from './getIndicatorSizes';
+import { moveHighlighter } from './moveHighlighter';
 
 export const updateIndicatorPosition = ({
   state,
@@ -10,7 +11,7 @@ export const updateIndicatorPosition = ({
 }: {
   state: State;
   component: TurnIndicator;
-  scene: Scene
+  scene: Scene;
 }): State => {
   const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({
     state,
@@ -32,7 +33,7 @@ export const updateIndicatorPosition = ({
       mesh.position.x = boxPosition[0];
       mesh.position.y = boxPosition[1];
     } else {
-      console.log('mesh doesnt exist', boxEntity)
+      console.log('mesh doesnt exist', boxEntity);
     }
 
     const text = getComponent<UIText>({
@@ -56,6 +57,8 @@ export const updateIndicatorPosition = ({
       });
     }
   });
+
+  state = moveHighlighter({ state });
 
   return state;
 };
