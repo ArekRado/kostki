@@ -6,6 +6,7 @@ import { createEntity } from '../../ecs/entity';
 import { AI, State, TurnIndicator, UIText } from '../../ecs/type';
 import { getCamera } from '../cameraSystem';
 import { getGame } from '../gameSystem';
+import { uiResize } from '../uiSystem/uiResize';
 import { updateIndicatorPosition } from './updateIndicatorPosition';
 
 export const create = ({
@@ -66,9 +67,9 @@ export const create = ({
         name: componentName.uiText,
         text: ai?.human ? 'Player' : 'Computer',
         size: [
-          [0.1, 0.1],
-          [0.1, 0.1],
-          [0.1, 0.1],
+          [1, 0.1],
+          [1, 0.1],
+          [1, 0.1],
         ],
         color: '#444',
         fontSize: [24, 24, 24],
@@ -102,6 +103,7 @@ export const create = ({
   });
 
   state = updateIndicatorPosition({ state, component: newComponent });
+  state = uiResize({ state, scene });
 
   return state;
 };

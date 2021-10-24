@@ -3,6 +3,8 @@ import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { State, TurnIndicator } from '../ecs/type';
 import { create } from './turnIndicatorSystem/create';
 import { updateIndicatorPosition } from './turnIndicatorSystem/updateIndicatorPosition';
+import { doesIndicatorCollidesWithGrid } from './turnIndicatorSystem/doesIndicatorCollidesWithGrid';
+import { toggleIndicator } from './turnIndicatorSystem/toggleIndicator';
 
 export const turnIndicatorEntity = '68127445920450266';
 
@@ -19,9 +21,40 @@ export const setTurnIndicator = ({
   state: State;
   data: Partial<TurnIndicator>;
 }) => {
-  state = updateIndicatorPosition({ state, component: data });
+  const prevTurnIndicator = getTurnIndicator({ state });
+  let shouldHideIndicator = false;
 
-  return turnIndicatorGetSet.setComponent({ state, data });
+  if (prevTurnIndicator) {
+    shouldHideIndicator = doesIndicatorCollidesWithGrid({
+      state,
+      component: prevTurnIndicator,
+    });
+
+    if (
+      (prevTurnIndicator.isVisible === true && shouldHideIndicator === true) ||
+      (prevTurnIndicator.isVisible === false && shouldHideIndicator === false)
+    ) {
+      state = toggleIndicator({
+        state,
+        component: {
+          ...prevTurnIndicator,
+          isVisible: !shouldHideIndicator,
+        },
+      });
+    }
+
+    if (!shouldHideIndicator) {
+      state = updateIndicatorPosition({
+        state,
+        component: { ...prevTurnIndicator, ...data },
+      });
+    }
+  }
+
+  return turnIndicatorGetSet.setComponent({
+    state,
+    data: { ...data, isVisible: !shouldHideIndicator },
+  });
 };
 
 export const turnIndicatorSystem = (state: State) =>

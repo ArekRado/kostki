@@ -125,6 +125,7 @@ export type TurnIndicator = Component<{
   boxes: Entity[];
   texts: Entity[];
   highlighter: Entity;
+  isVisible: boolean; 
 }>;
 
 export type State = {

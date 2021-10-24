@@ -21,7 +21,7 @@ const createTextControl = ({
 
   advancedTexture?.addControl(text);
 
-  // for better performance it should recalculate only single control
+  // TODO for better performance it should recalculate only single control
   uiResize({ state, scene });
 };
 
@@ -38,13 +38,6 @@ export const uiTextSystem = (state: State) =>
     state,
     name: componentName.uiText,
     create: ({ state, component }) => {
-      createTextControl({ component, state });
-
-      return state;
-    },
-    update: ({ state, component }) => {
-      // Todo update should update "responsive" function instead of recreating whole control
-      removeTextControl({ entity: component.entity });
       createTextControl({ component, state });
 
       return state;

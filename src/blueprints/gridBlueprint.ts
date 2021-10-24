@@ -1,13 +1,16 @@
 import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, State } from '../ecs/type';
+import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { setCamera } from '../systems/cameraSystem';
 
 export const boxSize = 1;
 export const boxGap = 0.2;
 export const boxWithGap = boxSize + boxGap;
 
-export const getGridDimensions = (dataGrid: BasicBox[][]) => {
+export const getGridDimensions = ({ state }: { state: State }) => {
+  const dataGrid: BasicBox[][] = getDataGrid({ state });
+
   const boxWithGap = boxSize + boxGap;
   const gridWidth = dataGrid[0] ? dataGrid[0].length * boxWithGap : 1;
   const gridHeight = dataGrid.length * boxWithGap;
@@ -16,6 +19,8 @@ export const getGridDimensions = (dataGrid: BasicBox[][]) => {
   const center = [(gridWidth - 1 - boxGap) / 2, (gridHeight - 1 - boxGap) / 2];
 
   return {
+    width: gridWidth,
+    height: gridHeight,
     center,
     cameraDistance: longerDimension / 2 + boxGap,
   };
@@ -28,7 +33,8 @@ type GridBlueprint = (params: {
   state: State;
 }) => State;
 export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
-  const { center, cameraDistance } = getGridDimensions(dataGrid);
+  console.log('gridBlueprint');
+  const { center, cameraDistance } = getGridDimensions({ state });
 
   setCamera({
     state,

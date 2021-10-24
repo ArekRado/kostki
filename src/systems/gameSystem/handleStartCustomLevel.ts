@@ -58,7 +58,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
     })),
   });
 
-  const { center, cameraDistance } = getGridDimensions(getDataGrid({ state }));
+  const { center, cameraDistance } = getGridDimensions({ state });
 
   state = setCamera({
     state,
@@ -229,6 +229,7 @@ export const handleStartCustomLevel: EventHandler<
       boxes: [],
       texts: [],
       highlighter: '',
+      isVisible: true,
     },
   });
 

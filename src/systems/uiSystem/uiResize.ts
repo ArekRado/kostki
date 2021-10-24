@@ -46,7 +46,7 @@ const getResponsivePositionAndSize: GetResponsivePositionAndSize = ({
   const newSizeWithAspectRatio = element.aspectRation
     ? [newSize[0], newSize[1] / ratio]
     : [newSize[0], newSize[1]];
-    
+
   const newMinSize = element.minSize
     ? getResonsiveValue(canvasWidth, element.minSize)
     : [0, 0];
