@@ -4,6 +4,8 @@ import { State, TurnIndicator } from "../../ecs/type";
 import { getAspectRatio } from "../../utils/getAspectRatio";
 import { getIndicatorSizes } from "./getIndicatorSizes";
 
+export const indicatorWidth = 2;
+
 export const doesIndicatorCollidesWithGrid = ({
   state,
   component,
@@ -16,7 +18,6 @@ export const doesIndicatorCollidesWithGrid = ({
   });
   const aspect = getAspectRatio(scene);
 
-  const indicatorWidth = 3;
   const indicatorHeight = component.boxes.length * boxSize;
 
   const { width, height } = getGridDimensions({ state });

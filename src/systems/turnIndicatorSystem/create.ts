@@ -7,6 +7,7 @@ import { AI, State, TurnIndicator, UIText } from '../../ecs/type';
 import { getCamera } from '../cameraSystem';
 import { getGame } from '../gameSystem';
 import { uiResize } from '../uiSystem/uiResize';
+import { moveHighlighter } from './moveHighlighter';
 import { updateIndicatorPosition } from './updateIndicatorPosition';
 
 export const create = ({
@@ -67,9 +68,9 @@ export const create = ({
         name: componentName.uiText,
         text: ai?.human ? 'Player' : 'Computer',
         size: [
-          [1, 0.1],
-          [1, 0.1],
-          [1, 0.1],
+          [0.8, 0.1],
+          [0.8, 0.1],
+          [0.8, 0.1],
         ],
         color: '#444',
         fontSize: [24, 24, 24],
@@ -102,7 +103,8 @@ export const create = ({
     data: newComponent,
   });
 
-  state = updateIndicatorPosition({ state, component: newComponent });
+  state = updateIndicatorPosition({ state, component: newComponent, scene });
+  state = moveHighlighter({ state });
   state = uiResize({ state, scene });
 
   return state;

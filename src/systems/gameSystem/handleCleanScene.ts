@@ -25,6 +25,7 @@ export const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> =
     });
     state = removeComponentsByName({ state, name: componentName.box });
     state = removeComponentsByName({ state, name: componentName.ai });
+    state = removeComponentsByName({ state, name: componentName.turnIndicator });
 
     return state;
   };

@@ -2,6 +2,7 @@ import { scene } from "../..";
 import { State } from "../../ecs/type";
 import { getGame } from "../gameSystem";
 import { getTurnIndicator } from "../turnIndicatorSystem";
+import { indicatorWidth } from "./doesIndicatorCollidesWithGrid";
 import { getIndicatorSizes } from "./getIndicatorSizes";
 
 export const moveHighlighter = ({ state }: { state: State }): State => {
@@ -18,10 +19,12 @@ export const moveHighlighter = ({ state }: { state: State }): State => {
       (ai) => ai === game.currentPlayer
     ) + 1;
 
-    highlighter.position.x = leftEdge + boxSize;
+    const halfIndicatorWidth = indicatorWidth /2;
+
+    highlighter.position.x = leftEdge + halfIndicatorWidth;
     highlighter.position.y = topEdge - index * boxSize;
 
-    highlighter.scaling.x = 3;
+    highlighter.scaling.x = indicatorWidth;
     highlighter.scaling.y = boxSize;
   }
 

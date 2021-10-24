@@ -5,6 +5,8 @@ import { create } from './turnIndicatorSystem/create';
 import { updateIndicatorPosition } from './turnIndicatorSystem/updateIndicatorPosition';
 import { doesIndicatorCollidesWithGrid } from './turnIndicatorSystem/doesIndicatorCollidesWithGrid';
 import { toggleIndicator } from './turnIndicatorSystem/toggleIndicator';
+import { scene } from '..';
+import { remove } from './turnIndicatorSystem/remove';
 
 export const turnIndicatorEntity = '68127445920450266';
 
@@ -47,6 +49,7 @@ export const setTurnIndicator = ({
       state = updateIndicatorPosition({
         state,
         component: { ...prevTurnIndicator, ...data },
+        scene,
       });
     }
   }
@@ -62,4 +65,5 @@ export const turnIndicatorSystem = (state: State) =>
     state,
     name: componentName.turnIndicator,
     create,
+    remove,
   });

@@ -160,6 +160,7 @@ export const gameSystem = (state: State) =>
           return handleChangePrevMap({ state, component, event });
         case GameEvent.Type.showNewVersion:
           return handleShowNewVersion({ state, component, event });
+          
         case GameEvent.Type.reload:
           return handleReload({ state, component, event });
       }

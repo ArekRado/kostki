@@ -1,15 +1,16 @@
-import { scene } from '../..';
+import { Scene } from 'babylonjs';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, TurnIndicator, UIText } from '../../ecs/type';
-import { logWrongPath } from '../../utils/logWrongPath';
 import { getIndicatorSizes } from './getIndicatorSizes';
 
 export const updateIndicatorPosition = ({
   state,
   component,
+  scene,
 }: {
   state: State;
   component: TurnIndicator;
+  scene: Scene
 }): State => {
   const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({
     state,
@@ -31,7 +32,7 @@ export const updateIndicatorPosition = ({
       mesh.position.x = boxPosition[0];
       mesh.position.y = boxPosition[1];
     } else {
-      logWrongPath(state);
+      console.log('mesh doesnt exist', boxEntity)
     }
 
     const text = getComponent<UIText>({
@@ -53,19 +54,8 @@ export const updateIndicatorPosition = ({
           ],
         },
       });
-    } else {
-      logWrongPath(state);
     }
   });
-
-  const highlighter = scene.getMeshByUniqueId(
-    parseFloat(component.highlighter || '')
-  );
-
-  if (highlighter) {
-    // highlighter.position.x = leftEdge + 1;
-    // highlighter.position.y = topEdge /2;
-  }
 
   return state;
 };
