@@ -82,7 +82,6 @@ export const handleChangeDifficulty: EventHandler<
     AIDifficulty.easy,
     AIDifficulty.medium,
     AIDifficulty.hard,
-    AIDifficulty.experimental,
   ];
 
   const index = difficultyList.findIndex(

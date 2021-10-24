@@ -56,6 +56,7 @@ export const setUi = ({
   cleanControls: boolean;
 }) => {
   if (advancedTexture) {
+    const uiType = data?.type || getUi({ state })?.type || Scene.mainMenu;
     if (cleanControls) {
       state = removeAllControls({ advancedTexture, state });
       // state = setUi({ state, data: { cleanControls: false } });
@@ -63,14 +64,14 @@ export const setUi = ({
         state,
         advancedTexture,
         attachEvents: true,
-        uiType: data?.type,
+        uiType,
       });
     } else {
       state = setBabylonUi({
         state,
         advancedTexture,
         attachEvents: false,
-        uiType: data?.type,
+        uiType,
       });
     }
   }
@@ -84,7 +85,7 @@ type SetBabylonUi = (params: {
   state: State;
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
   attachEvents: boolean;
-  uiType: UI['type'] | undefined;
+  uiType: UI['type'];
 }) => State;
 const setBabylonUi: SetBabylonUi = ({
   state,
@@ -130,7 +131,7 @@ export const uiSystem = (state: State) =>
         state,
         advancedTexture,
         attachEvents: true,
-        uiType: getUi({ state })?.type,
+        uiType: getUi({ state })?.type || Scene.mainMenu,
       });
 
       uiResize({ state, scene });

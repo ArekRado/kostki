@@ -200,9 +200,7 @@ export const handleStartCustomLevel: EventHandler<
 
   if (game.customLevelSettings.quickStart) {
     state = runQuickStart({ state });
-    setTimeout(() => {
-      updateAllBoxes({ state });
-    }, 500);
+    updateAllBoxes({ state });
   }
 
   state = setGame({

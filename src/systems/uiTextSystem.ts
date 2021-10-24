@@ -42,6 +42,17 @@ export const uiTextSystem = (state: State) =>
 
       return state;
     },
+    update: ({ state, component }) => {
+      const control = getUiControl({
+        entity: component.entity,
+      }) as BABYLON.GUI.TextBlock;
+
+      if (control) {
+        control.text = component.text;
+      }
+
+      return state;
+    },
     remove: ({ state, component }) => {
       removeTextControl({ entity: component.entity });
 

@@ -29,9 +29,6 @@ const mapDifficultyToText = (difficulty: AIDifficulty): string => {
       return 'Medium';
     case AIDifficulty.hard:
       return 'Hard';
-
-    case AIDifficulty.experimental:
-      return 'Experimental';
   }
 };
 

@@ -3,6 +3,7 @@ import {
   componentName,
   getComponent,
   createGetSetForUniqComponent,
+  getComponentsByName,
 } from '../ecs/component';
 import { AI, Entity, Game, State, Scene as GameScene } from '../ecs/type';
 import { ECSEvent } from '../ecs/emitEvent';
@@ -21,6 +22,7 @@ import {
 import { handleCleanScene } from './gameSystem/handleCleanScene';
 import { handlePlayerClick } from './gameSystem/handlePlayerClick';
 import { handleNextTurn } from './gameSystem/handleNextTurn';
+import { create } from './gameSystem/create';
 
 export const gameEntity = 'game';
 
@@ -133,6 +135,7 @@ export const gameSystem = (state: State) =>
 
     //   return state;
     // },
+    create,
     event: ({ state, component, event }) => {
       switch (event.type) {
         case GameEvent.Type.startCustomLevel:
@@ -160,7 +163,7 @@ export const gameSystem = (state: State) =>
           return handleChangePrevMap({ state, component, event });
         case GameEvent.Type.showNewVersion:
           return handleShowNewVersion({ state, component, event });
-          
+
         case GameEvent.Type.reload:
           return handleReload({ state, component, event });
       }

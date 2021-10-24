@@ -12,7 +12,7 @@ const basicAi: AI = {
   entity: 'basicAi',
   name: componentName.ai,
   human: false,
-  level: AIDifficulty.experimental,
+  level: AIDifficulty.hard,
   color: [0, 0, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,

@@ -33,7 +33,6 @@ type GridBlueprint = (params: {
   state: State;
 }) => State;
 export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
-  console.log('gridBlueprint');
   const { center, cameraDistance } = getGridDimensions({ state });
 
   setCamera({

@@ -23,8 +23,6 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
     [AIDifficulty.easy]: easyAIGridPoints,
     [AIDifficulty.medium]: mediumAIGridPoints,
     [AIDifficulty.hard]: hardAIGridPoints,
-
-    [AIDifficulty.experimental]: hardAIGridPoints,
   }[ai.level];
 
   let dataGrid = getDataGrid({ state });
@@ -49,7 +47,7 @@ export const getAiMove: GetAiMove = ({ state, ai, preferEmptyBoxes }) => {
         // Every box is clicked by random
         dataGrid = randomizeGrid({ dataGrid, currentPlayer });
         break;
-      case AIDifficulty.experimental:
+      case AIDifficulty.hard:
         dataGrid = advancedAttackAdjacted({ dataGrid, currentPlayer });
         // Todo
         // If has no good moves then tries to waste moves
