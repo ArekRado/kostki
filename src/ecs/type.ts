@@ -36,9 +36,9 @@ export type AI = Component<{
 }>;
 
 export enum Scene {
-  mainMenu,
-  customLevel,
-  customLevelSettings,
+  mainMenu = 'mainMenu',
+  customLevel = 'customLevel',
+  customLevelSettings = 'customLevelSettings',
 }
 
 export type Game = Component<{

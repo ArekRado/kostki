@@ -112,4 +112,13 @@ if (process.env.NODE_ENV !== 'test') {
 
   // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+  // - new ui xd
+  // - responsive images
+  // - buttons with images
+  // - butons/controls with aspect ratio size
+  // - custom leve settings - add different maps
+  // - campaign 
+  // - "new app versiomn" - button reloads page but it doesn't refresh cache
+  // - update dependencies
+  // - move ecs to new project package
 }
