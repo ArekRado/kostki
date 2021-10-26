@@ -70,6 +70,7 @@ export const backgroundSystem = (state: State) =>
     create: ({ state, component }) => {
       Effect.ShadersStore['customVertexShader'] = ` 
         precision highp float;
+        precision highp int;
 
         // Attributes
         attribute vec3 position;
@@ -89,10 +90,11 @@ export const backgroundSystem = (state: State) =>
 
       Effect.ShadersStore['customFragmentShader'] = `
         precision highp float;
-                
-        uniform float iTime;
+        precision highp int;
+
+        uniform highp float iTime;
         uniform vec2 iResolution;
-        uniform float[30] iColors;
+        uniform highp float[30] iColors;
 
         // const vec2 iResolution = vec2(512, 512);
         
@@ -109,18 +111,18 @@ export const backgroundSystem = (state: State) =>
             float fill = max(iResolution.x, iResolution.y);
             // float contain = min(iResolution.x, iResolution.y);
 
-            vec4 colors[] = vec4[](
-                vec4(iColors[0],iColors[1],iColors[2], .7),
-                vec4(iColors[3],iColors[4],iColors[5], .7),
-                vec4(iColors[6],iColors[7],iColors[8], .7),
-                vec4(iColors[9],iColors[10],iColors[11], .7),
-                vec4(iColors[12],iColors[13],iColors[14], .7),
-                vec4(iColors[15],iColors[16],iColors[17], .7),
-                vec4(iColors[18],iColors[19],iColors[20], .7),
-                vec4(iColors[21],iColors[22],iColors[23], .7),
-                vec4(iColors[24],iColors[25],iColors[26], .7),
-                vec4(iColors[27],iColors[28],iColors[29], .7)
-            );
+            highp vec4 colors[10];
+            colors[0] = vec4(iColors[0],iColors[1],iColors[2], 0.7);
+            colors[1] = vec4(iColors[3],iColors[4],iColors[5], 0.7);
+            colors[2] = vec4(iColors[6],iColors[7],iColors[8], 0.7);
+            colors[3] = vec4(iColors[9],iColors[10],iColors[11], 0.7);
+            colors[4] = vec4(iColors[12],iColors[13],iColors[14], 0.7);
+            colors[5] = vec4(iColors[15],iColors[16],iColors[17], 0.7);
+            colors[6] = vec4(iColors[18],iColors[19],iColors[20], 0.7);
+            colors[7] = vec4(iColors[21],iColors[22],iColors[23], 0.7);
+            colors[8] = vec4(iColors[24],iColors[25],iColors[26], 0.7);
+            colors[9] = vec4(iColors[27],iColors[28],iColors[29], 0.7);
+            
       
             // gradients
             RadialGradient gradients[] = RadialGradient[](
