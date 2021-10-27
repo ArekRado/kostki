@@ -112,6 +112,8 @@ if (process.env.NODE_ENV !== 'test') {
 
   // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+  // done- better gradient colors - rgb to hsv
+  // - hide highligter and turn indicator when is creating and when is resized
   // - new ui xd
   // - responsive images
   // - buttons with images
@@ -121,4 +123,5 @@ if (process.env.NODE_ENV !== 'test') {
   // - "new app versiomn" - button reloads page but it doesn't refresh cache
   // - update dependencies
   // - move ecs to new project package
+  // - better eslint
 }

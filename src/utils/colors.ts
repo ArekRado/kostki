@@ -1,5 +1,7 @@
 import { Color } from '../ecs/type';
 import { clamp } from './clamp';
+import { hslToRgb } from './hslToRgb';
+import { rgbToHsl } from './rgbToHsl';
 
 export const gray: Color = [0.6, 0.6, 0.6];
 export const green: Color = [0.11, 0.79, 0.29];
@@ -23,124 +25,126 @@ export type ColorGradient = [
   Color
 ];
 
-const colorPercentage = 0.3;
+const colorPercentage = 0.1 / 100;
 
-const getSimilarNumber = (value: number, percentage: number): number =>
+export const getSimilarNumber = (value: number, percentage: number): number =>
   value + Math.random() * percentage - Math.random() * percentage;
 
-const getSimilarColor = (color: Color): Color => [
-  clamp({
-    value: getSimilarNumber(color[0], colorPercentage),
-    min: 0,
-    max: 1,
-  }),
-  clamp({
-    value: getSimilarNumber(color[1], colorPercentage),
-    min: 0,
-    max: 1,
-  }),
-  clamp({
-    value: getSimilarNumber(color[2], colorPercentage),
-    min: 0,
-    max: 1,
-  }),
-];
+export const getSimilarColor = (rgbColor: Color): Color => {
+  const hslColor = rgbToHsl(rgbColor);
+  const similarHslColor: Color = [
+    // hslColor[0],
+    clamp({
+      value: getSimilarNumber(hslColor[0], colorPercentage * 10),
+      min: 0,
+      max: 1,
+    }),
+    hslColor[1],
+    clamp({
+      value: getSimilarNumber(hslColor[2], colorPercentage),
+      min: 0.25 / 100,
+      max: 0.8 / 100,
+    }),
+  ];
+
+  return hslToRgb(similarHslColor);
+};
 
 export const grayGradient: ColorGradient = [
-  gray,
   getSimilarColor(gray),
   getSimilarColor(gray),
-  gray,
   getSimilarColor(gray),
   getSimilarColor(gray),
-  gray,
   getSimilarColor(gray),
   getSimilarColor(gray),
-  gray,
+  getSimilarColor(gray),
+  getSimilarColor(gray),
+  getSimilarColor(gray),
+  getSimilarColor(gray),
 ];
 export const greenGradient: ColorGradient = [
-  green,
   getSimilarColor(green),
   getSimilarColor(green),
-  green,
   getSimilarColor(green),
   getSimilarColor(green),
-  green,
   getSimilarColor(green),
   getSimilarColor(green),
-  green,
+  getSimilarColor(green),
+  getSimilarColor(green),
+  getSimilarColor(green),
+  getSimilarColor(green),
 ];
 export const tealGradient: ColorGradient = [
-  teal,
   getSimilarColor(teal),
   getSimilarColor(teal),
-  teal,
   getSimilarColor(teal),
   getSimilarColor(teal),
-  teal,
   getSimilarColor(teal),
   getSimilarColor(teal),
-  teal,
+  getSimilarColor(teal),
+  getSimilarColor(teal),
+  getSimilarColor(teal),
+  getSimilarColor(teal),
 ];
 export const orangeGradient: ColorGradient = [
-  orange,
   getSimilarColor(orange),
   getSimilarColor(orange),
-  orange,
   getSimilarColor(orange),
   getSimilarColor(orange),
-  orange,
   getSimilarColor(orange),
   getSimilarColor(orange),
-  orange,
+  getSimilarColor(orange),
+  getSimilarColor(orange),
+  getSimilarColor(orange),
+  getSimilarColor(orange),
 ];
 export const yellowGradient: ColorGradient = [
-  yellow,
   getSimilarColor(yellow),
   getSimilarColor(yellow),
-  yellow,
   getSimilarColor(yellow),
   getSimilarColor(yellow),
-  yellow,
   getSimilarColor(yellow),
   getSimilarColor(yellow),
-  yellow,
+  getSimilarColor(yellow),
+  getSimilarColor(yellow),
+  getSimilarColor(yellow),
+  getSimilarColor(yellow),
 ];
 export const redGradient: ColorGradient = [
-  red,
   getSimilarColor(red),
   getSimilarColor(red),
-  red,
   getSimilarColor(red),
   getSimilarColor(red),
-  red,
   getSimilarColor(red),
   getSimilarColor(red),
-  red,
+  getSimilarColor(red),
+  getSimilarColor(red),
+  getSimilarColor(red),
+  getSimilarColor(red),
 ];
 export const pinkGradient: ColorGradient = [
-  pink,
   getSimilarColor(pink),
   getSimilarColor(pink),
-  pink,
   getSimilarColor(pink),
   getSimilarColor(pink),
-  pink,
   getSimilarColor(pink),
   getSimilarColor(pink),
-  pink,
+  getSimilarColor(pink),
+  getSimilarColor(pink),
+  getSimilarColor(pink),
+  getSimilarColor(pink),
 ];
 export const purpleGradient: ColorGradient = [
-  purple,
   getSimilarColor(purple),
   getSimilarColor(purple),
-  purple,
   getSimilarColor(purple),
   getSimilarColor(purple),
-  purple,
   getSimilarColor(purple),
   getSimilarColor(purple),
-  purple,
+  getSimilarColor(purple),
+  getSimilarColor(purple),
+  getSimilarColor(purple),
+  getSimilarColor(purple),
 ];
 
 // [
