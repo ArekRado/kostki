@@ -25,7 +25,7 @@ export type ColorGradient = [
   Color
 ];
 
-const colorPercentage = 0.1 / 100;
+const colorPercentage = 0.2 / 100;
 
 export const getSimilarNumber = (value: number, percentage: number): number =>
   value + Math.random() * percentage - Math.random() * percentage;
