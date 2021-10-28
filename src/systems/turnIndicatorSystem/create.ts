@@ -8,6 +8,7 @@ import { getCamera } from '../cameraSystem';
 import { getGame } from '../gameSystem';
 import { uiResize } from '../uiSystem/uiResize';
 import { moveHighlighter } from './moveHighlighter';
+import { toggleIndicator } from './toggleIndicator';
 import { updateIndicatorPosition } from './updateIndicatorPosition';
 
 export const create = ({
@@ -103,7 +104,8 @@ export const create = ({
     data: newComponent,
   });
 
-  state = updateIndicatorPosition({ state, component: newComponent, scene });
+  state = toggleIndicator({ state });
+  state = updateIndicatorPosition({ state, scene });
   state = moveHighlighter({ state });
   state = uiResize({ state, scene });
 

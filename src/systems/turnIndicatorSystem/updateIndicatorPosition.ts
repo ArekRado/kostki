@@ -1,18 +1,23 @@
 import { Scene } from 'babylonjs';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { State, TurnIndicator, UIText } from '../../ecs/type';
+import { State, UIText } from '../../ecs/type';
+import { getTurnIndicator } from '../turnIndicatorSystem';
 import { getIndicatorSizes } from './getIndicatorSizes';
 import { moveHighlighter } from './moveHighlighter';
 
 export const updateIndicatorPosition = ({
   state,
-  component,
   scene,
 }: {
   state: State;
-  component: TurnIndicator;
   scene: Scene;
 }): State => {
+  const component = getTurnIndicator({ state });
+
+  if (!component || component.isVisible === false) {
+    return state;
+  }
+
   const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({
     state,
   });

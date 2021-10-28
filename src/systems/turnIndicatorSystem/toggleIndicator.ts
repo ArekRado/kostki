@@ -1,43 +1,67 @@
 import { scene } from '../..';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, TurnIndicator, UIText } from '../../ecs/type';
+import { getTurnIndicator } from '../turnIndicatorSystem';
+import { doesIndicatorCollidesWithGrid } from './doesIndicatorCollidesWithGrid';
 
-export const toggleIndicator = ({
-  state,
-  component,
-}: {
-  state: State;
-  component: TurnIndicator;
-}): State => {
-  component.boxes.forEach((boxEntity, i) => {
-    const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
+export const toggleIndicator = ({ state }: { state: State }): State => {
+  const component = getTurnIndicator({ state });
 
-    if (mesh) {
-      mesh.setEnabled(component.isVisible);
-    }
+  if (!component) {
+    return state;
+  }
+
+  const shouldHideIndicator = doesIndicatorCollidesWithGrid({
+    state,
+    component,
   });
 
-  component.texts.forEach((textEntity) => {
-    const text = getComponent<UIText>({
+  const shouldToggle =
+    (component.isVisible === true && shouldHideIndicator === true) ||
+    (component.isVisible === false && shouldHideIndicator === false);
+
+  if (shouldToggle) {
+    const isVisible = !component.isVisible;
+
+    state = setComponent<TurnIndicator>({
       state,
-      name: componentName.uiText,
-      entity: textEntity,
+      data: {
+        ...component,
+        isVisible,
+      },
     });
 
-    if (text) {
-      state = setComponent<UIText>({
-        state,
-        data: {
-          ...text,
-          position: [
-            [-1, -1],
-            [-1, -1],
-            [-1, -1],
-          ],
-        },
+    component.boxes.forEach((boxEntity, i) => {
+      const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
+
+      if (mesh) {
+        mesh.setEnabled(isVisible);
+      }
+    });
+
+    !isVisible &&
+      component.texts.forEach((textEntity) => {
+        const text = getComponent<UIText>({
+          state,
+          name: componentName.uiText,
+          entity: textEntity,
+        });
+
+        if (text) {
+          state = setComponent<UIText>({
+            state,
+            data: {
+              ...text,
+              position: [
+                [-1, -1],
+                [-1, -1],
+                [-1, -1],
+              ],
+            },
+          });
+        }
       });
-    }
-  });
+  }
 
   return state;
 };
