@@ -6,6 +6,7 @@ import { createEntity } from '../../ecs/entity';
 import { AI, State, TurnIndicator, UIText } from '../../ecs/type';
 import { getCamera } from '../cameraSystem';
 import { getGame } from '../gameSystem';
+import { highlighterEntity } from '../turnIndicatorSystem';
 import { uiResize } from '../uiSystem/uiResize';
 import { moveHighlighter } from './moveHighlighter';
 import { toggleIndicator } from './toggleIndicator';
@@ -86,7 +87,6 @@ export const create = ({
     return textEntity;
   });
 
-  const highlighterEntity = createEntity('highlighter');
   highlighterBlueprint({
     scene,
     entity: highlighterEntity,
@@ -96,7 +96,6 @@ export const create = ({
     ...component,
     boxes,
     texts,
-    highlighter: highlighterEntity,
   };
 
   state = setComponent<TurnIndicator>({

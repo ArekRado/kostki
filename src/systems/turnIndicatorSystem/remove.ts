@@ -1,6 +1,7 @@
 import { scene } from '../..';
 import { componentName, removeComponent } from '../../ecs/component';
 import { State, TurnIndicator } from '../../ecs/type';
+import { highlighterEntity } from '../turnIndicatorSystem';
 
 export const remove = ({
   state,
@@ -23,7 +24,7 @@ export const remove = ({
   });
 
   const mesh = scene.getMeshByUniqueId(
-    parseFloat(component.highlighter)
+    parseFloat(highlighterEntity)
   );
   mesh?.dispose();
 

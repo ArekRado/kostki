@@ -8,6 +8,7 @@ import { scene } from '..';
 import { remove } from './turnIndicatorSystem/remove';
 
 export const turnIndicatorEntity = '68127445920450266';
+export const highlighterEntity = '6614618891614099';
 
 const turnIndicatorGetSet = createGetSetForUniqComponent<TurnIndicator>({
   entity: turnIndicatorEntity,

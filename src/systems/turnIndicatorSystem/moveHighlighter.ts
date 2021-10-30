@@ -2,9 +2,9 @@ import { scene } from '../..';
 import { State } from '../../ecs/type';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { getGame } from '../gameSystem';
-import { getTurnIndicator } from '../turnIndicatorSystem';
-import { indicatorWidth } from './doesIndicatorCollidesWithGrid';
+import { getTurnIndicator, highlighterEntity } from '../turnIndicatorSystem';
 import { getIndicatorSizes } from './getIndicatorSizes';
+import { indicatorWidth } from './toggleIndicator';
 
 export const moveHighlighter = ({ state }: { state: State }): State => {
   const component = getTurnIndicator({ state });
@@ -13,7 +13,7 @@ export const moveHighlighter = ({ state }: { state: State }): State => {
   const aspect = getAspectRatio(scene);
 
   const highlighter = scene.getMeshByUniqueId(
-    parseFloat(component?.highlighter || '')
+    parseFloat(highlighterEntity)
   );
 
   if (highlighter && game) {

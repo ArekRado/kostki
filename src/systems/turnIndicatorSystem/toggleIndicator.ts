@@ -1,8 +1,43 @@
 import { scene } from '../..';
+import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, TurnIndicator, UIText } from '../../ecs/type';
-import { getTurnIndicator } from '../turnIndicatorSystem';
-import { doesIndicatorCollidesWithGrid } from './doesIndicatorCollidesWithGrid';
+import { getAspectRatio } from '../../utils/getAspectRatio';
+import { getTurnIndicator, highlighterEntity } from '../turnIndicatorSystem';
+import { getIndicatorSizes } from './getIndicatorSizes';
+
+export const indicatorWidth = 2;
+
+export const doesIndicatorCollidesWithGrid = ({
+  state,
+  component,
+}: {
+  state: State;
+  component: TurnIndicator;
+}) => {
+  const { boxSize, screenSize } = getIndicatorSizes({
+    state,
+  });
+  const aspect = getAspectRatio(scene);
+
+  const indicatorHeight = component.boxes.length * boxSize;
+
+  const { width, height } = getGridDimensions({ state });
+
+  const gridSizeWithRightGap = (screenSize[0] - width) / 2 + width;
+  const gridSizeWithTopGap = (screenSize[1] - height) / 2 + height;
+
+  const collisions = [
+    aspect < 1
+      ? screenSize[0] - gridSizeWithRightGap - indicatorWidth <= 0
+      : false,
+    aspect > 1
+      ? screenSize[1] - gridSizeWithTopGap - indicatorHeight <= 0
+      : false,
+  ];
+
+  return collisions[0] || collisions[1];
+};
 
 export const toggleIndicator = ({ state }: { state: State }): State => {
   const component = getTurnIndicator({ state });
@@ -33,11 +68,11 @@ export const toggleIndicator = ({ state }: { state: State }): State => {
 
     component.boxes.forEach((boxEntity, i) => {
       const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
-
-      if (mesh) {
-        mesh.setEnabled(isVisible);
-      }
+      mesh?.setEnabled(isVisible);
     });
+
+    const highlighterMesh = scene.getMeshByUniqueId(parseFloat(highlighterEntity));
+    highlighterMesh?.setEnabled(isVisible);
 
     !isVisible &&
       component.texts.forEach((textEntity) => {

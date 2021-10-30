@@ -113,7 +113,7 @@ if (process.env.NODE_ENV !== 'test') {
   // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
   // done- better gradient colors - rgb to hsv
-  // - hide highligter and turn indicator when is creating and when is resized
+  // done- hide highligter on resize and create
   // - new ui xd
   // - responsive images
   // - buttons with images
