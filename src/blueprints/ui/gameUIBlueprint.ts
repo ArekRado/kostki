@@ -2,11 +2,12 @@ import { Scene } from 'babylonjs';
 import 'babylonjs-gui';
 import { componentName, setComponent } from '../../ecs/component';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, Scene as GameScene, UIButton } from '../../ecs/type';
+import { State, Scene as GameScene, UIButton, Breakpoints } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { generateId } from '../../utils/generateId';
 import { removeState } from '../../utils/localDb';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
+import blankSrc from '../../assets/0.png';
 
 const closeBtnEntity = generateId().toString();
 
@@ -30,9 +31,13 @@ export const gameUIAttachEvents: GameUIAttachEvents = ({ advancedTexture }) => {
 
 type GameUIBlueprint = (params: { state: State }) => State;
 export const gameUIBlueprint: GameUIBlueprint = ({ state }) => {
+  
+  const src: Breakpoints<string> = [blankSrc, blankSrc, blankSrc];
+
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: closeBtnEntity,
       name: componentName.uiButton,
       text: 'X',

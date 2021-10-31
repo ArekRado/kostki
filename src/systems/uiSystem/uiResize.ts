@@ -19,8 +19,8 @@ export const breakpoints: Breakpoints = [
   1400, // Large
 ];
 
-type GetBreakpoint = <X>(containerSize: number, sizes: Breakpoints<X>) => X;
-export const getResonsiveValue: GetBreakpoint = (containerSize, sizes) =>
+type GetBreakpoint = (containerSize: number) => <X>(sizes: Breakpoints<X>) => X;
+export const getResonsiveValue: GetBreakpoint = (containerSize) => (sizes) =>
   sizes.find((_, index) => containerSize < breakpoints[index]) ||
   sizes[sizes.length - 1];
 
@@ -31,28 +31,27 @@ export const normalizePosition = (position: [number, number]) => [
 
 type GetResponsivePositionAndSize = (params: {
   element: UIElement;
-  ratio: number;
+  screenRatio: number;
   canvasWidth: number;
 }) => { width: number; height: number; left: string; top: string };
 const getResponsivePositionAndSize: GetResponsivePositionAndSize = ({
   element,
-  ratio,
+  screenRatio,
   canvasWidth,
 }) => {
-  const newPosition = getResonsiveValue(canvasWidth, element.position);
+  const getResponsive = getResonsiveValue(canvasWidth);
+  const newPosition = getResponsive(element.position);
   const [left, top] = normalizePosition(newPosition);
 
-  const newSize = getResonsiveValue(canvasWidth, element.size);
-  const newSizeWithAspectRatio = element.aspectRation
-    ? [newSize[0], newSize[1] / ratio]
-    : [newSize[0], newSize[1]];
+  const newSize = getResponsive(element.size);
 
-  const newMinSize = element.minSize
-    ? getResonsiveValue(canvasWidth, element.minSize)
-    : [0, 0];
-  const newMaxSize = element.maxSize
-    ? getResonsiveValue(canvasWidth, element.maxSize)
-    : [1, 1];
+  const newSizeWithAspectRatio =
+    element.aspectRatio && getResponsive(element.aspectRatio)
+      ? [newSize[0], newSize[1] / screenRatio]
+      : [newSize[0], newSize[1]];
+
+  const newMinSize = element.minSize ? getResponsive(element.minSize) : [0, 0];
+  const newMaxSize = element.maxSize ? getResponsive(element.maxSize) : [1, 1];
 
   const width = clamp({
     value: newSizeWithAspectRatio[0],
@@ -77,12 +76,12 @@ const getResponsivePositionAndSize: GetResponsivePositionAndSize = ({
 const updateSizeAndPosition = ({
   state,
   elements,
-  ratio,
+  screenRatio,
   canvasWidth,
 }: {
   state: State;
   elements: undefined | Dictionary<UIElement>;
-  ratio: number;
+  screenRatio: number;
   canvasWidth: number;
 }): State => {
   if (elements) {
@@ -90,7 +89,7 @@ const updateSizeAndPosition = ({
       (acc, [entity, component]): State => {
         const { width, height, top, left } = getResponsivePositionAndSize({
           element: component,
-          ratio,
+          screenRatio,
           canvasWidth,
         });
 
@@ -144,7 +143,7 @@ export const uiResize = ({
   const engine = scene.getEngine();
   const canvas = engine.getRenderingCanvasClientRect();
   const canvasWidth = canvas ? canvas.width : 1;
-  const ratio = getAspectRatio(scene);
+  const screenRatio = getAspectRatio(scene);
 
   const buttons = getComponentsByName<UIButton>({
     state,
@@ -164,32 +163,32 @@ export const uiResize = ({
   state = updateSizeAndPosition({
     elements: buttons,
     state,
-    ratio,
+    screenRatio,
     canvasWidth,
   });
 
   state = updateSizeAndPosition({
     elements: texts,
     state,
-    ratio,
+    screenRatio,
     canvasWidth,
   });
 
   state = updateSizeAndPosition({
     elements: images,
     state,
-    ratio,
+    screenRatio,
     canvasWidth,
   });
 
+  const defaultFontSize: Breakpoints<number> = [24, 24, 24];
   state = updateResponsiveProperty<UIText>({
     state,
     elements: texts,
     callback: (acc, [entity, component], control) => {
       if (component) {
-        const newFontSize = getResonsiveValue(
-          canvasWidth,
-          component.fontSize || [24, 24, 24]
+        const newFontSize = getResonsiveValue(canvasWidth)(
+          component.fontSize || defaultFontSize
         );
         control.fontSize = newFontSize;
       }

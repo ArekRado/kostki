@@ -7,6 +7,7 @@ import { Scene as GameScene } from '../../ecs/type';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
+import blankSrc from '../../assets/0.png';
 
 const logoImgEntity = generateId().toString();
 
@@ -66,12 +67,14 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   state,
   advancedTexture,
 }) => {
+  const aspectRatio: Breakpoints<boolean> = [true, true, true];
+
   state = setComponent<UIImage>({
     state,
     data: {
       entity: logoImgEntity,
       name: componentName.uiImage,
-      url: logoUrl,
+      src: [logoUrl, logoUrl, logoUrl],
       size: [
         [0.5, 0.3],
         [0.5, 0.3],
@@ -87,23 +90,39 @@ export const mainUIBlueprint: MainUIBlueprint = ({
         [0.5, 0.15],
         [0.5, 0.15],
       ],
-      aspectRation: 1,
+      aspectRatio,
     },
   });
 
   const size: Breakpoints<[number, number]> = [
+    [0.6, 0.2],
+    [0.4, 0.15],
+    [0.2, 0.1],
+  ];
+  const maxSize: Breakpoints<[number, number]> = [
+    [0.6, 0.2],
+    [0.4, 0.15],
+    [0.2, 0.1],
+  ];
+  const minSize: Breakpoints<[number, number]> = [
     [0.6, 0.1],
     [0.4, 0.1],
     [0.2, 0.1],
   ];
 
+  const src: Breakpoints<string> = [blankSrc, blankSrc, blankSrc];
+
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: startBtnEntity,
       name: componentName.uiButton,
       text: 'Start',
       size,
+      maxSize,
+      minSize,
+      aspectRatio,
       position: [
         [0.5, 0.4],
         [0.5, 0.4],
@@ -115,10 +134,14 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: selectLevelBtnEntity,
       name: componentName.uiButton,
       text: 'Select level',
       size,
+      maxSize,
+      minSize,
+      aspectRatio,
       position: [
         [0.5, 0.6],
         [0.5, 0.6],
@@ -130,10 +153,14 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: muteBtnEntity,
       name: componentName.uiButton,
       text: 'Mute',
       size,
+      maxSize,
+      minSize,
+      aspectRatio,
       position: [
         [0.5, 0.8],
         [0.5, 0.8],
@@ -164,6 +191,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({
     state = setComponent<UIButton>({
       state,
       data: {
+        src,
         entity: newVersionBtnEntity,
         name: componentName.uiButton,
         text: 'New version available. Click here to reload',

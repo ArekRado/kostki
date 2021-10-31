@@ -1,11 +1,18 @@
 import 'babylonjs-gui';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
-import { State, UIButton, Scene as GameScene, UIText, Breakpoints } from '../../ecs/type';
+import {
+  State,
+  UIButton,
+  Scene as GameScene,
+  UIText,
+  Breakpoints,
+} from '../../ecs/type';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
 import { AIDifficulty } from '../../systems/aiSystem';
+import blankSrc from '../../assets/0.png';
 
 const playersBtnEntity = generateId().toString();
 const difficultyBtnEntity = generateId().toString();
@@ -146,6 +153,8 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
     [0.3, 0.1],
   ];
 
+  const src: Breakpoints<string> = [blankSrc, blankSrc, blankSrc];
+
   state = setComponent<UIText>({
     state,
     data: {
@@ -168,6 +177,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: prevMapBtnEntity,
       name: componentName.uiButton,
       text: '<',
@@ -187,6 +197,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: nextMapBtnEntity,
       name: componentName.uiButton,
       text: '>',
@@ -206,6 +217,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: startBtnEntity,
       name: componentName.uiButton,
       text: 'Start >',
@@ -221,6 +233,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: difficultyBtnEntity,
       name: componentName.uiButton,
       text: `Difficulty: ${
@@ -240,6 +253,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: playersBtnEntity,
       name: componentName.uiButton,
       text: `Players: ${game?.customLevelSettings.players?.length}`,
@@ -255,6 +269,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: quickStartBtnEntity,
       name: componentName.uiButton,
       text: `[${game?.customLevelSettings.quickStart ? 'x' : ' '}] Quick Start`,
@@ -270,6 +285,7 @@ export const customLevelSettingsUIBlueprint: CustomLevelSettingsUIBlueprint = ({
   state = setComponent<UIButton>({
     state,
     data: {
+      src,
       entity: colorBlindModeBtnEntity,
       name: componentName.uiButton,
       text: `[${game?.colorBlindMode ? 'x' : ' '}] Color blind mode`,

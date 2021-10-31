@@ -88,15 +88,14 @@ export type UIElement = {
   size: Breakpoints<[number, number]>;
   maxSize?: Breakpoints<[number, number]>;
   minSize?: Breakpoints<[number, number]>;
-  aspectRation?: number; // 1 is square
+  aspectRatio?: Breakpoints<boolean>;
 };
 
 export type UIButton = Component<
   UIElement & {
     text: string;
+    src: Breakpoints<string>;
     color?: string;
-    cornerRadius?: number;
-    background?: string;
     fontSize?: number;
     isPointerBlocker?: boolean;
   }
@@ -104,7 +103,7 @@ export type UIButton = Component<
 
 export type UIImage = Component<
   UIElement & {
-    url: string;
+    src: Breakpoints<string>;
   }
 >;
 
@@ -124,7 +123,7 @@ export type TurnIndicator = Component<{
   position: [number, number];
   boxes: Entity[];
   texts: Entity[];
-  isVisible: boolean; 
+  isVisible: boolean;
 }>;
 
 export type State = {

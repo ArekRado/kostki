@@ -1,7 +1,6 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIButton } from '../ecs/type';
-import { scene } from '..';
 import { advancedTexture } from './uiSystem';
 import { getUiControl } from './uiSystem/getUiControl';
 
@@ -10,20 +9,13 @@ export const uiButtonSystem = (state: State) =>
     state,
     name: componentName.uiButton,
     create: ({ state, component }) => {
-      const btn = BABYLON.GUI.Button.CreateSimpleButton(
+      const btn = BABYLON.GUI.Button.CreateImageWithCenterTextButton(
         component.entity,
-        component.text
+        component.text,
+        component.src[0]
       );
 
-      // responsive({
-      //   element: component,
-      //   babylonElement: btn,
-      //   scene,
-      // });
-
-      btn.color = component.color ?? 'white';
-      btn.cornerRadius = component.cornerRadius ?? 0;
-      btn.background = component.background ?? 'transparent';
+      btn.color = component.color ?? 'black';
       btn.fontSize = component.fontSize ?? 30;
       btn.isPointerBlocker = component.isPointerBlocker ?? true;
 
@@ -32,7 +24,9 @@ export const uiButtonSystem = (state: State) =>
       return state;
     },
     update: ({ state, component }) => {
-      const control = getUiControl({ entity: component.entity }) as BABYLON.GUI.Button;
+      const control = getUiControl({
+        entity: component.entity,
+      }) as BABYLON.GUI.Button;
 
       if (control && control.textBlock) {
         control.textBlock.text = component.text;
