@@ -1,12 +1,4 @@
-import {
-  Animation,
-  AnimationEvent,
-  Color3,
-  StandardMaterial,
-  Texture,
-  Vector3,
-  Tools,
-} from 'babylonjs';
+import { Animation, AnimationEvent, Vector3, Tools } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, getComponent, setComponent } from '../ecs/component';
 import { AI, Box, Color, Entity, EventHandler, Game, State } from '../ecs/type';

@@ -41,6 +41,8 @@ export enum Scene {
   customLevelSettings = 'customLevelSettings',
 }
 
+export type Logo = {};
+
 export type Game = Component<{
   version: string;
   newVersionAvailable: boolean;
@@ -140,6 +142,7 @@ export type State = {
     uiText: Dictionary<UIText>;
     background: Dictionary<Background>;
     turnIndicator: Dictionary<TurnIndicator>;
+    logo: Dictionary<Logo>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

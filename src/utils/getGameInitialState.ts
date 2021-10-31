@@ -6,6 +6,7 @@ import {
   Background,
   Camera,
   Game,
+  Logo,
   Marker,
   Scene,
   State,
@@ -31,6 +32,7 @@ import {
   backgroundSystem,
 } from '../systems/backgroundSystem';
 import { turnIndicatorSystem } from '../systems/turnIndicatorSystem';
+import { logoEntity, logoSystem } from '../systems/logoSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -50,6 +52,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = uiTextSystem(state);
   state = backgroundSystem(state);
   state = turnIndicatorSystem(state);
+  // state = logoSystem(state);
 
   state = setComponent<AI>({
     state,
@@ -128,7 +131,13 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  // TODO turn indicator
+  // state = setComponent<Logo>({
+  //   state,
+  //   data: {
+  //     entity: logoEntity,
+  //     name: componentName.logo,
+  //   },
+  // });
 
   const savedState = getSavedState();
   const savedStateVersion = getGame({

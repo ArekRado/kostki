@@ -7,7 +7,10 @@ import { Scene as GameScene } from '../../ecs/type';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
-import blankSrc from '../../assets/0.png';
+
+import buttonSmallSrc from '../../assets/ui/buttonSmall.png';
+import buttonMediumSrc from '../../assets/ui/buttonMedium.png';
+import buttonLargeSrc from '../../assets/ui/buttonLarge.png';
 
 const logoImgEntity = generateId().toString();
 
@@ -110,7 +113,11 @@ export const mainUIBlueprint: MainUIBlueprint = ({
     [0.2, 0.1],
   ];
 
-  const src: Breakpoints<string> = [blankSrc, blankSrc, blankSrc];
+  const src: Breakpoints<string> = [
+    buttonSmallSrc,
+    buttonMediumSrc,
+    buttonLargeSrc,
+  ];
 
   state = setComponent<UIButton>({
     state,
