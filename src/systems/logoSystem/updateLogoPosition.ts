@@ -7,6 +7,8 @@ import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { logoEntity } from '../logoSystem';
 import { logoGrid } from './logoGrid';
 
+export const boxScaleFactor = 4;
+
 export const updateLogoPosition = ({ state }: { state: State }) => {
   const logoNode = scene.getTransformNodeByUniqueId(parseFloat(logoEntity));
   const camera = getCamera({ state });
@@ -15,9 +17,7 @@ export const updateLogoPosition = ({ state }: { state: State }) => {
     return;
   }
 
-  const boxScaleFactor = 4;
-
-  const { leftEdge, topEdge, boxSize, screenSize } = getCameraSizes({
+  const { topEdge, boxSize, screenSize } = getCameraSizes({
     state,
     boxScaleFactor,
   });
@@ -46,8 +46,8 @@ export const updateLogoPosition = ({ state }: { state: State }) => {
       boxNode.position.x = logoNode.position.x + boxPosition[0];
       boxNode.position.y = logoNode.position.y + boxPosition[1];
 
-      boxNode.scaling.x = 1 / boxScaleFactor;
-      boxNode.scaling.y = 1 / boxScaleFactor;
+      // boxNode.scaling.x = 1 / boxScaleFactor;
+      // boxNode.scaling.y = 1 / boxScaleFactor;
     })
   );
 };

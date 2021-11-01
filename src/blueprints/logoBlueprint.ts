@@ -1,7 +1,7 @@
-import { TransformNode } from 'babylonjs';
 import { scene } from '..';
 import { State } from '../ecs/type';
 import { logoGrid } from '../systems/logoSystem/logoGrid';
+import { boxScaleFactor } from '../systems/logoSystem/updateLogoPosition';
 import { boxBlueprint } from './boxBlueprint';
 
 export const logoBlueprint = ({ state }: { state: State }) => {
@@ -21,10 +21,8 @@ export const logoBlueprint = ({ state }: { state: State }) => {
         ai: undefined,
         dots: 0,
         isClickable: false,
+        scaleFactor: boxScaleFactor,
       });
-
-      boxNode.scaling.x = 0.3;
-      boxNode.scaling.y = 0.3;
 
       // lol doesn't work!!!
       // boxNode.setParent(logoMesh);

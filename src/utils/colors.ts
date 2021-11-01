@@ -3,6 +3,7 @@ import { clamp } from './clamp';
 import { hslToRgb } from './hslToRgb';
 import { rgbToHsl } from './rgbToHsl';
 
+export const white: Color = [1, 1, 1];
 export const gray: Color = [0.6, 0.6, 0.6];
 export const green: Color = [0.11, 0.79, 0.29];
 export const teal: Color = [0.09, 0.84, 1];

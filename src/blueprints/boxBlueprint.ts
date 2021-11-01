@@ -24,6 +24,7 @@ export const boxBlueprint = ({
   ai,
   dots,
   isClickable,
+  scaleFactor = 1,
 }: {
   scene: Scene;
   name: string;
@@ -34,8 +35,9 @@ export const boxBlueprint = ({
   ai: AI | undefined;
   dots: number;
   isClickable: boolean;
+  scaleFactor?: number;
 }): TransformNode => {
-  const size = 1;
+  const size = 1 / scaleFactor;
   const boxMesh = new TransformNode(`box ${name}`, scene);
   boxMesh.uniqueId = uniqueId;
   boxMesh.position.x = position[0];

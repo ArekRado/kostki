@@ -37,7 +37,7 @@
     }
   ],
   "dependencies": {
-    "babylonjs": "^5.0.0-alpha.35",
+    "babylonjs": "^5.0.0-alpha.59",
     "babylonjs-gui": "^4.2.0"
   },
   "devDependencies": {

@@ -114,10 +114,11 @@ if (process.env.NODE_ENV !== 'test') {
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
-  // - new ui - logo
-  // - responsive images
-  // - buttons with images
-  // - butons/controls with aspect ratio size
+  // done- new logo
+  // - new ui
+  // nope- responsive images
+  // done- buttons with images
+  // done- butons/controls with aspect ratio size
   // - custom leve settings - add different maps
   // - campaign 
   // - "new app versiomn" - button reloads page but it doesn't refresh cache
