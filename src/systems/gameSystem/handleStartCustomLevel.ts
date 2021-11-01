@@ -9,13 +9,7 @@ import {
   Scene as GameScene,
   TurnIndicator,
 } from '../../ecs/type';
-import {
-  BoxEvent,
-  Direction,
-  getNextDots,
-  getTextureSet,
-  onClickBox,
-} from '../boxSystem';
+import { BoxEvent, Direction } from '../boxSystem';
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
@@ -27,6 +21,8 @@ import { getDataGrid } from '../aiSystem/getDataGrid';
 import { turnIndicatorEntity } from '../turnIndicatorSystem';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
+import { getTextureSet } from '../boxSystem/getTextureSet';
+import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {

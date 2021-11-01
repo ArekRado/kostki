@@ -6,10 +6,10 @@ import { componentName, getComponent } from '../ecs/component';
 import { runOneFrame } from '../ecs/runOneFrame';
 import { AI, Box, Entity } from '../ecs/type';
 import { AIDifficulty } from '../systems/aiSystem';
-import {  onClickBox } from '../systems/boxSystem';
 import { getGame } from '../systems/gameSystem';
 import { getGameInitialState } from '../utils/getGameInitialState';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
+import { onClickBox } from '../systems/boxSystem/onClickBox';
 
 const player2 = 'player2';
 

@@ -10,6 +10,7 @@ import {
   handleResize,
 } from './cameraSystem/handleResize';
 import { setTurnIndicator } from './turnIndicatorSystem';
+import { setLogo } from './logoSystem';
 
 export const cameraEntity = 'cameraEntity';
 export namespace CameraEvent {
@@ -36,7 +37,13 @@ export const setCamera = ({
   data: Partial<Camera>;
 }) => {
   const size = adjustBabylonCameraToComponentCamera({ component: data });
-  return cameraGetSet.setComponent({ state, data: { ...data, ...size } });
+  state = cameraGetSet.setComponent({ state, data: { ...data, ...size } });
+
+  state = setBackground({ state, data: {} });
+  state = setTurnIndicator({ state, data: {} });
+  state = setLogo({ state, data: {} });
+  
+  return state;
 };
 
 export const getCameraSize = (distance: number, scene: Scene) => {
@@ -68,12 +75,13 @@ export const cameraSystem = (state: State) =>
 
       return state;
     },
-    update: ({ state }) => {
-      state = setBackground({ state, data: {} });
-      state = setTurnIndicator({ state, data: {} });
+    // update: ({ state }) => {
+    //   state = setBackground({ state, data: {} });
+    //   state = setTurnIndicator({ state, data: {} });
+    //   state = setLogo({ state, data: {} });
 
-      return state;
-    },
+    //   return state;
+    // },
     event: ({ state, component, event }) => {
       switch (event.type) {
         case CameraEvent.Type.resize:

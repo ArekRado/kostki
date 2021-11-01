@@ -59,6 +59,7 @@ export const setUi = ({
     const uiType = data?.type || getUi({ state })?.type || Scene.mainMenu;
     if (cleanControls) {
       state = removeAllControls({ advancedTexture, state });
+      state = removeComponentsByName({ name: componentName.logo, state });
       // state = setUi({ state, data: { cleanControls: false } });
       state = setBabylonUi({
         state,

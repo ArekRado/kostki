@@ -1,13 +1,11 @@
 import { Vector3, Animation, Mesh, StandardMaterial, Color3 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
-import { Game, Marker, State } from '../ecs/type';
+import { Marker, State } from '../ecs/type';
 import { scene } from '..';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import markerTexture from '../assets/marker.png';
-import { setGame } from './gameSystem';
 import { boxGap, boxSize } from '../blueprints/gridBlueprint';
-import { generateId } from '../utils/generateId';
 
 export const markerEntity = '38127445920450264';
 

@@ -114,7 +114,7 @@ if (process.env.NODE_ENV !== 'test') {
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
-  // - new ui xd
+  // - new ui - logo
   // - responsive images
   // - buttons with images
   // - butons/controls with aspect ratio size

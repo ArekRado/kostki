@@ -12,7 +12,7 @@ import { emitEvent } from '../ecs/emitEvent';
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Color, State } from '../ecs/type';
-import { getTextureSet } from '../systems/boxSystem';
+import { getTextureSet } from '../systems/boxSystem/getTextureSet';
 
 export const boxBlueprint = ({
   scene,

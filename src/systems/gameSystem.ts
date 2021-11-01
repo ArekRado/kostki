@@ -3,7 +3,6 @@ import {
   componentName,
   getComponent,
   createGetSetForUniqComponent,
-  getComponentsByName,
 } from '../ecs/component';
 import { AI, Entity, Game, State, Scene as GameScene } from '../ecs/type';
 import { ECSEvent } from '../ecs/emitEvent';

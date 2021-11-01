@@ -2,7 +2,7 @@ import { Scene } from 'babylonjs';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, UIText } from '../../ecs/type';
 import { getTurnIndicator } from '../turnIndicatorSystem';
-import { getIndicatorSizes } from './getIndicatorSizes';
+import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { moveHighlighter } from './moveHighlighter';
 
 export const updateIndicatorPosition = ({
@@ -18,8 +18,9 @@ export const updateIndicatorPosition = ({
     return state;
   }
 
-  const { leftEdge, topEdge, boxSize, screenSize } = getIndicatorSizes({
+  const { leftEdge, topEdge, boxSize, screenSize } = getCameraSizes({
     state,
+    boxScaleFactor: 3,
   });
 
   component.boxes.forEach((boxEntity, i) => {

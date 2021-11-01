@@ -24,7 +24,7 @@ import {
 import { getSavedState, removeState } from './localDb';
 import { uiEntity, uiSystem } from '../systems/uiSystem';
 import { uiButtonSystem } from '../systems/uiButtonSystem';
-import { uiImageSystem } from '../systems/uiImageSystem';
+// import { uiImageSystem } from '../systems/uiImageSystem';
 import { uiTextSystem } from '../systems/uiTextSystem';
 import { playersList } from '../systems/gameSystem/handleChangeSettings';
 import {
@@ -48,11 +48,11 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = cameraSystem(state);
   state = uiSystem(state);
   state = uiButtonSystem(state);
-  state = uiImageSystem(state);
+  // state = uiImageSystem(state);
   state = uiTextSystem(state);
   state = backgroundSystem(state);
   state = turnIndicatorSystem(state);
-  // state = logoSystem(state);
+  state = logoSystem(state);
 
   state = setComponent<AI>({
     state,
@@ -131,13 +131,13 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  // state = setComponent<Logo>({
-  //   state,
-  //   data: {
-  //     entity: logoEntity,
-  //     name: componentName.logo,
-  //   },
-  // });
+  state = setComponent<Logo>({
+    state,
+    data: {
+      entity: logoEntity,
+      name: componentName.logo,
+    },
+  });
 
   const savedState = getSavedState();
   const savedStateVersion = getGame({

@@ -1,7 +1,7 @@
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { componentName, getComponent } from '../../ecs/component';
 import { AI, Box, EventHandler, Game } from '../../ecs/type';
-import { onClickBox } from '../boxSystem';
+import { onClickBox } from '../boxSystem/onClickBox';
 import { GameEvent } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 

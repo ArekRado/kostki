@@ -3,18 +3,19 @@ import { State } from '../../ecs/type';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { getGame } from '../gameSystem';
 import { getTurnIndicator, highlighterEntity } from '../turnIndicatorSystem';
-import { getIndicatorSizes } from './getIndicatorSizes';
+import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { indicatorWidth } from './toggleIndicator';
 
 export const moveHighlighter = ({ state }: { state: State }): State => {
   const component = getTurnIndicator({ state });
   const game = getGame({ state });
-  const { leftEdge, topEdge, boxSize } = getIndicatorSizes({ state });
+  const { leftEdge, topEdge, boxSize } = getCameraSizes({
+    state,
+    boxScaleFactor: 3,
+  });
   const aspect = getAspectRatio(scene);
 
-  const highlighter = scene.getMeshByUniqueId(
-    parseFloat(highlighterEntity)
-  );
+  const highlighter = scene.getMeshByUniqueId(parseFloat(highlighterEntity));
 
   if (highlighter && game) {
     const index =

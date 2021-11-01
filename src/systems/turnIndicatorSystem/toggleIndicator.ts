@@ -4,7 +4,7 @@ import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { State, TurnIndicator, UIText } from '../../ecs/type';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { getTurnIndicator, highlighterEntity } from '../turnIndicatorSystem';
-import { getIndicatorSizes } from './getIndicatorSizes';
+import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 
 export const indicatorWidth = 2;
 
@@ -15,8 +15,9 @@ export const doesIndicatorCollidesWithGrid = ({
   state: State;
   component: TurnIndicator;
 }) => {
-  const { boxSize, screenSize } = getIndicatorSizes({
+  const { boxSize, screenSize } = getCameraSizes({
     state,
+    boxScaleFactor: 3
   });
   const aspect = getAspectRatio(scene);
 

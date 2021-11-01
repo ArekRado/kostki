@@ -1,15 +1,20 @@
-import { boxWithGap } from "../../blueprints/gridBlueprint";
-import { State } from "../../ecs/type";
-import { getCamera } from "../cameraSystem";
+import { boxWithGap } from '../../blueprints/gridBlueprint';
+import { State } from '../../ecs/type';
+import { getCamera } from '../cameraSystem';
 
-export const getIndicatorSizes = ({ state }: { state: State }) => {
+export const getCameraSizes = ({
+  state,
+  boxScaleFactor,
+}: {
+  state: State;
+  boxScaleFactor: number;
+}) => {
   const camera = getCamera({ state });
 
   if (camera) {
     const leftEdge = camera.position[0] + camera.left;
     const topEdge = camera.position[1] + camera.top;
-    const scaleFactor = 3;
-    const boxSize = boxWithGap / scaleFactor;
+    const boxSize = boxWithGap / boxScaleFactor;
     const screenSize = [camera.right * 2, camera.top * 2];
 
     return {
@@ -24,5 +29,6 @@ export const getIndicatorSizes = ({ state }: { state: State }) => {
     topEdge: 0,
     boxSize: 0,
     screenSize: [0, 0],
+    
   };
 };

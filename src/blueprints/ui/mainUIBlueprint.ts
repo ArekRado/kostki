@@ -1,5 +1,4 @@
 import 'babylonjs-gui';
-import logoUrl from '../../assets/logo.png';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
 import { emitEvent } from '../../ecs/emitEvent';
 import { Breakpoints, State, UIButton, UIImage, UIText } from '../../ecs/type';
@@ -72,30 +71,30 @@ export const mainUIBlueprint: MainUIBlueprint = ({
 }) => {
   const aspectRatio: Breakpoints<boolean> = [true, true, true];
 
-  state = setComponent<UIImage>({
-    state,
-    data: {
-      entity: logoImgEntity,
-      name: componentName.uiImage,
-      src: [logoUrl, logoUrl, logoUrl],
-      size: [
-        [0.5, 0.3],
-        [0.5, 0.3],
-        [0.5, 0.3],
-      ],
-      maxSize: [
-        [0.5, 0.3],
-        [0.5, 0.3],
-        [0.5, 0.3],
-      ],
-      position: [
-        [0.5, 0.15],
-        [0.5, 0.15],
-        [0.5, 0.15],
-      ],
-      aspectRatio,
-    },
-  });
+  // state = setComponent<UIImage>({
+  //   state,
+  //   data: {
+  //     entity: logoImgEntity,
+  //     name: componentName.uiImage,
+  //     src: [logoUrl, logoUrl, logoUrl],
+  //     size: [
+  //       [0.5, 0.3],
+  //       [0.5, 0.3],
+  //       [0.5, 0.3],
+  //     ],
+  //     maxSize: [
+  //       [0.5, 0.3],
+  //       [0.5, 0.3],
+  //       [0.5, 0.3],
+  //     ],
+  //     position: [
+  //       [0.5, 0.15],
+  //       [0.5, 0.15],
+  //       [0.5, 0.15],
+  //     ],
+  //     aspectRatio,
+  //   },
+  // });
 
   const size: Breakpoints<[number, number]> = [
     [0.6, 0.2],

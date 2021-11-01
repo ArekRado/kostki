@@ -1,6 +1,6 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
-import { State, Background, Color } from '../ecs/type';
+import { State, Background } from '../ecs/type';
 import {
   Effect,
   Vector3,
@@ -23,9 +23,6 @@ import {
   getSimilarNumber,
 } from '../utils/colors';
 import { playersList } from './gameSystem/handleChangeSettings';
-import { rgbToHsl } from '../utils/rgbToHsl';
-import { hslToRgb } from '../utils/hslToRgb';
-import { clamp } from '../utils/clamp';
 
 export const backgroundEntity = '17818552155683748';
 
