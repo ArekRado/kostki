@@ -116,6 +116,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done- hide highligter on resize and create
   // done- new logo
   // - new ui
+  // - question modal when user clicks on X button
   // nope- responsive images
   // done- buttons with images
   // done- butons/controls with aspect ratio size
