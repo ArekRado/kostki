@@ -11,11 +11,8 @@ import buttonSmallSrc from '../../assets/ui/buttonSmall.png';
 import buttonMediumSrc from '../../assets/ui/buttonMedium.png';
 import buttonLargeSrc from '../../assets/ui/buttonLarge.png';
 
-const logoImgEntity = generateId().toString();
-
 const startBtnEntity = generateId().toString();
 const selectLevelBtnEntity = generateId().toString();
-const muteBtnEntity = generateId().toString();
 
 const versionTextEntity = generateId().toString();
 const newVersionBtnEntity = generateId().toString();
@@ -39,18 +36,6 @@ export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
   attachEvent({
     advancedTexture,
     entity: selectLevelBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
-      });
-    },
-  });
-
-  attachEvent({
-    advancedTexture,
-    entity: muteBtnEntity,
     onPointerUpObservable: () => {
       emitEvent<GameEvent.CleanSceneEvent>({
         type: GameEvent.Type.cleanScene,
@@ -130,9 +115,9 @@ export const mainUIBlueprint: MainUIBlueprint = ({
       minSize,
       aspectRatio,
       position: [
-        [0.5, 0.4],
-        [0.5, 0.4],
-        [0.5, 0.4],
+        [0.5, 0.5],
+        [0.5, 0.5],
+        [0.5, 0.5],
       ],
     },
   });
@@ -143,34 +128,15 @@ export const mainUIBlueprint: MainUIBlueprint = ({
       src,
       entity: selectLevelBtnEntity,
       name: componentName.uiButton,
-      text: 'Select level',
+      text: 'Custom level',
       size,
       maxSize,
       minSize,
       aspectRatio,
       position: [
-        [0.5, 0.6],
-        [0.5, 0.6],
-        [0.5, 0.6],
-      ],
-    },
-  });
-
-  state = setComponent<UIButton>({
-    state,
-    data: {
-      src,
-      entity: muteBtnEntity,
-      name: componentName.uiButton,
-      text: 'Mute',
-      size,
-      maxSize,
-      minSize,
-      aspectRatio,
-      position: [
-        [0.5, 0.8],
-        [0.5, 0.8],
-        [0.5, 0.8],
+        [0.5, 0.7],
+        [0.5, 0.7],
+        [0.5, 0.7],
       ],
     },
   });

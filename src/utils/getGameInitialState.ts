@@ -127,7 +127,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     data: {
       entity: backgroundEntity,
       name: componentName.background,
-      gradientTime: 500 * Math.random(),
+      gradientTime: 50000 * Math.random(),
     },
   });
 

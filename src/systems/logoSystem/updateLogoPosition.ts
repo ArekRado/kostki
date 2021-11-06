@@ -7,7 +7,7 @@ import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { logoEntity } from '../logoSystem';
 import { logoGrid } from './logoGrid';
 
-export const boxScaleFactor = 3;
+export const boxScaleFactor = 3.2;
 
 export const updateLogoPosition = ({ state }: { state: State }) => {
   const logoNode = scene.getTransformNodeByUniqueId(parseFloat(logoEntity));
@@ -38,6 +38,7 @@ export const updateLogoPosition = ({ state }: { state: State }) => {
       if (!boxNode) {
         return;
       }
+      
       const boxPosition: [number, number] = [
         logoPosition[0] + j * boxSize,
         logoPosition[1] + -i * boxSize,

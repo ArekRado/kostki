@@ -12,7 +12,7 @@ import { Color } from '../ecs/type';
  * @return  Array           The HSL representation
  */
 export const rgbToHsl = ([r, g, b]: Color): Color => {
-  (r /= 255), (g /= 255), (b /= 255);
+  // (r /= 255), (g /= 255), (b /= 255);
 
   var max = Math.max(r, g, b),
     min = Math.min(r, g, b);

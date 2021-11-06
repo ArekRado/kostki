@@ -34,5 +34,5 @@ export const hslToRgb = ([h, s, l]: Color): Color => {
     b = hue2rgb(p, q, h - 1 / 3);
   }
 
-  return [r * 255, g * 255, b * 255];
+  return [r, g, b];
 };
