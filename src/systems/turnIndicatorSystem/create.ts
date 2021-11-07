@@ -75,7 +75,7 @@ export const create = ({
           [0.8, 0.1],
         ],
         color: '#444',
-        fontSize: [24, 24, 24],
+        fontSize: [18, 20, 24],
         position: [
           [0, 0],
           [0, 0],

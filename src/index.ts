@@ -115,7 +115,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
   // done- new logo
-  // nope- improve colors palette
+  // - gradients - should represent most common colors - 1 color === 10%
   // nope- install game button
   // ?done- new ui
   // - question modal when user clicks on X button

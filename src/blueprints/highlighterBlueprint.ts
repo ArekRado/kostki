@@ -9,7 +9,7 @@ export const highlighterBlueprint: HighlighterBlueprint = ({
   const plane = Mesh.CreatePlane('highlighter', 1, scene, false);
   plane.material = new StandardMaterial('mat', scene);
   (plane.material as StandardMaterial).diffuseColor = new Color3(1, 1, 1);
-  plane.material.alpha = 0.5;
+  plane.material.alpha = 0.8;
 
   plane.uniqueId = parseFloat(entity);
 };
