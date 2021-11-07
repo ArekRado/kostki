@@ -1,4 +1,5 @@
 import { AIDifficulty } from '../systems/aiSystem';
+import { ColorGradient } from '../utils/colors';
 import { GlobalSystem, System } from './createSystem';
 
 export type Dictionary<Value> = { [key: string]: Value };

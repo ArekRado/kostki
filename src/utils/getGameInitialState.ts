@@ -131,14 +131,6 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  state = setComponent<Logo>({
-    state,
-    data: {
-      entity: logoEntity,
-      name: componentName.logo,
-    },
-  });
-
   const savedState = getSavedState();
   const savedStateVersion = getGame({
     state: savedState || initialState,

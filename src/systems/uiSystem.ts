@@ -6,44 +6,35 @@ import {
 } from '../ecs/component';
 import { Scene, State, UI } from '../ecs/type';
 import { scene } from '..';
-import {
-  gameUIAttachEvents,
-  gameUIBlueprint,
-} from '../blueprints/ui/gameUIBlueprint';
-import {
-  mainUIAttachEvents,
-  mainUIBlueprint,
-} from '../blueprints/ui/mainUIBlueprint';
-import {
-  customLevelSettingsUIAttachEvents,
-  customLevelSettingsUIBlueprint,
-} from '../blueprints/ui/customLevelSettingsUIBlueprint';
 import { uiResize } from './uiSystem/uiResize';
+import { removeAllControls } from './uiSystem/removeAllControls';
+import { setBabylonUi } from './uiSystem/setBabylonUi';
+import { create } from './uiSystem/create';
+import { advancedTexture } from './uiSystem/advancedTexture';
+import { ECSEvent } from '../ecs/emitEvent';
 
 export const uiEntity = '23505760496063488';
 export const uiRoot = 'root';
+
+export namespace UIEvent {
+  export enum Type {
+    changeUrl,
+  }
+
+  export type All = ChangeUrlEvent;
+
+  export type ChangeUrlEvent = ECSEvent<
+    Type.changeUrl,
+    {
+      uiType: Scene;
+    }
+  >;
+}
 
 const uiGetSet = createGetSetForUniqComponent<UI>({
   entity: uiEntity,
   name: componentName.ui,
 });
-
-type RemoveAllControls = (params: {
-  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-  state: State;
-}) => State;
-const removeAllControls: RemoveAllControls = ({ state, advancedTexture }) => {
-  advancedTexture
-    .getChildren()
-    .find((x) => x.name === uiRoot)
-    ?.clearControls();
-
-  state = removeComponentsByName({ state, name: componentName.uiImage });
-  state = removeComponentsByName({ state, name: componentName.uiButton });
-  state = removeComponentsByName({ state, name: componentName.uiText });
-
-  return state;
-};
 
 export const getUi = uiGetSet.getComponent;
 export const setUi = ({
@@ -82,61 +73,19 @@ export const setUi = ({
   return uiGetSet.setComponent({ state, data });
 };
 
-type SetBabylonUi = (params: {
-  state: State;
-  advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
-  attachEvents: boolean;
-  uiType: UI['type'];
-}) => State;
-const setBabylonUi: SetBabylonUi = ({
-  state,
-  advancedTexture,
-  attachEvents,
-  uiType,
-}) => {
-  switch (uiType) {
-    case Scene.customLevel:
-      state = gameUIBlueprint({ state });
-      attachEvents && gameUIAttachEvents({ advancedTexture });
-      break;
-    case Scene.mainMenu:
-      state = mainUIBlueprint({ state, advancedTexture });
-      attachEvents && mainUIAttachEvents({ advancedTexture });
-      break;
-    case Scene.customLevelSettings:
-      state = customLevelSettingsUIBlueprint({
-        state,
-      });
-      attachEvents && customLevelSettingsUIAttachEvents({ advancedTexture });
-      break;
-  }
-
-  return state;
-};
-
-export let advancedTexture: null | BABYLON.GUI.AdvancedDynamicTexture = null;
-
 export const uiSystem = (state: State) =>
-  createSystem<UI, {}>({
+  createSystem<UI, UIEvent.All>({
     state,
     name: componentName.ui,
-    create: ({ state, component }) => {
-      advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-        'ui',
-        true,
-        scene as any as BABYLON.Scene
-      );
-
-      state = removeAllControls({ advancedTexture, state });
-      state = setBabylonUi({
-        state,
-        advancedTexture,
-        attachEvents: true,
-        uiType: getUi({ state })?.type || Scene.mainMenu,
-      });
-
-      uiResize({ state, scene });
-
-      return state;
+    create,
+    event: ({ event, state }) => {
+      switch (event.type) {
+        case UIEvent.Type.changeUrl:
+          return setUi({
+            state,
+            data: { type: event.payload.uiType },
+            cleanControls: true,
+          });
+      }
     },
   });

@@ -2,9 +2,9 @@ import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { Entity, State, UIText } from '../ecs/type';
 import { scene } from '..';
-import { advancedTexture } from './uiSystem';
 import { getUiControl } from './uiSystem/getUiControl';
 import { uiResize } from './uiSystem/uiResize';
+import { advancedTexture } from './uiSystem/advancedTexture';
 
 const createTextControl = ({
   component,

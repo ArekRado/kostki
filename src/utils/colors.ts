@@ -2,10 +2,10 @@ import { Color } from '../ecs/type';
 import { clamp } from './clamp';
 import { hslToRgb } from './hslToRgb';
 import { rgbToHsl } from './rgbToHsl';
-import { shuffle } from './js/shuffle';
 
 export const white: Color = [1, 1, 1];
 export const black: Color = [0, 0, 0];
+
 export const gray: Color = [0.6, 0.6, 0.6];
 export const green: Color = [0.11, 0.79, 0.29];
 export const teal: Color = [0.09, 0.84, 1];
@@ -52,33 +52,18 @@ export const getSimilarColor = (rgbColor: Color): Color => {
   return hslToRgb([similarHslColor[0], similarHslColor[1], similarHslColor[2]]);
 };
 
-const createGradient = (mainColor: Color): ColorGradient => {
-  const list = shuffle([
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-    getSimilarColor(mainColor),
-  ]);
-
-  return [
-    list[0],
-    list[1],
-    list[2],
-    list[3],
-    list[4],
-    list[5],
-    list[6],
-    list[7],
-    list[8],
-    list[9],
-  ];
-};
+const createGradient = (mainColor: Color): ColorGradient => [
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+  getSimilarColor(mainColor),
+];
 
 export const grayGradient: ColorGradient = createGradient(gray);
 export const greenGradient: ColorGradient = createGradient(green);
@@ -89,6 +74,7 @@ export const redGradient: ColorGradient = createGradient(red);
 export const pinkGradient: ColorGradient = createGradient(pink);
 export const purpleGradient: ColorGradient = createGradient(purple);
 
+// https://coolors.co/9a9a9a-1dcb4b-17d8ff-ffbb4a-fef952-fe6d73-fe7af0-ad3cf1
 // [
 //   [28, 99, 154],
 //   [29, 203, 75],
@@ -104,7 +90,7 @@ export const purpleGradient: ColorGradient = createGradient(purple);
 //    Math.floor(b*100 / 255)/100,
 //  ])
 
-// [ 0.13, 0.48, 0.75 ]
+// [ 0.6, 0.6, 0.6 ]
 // [ 0.11, 0.79, 0.29 ]
 // [ 0.09, 0.84, 1 ]
 // [ 1, 0.73, 0.29 ]

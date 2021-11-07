@@ -1,8 +1,8 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
 import { State, UIImage } from '../ecs/type';
-import { advancedTexture } from './uiSystem';
 import { getUiControl } from './uiSystem/getUiControl';
+import { advancedTexture } from './uiSystem/advancedTexture';
 
 export const uiImageSystem = (state: State) =>
   createSystem<UIImage, {}>({

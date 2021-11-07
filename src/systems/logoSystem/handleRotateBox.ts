@@ -55,7 +55,7 @@ export const handleRotateBox: EventHandler<Logo, LogoEvent.RotateBoxEvent> = ({
   });
 
   setTimeout(() => {
-    emitEvent({
+    emitEvent<LogoEvent.All>({
       type: LogoEvent.Type.rotateBox,
       entity: logoEntity,
       payload: {},

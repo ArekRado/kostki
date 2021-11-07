@@ -115,14 +115,18 @@ if (process.env.NODE_ENV !== 'test') {
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
   // done- new logo
-  // - new ui
+  // nope- improve colors palette
+  // nope- install game button
+  // ?done- new ui
   // - question modal when user clicks on X button
+  // done- handle back same as websites and apps
   // nope- responsive images
   // done- buttons with images
   // done- butons/controls with aspect ratio size
   // - custom leve settings - add different maps
   // - campaign 
   // - "new app versiomn" - button reloads page but it doesn't refresh cache
+  // - change gradiens when user changes color
   // - update dependencies
   // - move ecs to new project package
   // - better eslint

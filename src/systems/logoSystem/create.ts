@@ -15,7 +15,7 @@ export const create = ({ state, }: { state: State }): State => {
   logoBlueprint({ state });
   updateLogoPosition({ state });
 
-  emitEvent({
+  emitEvent<LogoEvent.All>({
     type: LogoEvent.Type.rotateBox,
     entity: logoEntity,
     payload: {},
