@@ -1,12 +1,17 @@
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { componentName, getComponent, getComponentsByName, setComponent } from '../../ecs/component';
-import { emitEvent } from '../../ecs/emitEvent';
+import {
+  componentName,
+  getComponent,
+  getComponentsByName,
+  setComponent,
+} from '../../ecs/component';
 import { AI, EventHandler, Game, State } from '../../ecs/type';
+import { emitEvent } from '../../eventSystem';
 import { removeState, saveState } from '../../utils/localDb';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
-import { gameEntity, GameEvent } from '../gameSystem';
+import { gameEntity, GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { moveHighlighter } from '../turnIndicatorSystem/moveHighlighter';
 import { getNextPlayer } from './getNextPlayer';
@@ -45,7 +50,6 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   } else {
     emitEvent<GameEvent.NextTurnEvent>({
       type: GameEvent.Type.nextTurn,
-      entity: gameEntity,
       payload: { ai },
     });
   }
@@ -55,9 +59,12 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
 export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
   state,
-  component,
 }) => {
-  const { gameStarted, boxRotationQueue } = component;
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+  const { gameStarted, boxRotationQueue } = game;
 
   if (gameStarted && boxRotationQueue.length === 0) {
     const nextPlayer = getNextPlayer({ state });
@@ -79,7 +86,7 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
     state = setComponent<Game>({
       state,
       data: {
-        ...component,
+        ...game,
         currentPlayer: ai.entity,
       },
     });
@@ -102,7 +109,7 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
         state = pushBoxToRotationQueue({ state, entity: box.entity });
       } else {
         // AI can't move which means it lost
-        return aiLost({ state, component, ai });
+        return aiLost({ state, component: game, ai });
       }
     }
   }

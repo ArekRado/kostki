@@ -11,14 +11,14 @@ import { removeAllControls } from './uiSystem/removeAllControls';
 import { setBabylonUi } from './uiSystem/setBabylonUi';
 import { create } from './uiSystem/create';
 import { advancedTexture } from './uiSystem/advancedTexture';
-import { ECSEvent } from '../ecs/emitEvent';
+import { ECSEvent } from '../ecs/createEventSystem';
 
 export const uiEntity = '23505760496063488';
 export const uiRoot = 'root';
 
 export namespace UIEvent {
   export enum Type {
-    changeUrl,
+    changeUrl = 'UIEvent-changeUrl',
   }
 
   export type All = ChangeUrlEvent;
@@ -50,8 +50,6 @@ export const setUi = ({
     const uiType = data?.type || getUi({ state })?.type || Scene.mainMenu;
     if (cleanControls) {
       state = removeAllControls({ advancedTexture, state });
-      state = removeComponentsByName({ name: componentName.logo, state });
-      // state = setUi({ state, data: { cleanControls: false } });
       state = setBabylonUi({
         state,
         advancedTexture,
@@ -78,14 +76,4 @@ export const uiSystem = (state: State) =>
     state,
     name: componentName.ui,
     create,
-    event: ({ event, state }) => {
-      switch (event.type) {
-        case UIEvent.Type.changeUrl:
-          return setUi({
-            state,
-            data: { type: event.payload.uiType },
-            cleanControls: true,
-          });
-      }
-    },
   });

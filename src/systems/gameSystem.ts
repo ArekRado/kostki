@@ -5,43 +5,28 @@ import {
   createGetSetForUniqComponent,
 } from '../ecs/component';
 import { AI, Entity, Game, State, Scene as GameScene } from '../ecs/type';
-import { ECSEvent } from '../ecs/emitEvent';
-import { handleStartCustomLevel } from './gameSystem/handleStartCustomLevel';
-import {
-  handleChangeColorBlindMode,
-  handleChangeDifficulty,
-  handleChangeMapType,
-  handleChangeNextMap,
-  handleChangePlayers,
-  handleChangePrevMap,
-  handleChangeQuickStart,
-  handleReload,
-  handleShowNewVersion,
-} from './gameSystem/handleChangeSettings';
-import { handleCleanScene } from './gameSystem/handleCleanScene';
-import { handlePlayerClick } from './gameSystem/handlePlayerClick';
-import { handleNextTurn } from './gameSystem/handleNextTurn';
 import { create } from './gameSystem/create';
+import { ECSEvent } from '../ecs/createEventSystem';
 
 export const gameEntity = 'game';
 
 export namespace GameEvent {
   export enum Type {
-    startCustomLevel,
-    nextTurn,
-    boxExplosion,
-    playerClick,
-    cleanScene,
-
-    changePlayers,
-    changeDifficulty,
-    changeQuickStart,
-    changeColorBlindMode,
-    changeMapType,
-    changeNextMap,
-    changePrevMap,
-    showNewVersion,
-    reload,
+    startCustomLevel = 'GameEvent-startCustomLevel',
+    nextTurn = 'GameEvent-nextTurn',
+    boxExplosion = 'GameEvent-boxExplosion',
+    playerClick = 'GameEvent-playerClick',
+    cleanScene = 'GameEvent-cleanScene',
+    
+    changePlayers = 'GameEvent-changePlayers',
+    changeDifficulty = 'GameEvent-changeDifficulty',
+    changeQuickStart = 'GameEvent-changeQuickStart',
+    changeColorBlindMode = 'GameEvent-changeColorBlindMode',
+    changeMapType = 'GameEvent-changeMapType',
+    changeNextMap = 'GameEvent-changeNextMap',
+    changePrevMap = 'GameEvent-changePrevMap',
+    showNewVersion = 'GameEvent-showNewVersion',
+    reload = 'GameEvent-reload',
   }
 
   export type All =
@@ -135,36 +120,4 @@ export const gameSystem = (state: State) =>
     //   return state;
     // },
     create,
-    event: ({ state, component, event }) => {
-      switch (event.type) {
-        case GameEvent.Type.startCustomLevel:
-          return handleStartCustomLevel({ state, component, event });
-        case GameEvent.Type.nextTurn:
-          return handleNextTurn({ state, component, event });
-        case GameEvent.Type.playerClick:
-          return handlePlayerClick({ state, component, event });
-        case GameEvent.Type.cleanScene:
-          return handleCleanScene({ state, component, event });
-
-        case GameEvent.Type.changePlayers:
-          return handleChangePlayers({ state, component, event });
-        case GameEvent.Type.changeDifficulty:
-          return handleChangeDifficulty({ state, component, event });
-        case GameEvent.Type.changeQuickStart:
-          return handleChangeQuickStart({ state, component, event });
-        case GameEvent.Type.changeColorBlindMode:
-          return handleChangeColorBlindMode({ state, component, event });
-        case GameEvent.Type.changeMapType:
-          return handleChangeMapType({ state, component, event });
-        case GameEvent.Type.changeNextMap:
-          return handleChangeNextMap({ state, component, event });
-        case GameEvent.Type.changePrevMap:
-          return handleChangePrevMap({ state, component, event });
-        case GameEvent.Type.showNewVersion:
-          return handleShowNewVersion({ state, component, event });
-
-        case GameEvent.Type.reload:
-          return handleReload({ state, component, event });
-      }
-    },
   });

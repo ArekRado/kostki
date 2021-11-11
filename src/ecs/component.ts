@@ -5,6 +5,7 @@ const getSystemByName = (name: string, system: State['system']) =>
   system.find((x) => x.name === name);
 
 export enum componentName {
+  event = 'event',
   box = 'box',
   ai = 'ai',
   game = 'game',

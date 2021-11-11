@@ -1,6 +1,6 @@
 import { setComponent } from '../../ecs/component';
-import { emitEvent } from '../../ecs/emitEvent';
 import { AI, Box, State } from '../../ecs/type';
+import { emitEvent } from '../../eventSystem';
 import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { getTextureSet } from './getTextureSet';
@@ -21,8 +21,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
     const animationEndCallback = () => {
       emitEvent<BoxEvent.RotationEndEvent>({
         type: BoxEvent.Type.rotationEnd,
-        entity: entity,
-        payload: { ai, shouldExplode: box.dots === 6 },
+        payload: { ai, shouldExplode: box.dots === 6, boxEntity: entity },
       });
     };
 

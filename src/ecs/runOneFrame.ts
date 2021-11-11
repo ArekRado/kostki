@@ -1,10 +1,10 @@
 import { State } from './type';
-import {
-  eventBuffer,
-  lockFirstBuffer,
-  resetEventBuffer,
-  unlockFirstBuffer,
-} from './emitEvent';
+// import {
+//   eventBuffer,
+//   lockFirstBuffer,
+//   resetEventBuffer,
+//   unlockFirstBuffer,
+// } from './emitEvent';
 
 type RunOneFrame = (params: { state: State }) => State;
 export const runOneFrame: RunOneFrame = ({ state }): State => {
@@ -16,15 +16,15 @@ export const runOneFrame: RunOneFrame = ({ state }): State => {
   //   },
   // }
 
-  lockFirstBuffer();
+  // lockFirstBuffer();
   
   const newState = state.system
     .concat()
     .sort((a, b) => (a > b ? -1 : 1))
-    .reduce((acc, system) => system.tick({ state: acc, eventBuffer }), state);
+    .reduce((acc, system) => system.tick({ state: acc, eventBuffer: {} }), state);
 
-  resetEventBuffer();
-  unlockFirstBuffer();
+  // resetEventBuffer();
+  // unlockFirstBuffer();
 
   return newState;
 };

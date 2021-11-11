@@ -12,11 +12,6 @@ export enum AIDifficulty {
   medium = 'medium',
   hard = 'hard',
 }
-export namespace AiEvent {
-  export enum Type {}
-
-  export type All = null;
-}
 
 export enum dotStats {
   less = -1,

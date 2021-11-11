@@ -1,17 +1,26 @@
 import { scene } from '../..';
-import { setComponent } from '../../ecs/component';
-import { emitEvent } from '../../ecs/emitEvent';
+import { componentName, getComponent, setComponent } from '../../ecs/component';
 import { Box, EventHandler } from '../../ecs/type';
+import { emitEvent } from '../../eventSystem';
 import { BoxEvent } from '../boxSystem';
-import { gameEntity, GameEvent, getGame } from '../gameSystem';
+import { GameEvent, getGame } from '../gameSystem';
 import { boxExplosion } from './boxExplosion';
 import { getTextureSet } from './getTextureSet';
 import { removeBoxFromRotationQueue } from './removeBoxFromRotationQueue';
 import { resetBoxRotation } from './resetBoxRotation';
 
 export const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> =
-  ({ state, component, event }) => {
-    const { ai, shouldExplode } = event.payload;
+  ({ state, event }) => {
+    const { ai, shouldExplode, boxEntity } = event.payload;
+    const component = getComponent<Box>({
+      state,
+      name: componentName.box,
+      entity: boxEntity,
+    });
+
+    if (!component) {
+      return state;
+    }
 
     state = removeBoxFromRotationQueue({ entity: component.entity, state });
 
@@ -36,7 +45,6 @@ export const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> =
       if (game.boxRotationQueue.length === 0) {
         emitEvent<GameEvent.NextTurnEvent>({
           type: GameEvent.Type.nextTurn,
-          entity: gameEntity,
           payload: { ai },
         });
       }

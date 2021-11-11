@@ -1,6 +1,5 @@
 import 'babylonjs-gui';
 import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
-import { emitEvent } from '../../ecs/emitEvent';
 import {
   State,
   UIButton,
@@ -13,6 +12,7 @@ import { generateId } from '../../utils/generateId';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
 import { AIDifficulty } from '../../systems/aiSystem';
 import blankSrc from '../../assets/0.png';
+import { emitEvent } from '../../eventSystem';
 
 const playersBtnEntity = generateId().toString();
 const difficultyBtnEntity = generateId().toString();
@@ -50,7 +50,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangePlayersEvent>({
           type: GameEvent.Type.changePlayers,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -62,7 +61,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangeDifficultyEvent>({
           type: GameEvent.Type.changeDifficulty,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -74,7 +72,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangeQuickStartEvent>({
           type: GameEvent.Type.changeQuickStart,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -86,7 +83,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangeColorBlindModeEvent>({
           type: GameEvent.Type.changeColorBlindMode,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -98,7 +94,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangeMapTypeEvent>({
           type: GameEvent.Type.changeMapType,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -110,7 +105,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangeNextMapEvent>({
           type: GameEvent.Type.changeNextMap,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -122,7 +116,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ChangePrevMapEvent>({
           type: GameEvent.Type.changePrevMap,
-          entity: gameEntity,
           payload: {},
         });
       },
@@ -134,7 +127,6 @@ export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvent
       onPointerUpObservable: () => {
         emitEvent<GameEvent.StartCustomLevelEvent>({
           type: GameEvent.Type.startCustomLevel,
-          entity: gameEntity,
           payload: {},
         });
       },

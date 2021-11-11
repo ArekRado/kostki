@@ -1,5 +1,5 @@
-import { emitEvent } from '../../ecs/emitEvent';
 import { EventHandler, Logo } from '../../ecs/type';
+import { emitEvent } from '../../eventSystem';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
 import { createRotationBoxAnimation } from '../boxSystem/createRotationBoxAnimation';
@@ -57,7 +57,6 @@ export const handleRotateBox: EventHandler<Logo, LogoEvent.RotateBoxEvent> = ({
   setTimeout(() => {
     emitEvent<LogoEvent.All>({
       type: LogoEvent.Type.rotateBox,
-      entity: logoEntity,
       payload: {},
     });
   }, Math.random() * 500 + 500);

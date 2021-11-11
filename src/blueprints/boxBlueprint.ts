@@ -7,12 +7,12 @@ import {
   Vector3,
 } from 'babylonjs';
 import { Scene } from 'babylonjs/scene';
-import { emitEvent } from '../ecs/emitEvent';
 
 import { gameEntity, GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem/getTextureSet';
+import { emitEvent } from '../eventSystem';
 
 export const boxBlueprint = ({
   scene,
@@ -76,7 +76,6 @@ export const boxBlueprint = ({
       plane.actionManager.registerAction(
         new ExecuteCodeAction(ActionManager.OnPickUpTrigger, () => {
           emitEvent<GameEvent.PlayerClickEvent>({
-            entity: gameEntity,
             type: GameEvent.Type.playerClick,
             payload: { boxEntity: uniqueId.toString() },
           });

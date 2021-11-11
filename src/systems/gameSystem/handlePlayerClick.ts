@@ -2,12 +2,16 @@ import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { componentName, getComponent } from '../../ecs/component';
 import { AI, Box, EventHandler, Game } from '../../ecs/type';
 import { onClickBox } from '../boxSystem/onClickBox';
-import { GameEvent } from '../gameSystem';
+import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 
 export const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> =
-  ({ state, component, event }) => {
-    const { currentPlayer, gameStarted, boxRotationQueue } = component;
+  ({ state, event }) => {
+    const game = getGame({ state });
+    if (!game) {
+      return state;
+    }
+    const { currentPlayer, gameStarted, boxRotationQueue } = game;
 
     const box = getComponent<Box>({
       state,

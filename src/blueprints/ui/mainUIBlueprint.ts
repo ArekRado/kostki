@@ -1,7 +1,6 @@
 import 'babylonjs-gui';
-import { gameEntity, GameEvent, getGame } from '../../systems/gameSystem';
-import { emitEvent } from '../../ecs/emitEvent';
-import { Breakpoints, State, UIButton, UIImage, UIText } from '../../ecs/type';
+import { GameEvent, getGame } from '../../systems/gameSystem';
+import { Breakpoints, State, UIButton, UIText } from '../../ecs/type';
 import { Scene as GameScene } from '../../ecs/type';
 import { componentName, setComponent } from '../../ecs/component';
 import { generateId } from '../../utils/generateId';
@@ -10,6 +9,7 @@ import { attachEvent } from '../../systems/uiSystem/attachEvent';
 import buttonSmallSrc from '../../assets/ui/buttonSmall.png';
 import buttonMediumSrc from '../../assets/ui/buttonMedium.png';
 import buttonLargeSrc from '../../assets/ui/buttonLarge.png';
+import { emitEvent } from '../../eventSystem';
 
 const startBtnEntity = generateId().toString();
 const selectLevelBtnEntity = generateId().toString();
@@ -27,8 +27,9 @@ export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
     onPointerUpObservable: () => {
       emitEvent<GameEvent.CleanSceneEvent>({
         type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
+        payload: {
+          newScene: GameScene.customLevelSettings,
+        },
       });
     },
   });
@@ -39,8 +40,9 @@ export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
     onPointerUpObservable: () => {
       emitEvent<GameEvent.CleanSceneEvent>({
         type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
-        payload: { newScene: GameScene.customLevelSettings },
+        payload: {
+          newScene: GameScene.customLevelSettings,
+        },
       });
     },
   });
@@ -186,7 +188,6 @@ export const mainUIBlueprint: MainUIBlueprint = ({
       onPointerUpObservable: () => {
         emitEvent<GameEvent.ReloadEvent>({
           type: GameEvent.Type.reload,
-          entity: gameEntity,
           payload: {},
         });
       },

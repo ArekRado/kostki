@@ -1,5 +1,5 @@
 import 'regenerator-runtime/runtime';
-import { scene, camera, humanPlayerEntity } from '../.';
+import { humanPlayerEntity } from '../.';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
@@ -9,7 +9,7 @@ import { getAiMove } from '../systems/aiSystem/getAiMove';
 import { getBestRandomBox } from '../systems/aiSystem/getBestRandomBox';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { getMovesForEmptyBoxes } from '../systems/aiSystem/getMovesForEmptyBoxes';
-import { getGameInitialState } from '../utils/getGameInitialState';
+import { getGameInitialState } from '../getGameInitialState';
 
 const player2 = 'player2';
 

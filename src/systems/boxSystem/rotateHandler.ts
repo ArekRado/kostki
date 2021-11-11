@@ -7,15 +7,14 @@ import { resetBoxRotation } from './resetBoxRotation';
 
 export const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
   state,
-  component,
   event,
 }) => {
   if (process.env.NODE_ENV !== 'test') {
     createRotationBoxAnimation({
-      boxUniqueId: component.entity,
+      boxUniqueId: event.payload.boxEntity,
       animationEndCallback: () => {
         resetBoxRotation({
-          boxUniqueId: component.entity,
+          boxUniqueId: event.payload.boxEntity,
           texture: event.payload.texture,
           color: event.payload.color,
         });

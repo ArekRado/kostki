@@ -1,6 +1,6 @@
-import { humanPlayerEntity, scene } from '..';
-import { setComponent, componentName } from '../ecs/component';
-import { initialState } from '../ecs/state';
+import { humanPlayerEntity, scene } from '.';
+import { setComponent, componentName } from './ecs/component';
+import { initialState } from './ecs/state';
 import {
   AI,
   Background,
@@ -11,28 +11,29 @@ import {
   Scene,
   State,
   UI,
-} from '../ecs/type';
-import { AIDifficulty, aiSystem } from '../systems/aiSystem';
-import { boxSystem } from '../systems/boxSystem';
-import { gameEntity, gameSystem, getGame } from '../systems/gameSystem';
-import { markerEntity, markerSystem } from '../systems/markerSystem';
+} from './ecs/type';
+import { AIDifficulty, aiSystem } from './systems/aiSystem';
+import { boxSystem } from './systems/boxSystem';
+import { gameEntity, gameSystem, getGame } from './systems/gameSystem';
+import { markerEntity, markerSystem } from './systems/markerSystem';
 import {
   cameraEntity,
   cameraSystem,
   getCameraSize,
-} from '../systems/cameraSystem';
-import { getSavedState, removeState } from './localDb';
-import { uiEntity, uiSystem } from '../systems/uiSystem';
-import { uiButtonSystem } from '../systems/uiButtonSystem';
+} from './systems/cameraSystem';
+import { getSavedState, removeState } from './utils/localDb';
+import { uiEntity, uiSystem } from './systems/uiSystem';
+import { uiButtonSystem } from './systems/uiButtonSystem';
 // import { uiImageSystem } from '../systems/uiImageSystem';
-import { uiTextSystem } from '../systems/uiTextSystem';
-import { playersList } from '../systems/gameSystem/handleChangeSettings';
+import { uiTextSystem } from './systems/uiTextSystem';
+import { playersList } from './systems/gameSystem/handleChangeSettings';
 import {
   backgroundEntity,
   backgroundSystem,
-} from '../systems/backgroundSystem';
-import { turnIndicatorSystem } from '../systems/turnIndicatorSystem';
-import { logoEntity, logoSystem } from '../systems/logoSystem';
+} from './systems/backgroundSystem';
+import { turnIndicatorSystem } from './systems/turnIndicatorSystem';
+import { logoEntity, logoSystem } from './systems/logoSystem';
+import { eventSystem } from './eventSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -41,6 +42,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   const version = '0.0.0';
 
   // Systems
+  state = eventSystem(state);
   state = boxSystem(state);
   state = aiSystem(state);
   state = gameSystem(state);

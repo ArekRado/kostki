@@ -1,11 +1,10 @@
 import 'regenerator-runtime/runtime';
-import { scene, camera } from '../.';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { componentName, setComponent } from '../ecs/component';
 import { AI } from '../ecs/type';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getAiMove } from '../systems/aiSystem/getAiMove';
-import { getGameInitialState } from '../utils/getGameInitialState';
+import { getGameInitialState } from '../getGameInitialState';
 import { expectOneOf } from './aiSystem.test';
 
 const basicAi: AI = {

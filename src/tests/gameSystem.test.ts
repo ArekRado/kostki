@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime';
-import { scene, camera } from '..';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
 import { componentName, getComponent } from '../ecs/component';
@@ -7,7 +6,7 @@ import { runOneFrame } from '../ecs/runOneFrame';
 import { AI, Box, Entity } from '../ecs/type';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getGame } from '../systems/gameSystem';
-import { getGameInitialState } from '../utils/getGameInitialState';
+import { getGameInitialState } from '../getGameInitialState';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { onClickBox } from '../systems/boxSystem/onClickBox';
 

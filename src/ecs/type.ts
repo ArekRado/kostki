@@ -9,7 +9,6 @@ export type Guid = string;
 export type EventHandler<ComponentData, Events> = (params: {
   event: Events;
   state: State;
-  component: Component<ComponentData>;
 }) => State;
 
 export type Component<Data> = {
@@ -129,6 +128,8 @@ export type TurnIndicator = Component<{
   isVisible: boolean;
 }>;
 
+export type Event = Component<{}>;
+
 export type State = {
   entity: Dictionary<Entity>;
   component: Dictionary<Dictionary<Component<any>>> & {
@@ -144,6 +145,7 @@ export type State = {
     background: Dictionary<Background>;
     turnIndicator: Dictionary<TurnIndicator>;
     logo: Dictionary<Logo>;
+    event: Dictionary<Event>;
   };
   system: Array<System<any, any> | GlobalSystem>;
 };

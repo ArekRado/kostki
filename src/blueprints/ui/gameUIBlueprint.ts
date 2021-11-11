@@ -1,15 +1,15 @@
-import { Scene } from 'babylonjs';
 import 'babylonjs-gui';
 import { componentName, setComponent } from '../../ecs/component';
-import { emitEvent } from '../../ecs/emitEvent';
-import { State, Scene as GameScene, UIButton, Breakpoints } from '../../ecs/type';
+import { State, Scene as GameScene, UIButton, Breakpoints, UIImage } from '../../ecs/type';
 import { gameEntity, GameEvent } from '../../systems/gameSystem';
 import { generateId } from '../../utils/generateId';
 import { removeState } from '../../utils/localDb';
 import { attachEvent } from '../../systems/uiSystem/attachEvent';
 import blankSrc from '../../assets/0.png';
+import { emitEvent } from '../../eventSystem';
 
 const closeBtnEntity = generateId().toString();
+const modalBackgroundEntity = generateId().toString();
 
 type GameUIAttachEvents = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
@@ -22,7 +22,6 @@ export const gameUIAttachEvents: GameUIAttachEvents = ({ advancedTexture }) => {
       removeState();
       emitEvent<GameEvent.CleanSceneEvent>({
         type: GameEvent.Type.cleanScene,
-        entity: gameEntity,
         payload: { newScene: GameScene.mainMenu },
       });
     },
@@ -50,6 +49,25 @@ export const gameUIBlueprint: GameUIBlueprint = ({ state }) => {
         [0.95, 0.05],
         [0.95, 0.05],
         [0.95, 0.05],
+      ],
+    },
+  });
+
+  state = setComponent<UIImage>({
+    state,
+    data: {
+      src,
+      entity: modalBackgroundEntity,
+      name: componentName.uiImage,
+      size: [
+        [0.6, 0.6],
+        [0.6, 0.6],
+        [0.6, 0.6],
+      ],
+      position: [
+        [0.2, 0.2],
+        [0.2, 0.2],
+        [0.2, 0.2],
       ],
     },
   });

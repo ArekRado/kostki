@@ -1,6 +1,4 @@
-import { componentName, getComponent } from './component';
-import { ECSEvent } from './emitEvent';
-import { State, Dictionary, Entity, Component, EventHandler } from './type';
+import { State, Dictionary, Component, EventHandler } from './type';
 
 export enum systemPriority {
   last = 3,
@@ -14,43 +12,45 @@ export enum systemPriority {
 
 const doNothing = (params: { state: State }) => params.state;
 
-type TriggerSystemEvents = <ComponentData, Events>(params: {
-  state: State;
-  eventBuffer: Dictionary<Events[]>;
-  entity: Entity;
-  eventHandler: EventHandler<ComponentData, Events> | undefined;
-  component: Component<ComponentData>;
-}) => State;
-export const triggerSystemEvents: TriggerSystemEvents = ({
-  entity,
-  eventBuffer,
-  state,
-  eventHandler,
-  component,
-}) =>
-  eventBuffer[entity]
-    ? eventBuffer[entity].reduce((acc, event) => {
-        if (eventHandler) {
-          const updatedComponent = getComponent<any>({
-            state: acc,
-            entity,
-            name: component.name,
-          });
+// TODO add a way to handle any event - is it better than handling events inside systems?
+// const eventHandler = ({state, event:unknown | listOfExpectedEvents }):State => {}
+// type TriggerSystemEvents = <ComponentData, Events>(params: {
+//   state: State;
+//   eventBuffer: Dictionary<Events[]>;
+//   entity: Entity;
+//   eventHandler: EventHandler<ComponentData, Events> | undefined;
+//   component: Component<ComponentData>;
+// }) => State;
+// export const triggerSystemEvents: TriggerSystemEvents = ({
+//   entity,
+//   eventBuffer,
+//   state,
+//   eventHandler,
+//   component,
+// }) =>
+//   eventBuffer[entity]
+//     ? eventBuffer[entity].reduce((acc, event) => {
+//         if (eventHandler) {
+//           const updatedComponent = getComponent<any>({
+//             state: acc,
+//             entity,
+//             name: component.name,
+//           });
 
-          if (!updatedComponent) {
-            return acc;
-          }
+//           if (!updatedComponent) {
+//             return acc;
+//           }
 
-          return eventHandler({
-            state: acc,
-            event,
-            component: updatedComponent,
-          });
-        }
+//           return eventHandler({
+//             state: acc,
+//             event,
+//             component: updatedComponent,
+//           });
+//         }
 
-        return acc;
-      }, state)
-    : state;
+//         return acc;
+//       }, state)
+//     : state;
 
 type SystemMethodParams<ComponentData> = {
   state: State;
@@ -109,17 +109,17 @@ export const createSystem = <ComponentData, Events>({
       if (component) {
         return Object.values(component).reduce(
           (acc, component: Component<ComponentData>) => {
-            let stateAfterEvents = triggerSystemEvents<ComponentData, Events>({
-              eventHandler: params.event,
-              state: acc,
-              eventBuffer,
-              entity: component.entity,
-              component,
-            });
+            // let stateAfterEvents = triggerSystemEvents<ComponentData, Events>({
+            //   eventHandler: params.event,
+            //   state: acc,
+            //   eventBuffer,
+            //   entity: component.entity,
+            //   component,
+            // });
 
             return tick
-              ? tick({ state: stateAfterEvents, component })
-              : stateAfterEvents;
+              ? tick({ state: acc, component })
+              : acc;
           },
           state
         );

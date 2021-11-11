@@ -1,5 +1,4 @@
 import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { emitEvent } from '../../ecs/emitEvent';
 import {
   AI,
   Box,
@@ -17,12 +16,12 @@ import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
 import { setUi } from '../uiSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
-import { getDataGrid } from '../aiSystem/getDataGrid';
 import { turnIndicatorEntity } from '../turnIndicatorSystem';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { getTextureSet } from '../boxSystem/getTextureSet';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
+import { emitEvent } from '../../eventSystem';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -97,11 +96,11 @@ const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
     if (box && ai) {
       emitEvent<BoxEvent.Rotate>({
         type: BoxEvent.Type.rotate,
-        entity: boxEntity,
         payload: {
           color: ai.color,
           texture: getTextureSet({ state, ai })[box.dots],
           direction: Direction.up,
+          boxEntity,
         },
       });
     }
@@ -172,7 +171,12 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 export const handleStartCustomLevel: EventHandler<
   Game,
   GameEvent.StartCustomLevelEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
+  const component = getGame({ state });
+  if (!component) {
+    return state;
+  }
+
   state = setLevelFromSettings({ state, game: component });
 
   const currentAi = getNextPlayer({ state });

@@ -21,7 +21,7 @@ import {
   set7,
   set8,
 } from '../../utils/textureSets';
-import { GameEvent, setGame } from '../gameSystem';
+import { GameEvent, getGame, setGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
 import { setUi } from '../uiSystem';
 
@@ -55,17 +55,22 @@ export const playersList = () => [
 export const handleChangePlayers: EventHandler<
   Game,
   GameEvent.ChangePlayersEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+
   const playersAmount =
-    component.customLevelSettings.players?.length === 8
+    game.customLevelSettings.players?.length === 8
       ? 2
-      : component.customLevelSettings.players?.length + 1;
+      : game.customLevelSettings.players?.length + 1;
 
   state = setGame({
     state,
     data: {
       customLevelSettings: {
-        ...component.customLevelSettings,
+        ...game.customLevelSettings,
         players: playersList().slice(0, playersAmount),
       },
     },
@@ -77,7 +82,12 @@ export const handleChangePlayers: EventHandler<
 export const handleChangeDifficulty: EventHandler<
   Game,
   GameEvent.ChangeDifficultyEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+
   const difficultyList = [
     AIDifficulty.easy,
     AIDifficulty.medium,
@@ -85,7 +95,7 @@ export const handleChangeDifficulty: EventHandler<
   ];
 
   const index = difficultyList.findIndex(
-    (difficulty) => difficulty === component.customLevelSettings.difficulty
+    (difficulty) => difficulty === game.customLevelSettings.difficulty
   );
 
   const nextDifficulty =
@@ -97,7 +107,7 @@ export const handleChangeDifficulty: EventHandler<
     state,
     data: {
       customLevelSettings: {
-        ...component.customLevelSettings,
+        ...game.customLevelSettings,
         difficulty: nextDifficulty,
       },
     },
@@ -109,13 +119,18 @@ export const handleChangeDifficulty: EventHandler<
 export const handleChangeQuickStart: EventHandler<
   Game,
   GameEvent.ChangeQuickStartEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+
   state = setGame({
     state,
     data: {
       customLevelSettings: {
-        ...component.customLevelSettings,
-        quickStart: !component.customLevelSettings.quickStart,
+        ...game.customLevelSettings,
+        quickStart: !game.customLevelSettings.quickStart,
       },
     },
   });
@@ -126,11 +141,16 @@ export const handleChangeQuickStart: EventHandler<
 export const handleChangeColorBlindMode: EventHandler<
   Game,
   GameEvent.ChangeColorBlindModeEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+
   state = setGame({
     state,
     data: {
-      colorBlindMode: !component.colorBlindMode,
+      colorBlindMode: !game.colorBlindMode,
     },
   });
 
@@ -140,21 +160,21 @@ export const handleChangeColorBlindMode: EventHandler<
 export const handleChangeMapType: EventHandler<
   Game,
   GameEvent.ChangeMapTypeEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
   return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangeNextMap: EventHandler<
   Game,
   GameEvent.ChangeNextMapEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
   return setUi({ state, data: {}, cleanControls: false });
 };
 
 export const handleChangePrevMap: EventHandler<
   Game,
   GameEvent.ChangePrevMapEvent
-> = ({ state, component }) => {
+> = ({ state }) => {
   return setUi({ state, data: {}, cleanControls: false });
 };
 

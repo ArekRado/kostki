@@ -9,11 +9,11 @@ import {
 } from 'babylonjs';
 import { runOneFrame } from './ecs/runOneFrame';
 import { State } from './ecs/type';
-import { getGameInitialState } from './utils/getGameInitialState';
+import { getGameInitialState } from './getGameInitialState';
 import { register } from './serviceWorkerRegistration';
 import { gameEntity, GameEvent } from './systems/gameSystem';
-import { emitEvent } from './ecs/emitEvent';
 import { cameraEntity, CameraEvent } from './systems/cameraSystem';
+import { emitEvent } from './eventSystem';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -84,7 +84,6 @@ if (process.env.NODE_ENV !== 'test') {
 
         emitEvent<GameEvent.ShowNewVersionEvent>({
           type: GameEvent.Type.showNewVersion,
-          entity: gameEntity,
           payload: {},
         });
       }
@@ -103,7 +102,6 @@ if (process.env.NODE_ENV !== 'test') {
   window.addEventListener('resize', () => {
     emitEvent<CameraEvent.ResizeEvent>({
       type: CameraEvent.Type.resize,
-      entity: cameraEntity,
       payload: {},
     });
 
@@ -116,6 +114,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done- hide highligter on resize and create
   // done- new logo
   // - gradients - should represent most common colors - 1 color === 10%
+  // - turn indicator - disable lost players
+  // - highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
   // nope- install game button
   // ?done- new ui
   // - question modal when user clicks on X button
@@ -123,8 +123,10 @@ if (process.env.NODE_ENV !== 'test') {
   // nope- responsive images
   // done- buttons with images
   // done- butons/controls with aspect ratio size
+  // - transitions between scenes
+  // - "pop" box animation when level starts
   // - custom leve settings - add different maps
-  // - campaign 
+  // - campaign
   // - "new app versiomn" - button reloads page but it doesn't refresh cache
   // - change gradiens when user changes color
   // - update dependencies

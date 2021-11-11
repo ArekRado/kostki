@@ -1,11 +1,9 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName } from '../ecs/component';
-import { AI, Box, State } from '../ecs/type';
-import { ECSEvent } from '../ecs/emitEvent';
-import { rotateHandler } from './boxSystem/rotateHandler';
-import { rotationEndHandler } from './boxSystem/rotationEndHandler';
+import { AI, Box, Entity, State } from '../ecs/type';
 import { create } from './boxSystem/create';
 import { remove } from './boxSystem/remove';
+import { ECSEvent } from '../ecs/createEventSystem';
 
 export enum Direction {
   up,
@@ -15,9 +13,9 @@ export enum Direction {
 }
 export namespace BoxEvent {
   export enum Type {
-    onClick,
-    rotationEnd,
-    rotate,
+    onClick = 'BoxEvent-onClick',
+    rotationEnd = 'BoxEvent-rotationEnd',
+    rotate = 'BoxEvent-rotate',
   }
 
   export type All = RotationEndEvent | Rotate;
@@ -28,11 +26,12 @@ export namespace BoxEvent {
       color: [number, number, number];
       texture: string;
       direction: Direction;
+      boxEntity: Entity;
     }
   >;
   export type RotationEndEvent = ECSEvent<
     Type.rotationEnd,
-    { ai: AI; shouldExplode: boolean }
+    { ai: AI; shouldExplode: boolean; boxEntity: Entity }
   >;
 }
 
@@ -42,12 +41,4 @@ export const boxSystem = (state: State) =>
     name: componentName.box,
     create,
     remove,
-    event: ({ state, component, event }) => {
-      switch (event.type) {
-        case BoxEvent.Type.rotationEnd:
-          return rotationEndHandler({ state, component, event });
-        case BoxEvent.Type.rotate:
-          return rotateHandler({ state, component, event });
-      }
-    },
   });

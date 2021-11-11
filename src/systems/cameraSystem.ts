@@ -1,21 +1,18 @@
-import { Scene, Vector3 } from 'babylonjs';
+import { Scene } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { Camera, State } from '../ecs/type';
 import { getAspectRatio } from '../utils/getAspectRatio';
 import { setBackground } from './backgroundSystem';
-import { ECSEvent } from '../ecs/emitEvent';
-import {
-  adjustBabylonCameraToComponentCamera,
-  handleResize,
-} from './cameraSystem/handleResize';
+import { adjustBabylonCameraToComponentCamera } from './cameraSystem/handleResize';
 import { setTurnIndicator } from './turnIndicatorSystem';
 import { setLogo } from './logoSystem';
+import { ECSEvent } from '../ecs/createEventSystem';
 
 export const cameraEntity = 'cameraEntity';
 export namespace CameraEvent {
   export enum Type {
-    resize,
+    resize = 'CameraEvent-resize',
   }
 
   export type All = ResizeEvent;
@@ -42,7 +39,7 @@ export const setCamera = ({
   state = setBackground({ state, data: {} });
   state = setTurnIndicator({ state, data: {} });
   state = setLogo({ state, data: {} });
-  
+
   return state;
 };
 
@@ -82,10 +79,4 @@ export const cameraSystem = (state: State) =>
 
     //   return state;
     // },
-    event: ({ state, component, event }) => {
-      switch (event.type) {
-        case CameraEvent.Type.resize:
-          return handleResize({ state, component, event });
-      }
-    },
   });

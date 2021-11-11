@@ -93,12 +93,14 @@ const updateSizeAndPosition = ({
           canvasWidth,
         });
 
-        const control = getUiControl({ entity }) as BABYLON.GUI.Control;
+        const control = getUiControl({ entity });
 
-        control.width = width;
-        control.height = height;
-        control.top = top;
-        control.left = left;
+        if (control) {
+          control.width = width;
+          control.height = height;
+          control.top = top;
+          control.left = left;
+        }
 
         return acc;
       },

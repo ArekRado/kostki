@@ -4,14 +4,13 @@ import { Logo, State } from '../ecs/type';
 import { updateLogoPosition } from './logoSystem/updateLogoPosition';
 import { create } from './logoSystem/create';
 import { remove } from './logoSystem/remove';
-import { ECSEvent } from '../ecs/emitEvent';
-import { handleRotateBox } from './logoSystem/handleRotateBox';
+import { ECSEvent } from '../ecs/createEventSystem';
 
 export const logoEntity = '8523773494048061';
 
 export namespace LogoEvent {
   export enum Type {
-    rotateBox,
+    rotateBox = 'rotateBox',
   }
 
   export type All = RotateBoxEvent;
@@ -37,10 +36,10 @@ export const logoSystem = (state: State) =>
     name: componentName.logo,
     create,
     remove,
-    event: ({ state, event, component }) => {
-      switch (event.type) {
-        case LogoEvent.Type.rotateBox:
-          return handleRotateBox({ state, event, component });
-      }
-    },
+    // event: ({ state, event, component }) => {
+    //   switch (event.type) {
+    //     case LogoEvent.Type.rotateBox:
+    //       return handleRotateBox({ state, event, component });
+    //   }
+    // },
   });
