@@ -36,10 +36,4 @@ export const logoSystem = (state: State) =>
     name: componentName.logo,
     create,
     remove,
-    // event: ({ state, event, component }) => {
-    //   switch (event.type) {
-    //     case LogoEvent.Type.rotateBox:
-    //       return handleRotateBox({ state, event, component });
-    //   }
-    // },
   });

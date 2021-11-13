@@ -40,6 +40,20 @@ const eventHandler = ({
   event: AllEvents;
 }): State => {
   switch (event.type) {
+    // UI
+    case UIEvent.Type.changeUrl:
+      state = setUi({
+        state,
+        data: { type: event.payload.uiType },
+        cleanControls: false,
+      });
+      break;
+
+    // Camera
+    case CameraEvent.Type.resize:
+      state = handleResize({ state, event });
+      break;
+
     // Logo
     case LogoEvent.Type.rotateBox:
       state = handleRotateBox({ state, event });
@@ -92,20 +106,6 @@ const eventHandler = ({
       break;
     case BoxEvent.Type.rotate:
       state = rotateHandler({ state, event });
-      break;
-
-    // UI
-    case UIEvent.Type.changeUrl:
-      state = setUi({
-        state,
-        data: { type: event.payload.uiType },
-        cleanControls: true,
-      });
-      break;
-
-    // Camera
-    case CameraEvent.Type.resize:
-      state = handleResize({ state, event });
       break;
   }
   return state;

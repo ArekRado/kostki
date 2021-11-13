@@ -8,7 +8,7 @@ import {
   UIImage,
   Dictionary,
 } from '../../ecs/type';
-import { clamp } from '../../utils/clamp';
+import { clamp } from '../../utils/js/clamp';
 import { getAspectRatio } from '../../utils/getAspectRatio';
 import { componentName, getComponentsByName } from '../../ecs/component';
 import { getUiControl } from './getUiControl';

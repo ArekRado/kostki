@@ -114,16 +114,6 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  state = setComponent<Marker>({
-    state,
-    data: {
-      entity: markerEntity,
-      name: componentName.marker,
-      color: [1, 1, 1],
-      position: [0, 0],
-    },
-  });
-
   state = setComponent<Background>({
     state,
     data: {

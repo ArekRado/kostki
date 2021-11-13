@@ -23,12 +23,7 @@ export namespace UIEvent {
 
   export type All = ChangeUrlEvent;
 
-  export type ChangeUrlEvent = ECSEvent<
-    Type.changeUrl,
-    {
-      uiType: Scene;
-    }
-  >;
+  export type ChangeUrlEvent = ECSEvent<Type.changeUrl, { uiType: Scene }>;
 }
 
 const uiGetSet = createGetSetForUniqComponent<UI>({

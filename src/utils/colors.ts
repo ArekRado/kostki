@@ -1,5 +1,5 @@
 import { Color } from '../ecs/type';
-import { clamp } from './clamp';
+import { clamp } from './js/clamp';
 import { hslToRgb } from './hslToRgb';
 import { rgbToHsl } from './rgbToHsl';
 

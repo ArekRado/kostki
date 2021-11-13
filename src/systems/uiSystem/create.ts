@@ -8,13 +8,7 @@ import { uiResize } from './uiResize';
 import { UIEvent } from '../uiSystem';
 import { emitEvent } from '../../eventSystem';
 
-export const create = ({
-  state,
-  component,
-}: {
-  state: State;
-  component: UI;
-}) => {
+export const create = ({ state }: { state: State; component: UI }) => {
   setAdvancedTexture(
     BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
       'ui',
@@ -33,14 +27,14 @@ export const create = ({
 
   uiResize({ state, scene });
 
-  window.addEventListener('popstate', (e) => {
-    emitEvent<UIEvent.All>({
-      type: UIEvent.Type.changeUrl,
-      payload: {
-        uiType: window.location.hash.replace('#', '') as Scene,
-      },
-    });
-  });
+  // window.addEventListener('popstate', (e) => {
+  //   emitEvent<UIEvent.All>({
+  //     type: UIEvent.Type.changeUrl,
+  //     payload: {
+  //       uiType: window.location.hash.replace('#', '') as Scene,
+  //     },
+  //   });
+  // });
 
   return state;
 };

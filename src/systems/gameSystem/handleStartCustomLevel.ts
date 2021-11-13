@@ -7,6 +7,7 @@ import {
   State,
   Scene as GameScene,
   TurnIndicator,
+  Marker,
 } from '../../ecs/type';
 import { BoxEvent, Direction } from '../boxSystem';
 import { GameEvent, getGame, setGame } from '../gameSystem';
@@ -22,6 +23,7 @@ import { getAiMove } from '../aiSystem/getAiMove';
 import { getTextureSet } from '../boxSystem/getTextureSet';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 import { emitEvent } from '../../eventSystem';
+import { markerEntity } from '../markerSystem';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -227,6 +229,16 @@ export const handleStartCustomLevel: EventHandler<
       boxes: [],
       texts: [],
       isVisible: true,
+    },
+  });
+
+  state = setComponent<Marker>({
+    state,
+    data: {
+      entity: markerEntity,
+      name: componentName.marker,
+      color: [1, 1, 1],
+      position: [0, 0],
     },
   });
 
