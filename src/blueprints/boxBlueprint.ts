@@ -1,14 +1,14 @@
 import {
   ActionManager,
   ExecuteCodeAction,
-  Mesh,
+  MeshBuilder,
   StandardMaterial,
   TransformNode,
   Vector3,
 } from 'babylonjs';
 import { Scene } from 'babylonjs/scene';
 
-import { gameEntity, GameEvent } from '../systems/gameSystem';
+import { GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem/getTextureSet';
@@ -51,7 +51,7 @@ export const boxBlueprint = ({
     [new Vector3(0, size / 2, 0), new Vector3(Math.PI / 2, 0, 0)], //
     [new Vector3(0, -size / 2, 0), new Vector3(-Math.PI / 2, 0, 0)], //
   ].forEach(([position, rotation], i) => {
-    const plane = Mesh.CreatePlane('plane' + i, size, scene, false);
+    const plane = MeshBuilder.CreatePlane('plane' + i, { size });
 
     plane.parent = boxMesh;
     plane.material = new StandardMaterial('mat', scene);
@@ -67,8 +67,6 @@ export const boxBlueprint = ({
 
     plane.position = position;
     plane.rotation = rotation;
-
-    plane.setParent(boxMesh);
 
     if (isClickable) {
       // Click event

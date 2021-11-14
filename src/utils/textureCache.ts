@@ -30,12 +30,12 @@ export const getTextureFromCache = ({
   textureUrl: string;
   scene: Scene;
 }): Texture => {
-  // if (textureCache[textureUrl]) {
-  //   return textureCache[textureUrl];
-  // } else {
+  if (textureCache[textureUrl]) {
+    return textureCache[textureUrl];
+  } else {
     return setTextureCache({
       textureUrl,
       scene,
     });
-  // }
+  }
 };

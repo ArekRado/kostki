@@ -1,39 +1,25 @@
 import { humanPlayerEntity, scene } from '.';
 import { setComponent, componentName } from './ecs/component';
 import { initialState } from './ecs/state';
-import {
-  AI,
-  Background,
-  Camera,
-  Game,
-  Logo,
-  Marker,
-  Scene,
-  State,
-  UI,
-} from './ecs/type';
+import { AI, Background, Camera, Game, Scene, State, UI } from './ecs/type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
-import { gameEntity, gameSystem, getGame } from './systems/gameSystem';
-import { markerEntity, markerSystem } from './systems/markerSystem';
+import { gameEntity, gameSystem } from './systems/gameSystem';
+import { markerSystem } from './systems/markerSystem';
 import {
   cameraEntity,
   cameraSystem,
   getCameraSize,
 } from './systems/cameraSystem';
-import { getSavedState, removeState } from './utils/localDb';
 import { uiEntity, uiSystem } from './systems/uiSystem';
 import { uiButtonSystem } from './systems/uiButtonSystem';
-// import { uiImageSystem } from '../systems/uiImageSystem';
 import { uiTextSystem } from './systems/uiTextSystem';
 import { playersList } from './systems/gameSystem/handleChangeSettings';
-import {
-  backgroundEntity,
-  backgroundSystem,
-} from './systems/backgroundSystem';
+import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
 import { turnIndicatorSystem } from './systems/turnIndicatorSystem';
-import { logoEntity, logoSystem } from './systems/logoSystem';
+import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
+import { setScene } from './systems/gameSystem/handleCleanScene';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -123,21 +109,23 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  const savedState = getSavedState();
-  const savedStateVersion = getGame({
-    state: savedState || initialState,
-  })?.version;
+  // const savedState = getSavedState();
+  // const savedStateVersion = getGame({
+  //   state: savedState || initialState,
+  // })?.version;
 
-  if (savedState && savedStateVersion === version) {
-    state = {
-      ...state,
-      entity: savedState.entity,
-      component: savedState.component,
-    };
+  // if (savedState && savedStateVersion === version) {
+  //   state = {
+  //     ...state,
+  //     entity: savedState.entity,
+  //     component: savedState.component,
+  //   };
 
-    // state = recreateAllComponents({ state });
-  }
-  removeState();
+  //   // state = recreateAllComponents({ state });
+  // }
+  // removeState();
+
+  state = setScene({ state, scene: Scene.mainMenu });
 
   return state;
 };

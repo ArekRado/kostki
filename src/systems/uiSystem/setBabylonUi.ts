@@ -10,11 +10,7 @@ import {
   mainUIAttachEvents,
   mainUIBlueprint,
 } from '../../blueprints/ui/mainUIBlueprint';
-import { componentName, setComponent } from '../../ecs/component';
-import { Logo, Scene, State, UI } from '../../ecs/type';
-import { emitEvent } from '../../eventSystem';
-import { logoEntity } from '../logoSystem';
-import { getUi, UIEvent } from '../uiSystem';
+import { Scene, State, UI } from '../../ecs/type';
 
 type SetBabylonUi = (params: {
   state: State;
@@ -28,19 +24,19 @@ export const setBabylonUi: SetBabylonUi = ({
   attachEvents,
   uiType,
 }) => {
-  const newHash = uiType;
-  const currentHash = window.location.hash.replace('#', '') as Scene;
+  // const newHash = uiType;
+  // const currentHash = window.location.hash.replace('#', '') as Scene;
 
-  if (newHash !== currentHash) {
-    window.history.pushState(uiType, uiType, `#${uiType}`);
+  // if (newHash !== currentHash) {
+  //   window.history.pushState(uiType, uiType, `#${uiType}`);
 
-    emitEvent<UIEvent.All>({
-      type: UIEvent.Type.changeUrl,
-      payload: {
-        uiType: window.location.hash.replace('#', '') as Scene,
-      },
-    });
-  }
+  //   emitEvent<UIEvent.All>({
+  //     type: UIEvent.Type.changeUrl,
+  //     payload: {
+  //       uiType: window.location.hash.replace('#', '') as Scene,
+  //     },
+  //   });
+  // }
 
   switch (uiType) {
     case Scene.customLevel:
@@ -48,13 +44,6 @@ export const setBabylonUi: SetBabylonUi = ({
       attachEvents && gameUIAttachEvents({ advancedTexture });
       break;
     case Scene.mainMenu:
-      state = setComponent<Logo>({
-        state,
-        data: {
-          entity: logoEntity,
-          name: componentName.logo,
-        },
-      });
       state = mainUIBlueprint({ state, advancedTexture });
       attachEvents && mainUIAttachEvents({ advancedTexture });
       break;
