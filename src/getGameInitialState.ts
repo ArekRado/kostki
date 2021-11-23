@@ -25,7 +25,7 @@ type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
 
-  const version = '0.0.0';
+  const version = '0.0.1';
 
   // Systems
   state = eventSystem(state);

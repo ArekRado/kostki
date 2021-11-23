@@ -123,8 +123,11 @@ export type Background = Component<{
 
 export type TurnIndicator = Component<{
   position: [number, number];
-  boxes: Entity[];
-  texts: Entity[];
+  list: {
+    boxEntity: Entity;
+    textEntity: Entity;
+    aiEntity: Entity;
+  }[];
   isVisible: boolean;
 }>;
 

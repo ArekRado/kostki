@@ -1,7 +1,46 @@
 import { scene } from '../..';
-import { componentName, removeComponent } from '../../ecs/component';
-import { State, TurnIndicator } from '../../ecs/type';
-import { highlighterEntity } from '../turnIndicatorSystem';
+import {
+  componentName,
+  removeComponent,
+  setComponent,
+} from '../../ecs/component';
+import { Entity, State, TurnIndicator } from '../../ecs/type';
+import { getTurnIndicator, highlighterEntity } from '../turnIndicatorSystem';
+
+export const removeTurnIndicatorElement = ({
+  state,
+  textEntity,
+  boxEntity,
+  aiEntity,
+}: {
+  state: State;
+  textEntity: Entity;
+  boxEntity: Entity;
+  aiEntity: Entity;
+}): State => {
+  state = removeComponent({
+    state,
+    name: componentName.uiText,
+    entity: textEntity,
+  });
+
+  const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
+  mesh?.dispose();
+
+  const turnIndicator = getTurnIndicator({ state });
+
+  if (turnIndicator) {
+    state = setComponent<TurnIndicator>({
+      state,
+      data: {
+        ...turnIndicator,
+        list: turnIndicator.list.filter((item) => item.aiEntity !== aiEntity),
+      },
+    });
+  }
+
+  return state;
+};
 
 export const remove = ({
   state,
@@ -10,22 +49,16 @@ export const remove = ({
   state: State;
   component: TurnIndicator;
 }) => {
-  component.boxes.forEach((boxEntity, i) => {
-    const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
-    mesh?.dispose();
-  });
-
-  component.texts.forEach((textEntity, i) => {
-    state = removeComponent({
+  component.list.forEach(({ aiEntity, textEntity, boxEntity }) => {
+    state = removeTurnIndicatorElement({
       state,
-      name: componentName.uiText,
-      entity: textEntity,
+      aiEntity,
+      textEntity,
+      boxEntity,
     });
   });
 
-  const mesh = scene.getMeshByUniqueId(
-    parseFloat(highlighterEntity)
-  );
+  const mesh = scene.getMeshByUniqueId(parseFloat(highlighterEntity));
   mesh?.dispose();
 
   return state;

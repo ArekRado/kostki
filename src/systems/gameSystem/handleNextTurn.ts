@@ -1,3 +1,4 @@
+import { scene } from '../..';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import {
   componentName,
@@ -11,9 +12,10 @@ import { removeState, saveState } from '../../utils/localDb';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
-import { gameEntity, GameEvent, getGame } from '../gameSystem';
+import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { moveHighlighter } from '../turnIndicatorSystem/moveHighlighter';
+import { updateIndicatorPosition } from '../turnIndicatorSystem/updateIndicatorPosition';
 import { getNextPlayer } from './getNextPlayer';
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
@@ -109,13 +111,14 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
         state = pushBoxToRotationQueue({ state, entity: box.entity });
       } else {
         // AI can't move which means it lost
-        return aiLost({ state, component: game, ai });
+        state = aiLost({ state, component: game, ai });
       }
     }
   }
 
   saveState(state);
-  moveHighlighter({ state });
+  state = moveHighlighter({ state });
+  state = updateIndicatorPosition({ state, scene });
 
   return state;
 };

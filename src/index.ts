@@ -113,9 +113,10 @@ if (process.env.NODE_ENV !== 'test') {
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
   // done- new logo
-  // - gradients - should represent most common colors - 1 color === 10%
-  // - turn indicator - disable lost players
+  // nope - gradients - should represent most common colors - 1 color === 10%
+  // done - turn indicator - disable lost players
   // - highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
+  // - game should not stop when player lose
   // nope- install game button
   // ?done- new ui
   // - question modal when user clicks on X button

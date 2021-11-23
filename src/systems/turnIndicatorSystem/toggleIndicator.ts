@@ -17,11 +17,11 @@ export const doesIndicatorCollidesWithGrid = ({
 }) => {
   const { boxSize, screenSize } = getCameraSizes({
     state,
-    boxScaleFactor: 3
+    boxScaleFactor: 3,
   });
   const aspect = getAspectRatio(scene);
 
-  const indicatorHeight = component.boxes.length * boxSize;
+  const indicatorHeight = component.list.length * boxSize;
 
   const { width, height } = getGridDimensions({ state });
 
@@ -67,16 +67,18 @@ export const toggleIndicator = ({ state }: { state: State }): State => {
       },
     });
 
-    component.boxes.forEach((boxEntity, i) => {
+    component.list.forEach(({ boxEntity }, i) => {
       const mesh = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
       mesh?.setEnabled(isVisible);
     });
 
-    const highlighterMesh = scene.getMeshByUniqueId(parseFloat(highlighterEntity));
+    const highlighterMesh = scene.getMeshByUniqueId(
+      parseFloat(highlighterEntity)
+    );
     highlighterMesh?.setEnabled(isVisible);
 
     !isVisible &&
-      component.texts.forEach((textEntity) => {
+      component.list.forEach(({ textEntity }) => {
         const text = getComponent<UIText>({
           state,
           name: componentName.uiText,

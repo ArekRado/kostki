@@ -226,8 +226,7 @@ export const handleStartCustomLevel: EventHandler<
       entity: turnIndicatorEntity,
       name: componentName.turnIndicator,
       position: [0, 0],
-      boxes: [],
-      texts: [],
+      list: [],
       isVisible: true,
     },
   });

@@ -27,7 +27,7 @@ export const create = ({
     return state;
   }
 
-  const boxes = game?.playersQueue.map((aiEntity, i) => {
+  const list: TurnIndicator['list'] = game?.playersQueue.map((aiEntity, i) => {
     const ai = getComponent<AI>({
       state,
       name: componentName.ai,
@@ -35,6 +35,7 @@ export const create = ({
     });
 
     const boxEntity = createEntity('turnIndicatorBox');
+    const textEntity = createEntity('text');
 
     const box = boxBlueprint({
       scene,
@@ -50,18 +51,6 @@ export const create = ({
 
     box.scaling.x = 1 / scaleFactor;
     box.scaling.y = 1 / scaleFactor;
-
-    return boxEntity;
-  });
-
-  const texts = game?.playersQueue.map((aiEntity, i) => {
-    const ai = getComponent<AI>({
-      state,
-      name: componentName.ai,
-      entity: aiEntity,
-    });
-
-    const textEntity = createEntity('text');
 
     state = setComponent<UIText>({
       state,
@@ -84,7 +73,11 @@ export const create = ({
       },
     });
 
-    return textEntity;
+    return {
+      aiEntity,
+      boxEntity,
+      textEntity,
+    };
   });
 
   highlighterBlueprint({
@@ -92,15 +85,12 @@ export const create = ({
     entity: highlighterEntity,
   });
 
-  const newComponent = {
-    ...component,
-    boxes,
-    texts,
-  };
-
   state = setComponent<TurnIndicator>({
     state,
-    data: newComponent,
+    data: {
+      ...component,
+      list,
+    },
   });
 
   state = toggleIndicator({ state });

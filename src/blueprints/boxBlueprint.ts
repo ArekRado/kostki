@@ -1,6 +1,7 @@
 import {
   ActionManager,
   ExecuteCodeAction,
+  Mesh,
   MeshBuilder,
   StandardMaterial,
   TransformNode,
@@ -13,6 +14,21 @@ import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem/getTextureSet';
 import { emitEvent } from '../eventSystem';
+
+// let planeCache: Mesh | undefined;
+// const createPlane = ({ name, size }: { name: string; size: number }) => {
+//   if (!planeCache) {
+//     planeCache = MeshBuilder.CreatePlane(name, { size, updatable: true });
+//     return planeCache;
+//   } else {
+//     // planeCache.scaling.x = size;
+//     // planeCache.scaling.y = size;
+
+//     const clonedPlane = planeCache.clone(name);
+
+//     return clonedPlane;
+//   }
+// };
 
 export const boxBlueprint = ({
   scene,

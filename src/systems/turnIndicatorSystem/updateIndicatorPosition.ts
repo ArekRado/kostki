@@ -1,9 +1,24 @@
 import { Scene } from 'babylonjs';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { State, UIText } from '../../ecs/type';
+import { AI, Entity, State, UIText } from '../../ecs/type';
 import { getTurnIndicator } from '../turnIndicatorSystem';
 import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { moveHighlighter } from './moveHighlighter';
+import { removeTurnIndicatorElement } from './remove';
+import { setUi } from '../uiSystem';
+
+const isAiActive = ({
+  state,
+  aiEntity,
+}: {
+  state: State;
+  aiEntity: Entity;
+}): boolean =>
+  getComponent<AI>({
+    state,
+    name: componentName.ai,
+    entity: aiEntity,
+  })?.active || false;
 
 export const updateIndicatorPosition = ({
   state,
@@ -23,7 +38,18 @@ export const updateIndicatorPosition = ({
     boxScaleFactor: 3,
   });
 
-  component.boxes.forEach((boxEntity, i) => {
+  component.list.forEach(({ boxEntity, textEntity, aiEntity }) => {
+    if (!isAiActive({ state, aiEntity })) {
+      state = removeTurnIndicatorElement({
+        state,
+        boxEntity,
+        textEntity,
+        aiEntity,
+      });
+    }
+  });
+
+  component.list.forEach(({ boxEntity, textEntity }, i) => {
     const boxPosition: [number, number] = [
       leftEdge + boxSize,
       topEdge - i * boxSize - boxSize,
@@ -38,14 +64,12 @@ export const updateIndicatorPosition = ({
     if (mesh) {
       mesh.position.x = boxPosition[0];
       mesh.position.y = boxPosition[1];
-    } else {
-      console.log('mesh doesnt exist', boxEntity);
     }
 
     const text = getComponent<UIText>({
       state,
       name: componentName.uiText,
-      entity: component.texts[i],
+      entity: textEntity,
     });
 
     if (text) {
@@ -65,6 +89,7 @@ export const updateIndicatorPosition = ({
   });
 
   state = moveHighlighter({ state });
+  state = setUi({ state, data: {}, cleanControls: false }); // to refresh text position
 
   return state;
 };
