@@ -115,7 +115,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done- new logo
   // nope - gradients - should represent most common colors - 1 color === 10%
   // done - turn indicator - disable lost players
-  // - highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
+  // disable lost players how about human?
+  // ?done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
   // - game should not stop when player lose
   // nope- install game button
   // ?done- new ui
@@ -133,5 +134,6 @@ if (process.env.NODE_ENV !== 'test') {
   // - update dependencies
   // - move ecs to new project package
   // - better eslint
+  // - babylonjs tree shacking
   // - end - optimization
 }
