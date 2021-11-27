@@ -12,7 +12,7 @@ type SetMeshTexture = (params: {
   mesh: AbstractMesh;
   texture: string;
   scene: Scene;
-  color: Color;
+  color?: Color;
 }) => Texture;
 export const setMeshTexture: SetMeshTexture = ({
   mesh,
@@ -20,12 +20,14 @@ export const setMeshTexture: SetMeshTexture = ({
   scene,
   color,
 }) => {
-  (mesh.material as StandardMaterial).diffuseColor = new Color3(
-    color[0],
-    color[1],
-    color[2]
-  );
- 
+  if (color) {
+    (mesh.material as StandardMaterial).diffuseColor = new Color3(
+      color[0],
+      color[1],
+      color[2]
+    );
+  }
+
   const newTexture = getTextureFromCache({ textureUrl: texture, scene });
 
   (mesh.material as StandardMaterial).diffuseTexture = newTexture;

@@ -115,8 +115,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done- new logo
   // nope - gradients - should represent most common colors - 1 color === 10%
   // done - turn indicator - disable lost players
-  // disable lost players how about human?
-  // ?done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
+  // done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
   // - game should not stop when player lose
   // nope- install game button
   // ?done- new ui
@@ -125,6 +124,7 @@ if (process.env.NODE_ENV !== 'test') {
   // nope- responsive images
   // done- buttons with images
   // done- butons/controls with aspect ratio size
+  // - close button should be recttangle
   // - transitions between scenes
   // - "pop" box animation when level starts
   // - custom leve settings - add different maps
