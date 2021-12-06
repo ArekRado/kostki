@@ -15,37 +15,36 @@ const startBtnEntity = generateId().toString();
 const selectLevelBtnEntity = generateId().toString();
 
 const versionTextEntity = generateId().toString();
-const newVersionBtnEntity = generateId().toString();
 
 type MainUIAttachEvents = (params: {
   advancedTexture: BABYLON.GUI.AdvancedDynamicTexture;
 }) => void;
 export const mainUIAttachEvents: MainUIAttachEvents = ({ advancedTexture }) => {
-  attachEvent({
-    advancedTexture,
-    entity: startBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        payload: {
-          newScene: GameScene.customLevelSettings,
-        },
-      });
-    },
-  });
+  // attachEvent({
+  //   advancedTexture,
+  //   entity: startBtnEntity,
+  //   onPointerUpObservable: () => {
+  //     emitEvent<GameEvent.CleanSceneEvent>({
+  //       type: GameEvent.Type.cleanScene,
+  //       payload: {
+  //         newScene: GameScene.customLevelSettings,
+  //       },
+  //     });
+  //   },
+  // });
 
-  attachEvent({
-    advancedTexture,
-    entity: selectLevelBtnEntity,
-    onPointerUpObservable: () => {
-      emitEvent<GameEvent.CleanSceneEvent>({
-        type: GameEvent.Type.cleanScene,
-        payload: {
-          newScene: GameScene.customLevelSettings,
-        },
-      });
-    },
-  });
+  // attachEvent({
+  //   advancedTexture,
+  //   entity: selectLevelBtnEntity,
+  //   onPointerUpObservable: () => {
+  //     emitEvent<GameEvent.CleanSceneEvent>({
+  //       type: GameEvent.Type.cleanScene,
+  //       payload: {
+  //         newScene: GameScene.customLevelSettings,
+  //       },
+  //     });
+  //   },
+  // });
 };
 
 type MainUIBlueprint = (params: {
@@ -57,31 +56,6 @@ export const mainUIBlueprint: MainUIBlueprint = ({
   advancedTexture,
 }) => {
   const aspectRatio: Breakpoints<boolean> = [true, true, true];
-
-  // state = setComponent<UIImage>({
-  //   state,
-  //   data: {
-  //     entity: logoImgEntity,
-  //     name: componentName.uiImage,
-  //     src: [logoUrl, logoUrl, logoUrl],
-  //     size: [
-  //       [0.5, 0.3],
-  //       [0.5, 0.3],
-  //       [0.5, 0.3],
-  //     ],
-  //     maxSize: [
-  //       [0.5, 0.3],
-  //       [0.5, 0.3],
-  //       [0.5, 0.3],
-  //     ],
-  //     position: [
-  //       [0.5, 0.15],
-  //       [0.5, 0.15],
-  //       [0.5, 0.15],
-  //     ],
-  //     aspectRatio,
-  //   },
-  // });
 
   const size: Breakpoints<[number, number]> = [
     [0.6, 0.2],
@@ -149,7 +123,7 @@ export const mainUIBlueprint: MainUIBlueprint = ({
     data: {
       entity: versionTextEntity,
       name: componentName.uiText,
-      text: `version ${game?.version}`,
+      text: game?.version ?? '',
       size,
       color: '#444',
       fontSize: [24, 24, 24],
@@ -160,39 +134,6 @@ export const mainUIBlueprint: MainUIBlueprint = ({
       ],
     },
   });
-
-  if (game?.newVersionAvailable) {
-    state = setComponent<UIButton>({
-      state,
-      data: {
-        src,
-        entity: newVersionBtnEntity,
-        name: componentName.uiButton,
-        text: 'New version available. Click here to reload',
-        size: [
-          [0.2, 0.2],
-          [0.2, 0.2],
-          [0.2, 0.2],
-        ],
-        position: [
-          [0.1, 0.1],
-          [0.1, 0.1],
-          [0.1, 0.1],
-        ],
-      },
-    });
-
-    attachEvent({
-      advancedTexture,
-      entity: newVersionBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ReloadEvent>({
-          type: GameEvent.Type.reload,
-          payload: {},
-        });
-      },
-    });
-  }
 
   return state;
 };

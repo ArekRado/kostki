@@ -42,7 +42,6 @@ const getResponsivePositionAndSize: GetResponsivePositionAndSize = ({
   const getResponsive = getResonsiveValue(canvasWidth);
   const newPosition = getResponsive(element.position);
   const [left, top] = normalizePosition(newPosition);
-
   const newSize = getResponsive(element.size);
 
   const newSizeWithAspectRatio =

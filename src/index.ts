@@ -15,6 +15,8 @@ import { gameEntity, GameEvent } from './systems/gameSystem';
 import { cameraEntity, CameraEvent } from './systems/cameraSystem';
 import { emitEvent } from './eventSystem';
 
+import { mountGameUI } from './ui/App';
+
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
 
@@ -92,6 +94,8 @@ if (process.env.NODE_ENV !== 'test') {
 
   let state: State = getGameInitialState();
 
+  mountGameUI({ state });
+
   const beforeRenderCallback = () => {
     state = runOneFrame({ state });
   };
@@ -108,8 +112,9 @@ if (process.env.NODE_ENV !== 'test') {
     engine.resize();
   });
 
-  // todo
   // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
+
+  // todo
   // done- better gradient colors - rgb to hsv
   // done- hide highligter on resize and create
   // done- new logo
@@ -126,6 +131,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done- butons/controls with aspect ratio size
   // - close button should be recttangle
   // - transitions between scenes
+  // - ui should has max container size when screen is too wide
   // - "pop" box animation when level starts
   // - custom leve settings - add different maps
   // - campaign

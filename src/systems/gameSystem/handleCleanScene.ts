@@ -4,23 +4,23 @@ import {
   removeComponentsByName,
   setComponent,
 } from '../../ecs/component';
-import { EventHandler, Game, Logo, Scene, State } from '../../ecs/type';
+import { EventHandler, Game, Logo, Page, Scene, State } from '../../ecs/type';
 import { GameEvent, setGame } from '../gameSystem';
 import { logoEntity } from '../logoSystem';
-import { setUi } from '../uiSystem';
 
 export const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> =
   ({ state, event }) => {
-    state = setUi({
-      state,
-      data: {
-        type: event.payload.newScene,
-      },
-      cleanControls: true,
-    });
+    // state = setUi({
+    //   state,
+    //   data: {
+    //     type: event.payload.newPage,
+    //   },
+    //   cleanControls: true,
+    // });
     state = setGame({
       state,
       data: {
+        page: event.payload.newPage,
         round: 0,
         grid: [],
         currentPlayer: '',
@@ -39,13 +39,13 @@ export const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> =
     });
     state = removeComponentsByName({ name: componentName.logo, state });
 
-    setScene({ state, scene: event.payload.newScene });
+    setScene({ state, page: event.payload.newPage });
 
     return state;
   };
 
-export const setScene = ({ state, scene }: { state: State; scene: Scene }) => {
-  if (scene === Scene.mainMenu) {
+export const setScene = ({ state, page }: { state: State; page: Page }) => {
+  if (page === Page.mainMenu) {
     state = setComponent<Logo>({
       state,
       data: {

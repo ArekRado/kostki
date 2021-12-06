@@ -24,6 +24,7 @@ import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLe
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
 import { setUi, UIEvent } from './systems/uiSystem';
+import { eventBusDispatch } from './utils/eventBus';
 
 type AllEvents =
   | LogoEvent.All
@@ -41,13 +42,13 @@ const eventHandler = ({
 }): State => {
   switch (event.type) {
     // UI
-    case UIEvent.Type.changeUrl:
-      state = setUi({
-        state,
-        data: { type: event.payload.uiType },
-        cleanControls: false,
-      });
-      break;
+    // case UIEvent.Type.changeUrl:
+    //   state = setUi({
+    //     state,
+    //     data: { type: event.payload.uiType },
+    //     cleanControls: false,
+    //   });
+    //   break;
 
     // Camera
     case CameraEvent.Type.resize:
@@ -71,6 +72,7 @@ const eventHandler = ({
       break;
     case GameEvent.Type.cleanScene:
       state = handleCleanScene({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changePlayers:
       state = handleChangePlayers({ state, event });

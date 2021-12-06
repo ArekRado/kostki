@@ -4,7 +4,7 @@ import {
   getComponent,
   createGetSetForUniqComponent,
 } from '../ecs/component';
-import { AI, Entity, Game, State, Scene as GameScene } from '../ecs/type';
+import { AI, Entity, Game, State, Scene as GameScene, Page } from '../ecs/type';
 import { create } from './gameSystem/create';
 import { ECSEvent } from '../ecs/createEventSystem';
 
@@ -52,7 +52,7 @@ export namespace GameEvent {
   >;
   export type CleanSceneEvent = ECSEvent<
     Type.cleanScene,
-    { newScene: GameScene }
+    { newPage: Page }
   >;
 
   export type ChangePlayersEvent = ECSEvent<Type.changePlayers, {}>;

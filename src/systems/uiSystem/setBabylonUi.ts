@@ -1,15 +1,15 @@
 import {
   customLevelSettingsUIAttachEvents,
   customLevelSettingsUIBlueprint,
-} from '../../blueprints/ui/customLevelSettingsUIBlueprint';
+} from '../../blueprints/ui/customLevelSettings';
 import {
   gameUIAttachEvents,
   gameUIBlueprint,
-} from '../../blueprints/ui/gameUIBlueprint';
+} from '../../blueprints/ui/game';
 import {
   mainUIAttachEvents,
   mainUIBlueprint,
-} from '../../blueprints/ui/mainUIBlueprint';
+} from '../../blueprints/ui/main';
 import { Scene, State, UI } from '../../ecs/type';
 
 type SetBabylonUi = (params: {

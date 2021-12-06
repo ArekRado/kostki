@@ -44,93 +44,93 @@ type customLevelSettingsUIAttachEvents = (params: {
 }) => void;
 export const customLevelSettingsUIAttachEvents: customLevelSettingsUIAttachEvents =
   ({ advancedTexture }) => {
-    attachEvent({
-      advancedTexture,
-      entity: playersBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangePlayersEvent>({
-          type: GameEvent.Type.changePlayers,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: playersBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangePlayersEvent>({
+  //         type: GameEvent.Type.changePlayers,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: difficultyBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangeDifficultyEvent>({
-          type: GameEvent.Type.changeDifficulty,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: difficultyBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangeDifficultyEvent>({
+  //         type: GameEvent.Type.changeDifficulty,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: quickStartBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangeQuickStartEvent>({
-          type: GameEvent.Type.changeQuickStart,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: quickStartBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangeQuickStartEvent>({
+  //         type: GameEvent.Type.changeQuickStart,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: colorBlindModeBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangeColorBlindModeEvent>({
-          type: GameEvent.Type.changeColorBlindMode,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: colorBlindModeBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangeColorBlindModeEvent>({
+  //         type: GameEvent.Type.changeColorBlindMode,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: mapTypeBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangeMapTypeEvent>({
-          type: GameEvent.Type.changeMapType,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: mapTypeBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangeMapTypeEvent>({
+  //         type: GameEvent.Type.changeMapType,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: nextMapBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangeNextMapEvent>({
-          type: GameEvent.Type.changeNextMap,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: nextMapBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangeNextMapEvent>({
+  //         type: GameEvent.Type.changeNextMap,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: prevMapBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.ChangePrevMapEvent>({
-          type: GameEvent.Type.changePrevMap,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: prevMapBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.ChangePrevMapEvent>({
+  //         type: GameEvent.Type.changePrevMap,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
 
-    attachEvent({
-      advancedTexture,
-      entity: startBtnEntity,
-      onPointerUpObservable: () => {
-        emitEvent<GameEvent.StartCustomLevelEvent>({
-          type: GameEvent.Type.startCustomLevel,
-          payload: {},
-        });
-      },
-    });
+  //   attachEvent({
+  //     advancedTexture,
+  //     entity: startBtnEntity,
+  //     onPointerUpObservable: () => {
+  //       emitEvent<GameEvent.StartCustomLevelEvent>({
+  //         type: GameEvent.Type.startCustomLevel,
+  //         payload: {},
+  //       });
+  //     },
+  //   });
   };
 
 type CustomLevelSettingsUIBlueprint = (params: { state: State }) => State;

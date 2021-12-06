@@ -35,7 +35,16 @@ export type AI = Component<{
   textureSet: [string, string, string, string, string, string, string];
 }>;
 
+/**
+ * @deprecated
+ */
 export enum Scene {
+  mainMenu = 'mainMenu',
+  customLevel = 'customLevel',
+  customLevelSettings = 'customLevelSettings',
+}
+
+export enum Page {
   mainMenu = 'mainMenu',
   customLevel = 'customLevel',
   customLevelSettings = 'customLevelSettings',
@@ -45,6 +54,8 @@ export type Logo = {};
 
 export type Game = Component<{
   version: string;
+  page: Page;
+
   newVersionAvailable: boolean;
   round: number;
   grid: Entity[];
@@ -81,6 +92,9 @@ export type Marker = Component<{
 
 export type Breakpoints<Value = number> = [Value, Value, Value];
 
+/**
+ * @deprecated
+ */
 export type UI = Component<{
   type: Scene;
 }>;
