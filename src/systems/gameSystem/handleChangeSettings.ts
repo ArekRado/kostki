@@ -23,7 +23,6 @@ import {
 } from '../../utils/textureSets';
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
-import { setUi } from '../uiSystem';
 
 export const basicAI = (
   entity: Entity,
@@ -76,7 +75,7 @@ export const handleChangePlayers: EventHandler<
     },
   });
 
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleChangeDifficulty: EventHandler<
@@ -113,7 +112,7 @@ export const handleChangeDifficulty: EventHandler<
     },
   });
 
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleChangeQuickStart: EventHandler<
@@ -135,7 +134,7 @@ export const handleChangeQuickStart: EventHandler<
     },
   });
 
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleChangeColorBlindMode: EventHandler<
@@ -154,28 +153,14 @@ export const handleChangeColorBlindMode: EventHandler<
     },
   });
 
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleChangeMapType: EventHandler<
   Game,
   GameEvent.ChangeMapTypeEvent
 > = ({ state }) => {
-  return setUi({ state, data: {}, cleanControls: false });
-};
-
-export const handleChangeNextMap: EventHandler<
-  Game,
-  GameEvent.ChangeNextMapEvent
-> = ({ state }) => {
-  return setUi({ state, data: {}, cleanControls: false });
-};
-
-export const handleChangePrevMap: EventHandler<
-  Game,
-  GameEvent.ChangePrevMapEvent
-> = ({ state }) => {
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleShowNewVersion: EventHandler<
@@ -186,7 +171,7 @@ export const handleShowNewVersion: EventHandler<
     state,
     data: { newVersionAvailable: true },
   });
-  return setUi({ state, data: {}, cleanControls: false });
+  return state;
 };
 
 export const handleReload: EventHandler<Game, GameEvent.ReloadEvent> = ({

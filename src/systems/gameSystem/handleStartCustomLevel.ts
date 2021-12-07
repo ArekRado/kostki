@@ -6,8 +6,8 @@ import {
   Game,
   State,
   Scene as GameScene,
-  TurnIndicator,
   Marker,
+  Page,
 } from '../../ecs/type';
 import { BoxEvent, Direction } from '../boxSystem';
 import { GameEvent, getGame, setGame } from '../gameSystem';
@@ -15,9 +15,7 @@ import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
-import { setUi } from '../uiSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
-import { turnIndicatorEntity } from '../turnIndicatorSystem';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { getTextureSet } from '../boxSystem/getTextureSet';
@@ -63,14 +61,6 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
       position: [center[0], center[1]],
       distance: cameraDistance,
     },
-  });
-
-  state = setUi({
-    state,
-    data: {
-      type: GameScene.customLevel,
-    },
-    cleanControls: true,
   });
 
   return state;
@@ -209,6 +199,7 @@ export const handleStartCustomLevel: EventHandler<
     state,
     data: {
       gameStarted: true,
+      page: Page.customLevel,
     },
   });
 
@@ -219,17 +210,6 @@ export const handleStartCustomLevel: EventHandler<
       state = onClickBox({ box, state, ai: currentAi });
     }
   }
-
-  state = setComponent<TurnIndicator>({
-    state,
-    data: {
-      entity: turnIndicatorEntity,
-      name: componentName.turnIndicator,
-      position: [0, 0],
-      list: [],
-      isVisible: true,
-    },
-  });
 
   state = setComponent<Marker>({
     state,

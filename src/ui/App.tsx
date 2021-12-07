@@ -6,6 +6,7 @@ import { Page, State } from '../ecs/type';
 import { getGame } from '../systems/gameSystem';
 import { useGameState } from './hooks/useGameState';
 import { CustomLevelSettings } from './pages/CustomLevelSettings';
+import { CustomLevel } from './pages/CustomLevel';
 
 const App: FC<{ state: State }> = ({ state }) => {
   useOutline();
@@ -19,7 +20,7 @@ const App: FC<{ state: State }> = ({ state }) => {
     case Page.customLevelSettings:
       return <CustomLevelSettings state={state} />;
     case Page.customLevel:
-      return <Main state={state} />;
+      return <CustomLevel state={state} />;
 
     case undefined:
       return null;

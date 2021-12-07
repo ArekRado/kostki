@@ -14,8 +14,6 @@ import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
 import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
-import { moveHighlighter } from '../turnIndicatorSystem/moveHighlighter';
-import { updateIndicatorPosition } from '../turnIndicatorSystem/updateIndicatorPosition';
 import { getNextPlayer } from './getNextPlayer';
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
@@ -117,8 +115,6 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
   }
 
   saveState(state);
-  state = moveHighlighter({ state });
-  state = updateIndicatorPosition({ state, scene });
 
   return state;
 };

@@ -1,5 +1,4 @@
 import { AIDifficulty } from '../systems/aiSystem';
-import { ColorGradient } from '../utils/colors';
 import { GlobalSystem, System } from './createSystem';
 
 export type Dictionary<Value> = { [key: string]: Value };
@@ -92,57 +91,8 @@ export type Marker = Component<{
 
 export type Breakpoints<Value = number> = [Value, Value, Value];
 
-/**
- * @deprecated
- */
-export type UI = Component<{
-  type: Scene;
-}>;
-
-export type UIElement = {
-  position: Breakpoints<[number, number]>;
-  size: Breakpoints<[number, number]>;
-  maxSize?: Breakpoints<[number, number]>;
-  minSize?: Breakpoints<[number, number]>;
-  aspectRatio?: Breakpoints<boolean>;
-};
-
-export type UIButton = Component<
-  UIElement & {
-    text: string;
-    src: Breakpoints<string>;
-    color?: string;
-    fontSize?: number;
-    isPointerBlocker?: boolean;
-  }
->;
-
-export type UIImage = Component<
-  UIElement & {
-    src: Breakpoints<string>;
-  }
->;
-
-export type UIText = Component<
-  UIElement & {
-    text: string;
-    color?: string;
-    fontSize?: Breakpoints<number>;
-  }
->;
-
 export type Background = Component<{
   gradientTime: number;
-}>;
-
-export type TurnIndicator = Component<{
-  position: [number, number];
-  list: {
-    boxEntity: Entity;
-    textEntity: Entity;
-    aiEntity: Entity;
-  }[];
-  isVisible: boolean;
 }>;
 
 export type Event = Component<{}>;
@@ -155,12 +105,7 @@ export type State = {
     game: Dictionary<Game>;
     camera: Dictionary<Camera>;
     marker: Dictionary<Marker>;
-    ui: Dictionary<UI>;
-    uiButton: Dictionary<UIButton>;
-    uiImage: Dictionary<UIImage>;
-    uiText: Dictionary<UIText>;
     background: Dictionary<Background>;
-    turnIndicator: Dictionary<TurnIndicator>;
     logo: Dictionary<Logo>;
     event: Dictionary<Event>;
   };

@@ -1,7 +1,7 @@
 import { humanPlayerEntity, scene } from '.';
 import { setComponent, componentName } from './ecs/component';
 import { initialState } from './ecs/state';
-import { AI, Background, Camera, Game, Page, Scene, State, UI } from './ecs/type';
+import { AI, Background, Camera, Game, Page, Scene, State } from './ecs/type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
 import { gameEntity, gameSystem } from './systems/gameSystem';
@@ -11,16 +11,11 @@ import {
   cameraSystem,
   getCameraSize,
 } from './systems/cameraSystem';
-import { uiEntity, uiSystem } from './systems/uiSystem';
-import { uiButtonSystem } from './systems/uiButtonSystem';
-import { uiTextSystem } from './systems/uiTextSystem';
 import { playersList } from './systems/gameSystem/handleChangeSettings';
 import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
-import { turnIndicatorSystem } from './systems/turnIndicatorSystem';
 import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
-import { uiImageSystem } from './systems/uiImageSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -35,12 +30,7 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = gameSystem(state);
   state = markerSystem(state);
   state = cameraSystem(state);
-  state = uiSystem(state);
-  state = uiButtonSystem(state);
-  state = uiImageSystem(state);
-  state = uiTextSystem(state);
   state = backgroundSystem(state);
-  state = turnIndicatorSystem(state);
   state = logoSystem(state);
 
   state = setComponent<AI>({
@@ -60,7 +50,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     state,
     data: {
       version,
-      page: Page.customLevelSettings,
+      page: Page.mainMenu,
       newVersionAvailable: false,
       entity: gameEntity,
       name: componentName.game,
@@ -81,15 +71,15 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  state = setComponent<UI>({
-    state,
-    data: {
-      entity: uiEntity,
-      name: componentName.ui,
-      type: Scene.mainMenu,
-      // cleanControls: false,
-    },
-  });
+  // state = setComponent<UI>({
+  //   state,
+  //   data: {
+  //     entity: uiEntity,
+  //     name: componentName.ui,
+  //     type: Scene.mainMenu,
+  //     // cleanControls: false,
+  //   },
+  // });
 
   state = setComponent<Camera>({
     state,

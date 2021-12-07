@@ -5,7 +5,6 @@ import { Camera, State } from '../ecs/type';
 import { getAspectRatio } from '../utils/getAspectRatio';
 import { setBackground } from './backgroundSystem';
 import { adjustBabylonCameraToComponentCamera } from './cameraSystem/handleResize';
-import { setTurnIndicator } from './turnIndicatorSystem';
 import { setLogo } from './logoSystem';
 import { ECSEvent } from '../ecs/createEventSystem';
 
@@ -37,7 +36,6 @@ export const setCamera = ({
   state = cameraGetSet.setComponent({ state, data: { ...data, ...size } });
 
   state = setBackground({ state, data: {} });
-  state = setTurnIndicator({ state, data: {} });
   state = setLogo({ state, data: {} });
 
   return state;

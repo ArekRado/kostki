@@ -10,9 +10,7 @@ import {
   handleChangeColorBlindMode,
   handleChangeDifficulty,
   handleChangeMapType,
-  handleChangeNextMap,
   handleChangePlayers,
-  handleChangePrevMap,
   handleChangeQuickStart,
   handleReload,
   handleShowNewVersion,
@@ -23,14 +21,12 @@ import { handlePlayerClick } from './systems/gameSystem/handlePlayerClick';
 import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLevel';
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
-import { setUi, UIEvent } from './systems/uiSystem';
 import { eventBusDispatch } from './utils/eventBus';
 
 type AllEvents =
   | LogoEvent.All
   | GameEvent.All
   | BoxEvent.All
-  | UIEvent.All
   | CameraEvent.All;
 
 const eventHandler = ({
@@ -63,6 +59,7 @@ const eventHandler = ({
     // Game
     case GameEvent.Type.startCustomLevel:
       state = handleStartCustomLevel({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.nextTurn:
       state = handleNextTurn({ state, event });
@@ -75,25 +72,24 @@ const eventHandler = ({
       eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changePlayers:
+      eventBusDispatch('setUIState', state);
       state = handleChangePlayers({ state, event });
       break;
     case GameEvent.Type.changeDifficulty:
       state = handleChangeDifficulty({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeQuickStart:
       state = handleChangeQuickStart({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeColorBlindMode:
       state = handleChangeColorBlindMode({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeMapType:
       state = handleChangeMapType({ state, event });
-      break;
-    case GameEvent.Type.changeNextMap:
-      state = handleChangeNextMap({ state, event });
-      break;
-    case GameEvent.Type.changePrevMap:
-      state = handleChangePrevMap({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.showNewVersion:
       state = handleShowNewVersion({ state, event });

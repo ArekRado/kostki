@@ -2,8 +2,6 @@ import { Camera, EventHandler } from '../../ecs/type';
 import { CameraEvent, getCamera, getCameraSize, setCamera } from '../cameraSystem';
 import { camera, scene } from '../..';
 import { Vector3 } from 'babylonjs';
-import { uiResize } from '../uiSystem/uiResize';
-import { setUi } from '../uiSystem';
 
 export const adjustBabylonCameraToComponentCamera = ({
   component,
@@ -36,8 +34,6 @@ export const handleResize: EventHandler<Camera, CameraEvent.ResizeEvent> = ({
     state,
     data: camera || {},
   });
-
-  state = setUi({ state, data: {}, cleanControls: false });
 
   return state;
 };

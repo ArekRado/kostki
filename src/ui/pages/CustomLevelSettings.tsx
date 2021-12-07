@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { State } from '../../ecs/type';
+import { emitEvent } from '../../eventSystem';
 import { AIDifficulty } from '../../systems/aiSystem';
-import { getGame } from '../../systems/gameSystem';
+import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
 import { PageContainer } from '../components/PageContainer';
-import { Text } from '../components/Text';
-import { useGameState } from '../hooks/useGameState';
 
 const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   switch (difficulty) {
@@ -29,6 +28,42 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
   if (!game) {
     return null;
   }
+
+  const changePlayers = () =>
+    emitEvent<GameEvent.ChangePlayersEvent>({
+      type: GameEvent.Type.changePlayers,
+      payload: {},
+    });
+
+  const changeDifficulty = () =>
+    emitEvent<GameEvent.ChangeDifficultyEvent>({
+      type: GameEvent.Type.changeDifficulty,
+      payload: {},
+    });
+
+  const changeQuickStart = () =>
+    emitEvent<GameEvent.ChangeQuickStartEvent>({
+      type: GameEvent.Type.changeQuickStart,
+      payload: {},
+    });
+
+  const changeColorBlindMode = () =>
+    emitEvent<GameEvent.ChangeColorBlindModeEvent>({
+      type: GameEvent.Type.changeColorBlindMode,
+      payload: {},
+    });
+
+  const changeMapType = () =>
+    emitEvent<GameEvent.ChangeMapTypeEvent>({
+      type: GameEvent.Type.changeMapType,
+      payload: {},
+    });
+
+  const startCustomLevel = () =>
+    emitEvent<GameEvent.StartCustomLevelEvent>({
+      type: GameEvent.Type.startCustomLevel,
+      payload: {},
+    });
 
   return (
     <PageContainer
@@ -57,7 +92,7 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
           gridColumn: '2 / 4',
         }}
       >
-        <Button>Start</Button>
+        <Button onClick={startCustomLevel}>Start</Button>
       </Flex>
 
       <Flex
@@ -68,11 +103,17 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
           gridColumn: '1 / 3',
         }}
       >
-        <Button css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          css={{ display: 'flex', justifyContent: 'space-between' }}
+          onClick={changeDifficulty}
+        >
           <div>Difficulty</div>
           <div>{mapDifficultyToText(game.customLevelSettings.difficulty)}</div>
         </Button>
-        <Button css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          css={{ display: 'flex', justifyContent: 'space-between' }}
+          onClick={changePlayers}
+        >
           <div>Players</div>
           <div>{game.customLevelSettings.players?.length}</div>
         </Button>
@@ -85,11 +126,17 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
           gridColumn: '3 / 5',
         }}
       >
-        <Button css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          css={{ display: 'flex', justifyContent: 'space-between' }}
+          onClick={changeQuickStart}
+        >
           <div>Quick Start</div>
           <div>{game.customLevelSettings.quickStart ? 'x' : ''}</div>
         </Button>
-        <Button css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Button
+          css={{ display: 'flex', justifyContent: 'space-between' }}
+          onClick={changeColorBlindMode}
+        >
           <div>Color Blind Mode</div>
           <div>{game.colorBlindMode ? 'x' : ''}</div>
         </Button>

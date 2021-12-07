@@ -23,8 +23,6 @@ export namespace GameEvent {
     changeQuickStart = 'GameEvent-changeQuickStart',
     changeColorBlindMode = 'GameEvent-changeColorBlindMode',
     changeMapType = 'GameEvent-changeMapType',
-    changeNextMap = 'GameEvent-changeNextMap',
-    changePrevMap = 'GameEvent-changePrevMap',
     showNewVersion = 'GameEvent-showNewVersion',
     reload = 'GameEvent-reload',
   }
@@ -39,8 +37,6 @@ export namespace GameEvent {
     | ChangeQuickStartEvent
     | ChangeColorBlindModeEvent
     | ChangeMapTypeEvent
-    | ChangeNextMapEvent
-    | ChangePrevMapEvent
     | ShowNewVersionEvent
     | ReloadEvent;
 
@@ -63,8 +59,6 @@ export namespace GameEvent {
     {}
   >;
   export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>;
-  export type ChangeNextMapEvent = ECSEvent<Type.changeNextMap, {}>;
-  export type ChangePrevMapEvent = ECSEvent<Type.changePrevMap, {}>;
 
   export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, {}>;
   export type ReloadEvent = ECSEvent<Type.reload, {}>;
