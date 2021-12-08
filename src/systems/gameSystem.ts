@@ -88,30 +88,5 @@ export const gameSystem = (state: State) =>
   createSystem<Game, GameEvent.All>({
     state,
     name: componentName.game,
-    // create: ({ state, component }) => {
-    //   component.boxRotationQueue.forEach((boxEntity) => {
-    //     const box = getComponent<Box>({
-    //       state,
-    //       name: componentName.box,
-    //       entity: boxEntity,
-    //     });
-
-    //     const ai = getComponent<AI>({
-    //       state,
-    //       name: componentName.ai,
-    //       entity: box?.player || '',
-    //     });
-
-    //     ai &&
-    //       box &&
-    //       emitEvent<BoxEvent.RotationEndEvent>({
-    //         type: BoxEvent.Type.rotationEnd,
-    //         entity: boxEntity,
-    //         payload: { ai, shouldExplode: box.dots === 6 },
-    //       });
-    //   });
-
-    //   return state;
-    // },
     create,
   });

@@ -37,16 +37,7 @@ const eventHandler = ({
   event: AllEvents;
 }): State => {
   switch (event.type) {
-    // UI
-    // case UIEvent.Type.changeUrl:
-    //   state = setUi({
-    //     state,
-    //     data: { type: event.payload.uiType },
-    //     cleanControls: false,
-    //   });
-    //   break;
-
-    // Camera
+     // Camera
     case CameraEvent.Type.resize:
       state = handleResize({ state, event });
       break;

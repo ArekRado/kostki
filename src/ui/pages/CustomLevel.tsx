@@ -1,11 +1,10 @@
 import React from 'react';
-import { Page, State } from '../../ecs/type';
+import { Page } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { GameEvent } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
-import { Flex } from '../components/Flex';
+import { Burger } from '../components/icons/Burger';
 import { PageContainer } from '../components/PageContainer';
-import { Text } from '../components/Text';
 
 // const isAiActive = ({
 //   state,
@@ -21,65 +20,37 @@ import { Text } from '../components/Text';
 //   })?.active || false;
 
 export const CustomLevel: React.FC = () => {
-    //     removeState();
+  //     removeState();
   //     emitEvent<GameEvent.CleanSceneEvent>({
   //       type: GameEvent.Type.cleanScene,
   //       payload: { newScene: GameScene.mainMenu },
   //     });
-  
+
   return (
     <PageContainer
       css={{
-        gridTemplateRows: '200px 1fr 100px',
-        gridTemplateColumns: '1fr 300px 1fr',
+        gridTemplateRows: '100px 1fr',
+        gridTemplateColumns: '1fr 100px',
         flex: 1,
       }}
     >
-      {/* <Flex
+      <Button
         css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gridRow: '2 / 2',
-          gridColumn: '2 / 3',
+          gridRow: '1 / 1',
+          gridColumn: '2 / 2',
+          display: 'flex',
+          alignContent: 'center',
+          alignItems: 'center',
+        }}
+        onClick={() => {
+          emitEvent<GameEvent.CleanSceneEvent>({
+            type: GameEvent.Type.cleanScene,
+            payload: { newPage: Page.mainMenu },
+          });
         }}
       >
-        <Button
-          onClick={() => {
-            emitEvent<GameEvent.CleanSceneEvent>({
-              type: GameEvent.Type.cleanScene,
-              payload: {
-                newPage: Page.customLevelSettings,
-              },
-            });
-          }}
-        >
-          Start
-        </Button>
-        <Button
-          css={{ marginTop: '100px' }}
-          onClick={() => {
-            emitEvent<GameEvent.CleanSceneEvent>({
-              type: GameEvent.Type.cleanScene,
-              payload: {
-                newPage: Page.customLevelSettings,
-              },
-            });
-          }}
-        >
-          Custom Level
-        </Button>
-      </Flex>
-
-      <Text
-        css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gridRow: '3 / 4',
-          gridColumn: '3 / 3',
-        }}
-      >
-        0.0.2
-      </Text> */}
+        <Burger />
+      </Button>
     </PageContainer>
   );
 };

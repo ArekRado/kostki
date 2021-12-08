@@ -11,12 +11,7 @@ export enum componentName {
   game = 'game',
   camera = 'camera',
   marker = 'marker',
-  ui = 'ui',
-  uiButton = 'uiButton',
-  uiImage = 'uiImage',
-  uiText = 'uiText',
   background = 'background',
-  turnIndicator = 'turnIndicator',
   logo = 'logo',
 }
 
