@@ -20,7 +20,7 @@ import { Text } from '../components/Text';
 //     entity: aiEntity,
 //   })?.active || false;
 
-export const CustomLevel: React.FC<{ state: State }> = ({ state }) => {
+export const CustomLevel: React.FC = () => {
     //     removeState();
   //     emitEvent<GameEvent.CleanSceneEvent>({
   //       type: GameEvent.Type.cleanScene,

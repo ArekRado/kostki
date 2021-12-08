@@ -72,8 +72,8 @@ const eventHandler = ({
       eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changePlayers:
-      eventBusDispatch('setUIState', state);
       state = handleChangePlayers({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeDifficulty:
       state = handleChangeDifficulty({ state, event });

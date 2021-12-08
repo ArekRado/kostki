@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import { State } from '../../ecs/type';
 import { eventBusOn, eventBusRemove } from '../../utils/eventBus';
 
+let stateCache: State | undefined = undefined;
+
 export const useGameState = () => {
   const [gameState, setGameState] = useState<State | undefined>(undefined);
 
   useEffect(() => {
     const callback = (state?: State) => {
-      setGameState(state);
+      if (state) {
+        stateCache = state;
+        setGameState(state);
+      }
     };
     eventBusOn('setUIState', callback);
 
@@ -16,5 +21,5 @@ export const useGameState = () => {
     };
   }, []);
 
-  return gameState;
+  return gameState || stateCache;
 };

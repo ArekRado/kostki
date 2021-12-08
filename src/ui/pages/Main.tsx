@@ -7,7 +7,7 @@ import { Flex } from '../components/Flex';
 import { PageContainer } from '../components/PageContainer';
 import { Text } from '../components/Text';
 
-export const Main: React.FC<{ state: State }> = ({ state }) => {
+export const Main: React.FC = () => {
   return (
     <PageContainer
       css={{

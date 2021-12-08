@@ -1,11 +1,13 @@
 import React from 'react';
-import { State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { AIDifficulty } from '../../systems/aiSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
+import { Check } from '../components/icons/Check';
+import { Cross } from '../components/icons/Cross';
 import { PageContainer } from '../components/PageContainer';
+import { useGameState } from '../hooks/useGameState';
 
 const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   switch (difficulty) {
@@ -23,8 +25,10 @@ const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   }
 };
 
-export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
-  const game = getGame({ state });
+export const CustomLevelSettings: React.FC = () => {
+  const gameState = useGameState();
+  const game = gameState && getGame({ state: gameState });
+
   if (!game) {
     return null;
   }
@@ -70,6 +74,7 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
       css={{
         gridTemplateRows: '2fr 1fr 1fr',
         gridTemplateColumns: '1fr 1fr 1fr 1fr',
+        gridGap: '20px',
         flex: 1,
       }}
     >
@@ -104,7 +109,11 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
         }}
       >
         <Button
-          css={{ display: 'flex', justifyContent: 'space-between' }}
+          css={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+          }}
           onClick={changeDifficulty}
         >
           <div>Difficulty</div>
@@ -127,18 +136,24 @@ export const CustomLevelSettings: React.FC<{ state: State }> = ({ state }) => {
         }}
       >
         <Button
-          css={{ display: 'flex', justifyContent: 'space-between' }}
+          css={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+          }}
           onClick={changeQuickStart}
         >
           <div>Quick Start</div>
-          <div>{game.customLevelSettings.quickStart ? 'x' : ''}</div>
+          <div>
+            {game.customLevelSettings.quickStart ? <Check /> : <Cross />}
+          </div>
         </Button>
         <Button
           css={{ display: 'flex', justifyContent: 'space-between' }}
           onClick={changeColorBlindMode}
         >
           <div>Color Blind Mode</div>
-          <div>{game.colorBlindMode ? 'x' : ''}</div>
+          <div>{game.colorBlindMode ? <Check /> : <Cross />}</div>
         </Button>
       </Flex>
     </PageContainer>
