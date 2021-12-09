@@ -5,6 +5,7 @@ import { GameEvent } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Burger } from '../components/icons/Burger';
 import { PageContainer } from '../components/PageContainer';
+import { TurnIndicator } from '../components/TurnIndicator';
 
 // const isAiActive = ({
 //   state,
@@ -34,6 +35,7 @@ export const CustomLevel: React.FC = () => {
         flex: 1,
       }}
     >
+      <TurnIndicator ai={[]} />
       <Button
         css={{
           gridRow: '1 / 1',
@@ -41,6 +43,7 @@ export const CustomLevel: React.FC = () => {
           display: 'flex',
           alignContent: 'center',
           alignItems: 'center',
+          margin: '0.5rem'
         }}
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({

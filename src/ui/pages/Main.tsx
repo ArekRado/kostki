@@ -5,14 +5,14 @@ import { GameEvent } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
 import { PageContainer } from '../components/PageContainer';
-import { Text } from '../components/Text';
+import { Typography } from '../components/Typography';
 
 export const Main: React.FC = () => {
   return (
     <PageContainer
       css={{
-        gridTemplateRows: '200px 1fr 100px',
-        gridTemplateColumns: '1fr 300px 1fr',
+        gridTemplateRows: '20% 70% 10%',
+        gridTemplateColumns: '20% 60% 20%',
         flex: 1,
       }}
     >
@@ -20,11 +20,13 @@ export const Main: React.FC = () => {
         css={{
           flexDirection: 'column',
           justifyContent: 'center',
+          alignItems:'center',
           gridRow: '2 / 2',
           gridColumn: '2 / 3',
         }}
       >
         <Button
+          css={{ maxWidth: '500px', width:'100%' }}
           onClick={() => {
             emitEvent<GameEvent.CleanSceneEvent>({
               type: GameEvent.Type.cleanScene,
@@ -37,7 +39,7 @@ export const Main: React.FC = () => {
           Start
         </Button>
         <Button
-          css={{ marginTop: '100px' }}
+          css={{ marginTop: '100px', maxWidth: '500px', width:'100%' }}
           onClick={() => {
             emitEvent<GameEvent.CleanSceneEvent>({
               type: GameEvent.Type.cleanScene,
@@ -51,7 +53,7 @@ export const Main: React.FC = () => {
         </Button>
       </Flex>
 
-      <Text
+      <Typography
         css={{
           flexDirection: 'column',
           justifyContent: 'center',
@@ -60,7 +62,7 @@ export const Main: React.FC = () => {
         }}
       >
         0.0.2
-      </Text>
+      </Typography>
     </PageContainer>
   );
 };

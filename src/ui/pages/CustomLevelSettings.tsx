@@ -4,6 +4,7 @@ import { AIDifficulty } from '../../systems/aiSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
+import { Grid } from '../components/Grid';
 import { Check } from '../components/icons/Check';
 import { Cross } from '../components/icons/Cross';
 import { PageContainer } from '../components/PageContainer';
@@ -72,9 +73,9 @@ export const CustomLevelSettings: React.FC = () => {
   return (
     <PageContainer
       css={{
-        gridTemplateRows: '2fr 1fr 1fr',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
-        gridGap: '20px',
+        gridTemplateRows: '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr',
+        gridGap: '1rem',
         flex: 1,
       }}
     >
@@ -83,36 +84,35 @@ export const CustomLevelSettings: React.FC = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           gridRow: '1 / 1',
-          gridColumn: '1 / 5',
+          gridColumn: '1 / 1',
         }}
       >
         Select level
       </Flex>
 
-      <Flex
+      <Grid
         css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gridRow: '2 / 2',
-          gridColumn: '2 / 4',
-        }}
-      >
-        <Button onClick={startCustomLevel}>Start</Button>
-      </Flex>
+          gridTemplateRows: '1fr 1fr 1fr 1fr',
+          gridTemplateColumns: '1fr',
+          '@bp1': {
+            gridTemplateRows: '1fr 1fr',
+            gridTemplateColumns: '1fr 1fr',
+          },
 
-      <Flex
-        css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gridRow: '3 / 3',
-          gridColumn: '1 / 3',
+          gridGap: '1rem',
+
+          gridRow: '2 / 2',
+          gridColumn: '1 / 1',
         }}
       >
         <Button
           css={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginBottom: '20px',
+
+            gridRow: '1 / 1',
+            gridColumn: '1 / 1',
+            alignSelf: 'center',
           }}
           onClick={changeDifficulty}
         >
@@ -120,26 +120,37 @@ export const CustomLevelSettings: React.FC = () => {
           <div>{mapDifficultyToText(game.customLevelSettings.difficulty)}</div>
         </Button>
         <Button
-          css={{ display: 'flex', justifyContent: 'space-between' }}
+          css={{
+            display: 'flex',
+            justifyContent: 'space-between',
+
+            gridRow: '2 / 2',
+            gridColumn: '1 / 1',
+            alignSelf: 'center',
+
+            '@bp1': {
+              gridRow: '1 / 1',
+              gridColumn: '2 / 2',
+            },
+          }}
           onClick={changePlayers}
         >
           <div>Players</div>
           <div>{game.customLevelSettings.players?.length}</div>
         </Button>
-      </Flex>
-      <Flex
-        css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gridRow: '3 / 3',
-          gridColumn: '3 / 5',
-        }}
-      >
         <Button
           css={{
             display: 'flex',
             justifyContent: 'space-between',
-            marginBottom: '20px',
+
+            gridRow: '3 / 3',
+            gridColumn: '1 / 1',
+            alignSelf: 'center',
+
+            '@bp1': {
+              gridRow: '2 / 2',
+              gridColumn: '1 / 1',
+            },
           }}
           onClick={changeQuickStart}
         >
@@ -149,12 +160,35 @@ export const CustomLevelSettings: React.FC = () => {
           </div>
         </Button>
         <Button
-          css={{ display: 'flex', justifyContent: 'space-between' }}
+          css={{
+            display: 'flex',
+            justifyContent: 'space-between',
+
+            gridRow: '4 / 4',
+            gridColumn: '1 / 1',
+            alignSelf: 'center',
+
+            '@bp1': {
+              gridRow: '2 / 2',
+              gridColumn: '2 / 2',
+            },
+          }}
           onClick={changeColorBlindMode}
         >
           <div>Color Blind Mode</div>
           <div>{game.colorBlindMode ? <Check /> : <Cross />}</div>
         </Button>
+      </Grid>
+
+      <Flex
+        css={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gridRow: '3 / 3',
+          gridColumn: '1 / 1',
+        }}
+      >
+        <Button onClick={startCustomLevel}>Start</Button>
       </Flex>
     </PageContainer>
   );

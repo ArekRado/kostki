@@ -5,8 +5,9 @@ export const Button = styled('button', {
   borderColor: 'Black',
   borderStyle: 'solid',
   background: 'White',
-  padding: '40px',
-  fontSize: '32px',
+  padding: '20px 15px',
+  fontSize: '1.5rem',
+  whiteSpace: 'nowrap',
 
   cursor: 'pointer',
   transition: '0.2s transform',
