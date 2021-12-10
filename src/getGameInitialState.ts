@@ -1,7 +1,7 @@
 import { humanPlayerEntity, scene } from '.';
 import { setComponent, componentName } from './ecs/component';
 import { initialState } from './ecs/state';
-import { AI, Background, Camera, Game, Page, Scene, State } from './ecs/type';
+import { AI, Background, Camera, Game, Page, State } from './ecs/type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
 import { gameEntity, gameSystem } from './systems/gameSystem';
@@ -21,7 +21,7 @@ type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
 
-  const version = '0.0.3';
+  const version = '0.0.4';
 
   // Systems
   state = eventSystem(state);
@@ -70,16 +70,6 @@ export const getGameInitialState: GetGameInitialState = () => {
       musicEnabled: false,
     },
   });
-
-  // state = setComponent<UI>({
-  //   state,
-  //   data: {
-  //     entity: uiEntity,
-  //     name: componentName.ui,
-  //     type: Scene.mainMenu,
-  //     // cleanControls: false,
-  //   },
-  // });
 
   state = setComponent<Camera>({
     state,

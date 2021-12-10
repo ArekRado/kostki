@@ -121,6 +121,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done - turn indicator - disable lost players
   // done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
   // - game should not stop when player lose
+  // - add win modal
+  // - save basic settings in localstorage
   // nope- install game button
   // ?done- new ui
   // done question modal when user clicks on X button

@@ -25,9 +25,9 @@ import { markerEntity } from '../markerSystem';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
-  state = Array.from({ length: 8 }).reduce(
+  state = Array.from({ length: 2 }).reduce(
     (acc: State, _, x) =>
-      Array.from({ length: 8 }).reduce(
+      Array.from({ length: 2 }).reduce(
         (acc2: State, _, y) =>
           setComponent<Box>({
             state: acc2,

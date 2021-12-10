@@ -1,4 +1,3 @@
-import { scene } from '../..';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import {
   componentName,
@@ -6,15 +5,30 @@ import {
   getComponentsByName,
   setComponent,
 } from '../../ecs/component';
-import { AI, EventHandler, Game, State } from '../../ecs/type';
+import { AI, Box, EventHandler, Game, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
-import { removeState, saveState } from '../../utils/localDb';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
 import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { getNextPlayer } from './getNextPlayer';
+
+const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
+  const game = getGame({ state });
+
+  return (
+    game?.grid.reduce((acc, boxEntity) => {
+      const box = getComponent<Box>({
+        state,
+        name: componentName.box,
+        entity: boxEntity,
+      });
+
+      return box?.player === ai.entity ? acc + 1 : acc;
+    }, 0) || 0
+  );
+};
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
 const aiLost: AiLost = ({ state, ai, component }) => {
@@ -38,8 +52,6 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
-    removeState();
-
     return setComponent<Game>({
       state,
       data: {
@@ -91,30 +103,35 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       },
     });
 
-    if (!ai.human && ai.active) {
-      const box = getAiMove({ state, ai });
-
-      if (box) {
-        state = setMarker({
-          state,
-          data: {
-            color: ai.color,
-            position: [
-              box.gridPosition[0] * boxWithGap,
-              box.gridPosition[1] * boxWithGap,
-            ],
-          },
-        });
-        state = onClickBox({ box, state, ai });
-        state = pushBoxToRotationQueue({ state, entity: box.entity });
+    if (ai.active) {
+      if (ai.human) {
+        const humanBoxes = sumAiBoxes({ state, ai });
+        if (humanBoxes === 0) {
+          state = aiLost({ state, component: game, ai });
+        }
       } else {
-        // AI can't move which means it lost
-        state = aiLost({ state, component: game, ai });
+        const box = getAiMove({ state, ai });
+
+        if (box) {
+          state = setMarker({
+            state,
+            data: {
+              color: ai.color,
+              position: [
+                box.gridPosition[0] * boxWithGap,
+                box.gridPosition[1] * boxWithGap,
+              ],
+            },
+          });
+          state = onClickBox({ box, state, ai });
+          state = pushBoxToRotationQueue({ state, entity: box.entity });
+        } else {
+          // AI can't move which means it lost
+          state = aiLost({ state, component: game, ai });
+        }
       }
     }
   }
-
-  saveState(state);
 
   return state;
 };

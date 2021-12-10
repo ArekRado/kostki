@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { componentName, getComponent } from '../../ecs/component';
 import { AI, Component, Page, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
@@ -34,6 +34,45 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
   }));
 };
 
+const BackToMainMenuModal: FC<{ setShowModal: (flag: boolean) => void }> = ({
+  setShowModal,
+}) => (
+  <Modal
+    css={{
+      width: '70%',
+      height: '40%',
+
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+    }}
+  >
+    <Typography css={{ textAlign: 'center' }}>
+      Are you sure you want to finish the game?
+    </Typography>
+
+    <Flex css={{ justifyContent: 'space-evenly' }}>
+      <Button
+        onClick={() => {
+          setShowModal(false);
+        }}
+      >
+        No
+      </Button>
+      <Button
+        onClick={() => {
+          emitEvent<GameEvent.CleanSceneEvent>({
+            type: GameEvent.Type.cleanScene,
+            payload: { newPage: Page.mainMenu },
+          });
+        }}
+      >
+        Yes
+      </Button>
+    </Flex>
+  </Modal>
+);
+
 export const CustomLevel: React.FC = () => {
   const state = useGameState();
   const aiList = state ? getAiList(state) : [];
@@ -48,42 +87,7 @@ export const CustomLevel: React.FC = () => {
         flex: 1,
       }}
     >
-      {showModal && (
-        <Modal
-          css={{
-            width: '70%',
-            height: '40%',
-
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-          }}
-        >
-          <Typography css={{ textAlign: 'center' }}>
-            Do you want to quit a game?
-          </Typography>
-
-          <Flex css={{ justifyContent: 'space-evenly' }}>
-            <Button
-              onClick={() => {
-                setShowModal(false);
-              }}
-            >
-              No
-            </Button>
-            <Button
-              onClick={() => {
-                emitEvent<GameEvent.CleanSceneEvent>({
-                  type: GameEvent.Type.cleanScene,
-                  payload: { newPage: Page.mainMenu },
-                });
-              }}
-            >
-              Yes
-            </Button>
-          </Flex>
-        </Modal>
-      )}
+      {showModal && <BackToMainMenuModal setShowModal={setShowModal} />}
 
       <Flex
         css={{
