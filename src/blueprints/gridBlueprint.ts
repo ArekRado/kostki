@@ -1,4 +1,3 @@
-import { Scene, Vector3, UniversalCamera, TransformNode } from 'babylonjs';
 import { componentName, setComponent } from '../ecs/component';
 import { Box, Entity, State } from '../ecs/type';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';

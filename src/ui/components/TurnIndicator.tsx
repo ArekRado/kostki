@@ -13,7 +13,6 @@ export type TurnIndicatorItem = {
 export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
   ai,
 }) => {
-
   return (
     <Flex
       css={{
@@ -26,18 +25,14 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
           css={{
             alignItems: 'center',
             padding: '0.125rem',
-            border: isActive ? 'black solid' : 'transparent solid',
-            borderWidth: '0.125rem',
-            '@bp1': {
-              borderWidth: '0.25rem',
-            },
+            backgroundColor: isActive ? 'rgba(255,255,255,0.6)' : '',
           }}
         >
           <Flex
             css={{
               position: 'relative',
-              width: '1rem',
-              height: '1rem',
+              width: '0.5rem',
+              height: '0.5rem',
               border: '0.125rem solid black',
               '@bp1': {
                 width: '2rem',

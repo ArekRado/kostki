@@ -1,4 +1,6 @@
-import { Tools, Vector3, Animation, AnimationEvent } from 'babylonjs';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Tools } from '@babylonjs/core/Misc/tools';
+import { Animation, AnimationEvent } from '@babylonjs/core/Animations';
 import { scene } from '../..';
 import { Color, Entity } from '../../ecs/type';
 import { setMeshTexture } from '../../utils/setMeshTexture';

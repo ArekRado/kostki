@@ -1,4 +1,4 @@
-import { Vector3 } from 'babylonjs';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { scene } from '../..';
 import { State } from '../../ecs/type';
 import { backgroundEntity } from '../backgroundSystem';

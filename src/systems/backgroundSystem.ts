@@ -1,16 +1,7 @@
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { State, Background } from '../ecs/type';
-import {
-  Effect,
-  Vector3,
-  ShaderMaterial,
-  MeshBuilder,
-  Vector2,
-  Color3,
-} from 'babylonjs';
 import { scene } from '..';
-import { getCamera, getCameraSize } from './cameraSystem';
 import {
   grayGradient,
   greenGradient,
@@ -25,6 +16,8 @@ import {
 import { playersList } from './gameSystem/handleChangeSettings';
 import { create } from './backgroundSystem/create';
 import { resizeBackground } from './backgroundSystem/resizeBackground';
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Vector2 } from '@babylonjs/core/Maths/math.vector';
 
 export const backgroundEntity = '17818552155683748';
 

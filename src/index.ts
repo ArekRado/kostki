@@ -1,21 +1,20 @@
-import {
-  Scene,
-  Vector3,
-  HemisphericLight,
-  Engine,
-  UniversalCamera,
-  Camera,
-  NullEngine,
-} from 'babylonjs';
 import { runOneFrame } from './ecs/runOneFrame';
 import { State } from './ecs/type';
 import { getGameInitialState } from './getGameInitialState';
 import { register } from './serviceWorkerRegistration';
-import { gameEntity, GameEvent } from './systems/gameSystem';
-import { cameraEntity, CameraEvent } from './systems/cameraSystem';
+import { GameEvent } from './systems/gameSystem';
+import { CameraEvent } from './systems/cameraSystem';
 import { emitEvent } from './eventSystem';
-
 import { mountGameUI } from './ui/App';
+
+import { Engine } from '@babylonjs/core/Engines/engine';
+import { NullEngine } from '@babylonjs/core/Engines/nullEngine';
+import { Scene } from '@babylonjs/core/scene';
+import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Camera } from '@babylonjs/core/Cameras/camera';
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -59,9 +58,9 @@ camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
 export const light = new HemisphericLight('light', new Vector3(0, 0, 1), scene);
 light.intensity = 1;
 
-light.diffuse = new BABYLON.Color3(1, 1, 1);
-light.specular = new BABYLON.Color3(1, 1, 1);
-light.groundColor = new BABYLON.Color3(1, 1, 1);
+light.diffuse = new Color3(1, 1, 1);
+light.specular = new Color3(1, 1, 1);
+light.groundColor = new Color3(1, 1, 1);
 
 // Because mutations breaks everything
 if (process.env.NODE_ENV !== 'test') {
@@ -129,17 +128,16 @@ if (process.env.NODE_ENV !== 'test') {
   // nope- responsive images
   // done- buttons with images
   // done- butons/controls with aspect ratio size
-  // - close button should be recttangle
+  // done - close button should be recttangle
   // - transitions between scenes
-  // - ui should has max container size when screen is too wide
+  // done - ui should has max container size when screen is too wide
   // - "pop" box animation when level starts
   // - custom leve settings - add different maps
   // - campaign
-  // - "new app versiomn" - button reloads page but it doesn't refresh cache
   // - change gradiens when user changes color
   // - update dependencies
-  // - move ecs to new project package
+  // done - move ecs to new project package
   // - better eslint
-  // - babylonjs tree shacking
+  // done - babylonjs tree shacking
   // - end - optimization
 }

@@ -1,4 +1,3 @@
-import { Vector3, Animation, Mesh, StandardMaterial, Color3 } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { Marker, State } from '../ecs/type';
@@ -6,6 +5,11 @@ import { scene } from '..';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import markerTexture from '../assets/marker.png';
 import { boxGap, boxSize } from '../blueprints/gridBlueprint';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { Animation } from '@babylonjs/core/Animations';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 
 export const markerEntity = '38127445920450264';
 

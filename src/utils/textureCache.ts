@@ -1,4 +1,5 @@
-import { Texture, Scene } from 'babylonjs';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { Scene } from '@babylonjs/core/scene';
 import { Dictionary } from '../ecs/type';
 
 export const textureCache: Dictionary<Texture> = {};

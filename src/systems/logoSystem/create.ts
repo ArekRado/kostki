@@ -1,4 +1,4 @@
-import { TransformNode } from 'babylonjs';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { scene } from '../..';
 import { logoBlueprint } from '../../blueprints/logoBlueprint';
 import { State } from '../../ecs/type';

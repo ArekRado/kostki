@@ -1,7 +1,7 @@
 import { Camera, EventHandler } from '../../ecs/type';
 import { CameraEvent, getCamera, getCameraSize, setCamera } from '../cameraSystem';
 import { camera, scene } from '../..';
-import { Vector3 } from 'babylonjs';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 
 export const adjustBabylonCameraToComponentCamera = ({
   component,

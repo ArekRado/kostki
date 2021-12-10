@@ -37,15 +37,15 @@
     }
   ],
   "dependencies": {
-    "@babel/preset-react": "^7.16.0",
+    "@babylonjs/core": "^5.0.0-alpha.59",
     "@stitches/react": "^1.2.6",
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11",
-    "babylonjs": "^5.0.0-alpha.59",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@babel/preset-react": "^7.16.0",
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.5",
     "@types/jest": "^26.0.23",

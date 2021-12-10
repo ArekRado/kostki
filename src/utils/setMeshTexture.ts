@@ -1,10 +1,8 @@
-import {
-  Color3,
-  AbstractMesh,
-  Scene,
-  StandardMaterial,
-  Texture,
-} from 'babylonjs';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import { Scene } from '@babylonjs/core/scene';
 import { Color } from '../ecs/type';
 import { getTextureFromCache } from './textureCache';
 

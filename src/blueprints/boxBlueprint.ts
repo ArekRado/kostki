@@ -1,19 +1,15 @@
-import {
-  ActionManager,
-  ExecuteCodeAction,
-  Mesh,
-  MeshBuilder,
-  StandardMaterial,
-  TransformNode,
-  Vector3,
-} from 'babylonjs';
-import { Scene } from 'babylonjs/scene';
-
 import { GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import { AI, Color, State } from '../ecs/type';
 import { getTextureSet } from '../systems/boxSystem/getTextureSet';
 import { emitEvent } from '../eventSystem';
+import { Scene } from '@babylonjs/core/scene';
+import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { ActionManager } from '@babylonjs/core/Actions/actionManager';
+import { ExecuteCodeAction } from '@babylonjs/core/Actions/directActions';
 
 // let planeCache: Mesh | undefined;
 // const createPlane = ({ name, size }: { name: string; size: number }) => {

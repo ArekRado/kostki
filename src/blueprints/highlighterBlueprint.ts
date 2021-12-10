@@ -1,12 +1,9 @@
-import {
-  Color3,
-  MeshBuilder,
-  Scene,
-  StandardMaterial,
-  Texture,
-} from 'babylonjs';
 import { Entity } from '../ecs/type';
 import highlighterUrl from '../assets/highlighter.png';
+import { Scene } from '@babylonjs/core/scene';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
 type HighlighterBlueprint = (params: { scene: Scene; entity: Entity }) => void;
 export const highlighterBlueprint: HighlighterBlueprint = ({

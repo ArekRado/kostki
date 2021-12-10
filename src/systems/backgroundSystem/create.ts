@@ -1,4 +1,8 @@
-import { Color3, Effect, MeshBuilder, ShaderMaterial, Vector3 } from 'babylonjs';
+import { Effect } from '@babylonjs/core/Materials/effect';
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { Vector3 } from '@babylonjs/core/Maths/math.vector';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { scene } from '../..';
 import { Background, State } from '../../ecs/type';
 import { backgroundEntity } from '../backgroundSystem';

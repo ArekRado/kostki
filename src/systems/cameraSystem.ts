@@ -1,4 +1,3 @@
-import { Scene } from 'babylonjs';
 import { createSystem } from '../ecs/createSystem';
 import { componentName, createGetSetForUniqComponent } from '../ecs/component';
 import { Camera, State } from '../ecs/type';
@@ -7,6 +6,7 @@ import { setBackground } from './backgroundSystem';
 import { adjustBabylonCameraToComponentCamera } from './cameraSystem/handleResize';
 import { setLogo } from './logoSystem';
 import { ECSEvent } from '../ecs/createEventSystem';
+import { Scene } from '@babylonjs/core/scene';
 
 export const cameraEntity = 'cameraEntity';
 export namespace CameraEvent {

@@ -54,8 +54,8 @@ export const CustomLevel: React.FC = () => {
   return (
     <PageContainer
       css={{
-        gridTemplateRows: '100px 1fr',
-        gridTemplateColumns: '1fr 100px',
+        gridTemplateRows: '5rem 1fr',
+        gridTemplateColumns: '1fr 5rem',
         flex: 1,
       }}
     >
