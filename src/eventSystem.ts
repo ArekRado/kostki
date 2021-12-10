@@ -54,6 +54,7 @@ const eventHandler = ({
       break;
     case GameEvent.Type.nextTurn:
       state = handleNextTurn({ state, event });
+      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.playerClick:
       state = handlePlayerClick({ state, event });

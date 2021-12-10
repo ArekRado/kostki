@@ -1,11 +1,17 @@
 import React from 'react';
-import { Page } from '../../ecs/type';
+import {
+  componentName,
+  getComponent,
+} from '../../ecs/component';
+import { AI, Component, Page, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
-import { GameEvent } from '../../systems/gameSystem';
+import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
+import { Flex } from '../components/Flex';
 import { Burger } from '../components/icons/Burger';
 import { PageContainer } from '../components/PageContainer';
-import { TurnIndicator } from '../components/TurnIndicator';
+import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator';
+import { useGameState } from '../hooks/useGameState';
 
 // const isAiActive = ({
 //   state,
@@ -20,12 +26,30 @@ import { TurnIndicator } from '../components/TurnIndicator';
 //     entity: aiEntity,
 //   })?.active || false;
 
+const getAiList = (state: State): TurnIndicatorItem[] => {
+  const game = getGame({ state });
+
+  const aiList = game?.playersQueue
+    .map((entity) =>
+      getComponent<AI>({
+        state,
+        name: componentName.ai,
+        entity,
+      })
+    )
+    .filter((ai) => !!ai) as Component<AI>[];
+
+  return aiList.map((ai) => ({
+    entity: ai.entity,
+    color: ai.color,
+    isActive: game?.currentPlayer === ai.entity,
+    name: ai.human ? 'Player' : 'Computer',
+  }));
+};
+
 export const CustomLevel: React.FC = () => {
-  //     removeState();
-  //     emitEvent<GameEvent.CleanSceneEvent>({
-  //       type: GameEvent.Type.cleanScene,
-  //       payload: { newScene: GameScene.mainMenu },
-  //     });
+  const state = useGameState();
+  const aiList = state ? getAiList(state) : [];
 
   return (
     <PageContainer
@@ -35,7 +59,14 @@ export const CustomLevel: React.FC = () => {
         flex: 1,
       }}
     >
-      <TurnIndicator ai={[]} />
+      <Flex
+        css={{
+          gridRow: '1 / 3',
+          gridColumn: '1 / 1',
+        }}
+      >
+        <TurnIndicator ai={aiList} />
+      </Flex>
       <Button
         css={{
           gridRow: '1 / 1',
@@ -43,7 +74,7 @@ export const CustomLevel: React.FC = () => {
           display: 'flex',
           alignContent: 'center',
           alignItems: 'center',
-          margin: '0.5rem'
+          margin: '0.5rem',
         }}
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({

@@ -73,7 +73,7 @@ export const CustomLevelSettings: React.FC = () => {
   return (
     <PageContainer
       css={{
-        gridTemplateRows: '1fr 1fr 1fr',
+        gridTemplateRows: '3fr 1fr 1fr',
         gridTemplateColumns: '1fr',
         gridGap: '1rem',
         flex: 1,
