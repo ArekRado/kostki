@@ -123,7 +123,7 @@ if (process.env.NODE_ENV !== 'test') {
   // - game should not stop when player lose
   // nope- install game button
   // ?done- new ui
-  // - question modal when user clicks on X button
+  // done question modal when user clicks on X button
   // nope xD- handle back same as websites and apps
   // nope- responsive images
   // done- buttons with images

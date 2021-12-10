@@ -1,4 +1,5 @@
 import React from 'react';
+import { Page } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { AIDifficulty } from '../../systems/aiSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
@@ -70,11 +71,19 @@ export const CustomLevelSettings: React.FC = () => {
       payload: {},
     });
 
+  const backToMainMenu = () =>
+    emitEvent<GameEvent.CleanSceneEvent>({
+      type: GameEvent.Type.cleanScene,
+      payload: {
+        newPage: Page.mainMenu,
+      },
+    });
+
   return (
     <PageContainer
       css={{
         gridTemplateRows: '3fr 1fr 1fr',
-        gridTemplateColumns: '1fr',
+        gridTemplateColumns: '1fr 1fr',
         gridGap: '1rem',
         flex: 1,
       }}
@@ -84,10 +93,10 @@ export const CustomLevelSettings: React.FC = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           gridRow: '1 / 1',
-          gridColumn: '1 / 1',
+          gridColumn: '1 / 3',
         }}
       >
-        Select level
+        Select level (todo)
       </Flex>
 
       <Grid
@@ -102,7 +111,7 @@ export const CustomLevelSettings: React.FC = () => {
           gridGap: '1rem',
 
           gridRow: '2 / 2',
-          gridColumn: '1 / 1',
+          gridColumn: '1 / 3',
         }}
       >
         <Button
@@ -186,6 +195,17 @@ export const CustomLevelSettings: React.FC = () => {
           justifyContent: 'center',
           gridRow: '3 / 3',
           gridColumn: '1 / 1',
+        }}
+      >
+        <Button onClick={backToMainMenu}>Back</Button>
+      </Flex>
+
+      <Flex
+        css={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gridRow: '3 / 3',
+          gridColumn: '2 / 2',
         }}
       >
         <Button onClick={startCustomLevel}>Start</Button>

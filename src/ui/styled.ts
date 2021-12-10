@@ -16,7 +16,9 @@ export const { styled, css } = createStitches({
     borderStyles: {},
     radii: {},
     shadows: {},
-    zIndices: {},
+    zIndices: {
+      'modal': 1,
+    },
     transitions: {},
   },
   media: {

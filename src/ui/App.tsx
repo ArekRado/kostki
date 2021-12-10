@@ -12,6 +12,7 @@ import { globalCss } from '@stitches/react';
 const globalStyles = globalCss({
   '*': {
     fontFamily: 'Sans-serif',
+    userSelect: 'none',
   },
 
   '.enable-outline *:focus': {

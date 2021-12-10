@@ -8,6 +8,7 @@ export type TurnIndicatorItem = {
   color: Color;
   isActive: boolean;
   name: string;
+  lose: boolean;
 };
 
 export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
@@ -19,12 +20,13 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
         flexDirection: 'column',
       }}
     >
-      {ai.map(({ entity, name, color, isActive }) => (
+      {ai.map(({ entity, name, color, isActive, lose }) => (
         <Flex
           key={entity}
           css={{
             alignItems: 'center',
             padding: '0.125rem',
+            paddingRight: '1rem',
             backgroundColor: isActive ? 'rgba(255,255,255,0.6)' : '',
           }}
         >
@@ -47,7 +49,11 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
             }}
           />
           <Typography
-            css={{ fontSize: '0.75rem', '@bp1': { fontSize: '1.5rem' } }}
+            css={{
+              fontSize: '0.75rem',
+              textDecoration: lose ? 'line-through' : '',
+              '@bp1': { fontSize: '1.5rem' },
+            }}
           >
             {name}
           </Typography>

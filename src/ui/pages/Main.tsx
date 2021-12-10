@@ -1,13 +1,17 @@
 import React from 'react';
-import { Page, State } from '../../ecs/type';
+import { Page } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
-import { GameEvent } from '../../systems/gameSystem';
+import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
 import { PageContainer } from '../components/PageContainer';
 import { Typography } from '../components/Typography';
+import { useGameState } from '../hooks/useGameState';
 
 export const Main: React.FC = () => {
+  const state = useGameState();
+  const game = state && getGame({ state });
+
   return (
     <PageContainer
       css={{
@@ -20,13 +24,13 @@ export const Main: React.FC = () => {
         css={{
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems:'center',
+          alignItems: 'center',
           gridRow: '2 / 2',
           gridColumn: '2 / 3',
         }}
       >
         <Button
-          css={{ maxWidth: '500px', width:'100%' }}
+          css={{ maxWidth: '500px', width: '100%' }}
           onClick={() => {
             emitEvent<GameEvent.CleanSceneEvent>({
               type: GameEvent.Type.cleanScene,
@@ -39,7 +43,7 @@ export const Main: React.FC = () => {
           Start
         </Button>
         <Button
-          css={{ marginTop: '100px', maxWidth: '500px', width:'100%' }}
+          css={{ marginTop: '100px', maxWidth: '500px', width: '100%' }}
           onClick={() => {
             emitEvent<GameEvent.CleanSceneEvent>({
               type: GameEvent.Type.cleanScene,
@@ -59,9 +63,11 @@ export const Main: React.FC = () => {
           justifyContent: 'center',
           gridRow: '3 / 4',
           gridColumn: '3 / 3',
+          color: 'white',
+          fontSize: '1rem',
         }}
       >
-        0.0.2
+        {game?.version}
       </Typography>
     </PageContainer>
   );

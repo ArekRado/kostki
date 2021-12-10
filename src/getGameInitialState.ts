@@ -21,7 +21,7 @@ type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
 
-  const version = '0.0.1';
+  const version = '0.0.3';
 
   // Systems
   state = eventSystem(state);
@@ -63,7 +63,7 @@ export const getGameInitialState: GetGameInitialState = () => {
       colorBlindMode: false,
       customLevelSettings: {
         players: playersList().slice(0, 8),
-        difficulty: AIDifficulty.easy,
+        difficulty: AIDifficulty.hard,
         quickStart: true,
         mapType: '',
       },
