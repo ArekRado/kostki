@@ -1,10 +1,9 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { Tools } from '@babylonjs/core/Misc/tools';
 import { Animation, AnimationEvent } from '@babylonjs/core/Animations';
 import { scene } from '../..';
 import { Color, Entity } from '../../ecs/type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
-import { Direction } from '../boxSystem';
+import { BoxRotationDirection } from '../boxSystem';
 
 const clampRotation = (rotation: number) => {
   if (rotation > Math.PI * 2 || rotation < Math.PI * -2) {
@@ -14,16 +13,18 @@ const clampRotation = (rotation: number) => {
   return rotation;
 };
 
+const rightAngle = Math.PI / 2;
+
 export const createRotationBoxAnimation = ({
   boxUniqueId,
   animationEndCallback,
-  direction,
+  direction = BoxRotationDirection.random,
   color,
   texture,
 }: {
   boxUniqueId: Entity;
   color: Color;
-  direction?: Direction;
+  direction?: BoxRotationDirection;
   animationEndCallback: () => void;
   texture: string;
 }) => {
@@ -32,10 +33,32 @@ export const createRotationBoxAnimation = ({
   const box = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
 
   if (box) {
-    const rightAngle = Tools.ToRadians(90);
+    let rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
+    let rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
 
-    const rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
-    const rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
+    switch (direction) {
+      case BoxRotationDirection.down:
+        rotationDirection = rightAngle * -1;
+        rotationProperty = 'x';
+        break;
+      case BoxRotationDirection.up:
+        rotationDirection = rightAngle * 1;
+        rotationProperty = 'x';
+        break;
+      case BoxRotationDirection.right:
+        rotationDirection = rightAngle * -1;
+        rotationProperty = 'y';
+        break;
+      case BoxRotationDirection.left:
+        rotationDirection = rightAngle * 1;
+        rotationProperty = 'y';
+        break;
+
+      case BoxRotationDirection.random:
+        rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
+        rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
+        break;
+    }
 
     const currentRotation = box.rotation;
     const rotationVector = new Vector3(

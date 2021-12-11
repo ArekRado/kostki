@@ -131,9 +131,10 @@ if (process.env.NODE_ENV !== 'test') {
   // done- buttons with images
   // done- butons/controls with aspect ratio size
   // done - close button should be recttangle
-  // - transitions between scenes
   // done - ui should has max container size when screen is too wide
-  // - "pop" box animation when level starts
+  // done "pop" box animation when level starts
+  // - precreate boxes and reuse part of them when starts level
+  // - when player is not clicking then "shake boxes"
   // - custom leve settings - add different maps
   // - campaign
   // - change gradiens when user changes color
@@ -141,5 +142,6 @@ if (process.env.NODE_ENV !== 'test') {
   // done - move ecs to new project package
   // - better eslint
   // done - babylonjs tree shacking
+  // - beautify ui
   // - end - optimization
 }

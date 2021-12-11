@@ -5,11 +5,12 @@ import { create } from './boxSystem/create';
 import { remove } from './boxSystem/remove';
 import { ECSEvent } from '../ecs/createEventSystem';
 
-export enum Direction {
-  up,
-  down,
-  left,
-  right,
+export enum BoxRotationDirection {
+  up = 'up',
+  down = 'down',
+  left = 'left',
+  right = 'right',
+  random = 'random',
 }
 export namespace BoxEvent {
   export enum Type {
@@ -25,7 +26,7 @@ export namespace BoxEvent {
     {
       color: [number, number, number];
       texture: string;
-      direction: Direction;
+      direction: BoxRotationDirection;
       boxEntity: Entity;
     }
   >;

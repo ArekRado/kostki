@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { componentName, getComponent } from '../../ecs/component';
-import { AI, Component, Game, Page, State } from '../../ecs/type';
+import { AI, Box, Component, Game, Page, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
@@ -88,7 +88,7 @@ const PlayerLostModal: FC = () => (
     <Typography css={{ textAlign: 'center' }}>You lost</Typography>
 
     <Flex css={{ justifyContent: 'space-evenly' }}>
-    <Button
+      <Button
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
@@ -102,7 +102,7 @@ const PlayerLostModal: FC = () => (
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
-            payload: {  },
+            payload: {},
           });
         }}
       >
@@ -140,7 +140,7 @@ const PlayerWonModal: FC = () => (
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
-            payload: {  },
+            payload: {},
           });
         }}
       >
@@ -159,7 +159,9 @@ enum GameStatus {
 const getGameStatus = ({
   aiList,
   game,
+  state,
 }: {
+  state: State;
   game: Game;
   aiList: TurnIndicatorItem[];
 }): GameStatus => {
@@ -167,8 +169,21 @@ const getGameStatus = ({
     return GameStatus.gameInProgress;
   }
 
-  const isHumanActive = !!aiList.find((ai) => ai.human && ai.active);
-  return isHumanActive ? GameStatus.playerWon : GameStatus.playerLost;
+  const humanAi = aiList.find((ai) => ai.human);
+  const amountOfCapturedBoxes = game.grid.reduce((acc, boxEntity) => {
+    const box = getComponent<Box>({
+      state,
+      name: componentName.box,
+      entity: boxEntity,
+    });
+
+    return box?.player === humanAi?.entity ? acc + 1 : acc;
+  }, 0);
+
+  if (amountOfCapturedBoxes === 0) return GameStatus.playerLost;
+  if (amountOfCapturedBoxes === game.grid.length) return GameStatus.playerLost;
+
+  return GameStatus.gameInProgress;
 };
 
 export const CustomLevel: React.FC = () => {
@@ -178,9 +193,10 @@ export const CustomLevel: React.FC = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const gameStatus: GameStatus = game
-    ? getGameStatus({ game, aiList })
-    : GameStatus.gameInProgress;
+  const gameStatus: GameStatus =
+    game && state
+      ? getGameStatus({ game, aiList, state })
+      : GameStatus.gameInProgress;
 
   return (
     <PageContainer

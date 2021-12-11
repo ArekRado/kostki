@@ -21,6 +21,7 @@ export const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
       },
       texture: event.payload.texture,
       color: event.payload.color,
+      direction: event.payload.direction,
     });
   }
 

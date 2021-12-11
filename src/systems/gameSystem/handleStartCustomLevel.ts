@@ -9,7 +9,7 @@ import {
   Marker,
   Page,
 } from '../../ecs/type';
-import { BoxEvent, Direction } from '../boxSystem';
+import { BoxEvent, BoxRotationDirection } from '../boxSystem';
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
@@ -23,6 +23,7 @@ import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 import { emitEvent } from '../../eventSystem';
 import { markerEntity } from '../markerSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
+import { playLevelStartAnimation } from './playLevelStartAnimation';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -92,7 +93,7 @@ const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
         payload: {
           color: ai.color,
           texture: getTextureSet({ state, ai })[box.dots],
-          direction: Direction.up,
+          direction: BoxRotationDirection.up,
           boxEntity,
         },
       });
@@ -187,14 +188,12 @@ export const handleStartCustomLevel: EventHandler<
 
   const game = getGame({ state });
 
-  if (!game) {
-    return logWrongPath(state);
+  if (game?.customLevelSettings.quickStart) {
+    state = runQuickStart({ state });
+    // updateAllBoxes({ state });
   }
 
-  if (game.customLevelSettings.quickStart) {
-    state = runQuickStart({ state });
-    updateAllBoxes({ state });
-  }
+  playLevelStartAnimation({ state });
 
   state = setGame({
     state,
@@ -223,6 +222,6 @@ export const handleStartCustomLevel: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
-  
+
   return state;
 };
