@@ -7,6 +7,7 @@ import {
 } from '../../ecs/component';
 import { AI, Box, EventHandler, Game, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
+import { eventBusDispatch } from '../../utils/eventBus';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
@@ -52,17 +53,17 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
-    emitEvent<GameEvent.EndGameEvent>({
-      type: GameEvent.Type.endGame,
-      payload: {},
-    });
-    return setComponent<Game>({
+    state = setComponent<Game>({
       state,
       data: {
         ...component,
         gameStarted: false,
       },
     });
+
+    eventBusDispatch('setUIState', state);
+
+    return state;
   } else {
     emitEvent<GameEvent.NextTurnEvent>({
       type: GameEvent.Type.nextTurn,
@@ -136,6 +137,8 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       }
     }
   }
+
+  eventBusDispatch('setUIState', state);
 
   return state;
 };

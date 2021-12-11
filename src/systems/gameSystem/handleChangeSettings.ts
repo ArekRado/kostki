@@ -23,6 +23,7 @@ import {
 } from '../../utils/textureSets';
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
+import { eventBusDispatch } from '../../utils/eventBus';
 
 export const basicAI = (
   entity: Entity,
@@ -75,6 +76,8 @@ export const handleChangePlayers: EventHandler<
     },
   });
 
+  eventBusDispatch('setUIState', state);
+
   return state;
 };
 
@@ -112,6 +115,8 @@ export const handleChangeDifficulty: EventHandler<
     },
   });
 
+  eventBusDispatch('setUIState', state);
+
   return state;
 };
 
@@ -134,6 +139,8 @@ export const handleChangeQuickStart: EventHandler<
     },
   });
 
+  eventBusDispatch('setUIState', state);
+
   return state;
 };
 
@@ -153,6 +160,8 @@ export const handleChangeColorBlindMode: EventHandler<
     },
   });
 
+  eventBusDispatch('setUIState', state);
+
   return state;
 };
 
@@ -160,6 +169,8 @@ export const handleChangeMapType: EventHandler<
   Game,
   GameEvent.ChangeMapTypeEvent
 > = ({ state }) => {
+  eventBusDispatch('setUIState', state);
+
   return state;
 };
 

@@ -4,6 +4,7 @@ import {
   setComponent,
 } from '../../ecs/component';
 import { EventHandler, Game, Logo, Page, State } from '../../ecs/type';
+import { eventBusDispatch } from '../../utils/eventBus';
 import { GameEvent, setGame } from '../gameSystem';
 import { logoEntity } from '../logoSystem';
 
@@ -28,6 +29,8 @@ export const handleCleanScene: EventHandler<Game, GameEvent.CleanSceneEvent> =
     state = removeComponentsByName({ name: componentName.logo, state });
 
     state = setScene({ state, page: event.payload.newPage });
+    
+    eventBusDispatch('setUIState', state);
 
     return state;
   };

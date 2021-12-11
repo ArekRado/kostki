@@ -22,12 +22,13 @@ import { getTextureSet } from '../boxSystem/getTextureSet';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 import { emitEvent } from '../../eventSystem';
 import { markerEntity } from '../markerSystem';
+import { eventBusDispatch } from '../../utils/eventBus';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
-  state = Array.from({ length: 2 }).reduce(
+  state = Array.from({ length: 8 }).reduce(
     (acc: State, _, x) =>
-      Array.from({ length: 2 }).reduce(
+      Array.from({ length: 8 }).reduce(
         (acc2: State, _, y) =>
           setComponent<Box>({
             state: acc2,
@@ -221,5 +222,7 @@ export const handleStartCustomLevel: EventHandler<
     },
   });
 
+  eventBusDispatch('setUIState', state);
+  
   return state;
 };

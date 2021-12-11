@@ -17,7 +17,6 @@ export namespace GameEvent {
     boxExplosion = 'GameEvent-boxExplosion',
     playerClick = 'GameEvent-playerClick',
     cleanScene = 'GameEvent-cleanScene',
-    endGame = 'GameEvent-endGame',
     playAgainCustomLevel = 'GameEvent-playAgainCustomLevel',
 
     changePlayers = 'GameEvent-changePlayers',
@@ -41,12 +40,10 @@ export namespace GameEvent {
     | ChangeMapTypeEvent
     | ShowNewVersionEvent
     | ReloadEvent
-    | EndGameEvent
     | PlayAgainCustomLevelEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
   export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
-  export type EndGameEvent = ECSEvent<Type.endGame, {}>;
   export type PlayAgainCustomLevelEvent = ECSEvent<Type.playAgainCustomLevel, {}>;
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,

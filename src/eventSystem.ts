@@ -46,47 +46,36 @@ const eventHandler = ({
     // Game
     case GameEvent.Type.startCustomLevel:
       state = handleStartCustomLevel({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.nextTurn:
       state = handleNextTurn({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.playerClick:
       state = handlePlayerClick({ state, event });
       break;
     case GameEvent.Type.cleanScene:
       state = handleCleanScene({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changePlayers:
       state = handleChangePlayers({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeDifficulty:
       state = handleChangeDifficulty({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeQuickStart:
       state = handleChangeQuickStart({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeColorBlindMode:
       state = handleChangeColorBlindMode({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.changeMapType:
       state = handleChangeMapType({ state, event });
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.showNewVersion:
       state = handleShowNewVersion({ state, event });
       break;
     case GameEvent.Type.reload:
       state = handleReload({ state, event });
-      break;
-    case GameEvent.Type.endGame:
-      eventBusDispatch('setUIState', state);
       break;
     case GameEvent.Type.playAgainCustomLevel:
       state = handleCleanScene({
@@ -102,7 +91,6 @@ const eventHandler = ({
         state,
         event: { type: GameEvent.Type.startCustomLevel, payload: {} },
       });
-      eventBusDispatch('setUIState', state);
 
       break;
 
