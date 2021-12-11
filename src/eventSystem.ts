@@ -21,7 +21,6 @@ import { handlePlayerClick } from './systems/gameSystem/handlePlayerClick';
 import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLevel';
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
-import { eventBusDispatch } from './utils/eventBus';
 
 type AllEvents = LogoEvent.All | GameEvent.All | BoxEvent.All | CameraEvent.All;
 

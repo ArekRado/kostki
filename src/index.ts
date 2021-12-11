@@ -122,7 +122,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
   // done game should not stop when player lose
   // done add win modal
-  // - save basic settings in localstorage
+  // done save basic settings in localstorage
   // nope- install game button
   // ?done- new ui
   // done question modal when user clicks on X button

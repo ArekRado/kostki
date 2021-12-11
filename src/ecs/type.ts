@@ -70,7 +70,6 @@ export type Game = Component<{
     mapType: string;
   };
   colorBlindMode: boolean;
-  musicEnabled: boolean;
 }>;
 
 export type Camera = Component<{

@@ -24,6 +24,7 @@ import {
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
 import { eventBusDispatch } from '../../utils/eventBus';
+import { saveStateToData } from '../../utils/localDb';
 
 export const basicAI = (
   entity: Entity,
@@ -77,6 +78,7 @@ export const handleChangePlayers: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
+  saveStateToData(state);
 
   return state;
 };
@@ -116,6 +118,7 @@ export const handleChangeDifficulty: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
+  saveStateToData(state);
 
   return state;
 };
@@ -140,6 +143,7 @@ export const handleChangeQuickStart: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
+  saveStateToData(state);
 
   return state;
 };
@@ -161,6 +165,7 @@ export const handleChangeColorBlindMode: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
+  saveStateToData(state);
 
   return state;
 };
@@ -170,6 +175,7 @@ export const handleChangeMapType: EventHandler<
   GameEvent.ChangeMapTypeEvent
 > = ({ state }) => {
   eventBusDispatch('setUIState', state);
+  saveStateToData(state);
 
   return state;
 };

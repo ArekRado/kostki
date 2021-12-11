@@ -16,6 +16,7 @@ import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
 import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
+import { getSavedData } from './utils/localDb';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
@@ -46,6 +47,8 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
+  const savedData = getSavedData();
+
   state = setComponent<Game>({
     state,
     data: {
@@ -60,14 +63,13 @@ export const getGameInitialState: GetGameInitialState = () => {
       gameStarted: false,
       playersQueue: [],
       boxRotationQueue: [],
-      colorBlindMode: false,
+      colorBlindMode: savedData?.colorBlindMode || false,
       customLevelSettings: {
-        players: playersList().slice(0, 8),
-        difficulty: AIDifficulty.hard,
-        quickStart: true,
-        mapType: '',
+        players: savedData?.players || playersList().slice(0, 8),
+        difficulty: savedData?.difficulty || AIDifficulty.hard,
+        quickStart: savedData?.quickStart || true,
+        mapType: savedData?.mapType || '',
       },
-      musicEnabled: false,
     },
   });
 

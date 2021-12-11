@@ -1,15 +1,36 @@
-import { State } from '../ecs/type';
+import { Game, State } from '../ecs/type';
+import { getGame } from '../systems/gameSystem';
 
 const localDbKey = 'localDbKey';
 
-export const getSavedState = (): State | null => {
-  return JSON.parse(localStorage.getItem(localDbKey) || 'null');
+type SavedData = {
+  players: Game['customLevelSettings']['players'];
+  difficulty: Game['customLevelSettings']['difficulty'];
+  quickStart: Game['customLevelSettings']['quickStart'];
+  mapType: Game['customLevelSettings']['mapType'];
+  colorBlindMode: Game['colorBlindMode'];
 };
 
-export const saveState = (state: State) => {
-  localStorage.setItem(localDbKey, JSON.stringify(state));
+export const getSavedData = (): SavedData | null =>
+  JSON.parse(localStorage.getItem(localDbKey) || 'null');
+
+export const saveStateToData = (state: State) => {
+  const game = getGame({ state });
+
+  game &&
+    saveData({
+      players: game.customLevelSettings.players,
+      difficulty: game.customLevelSettings.difficulty,
+      quickStart: game.customLevelSettings.quickStart,
+      mapType: game.customLevelSettings.mapType,
+      colorBlindMode: game.colorBlindMode,
+    });
 };
 
-export const removeState = () => {
+export const saveData = (data: SavedData) => {
+  localStorage.setItem(localDbKey, JSON.stringify(data));
+};
+
+export const removeSavedData = () => {
   localStorage.removeItem(localDbKey);
 };
