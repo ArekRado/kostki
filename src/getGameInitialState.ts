@@ -22,7 +22,7 @@ type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
 
-  const version = '0.0.4';
+  const version = '0.0.6';
 
   // Systems
   state = eventSystem(state);
@@ -65,8 +65,8 @@ export const getGameInitialState: GetGameInitialState = () => {
       boxRotationQueue: [],
       colorBlindMode: savedData?.colorBlindMode || false,
       customLevelSettings: {
-        players: savedData?.players || playersList().slice(0, 8),
-        difficulty: savedData?.difficulty || AIDifficulty.hard,
+        players: savedData?.players || playersList().slice(0, 4),
+        difficulty: savedData?.difficulty || AIDifficulty.medium,
         quickStart: savedData?.quickStart || true,
         mapType: savedData?.mapType || '',
       },

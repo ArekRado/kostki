@@ -5,11 +5,9 @@ import {
   EventHandler,
   Game,
   State,
-  Scene as GameScene,
   Marker,
   Page,
 } from '../../ecs/type';
-import { BoxEvent, BoxRotationDirection } from '../boxSystem';
 import { GameEvent, getGame, setGame } from '../gameSystem';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
@@ -18,9 +16,7 @@ import { setCamera } from '../cameraSystem';
 import { logWrongPath } from '../../utils/logWrongPath';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
-import { getTextureSet } from '../boxSystem/getTextureSet';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
-import { emitEvent } from '../../eventSystem';
 import { markerEntity } from '../markerSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { playLevelStartAnimation } from './playLevelStartAnimation';
@@ -68,45 +64,14 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
   return state;
 };
 
-type UpdateAllBoxes = (params: { state: State }) => void;
-const updateAllBoxes: UpdateAllBoxes = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
-    return undefined;
-  }
-  game.grid.forEach((boxEntity) => {
-    const box = getComponent<Box>({
-      state,
-      entity: boxEntity,
-      name: componentName.box,
-    });
-
-    const ai = getComponent<AI>({
-      state,
-      entity: box?.player || '',
-      name: componentName.ai,
-    });
-
-    if (box && ai) {
-      emitEvent<BoxEvent.Rotate>({
-        type: BoxEvent.Type.rotate,
-        payload: {
-          color: ai.color,
-          texture: getTextureSet({ state, ai })[box.dots],
-          direction: BoxRotationDirection.up,
-          boxEntity,
-        },
-      });
-    }
-  });
-
-  return state;
-};
-
 type RunQuickStart = (params: { state: State }) => State;
 const runQuickStart: RunQuickStart = ({ state }) => {
+  const game = getGame({ state });
+  const gridLength = game?.grid.length || 1;
+  const playersLength = game?.customLevelSettings.players.length || 1;
   // Run same amount of moves as boxes in a grid
-  const movesAmout = getGame({ state })?.grid.length || 1;
+  const movesAmout = gridLength - (gridLength % playersLength);
+
   const newState = Array.from({ length: movesAmout * 2 }).reduce(
     (acc: State) => {
       const game = getGame({ state: acc });
@@ -118,7 +83,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
       });
 
       if (!game || !currentAi) {
-        return logWrongPath(acc);
+        return acc;
       }
 
       const box = getAiMove({
@@ -128,7 +93,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
       });
 
       if (!box) {
-        return logWrongPath(acc);
+        return acc;
       }
 
       acc = setComponent<Box>({
@@ -142,15 +107,11 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 
       const nextPlayer = getNextPlayer({ state: acc });
 
-      if (!nextPlayer) {
-        return acc;
-      }
-
       acc = setComponent<Game>({
         state: acc,
         data: {
           ...game,
-          currentPlayer: nextPlayer.entity,
+          currentPlayer: nextPlayer?.entity || '',
         },
       });
 
@@ -173,16 +134,10 @@ export const handleStartCustomLevel: EventHandler<
 
   state = setLevelFromSettings({ state, game: component });
 
-  const currentAi = getNextPlayer({ state });
-
-  if (!currentAi) {
-    return logWrongPath(state);
-  }
-
   state = setGame({
     state,
     data: {
-      currentPlayer: currentAi.entity,
+      currentPlayer: getNextPlayer({ state })?.entity,
     },
   });
 
@@ -190,7 +145,6 @@ export const handleStartCustomLevel: EventHandler<
 
   if (game?.customLevelSettings.quickStart) {
     state = runQuickStart({ state });
-    // updateAllBoxes({ state });
   }
 
   playLevelStartAnimation({ state });
@@ -203,7 +157,13 @@ export const handleStartCustomLevel: EventHandler<
     },
   });
 
-  if (!currentAi.human) {
+  const currentAi = getComponent<AI>({
+    state,
+    name: componentName.ai,
+    entity: getGame({ state })?.currentPlayer || '',
+  });
+
+  if (currentAi && !currentAi.human) {
     const box = getAiMove({ state, ai: currentAi });
 
     if (box) {

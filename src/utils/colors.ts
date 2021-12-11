@@ -39,13 +39,13 @@ export const getSimilarColor = (rgbColor: Color): Color => {
     hslColor[0],
     clamp({
       value: getSimilarNumber(hslColor[1], colorPercentage),
-      min: 0,
+      min: 0.3,
       max: 1,
     }),
     clamp({
       value: getSimilarNumber(hslColor[2], colorPercentage),
-      min: 0,
-      max: 1,
+      min: 0.3,
+      max: 0.7,
     }),
   ];
 

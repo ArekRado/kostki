@@ -133,7 +133,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done - close button should be recttangle
   // done - ui should has max container size when screen is too wide
   // done "pop" box animation when level starts
-  // - precreate boxes and reuse part of them when starts level
+  // - pre-create boxes and reuse part of them when starts level
   // - when player is not clicking then "shake boxes"
   // - custom leve settings - add different maps
   // - campaign
