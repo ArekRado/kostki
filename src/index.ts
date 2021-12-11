@@ -120,8 +120,8 @@ if (process.env.NODE_ENV !== 'test') {
   // nope - gradients - should represent most common colors - 1 color === 10%
   // done - turn indicator - disable lost players
   // done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
-  // - game should not stop when player lose
-  // - add win modal
+  // done game should not stop when player lose
+  // done add win modal
   // - save basic settings in localstorage
   // nope- install game button
   // ?done- new ui

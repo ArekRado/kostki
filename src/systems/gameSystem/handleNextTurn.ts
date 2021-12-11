@@ -52,6 +52,10 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
+    emitEvent<GameEvent.EndGameEvent>({
+      type: GameEvent.Type.endGame,
+      payload: {},
+    });
     return setComponent<Game>({
       state,
       data: {

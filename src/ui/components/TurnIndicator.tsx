@@ -6,9 +6,10 @@ import { Flex } from './Flex';
 export type TurnIndicatorItem = {
   entity: string;
   color: Color;
-  isActive: boolean;
+  human: boolean;
+  hasCurrentTurn: boolean;
   name: string;
-  lose: boolean;
+  active: boolean;
 };
 
 export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
@@ -20,14 +21,14 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
         flexDirection: 'column',
       }}
     >
-      {ai.map(({ entity, name, color, isActive, lose }) => (
+      {ai.map(({ entity, name, color, hasCurrentTurn, active }) => (
         <Flex
           key={entity}
           css={{
             alignItems: 'center',
             padding: '0.125rem',
             paddingRight: '1rem',
-            backgroundColor: isActive ? 'rgba(255,255,255,0.6)' : '',
+            backgroundColor: hasCurrentTurn ? 'rgba(255,255,255,0.6)' : '',
           }}
         >
           <Flex
@@ -51,7 +52,7 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
           <Typography
             css={{
               fontSize: '0.75rem',
-              textDecoration: lose ? 'line-through' : '',
+              textDecoration: active ? '' : 'line-through',
               '@bp1': { fontSize: '1.5rem' },
             }}
           >

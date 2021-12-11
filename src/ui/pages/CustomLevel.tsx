@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { componentName, getComponent } from '../../ecs/component';
-import { AI, Component, Page, State } from '../../ecs/type';
+import { AI, Component, Game, Page, State } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
@@ -28,14 +28,15 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
   return aiList.map((ai) => ({
     entity: ai.entity,
     color: ai.color,
-    lose: !ai.active,
-    isActive: game?.currentPlayer === ai.entity,
+    active: ai.active,
+    human: ai.human,
+    hasCurrentTurn: game?.currentPlayer === ai.entity,
     name: ai.human ? 'Player' : 'Computer',
   }));
 };
 
-const BackToMainMenuModal: FC<{ setShowModal: (flag: boolean) => void }> = ({
-  setShowModal,
+const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
+  onClose,
 }) => (
   <Modal
     css={{
@@ -54,7 +55,7 @@ const BackToMainMenuModal: FC<{ setShowModal: (flag: boolean) => void }> = ({
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
         onClick={() => {
-          setShowModal(false);
+          onClose(false);
         }}
       >
         No
@@ -73,11 +74,113 @@ const BackToMainMenuModal: FC<{ setShowModal: (flag: boolean) => void }> = ({
   </Modal>
 );
 
+const PlayerLostModal: FC = () => (
+  <Modal
+    css={{
+      width: '70%',
+      height: '40%',
+
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+    }}
+  >
+    <Typography css={{ textAlign: 'center' }}>You lost</Typography>
+
+    <Flex css={{ justifyContent: 'space-evenly' }}>
+    <Button
+        onClick={() => {
+          emitEvent<GameEvent.CleanSceneEvent>({
+            type: GameEvent.Type.cleanScene,
+            payload: { newPage: Page.mainMenu },
+          });
+        }}
+      >
+        Back to main menu
+      </Button>
+      <Button
+        onClick={() => {
+          emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
+            type: GameEvent.Type.playAgainCustomLevel,
+            payload: {  },
+          });
+        }}
+      >
+        Play again
+      </Button>
+    </Flex>
+  </Modal>
+);
+
+const PlayerWonModal: FC = () => (
+  <Modal
+    css={{
+      width: '70%',
+      height: '40%',
+
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+    }}
+  >
+    <Typography css={{ textAlign: 'center' }}>You won</Typography>
+
+    <Flex css={{ justifyContent: 'space-evenly' }}>
+      <Button
+        onClick={() => {
+          emitEvent<GameEvent.CleanSceneEvent>({
+            type: GameEvent.Type.cleanScene,
+            payload: { newPage: Page.mainMenu },
+          });
+        }}
+      >
+        Back to main menu
+      </Button>
+      <Button
+        onClick={() => {
+          emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
+            type: GameEvent.Type.playAgainCustomLevel,
+            payload: {  },
+          });
+        }}
+      >
+        Play again
+      </Button>
+    </Flex>
+  </Modal>
+);
+
+enum GameStatus {
+  playerWon = 'playerWon',
+  playerLost = 'playerLost',
+  gameInProgress = 'gameInProgress',
+}
+
+const getGameStatus = ({
+  aiList,
+  game,
+}: {
+  game: Game;
+  aiList: TurnIndicatorItem[];
+}): GameStatus => {
+  if (game.gameStarted === true) {
+    return GameStatus.gameInProgress;
+  }
+
+  const isHumanActive = !!aiList.find((ai) => ai.human && ai.active);
+  return isHumanActive ? GameStatus.playerWon : GameStatus.playerLost;
+};
+
 export const CustomLevel: React.FC = () => {
   const state = useGameState();
+  const game = state && getGame({ state });
   const aiList = state ? getAiList(state) : [];
 
   const [showModal, setShowModal] = useState(false);
+
+  const gameStatus: GameStatus = game
+    ? getGameStatus({ game, aiList })
+    : GameStatus.gameInProgress;
 
   return (
     <PageContainer
@@ -87,7 +190,9 @@ export const CustomLevel: React.FC = () => {
         flex: 1,
       }}
     >
-      {showModal && <BackToMainMenuModal setShowModal={setShowModal} />}
+      {showModal && <BackToMainMenuModal onClose={() => setShowModal(false)} />}
+      {gameStatus === GameStatus.playerWon && <PlayerWonModal />}
+      {gameStatus === GameStatus.playerLost && <PlayerLostModal />}
 
       <Flex
         css={{

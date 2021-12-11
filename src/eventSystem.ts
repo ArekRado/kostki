@@ -1,5 +1,5 @@
 import { createEventSystem } from './ecs/createEventSystem';
-import { State } from './ecs/type';
+import { Page, State } from './ecs/type';
 import { BoxEvent } from './systems/boxSystem';
 import { rotateHandler } from './systems/boxSystem/rotateHandler';
 import { rotationEndHandler } from './systems/boxSystem/rotationEndHandler';
@@ -23,11 +23,7 @@ import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
 import { eventBusDispatch } from './utils/eventBus';
 
-type AllEvents =
-  | LogoEvent.All
-  | GameEvent.All
-  | BoxEvent.All
-  | CameraEvent.All;
+type AllEvents = LogoEvent.All | GameEvent.All | BoxEvent.All | CameraEvent.All;
 
 const eventHandler = ({
   state,
@@ -37,7 +33,7 @@ const eventHandler = ({
   event: AllEvents;
 }): State => {
   switch (event.type) {
-     // Camera
+    // Camera
     case CameraEvent.Type.resize:
       state = handleResize({ state, event });
       break;
@@ -88,6 +84,26 @@ const eventHandler = ({
       break;
     case GameEvent.Type.reload:
       state = handleReload({ state, event });
+      break;
+    case GameEvent.Type.endGame:
+      eventBusDispatch('setUIState', state);
+      break;
+    case GameEvent.Type.playAgainCustomLevel:
+      state = handleCleanScene({
+        state,
+        event: {
+          type: GameEvent.Type.cleanScene,
+          payload: {
+            newPage: Page.customLevel,
+          },
+        },
+      });
+      state = handleStartCustomLevel({
+        state,
+        event: { type: GameEvent.Type.startCustomLevel, payload: {} },
+      });
+      eventBusDispatch('setUIState', state);
+
       break;
 
     // Box
