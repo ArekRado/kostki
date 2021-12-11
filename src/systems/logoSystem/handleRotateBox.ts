@@ -2,6 +2,7 @@ import { EventHandler, Logo } from '../../ecs/type';
 import { emitEvent } from '../../eventSystem';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
+import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from '../boxSystem/createRotationBoxAnimation';
 import { resetBoxRotation } from '../boxSystem/resetBoxRotation';
 import { playersList } from '../gameSystem/handleChangeSettings';
@@ -41,13 +42,23 @@ export const handleRotateBox: EventHandler<Logo, LogoEvent.RotateBoxEvent> = ({
   const texture = getRandomTexture();
   const color = getRandomColor();
 
-  createRotationBoxAnimation({
+  state = createRotationBoxAnimation({
+    state,
     boxUniqueId,
     animationEndCallback: () => {
       resetBoxRotation({
         boxUniqueId,
         texture,
         color,
+      });
+
+      emitEvent<BoxEvent.RotationEndEvent>({
+        type: BoxEvent.Type.rotationEnd,
+        payload: {
+          ai: undefined,
+          shouldExplode: false,
+          boxEntity: boxUniqueId,
+        },
       });
     },
     texture,

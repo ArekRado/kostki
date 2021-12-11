@@ -1,9 +1,12 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Animation, AnimationEvent } from '@babylonjs/core/Animations';
 import { scene } from '../..';
-import { Color, Entity } from '../../ecs/type';
+import { Box, Color, Entity, State } from '../../ecs/type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
 import { BoxRotationDirection } from '../boxSystem';
+import { componentName, getComponent, setComponent } from '../../ecs/component';
+
+export const rotationAnimationName = 'rotationAnimation';
 
 const clampRotation = (rotation: number) => {
   if (rotation > Math.PI * 2 || rotation < Math.PI * -2) {
@@ -21,18 +24,35 @@ export const createRotationBoxAnimation = ({
   direction = BoxRotationDirection.random,
   color,
   texture,
+  state,
 }: {
   boxUniqueId: Entity;
   color: Color;
   direction?: BoxRotationDirection;
   animationEndCallback: () => void;
   texture: string;
-}) => {
+  state: State;
+}): State => {
   const frameEnd = 0.5;
 
-  const box = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
+  const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
+  const box = getComponent<Box>({
+    state,
+    name: componentName.box,
+    entity: boxUniqueId,
+  });
 
-  if (box) {
+  if (boxMesh) {
+    if (box) {
+      state = setComponent<Box>({
+        state,
+        data: {
+          ...box,
+          isAnimating: true,
+        },
+      });
+    }
+
     let rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
     let rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
 
@@ -60,11 +80,13 @@ export const createRotationBoxAnimation = ({
         break;
     }
 
-    const currentRotation = box.rotation;
+    boxMesh.rotation.z = 0;
+
+    const currentRotation = boxMesh.rotation;
     const rotationVector = new Vector3(
       rotationProperty === 'x' ? rotationDirection : 0,
       rotationProperty === 'y' ? rotationDirection : 0,
-      0
+      currentRotation.z
     );
 
     const nnextRotation = rotationVector.add(currentRotation);
@@ -76,7 +98,7 @@ export const createRotationBoxAnimation = ({
     );
 
     const rotateAnimation = new Animation(
-      'rotateAnimation',
+      rotationAnimationName,
       'rotation',
       1,
       Animation.ANIMATIONTYPE_VECTOR3,
@@ -101,11 +123,11 @@ export const createRotationBoxAnimation = ({
 
     rotateAnimation.setKeys(keyFrames);
 
-    box.animations[box.animations.length] = rotateAnimation;
+    boxMesh.animations[boxMesh.animations.length] = rotateAnimation;
 
-    scene.beginAnimation(box, 0, 1, false);
+    scene.beginAnimation(boxMesh, 0, 1, false);
 
-    const children = box.getChildren();
+    const children = boxMesh.getChildren();
 
     children.slice(1, children.length).forEach((plane) => {
       const mesh = scene.getMeshByUniqueId(plane.uniqueId);
@@ -119,4 +141,6 @@ export const createRotationBoxAnimation = ({
       }
     });
   }
+
+  return state;
 };

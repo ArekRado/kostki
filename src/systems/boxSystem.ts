@@ -32,7 +32,7 @@ export namespace BoxEvent {
   >;
   export type RotationEndEvent = ECSEvent<
     Type.rotationEnd,
-    { ai: AI; shouldExplode: boolean; boxEntity: Entity }
+    { ai: AI | undefined; shouldExplode: boolean; boxEntity: Entity }
   >;
 }
 

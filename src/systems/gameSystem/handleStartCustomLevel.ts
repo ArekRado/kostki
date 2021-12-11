@@ -8,18 +8,23 @@ import {
   Marker,
   Page,
 } from '../../ecs/type';
-import { GameEvent, getGame, setGame } from '../gameSystem';
+import {
+  GameEvent,
+  getGame,
+  setGame,
+  shakeAnimationTimeout,
+} from '../gameSystem';
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
 import { setCamera } from '../cameraSystem';
-import { logWrongPath } from '../../utils/logWrongPath';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 import { markerEntity } from '../markerSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { playLevelStartAnimation } from './playLevelStartAnimation';
+import { emitEvent } from '../../eventSystem';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -182,6 +187,18 @@ export const handleStartCustomLevel: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
+
+  if (currentAi) {
+    setTimeout(() => {
+      emitEvent<GameEvent.ShakeAiBoxesEvent>({
+        type: GameEvent.Type.shakeAiBoxes,
+        payload: {
+          moves: getGame({ state })?.moves || 0,
+          ai: currentAi,
+        },
+      });
+    }, shakeAnimationTimeout);
+  }
 
   return state;
 };

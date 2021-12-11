@@ -67,7 +67,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   } else {
     emitEvent<GameEvent.NextTurnEvent>({
       type: GameEvent.Type.nextTurn,
-      payload: { ai },
+      payload: {},
     });
   }
 
@@ -105,6 +105,7 @@ export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
       data: {
         ...game,
         currentPlayer: ai.entity,
+        moves: game.moves + 1,
       },
     });
 

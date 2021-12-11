@@ -26,7 +26,8 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
     };
 
     if (process.env.NODE_ENV !== 'test') {
-      createRotationBoxAnimation({
+      state = createRotationBoxAnimation({
+        state,
         boxUniqueId: entity,
         animationEndCallback,
         texture: getTextureSet({ state, ai })[dots],
@@ -39,7 +40,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
     state = pushBoxToRotationQueue({ entity, state });
   }
 
-  return setComponent<Box>({
+  state = setComponent<Box>({
     state,
     data: {
       ...box,
@@ -48,4 +49,6 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
       dots,
     },
   });
+
+  return state;
 };

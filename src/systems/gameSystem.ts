@@ -10,6 +10,8 @@ import { ECSEvent } from '../ecs/createEventSystem';
 
 export const gameEntity = 'game';
 
+export const shakeAnimationTimeout = 2000;
+
 export namespace GameEvent {
   export enum Type {
     startCustomLevel = 'GameEvent-startCustomLevel',
@@ -17,6 +19,7 @@ export namespace GameEvent {
     boxExplosion = 'GameEvent-boxExplosion',
     playerClick = 'GameEvent-playerClick',
     cleanScene = 'GameEvent-cleanScene',
+    shakeAiBoxes = 'GameEvent-shakeAiBoxes',
     playAgainCustomLevel = 'GameEvent-playAgainCustomLevel',
 
     changePlayers = 'GameEvent-changePlayers',
@@ -40,11 +43,19 @@ export namespace GameEvent {
     | ChangeMapTypeEvent
     | ShowNewVersionEvent
     | ReloadEvent
-    | PlayAgainCustomLevelEvent;
+    | PlayAgainCustomLevelEvent
+    | ShakeAiBoxesEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
-  export type NextTurnEvent = ECSEvent<Type.nextTurn, { ai: AI }>;
-  export type PlayAgainCustomLevelEvent = ECSEvent<Type.playAgainCustomLevel, {}>;
+  export type NextTurnEvent = ECSEvent<Type.nextTurn, {}>;
+  export type PlayAgainCustomLevelEvent = ECSEvent<
+    Type.playAgainCustomLevel,
+    {}
+  >;
+  export type ShakeAiBoxesEvent = ECSEvent<
+    Type.shakeAiBoxes,
+    { ai: AI; moves: number }
+  >;
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,
     { boxEntity: Entity }

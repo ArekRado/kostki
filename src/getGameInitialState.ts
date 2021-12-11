@@ -57,6 +57,7 @@ export const getGameInitialState: GetGameInitialState = () => {
       newVersionAvailable: false,
       entity: gameEntity,
       name: componentName.game,
+      moves: 0,
       grid: [],
       round: 0,
       currentPlayer: humanPlayerEntity,

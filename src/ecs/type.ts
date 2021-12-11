@@ -54,6 +54,7 @@ export type Logo = {};
 export type Game = Component<{
   version: string;
   page: Page;
+  moves: number;
 
   newVersionAvailable: boolean;
   round: number;

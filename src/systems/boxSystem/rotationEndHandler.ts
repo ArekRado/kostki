@@ -23,30 +23,29 @@ export const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> =
     }
 
     state = removeBoxFromRotationQueue({ entity: component.entity, state });
-
-    resetBoxRotation({
-      boxUniqueId: component.entity,
-      texture: getTextureSet({ state, ai })[component.dots],
-      color: ai.color,
-    });
-
     const game = getGame({ state });
-    if (!game) {
-      return state;
-    }
 
-    if (shouldExplode) {
-      state = boxExplosion({
-        state,
-        box: component,
-        ai,
+    // todo it should not be a part of rotationEndHandler
+    if (ai && game) {
+      resetBoxRotation({
+        boxUniqueId: component.entity,
+        texture: getTextureSet({ state, ai })[component.dots],
+        color: ai.color,
       });
-    } else {
-      if (game.boxRotationQueue.length === 0) {
-        emitEvent<GameEvent.NextTurnEvent>({
-          type: GameEvent.Type.nextTurn,
-          payload: { ai },
+
+      if (shouldExplode) {
+        state = boxExplosion({
+          state,
+          box: component,
+          ai,
         });
+      } else {
+        if (game.boxRotationQueue.length === 0) {
+          emitEvent<GameEvent.NextTurnEvent>({
+            type: GameEvent.Type.nextTurn,
+            payload: {},
+          });
+        }
       }
     }
 
@@ -55,11 +54,13 @@ export const rotationEndHandler: EventHandler<Box, BoxEvent.RotationEndEvent> =
       box.animations = [];
     }
 
-    return setComponent<Box>({
+    state = setComponent<Box>({
       state,
       data: {
         ...component,
         isAnimating: false,
       },
     });
+
+    return state;
   };

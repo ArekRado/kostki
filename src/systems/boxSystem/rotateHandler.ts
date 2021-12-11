@@ -1,7 +1,6 @@
 import { Box, EventHandler } from '../../ecs/type';
-import {
-  BoxEvent,
-} from '../boxSystem';
+import { emitEvent } from '../../eventSystem';
+import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { resetBoxRotation } from './resetBoxRotation';
 
@@ -10,7 +9,8 @@ export const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
   event,
 }) => {
   if (process.env.NODE_ENV !== 'test') {
-    createRotationBoxAnimation({
+    state = createRotationBoxAnimation({
+      state,
       boxUniqueId: event.payload.boxEntity,
       animationEndCallback: () => {
         resetBoxRotation({
@@ -18,6 +18,15 @@ export const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
           texture: event.payload.texture,
           color: event.payload.color,
         });
+
+        // emitEvent<BoxEvent.RotationEndEvent>({
+        //   type: BoxEvent.Type.rotationEnd,
+        //   payload: {
+        //     ai: undefined,
+        //     shouldExplode: false,
+        //     boxEntity: event.payload.boxEntity,
+        //   },
+        // });
       },
       texture: event.payload.texture,
       color: event.payload.color,

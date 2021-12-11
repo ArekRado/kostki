@@ -18,6 +18,7 @@ import {
 import { handleCleanScene } from './systems/gameSystem/handleCleanScene';
 import { handleNextTurn } from './systems/gameSystem/handleNextTurn';
 import { handlePlayerClick } from './systems/gameSystem/handlePlayerClick';
+import { handleShakeAiBoxes } from './systems/gameSystem/handleShakeAiBoxes';
 import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLevel';
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
@@ -75,6 +76,9 @@ const eventHandler = ({
       break;
     case GameEvent.Type.reload:
       state = handleReload({ state, event });
+      break;
+    case GameEvent.Type.shakeAiBoxes:
+      state = handleShakeAiBoxes({ state, event });
       break;
     case GameEvent.Type.playAgainCustomLevel:
       state = handleCleanScene({

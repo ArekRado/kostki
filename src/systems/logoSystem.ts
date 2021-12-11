@@ -10,7 +10,7 @@ export const logoEntity = '8523773494048061';
 
 export namespace LogoEvent {
   export enum Type {
-    rotateBox = 'rotateBox',
+    rotateBox = 'LogoEvent-rotateBox',
   }
 
   export type All = RotateBoxEvent;
