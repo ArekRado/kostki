@@ -2,7 +2,7 @@ import { scene } from '../..';
 import { boxBlueprint } from '../../blueprints/boxBlueprint';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { AI, Box, Game, State } from '../../ecs/type';
+import { AI, Box, Game, State, Transform } from '../../ecs/type';
 import { getGame } from '../gameSystem';
 
 export const create = ({
@@ -17,6 +17,21 @@ export const create = ({
     state,
     name: componentName.ai,
     entity: component.player || '',
+  });
+
+  state = setComponent<Transform>({
+    state,
+    data: {
+      name: componentName.transform,
+      entity: component.entity,
+
+      rotation: [0, 0, 0],
+      fromParentRotation: [0, 0, 0],
+      scale: [0, 0],
+      fromParentScale: [0, 0],
+      position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
+      fromParentPosition: [0, 0],
+    },
   });
 
   boxBlueprint({

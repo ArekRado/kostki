@@ -16,25 +16,22 @@ const timeGetSet = createGetSetForUniqComponent<Time>({
 export const getTime = timeGetSet.getComponent;
 export const setTime = timeGetSet.setComponent;
 
-export const timeSystem = (state: State) =>
-  createGlobalSystem<Time>({
+export const timeSystem = (state: State) => {
+  state = setComponent<Time>({
+    state,
+    data: {
+      entity: timeEntity,
+      name: componentName.time,
+      delta: 0,
+      timeNow: performance.now(),
+      previousTimeNow: performance.now(),
+    },
+  });
+
+  return createGlobalSystem<Time>({
     name: componentName.time,
     priority: systemPriority.time,
     state,
-    create: ({ state }) => {
-      state = setComponent<Time>({
-        state,
-        data: {
-          entity: timeEntity,
-          name: componentName.time,
-          delta: 0,
-          timeNow: performance.now(),
-          previousTimeNow: performance.now(),
-        },
-      });
-
-      return state;
-    },
     tick: ({ state }) => {
       const time = getTime({ state });
 
@@ -53,3 +50,4 @@ export const timeSystem = (state: State) =>
       return state;
     },
   });
+};

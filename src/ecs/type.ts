@@ -5,6 +5,8 @@ import { Animation } from './ecsType';
 
 export type Dictionary<Value> = { [key: string]: Value };
 
+export type Vector3D = [number, number, number];
+
 export type Guid = string;
 
 export type EventHandler<ComponentData, Events> = (params: {
@@ -106,8 +108,8 @@ export type Time = Component<{
 }>;
 
 export type Transform = Component<{
-  rotation: number;
-  fromParentRotation: number;
+  rotation: [number, number, number];
+  fromParentRotation: [number, number, number];
   scale: Vector2D;
   fromParentScale: Vector2D;
   position: Vector2D;

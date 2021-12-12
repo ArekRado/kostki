@@ -7,6 +7,23 @@ import { createSystem } from '../ecs/createSystem';
 import { setComponent } from '../ecs/component';
 import { componentName } from '../ecs/component';
 import { getTime } from './timeSystem';
+type Vector3D = [number, number, number];
+const vector3d = {
+  sub: (v1: Vector3D, v2: Vector3D): Vector3D => [
+    v1[0] - v2[0],
+    v1[1] - v2[1],
+    v1[2] - v2[2],
+  ],
+  scale: (value: number, v1: Vector3D): Vector3D => [
+    v1[0] * value,
+    v1[1] * value,
+    v1[2] * value,
+  ],
+  isLesser: (v1: Vector3D, v2: Vector3D): boolean =>
+    v1[0] + v1[1] + v1[2] < v2[0] + v2[1] + v2[2],
+  isGreater: (v1: Vector3D, v2: Vector3D): boolean =>
+    v1[0] + v1[1] + v1[2] > v2[0] + v2[1] + v2[2],
+};
 
 const getPercentageProgress = (
   currentTime: number,
@@ -201,6 +218,62 @@ const updateVectorAnimation: UpdateVectorAnimation = ({
     },
   ];
 };
+type UpdateVector3DAnimation = (params: {
+  keyframe: Keyframe;
+  time: Time;
+  animation: Animation;
+  progress: number;
+  keyframeCurrentTime: number;
+  timeExceeded: boolean;
+}) => [[number, number, number], Animation];
+const updateVector3DAnimation: UpdateVector3DAnimation = ({
+  keyframe,
+  time,
+  animation,
+  progress,
+  keyframeCurrentTime,
+  timeExceeded,
+}) => {
+  const currentTime = timeExceeded
+    ? keyframeCurrentTime + time.delta
+    : animation.currentTime + time.delta;
+
+  const v1 = keyframe.valueRange.value[0] as [number, number, number];
+  const v2 = keyframe.valueRange.value[1] as [number, number, number];
+
+  if (animation.timingMode === 'step') {
+    return [
+      v1,
+      {
+        ...animation,
+        currentTime,
+        isFinished: timeExceeded,
+      },
+    ];
+  }
+
+  const normalizedMax = vector3d.sub(v2, v1);
+  const newValue = vector3d.scale(
+    1.0 / 100,
+    vector3d.scale(progress, normalizedMax)
+  );
+  const isNegative = vector3d.isLesser(v1, v2);
+
+  return [
+    isNegative
+      ? vector3d.isGreater(newValue, v2)
+        ? v2
+        : newValue
+      : vector3d.isLesser(newValue, v2)
+      ? v2
+      : newValue,
+    {
+      ...animation,
+      currentTime,
+      isFinished: timeExceeded,
+    },
+  ];
+};
 
 type UpdateStringAnimation = (params: {
   keyframe: Keyframe;
@@ -269,6 +342,8 @@ export const animationSystem = (state: State) =>
             break;
           case 'vector2D':
             updateFunction = updateVectorAnimation;
+          case 'vector3D':
+            updateFunction = updateVector3DAnimation;
             break;
           case 'string':
             updateFunction = updateStringAnimation;
@@ -281,7 +356,7 @@ export const animationSystem = (state: State) =>
         const [value, newAnimation] = updateFunction({
           keyframe,
           time,
-          animation,
+          animation, // todo next value should be taken from next keyframe, not from valueRange
           progress,
           keyframeCurrentTime,
           timeExceeded,
@@ -289,9 +364,8 @@ export const animationSystem = (state: State) =>
 
         const { component, entityId, path } = animation.property;
 
-        component
-          ? set(state.component, `${component}.${entityId}.${path}`, value)
-          : set(state.entity, `${entityId}.${path}`, value);
+        component &&
+          set(state.component, `${component}.${entityId}.${path}`, value);
 
         return setComponent<Animation>({
           state,

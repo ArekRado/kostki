@@ -2,6 +2,22 @@ import { add, Vector2D, vectorZero } from '@arekrado/vector-2d';
 import { State, Transform } from '../ecs/type';
 import { createGlobalSystem, systemPriority } from '../ecs/createSystem';
 import { componentName, getComponent, setComponent } from '../ecs/component';
+import { scene } from '..';
+
+const syncTransformWithBabylon = ({ transform }: { transform: Transform }) => {
+  const transformNode = scene.getTransformNodeByUniqueId(
+    parseFloat(transform.entity)
+  );
+
+  if (transformNode) {
+    transformNode.position.x = transform.position[0];
+    transformNode.position.y = transform.position[1];
+
+    transformNode.rotation.x = transform.rotation[0];
+    transformNode.rotation.y = transform.rotation[1];
+    transformNode.rotation.z = transform.rotation[2];
+  }
+};
 
 const getParentPosition = (
   state: State,
@@ -36,16 +52,16 @@ export const transformSystem = (state: State) =>
       return Object.values(params.state.component.transform).reduce(
         (state, transform) => {
           if (transform.parentId) {
-            const parentEntity = getComponent<Transform>({
+            const parentTransform = getComponent<Transform>({
               state,
               entity: transform.parentId,
               name: componentName.transform,
             });
 
-            if (parentEntity) {
+            if (parentTransform) {
               const newPosition = add(
                 transform.fromParentPosition,
-                getParentPosition(state, parentEntity)
+                getParentPosition(state, parentTransform)
               );
 
               return setComponent<Transform>({
@@ -57,6 +73,10 @@ export const transformSystem = (state: State) =>
               });
             }
           }
+
+          syncTransformWithBabylon({
+            transform: transform,
+          });
 
           return state;
         },
