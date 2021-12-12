@@ -41,7 +41,7 @@ export const setBackground = ({
 
 
 export const backgroundSystem = (state: State) =>
-  createSystem<Background, {}>({
+  createSystem<Background>({
     state,
     name: componentName.background,
     create,

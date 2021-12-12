@@ -4,14 +4,18 @@ import { State } from './type';
 let state: State = {
   entity: {},
   component: {
-    [componentName.event]: {},
     [componentName.box]: {},
     [componentName.ai]: {},
     [componentName.game]: {},
-    [componentName.camera]: {},
     [componentName.marker]: {},
     [componentName.background]: {},
     [componentName.logo]: {},
+    
+    [componentName.camera]: {},
+    [componentName.event]: {},
+    [componentName.animation]: {},
+    [componentName.time]: {},
+    [componentName.transform]: {},
   },
   system: [],
 };

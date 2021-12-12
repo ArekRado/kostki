@@ -37,7 +37,7 @@ export namespace BoxEvent {
 }
 
 export const boxSystem = (state: State) =>
-  createSystem<Box, BoxEvent.All>({
+  createSystem<Box>({
     state,
     name: componentName.box,
     create,

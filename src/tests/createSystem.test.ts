@@ -163,7 +163,7 @@ describe('createGlobalSystem', () => {
 
     const updateMock = jest.fn(({ state }: any) => state);
 
-    state = createSystem<any, any>({
+    state = createSystem<any>({
       state,
       name: componentName,
       update: updateMock,

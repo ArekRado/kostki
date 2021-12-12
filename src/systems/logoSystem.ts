@@ -31,7 +31,7 @@ export const setLogo = (params: { state: State; data: Partial<Logo> }) => {
 };
 
 export const logoSystem = (state: State) =>
-  createSystem<Logo, LogoEvent.All>({
+  createSystem<Logo>({
     state,
     name: componentName.logo,
     create,

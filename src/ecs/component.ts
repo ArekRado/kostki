@@ -5,14 +5,18 @@ const getSystemByName = (name: string, system: State['system']) =>
   system.find((x) => x.name === name);
 
 export enum componentName {
-  event = 'event',
   box = 'box',
   ai = 'ai',
   game = 'game',
-  camera = 'camera',
   marker = 'marker',
   background = 'background',
   logo = 'logo',
+  
+  event = 'event',
+  camera = 'camera',
+  animation = 'animation',
+  time = 'time',
+  transform = 'transform',
 }
 
 type SetComponentParams<Data> = {

@@ -1,5 +1,7 @@
+import { Vector2D } from '@arekrado/vector-2d';
 import { AIDifficulty } from '../systems/aiSystem';
 import { GlobalSystem, System } from './createSystem';
+import { Animation } from './ecsType';
 
 export type Dictionary<Value> = { [key: string]: Value };
 
@@ -97,19 +99,39 @@ export type Background = Component<{
 
 export type Event = Component<{}>;
 
+export type Time = Component<{
+  previousTimeNow: number;
+  timeNow: number;
+  delta: number;
+}>;
+
+export type Transform = Component<{
+  rotation: number;
+  fromParentRotation: number;
+  scale: Vector2D;
+  fromParentScale: Vector2D;
+  position: Vector2D;
+  fromParentPosition: Vector2D;
+  parentId?: Guid;
+}>;
+
 export type State = {
   entity: Dictionary<Entity>;
   component: Dictionary<Dictionary<Component<any>>> & {
     box: Dictionary<Box>;
     ai: Dictionary<AI>;
     game: Dictionary<Game>;
-    camera: Dictionary<Camera>;
     marker: Dictionary<Marker>;
     background: Dictionary<Background>;
-    logo: Dictionary<Logo>;
+    logo: Dictionary<Logo>; // todo remove?
     event: Dictionary<Event>;
+
+    camera: Dictionary<Camera>;
+    animation: Dictionary<Animation>;
+    time: Dictionary<Time>;
+    transform: Dictionary<Transform>;
   };
-  system: Array<System<any, any> | GlobalSystem>;
+  system: Array<System<any> | GlobalSystem>;
 };
 
 export type GetDefaultComponent<X> = (

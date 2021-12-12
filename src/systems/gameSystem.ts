@@ -96,7 +96,7 @@ export const getCurrentAi: GetCurrentAi = ({ state }) => {
 };
 
 export const gameSystem = (state: State) =>
-  createSystem<Game, GameEvent.All>({
+  createSystem<Game>({
     state,
     name: componentName.game,
     create,

@@ -62,7 +62,7 @@ export const getCameraSize = (distance: number, scene: Scene) => {
 };
 
 export const cameraSystem = (state: State) =>
-  createSystem<Camera, CameraEvent.All>({
+  createSystem<Camera>({
     state,
     name: componentName.camera,
     create: ({ state, component }) => {

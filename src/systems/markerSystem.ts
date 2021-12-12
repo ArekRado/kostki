@@ -74,7 +74,7 @@ export const getAlphaAnimation = () => {
 };
 
 export const markerSystem = (state: State) =>
-  createSystem<Marker, {}>({
+  createSystem<Marker>({
     state,
     name: componentName.marker,
     create: ({ state, component }) => {

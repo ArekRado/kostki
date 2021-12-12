@@ -28,7 +28,7 @@ export type EnhancedBox = Box & {
 export type DataGrid = EnhancedBox[][];
 
 export const aiSystem = (state: State) =>
-  createSystem<AI, undefined>({
+  createSystem<AI>({
     state,
     name: componentName.ai,
   });

@@ -17,20 +17,27 @@ import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
 import { getSavedData } from './utils/localDb';
+import { timeSystem } from './systems/timeSystem';
+import { animationSystem } from './systems/animationSystem';
+import { transformSystem } from './systems/transformSystem';
 
 type GetGameInitialState = () => State;
 export const getGameInitialState: GetGameInitialState = () => {
   let state = initialState;
 
-  const version = '0.0.6';
+  const version = '0.0.7';
 
   // Systems
+  state = timeSystem(state);
+  state = animationSystem(state);
   state = eventSystem(state);
+  state = cameraSystem(state);
+  state = transformSystem(state);
+
   state = boxSystem(state);
   state = aiSystem(state);
   state = gameSystem(state);
   state = markerSystem(state);
-  state = cameraSystem(state);
   state = backgroundSystem(state);
   state = logoSystem(state);
 

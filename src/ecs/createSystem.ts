@@ -12,52 +12,12 @@ export enum systemPriority {
 
 const doNothing = (params: { state: State }) => params.state;
 
-// TODO add a way to handle any event - is it better than handling events inside systems?
-// const eventHandler = ({state, event:unknown | listOfExpectedEvents }):State => {}
-// type TriggerSystemEvents = <ComponentData, Events>(params: {
-//   state: State;
-//   eventBuffer: Dictionary<Events[]>;
-//   entity: Entity;
-//   eventHandler: EventHandler<ComponentData, Events> | undefined;
-//   component: Component<ComponentData>;
-// }) => State;
-// export const triggerSystemEvents: TriggerSystemEvents = ({
-//   entity,
-//   eventBuffer,
-//   state,
-//   eventHandler,
-//   component,
-// }) =>
-//   eventBuffer[entity]
-//     ? eventBuffer[entity].reduce((acc, event) => {
-//         if (eventHandler) {
-//           const updatedComponent = getComponent<any>({
-//             state: acc,
-//             entity,
-//             name: component.name,
-//           });
-
-//           if (!updatedComponent) {
-//             return acc;
-//           }
-
-//           return eventHandler({
-//             state: acc,
-//             event,
-//             component: updatedComponent,
-//           });
-//         }
-
-//         return acc;
-//       }, state)
-//     : state;
-
 type SystemMethodParams<ComponentData> = {
   state: State;
   component: Component<ComponentData>;
 };
 
-export type CreateSystemParams<Component, Events> = {
+export type CreateSystemParams<Component> = {
   state: State;
   name: string;
   initialize?: (params: { state: State }) => State;
@@ -66,10 +26,9 @@ export type CreateSystemParams<Component, Events> = {
   tick?: (params: SystemMethodParams<Component>) => State;
   remove?: (params: SystemMethodParams<Component>) => State;
   priority?: number;
-  event?: EventHandler<Component, Events>;
 };
 
-export type System<Component, Events> = {
+export type System<Component> = {
   name: string;
   /**
    * Called only once when engine is initializing
@@ -86,37 +45,28 @@ export type System<Component, Events> = {
   /**
    * Called on each runOneFrame
    */
-  tick: (params: { state: State; eventBuffer: Dictionary<Events[]> }) => State;
+  tick: (params: { state: State; }) => State;
   remove: (params: SystemMethodParams<Component>) => State;
   priority: number;
-  event?: EventHandler<Component, Events>;
 };
 
-export const createSystem = <ComponentData, Events>({
+export const createSystem = <ComponentData>({
   state,
   tick,
   ...params
-}: CreateSystemParams<ComponentData, Events>): State => {
-  const system: System<ComponentData, Events> = {
+}: CreateSystemParams<ComponentData>): State => {
+  const system: System<ComponentData> = {
     name: params.name,
     priority: params.priority || systemPriority.zero,
     initialize: params.initialize || doNothing,
     create: params.create || doNothing,
-    tick: ({ state, eventBuffer }) => {
+    tick: ({ state }) => {
       const component = state.component[params.name] as Dictionary<
         Component<ComponentData>
       >;
       if (component) {
         return Object.values(component).reduce(
           (acc, component: Component<ComponentData>) => {
-            // let stateAfterEvents = triggerSystemEvents<ComponentData, Events>({
-            //   eventHandler: params.event,
-            //   state: acc,
-            //   eventBuffer,
-            //   entity: component.entity,
-            //   component,
-            // });
-
             return tick
               ? tick({ state: acc, component })
               : acc;
@@ -129,7 +79,6 @@ export const createSystem = <ComponentData, Events>({
     },
     update: params.update,
     remove: params.remove || doNothing,
-    event: params.event || doNothing,
   };
 
   return {
