@@ -128,77 +128,75 @@ const runQuickStart: RunQuickStart = ({ state }) => {
   return newState || state;
 };
 
-export const handleStartCustomLevel: EventHandler<
-  Game,
-  GameEvent.StartCustomLevelEvent
-> = ({ state }) => {
-  const component = getGame({ state });
-  if (!component) {
-    return state;
-  }
-
-  state = setLevelFromSettings({ state, game: component });
-
-  state = setGame({
-    state,
-    data: {
-      currentPlayer: getNextPlayer({ state })?.entity,
-    },
-  });
-
-  const game = getGame({ state });
-
-  if (game?.customLevelSettings.quickStart) {
-    state = runQuickStart({ state });
-  }
-
-  playLevelStartAnimation({ state });
-
-  state = setGame({
-    state,
-    data: {
-      gameStarted: true,
-      page: Page.customLevel,
-    },
-  });
-
-  const currentAi = getComponent<AI>({
-    state,
-    name: componentName.ai,
-    entity: getGame({ state })?.currentPlayer || '',
-  });
-
-  if (currentAi && !currentAi.human) {
-    const box = getAiMove({ state, ai: currentAi });
-
-    if (box) {
-      state = onClickBox({ box, state, ai: currentAi });
+export const handleStartCustomLevel: EventHandler<GameEvent.StartCustomLevelEvent> =
+  ({ state }) => {
+    const component = getGame({ state });
+    if (!component) {
+      return state;
     }
-  }
 
-  state = setComponent<Marker>({
-    state,
-    data: {
-      entity: markerEntity,
-      name: componentName.marker,
-      color: [1, 1, 1],
-      position: [0, 0],
-    },
-  });
+    state = setLevelFromSettings({ state, game: component });
 
-  eventBusDispatch('setUIState', state);
+    state = setGame({
+      state,
+      data: {
+        currentPlayer: getNextPlayer({ state })?.entity,
+      },
+    });
 
-  if (currentAi) {
-    setTimeout(() => {
-      emitEvent<GameEvent.ShakeAiBoxesEvent>({
-        type: GameEvent.Type.shakeAiBoxes,
-        payload: {
-          moves: getGame({ state })?.moves || 0,
-          ai: currentAi,
-        },
-      });
-    }, shakeAnimationTimeout);
-  }
+    const game = getGame({ state });
 
-  return state;
-};
+    if (game?.customLevelSettings.quickStart) {
+      state = runQuickStart({ state });
+    }
+
+    playLevelStartAnimation({ state });
+
+    state = setGame({
+      state,
+      data: {
+        gameStarted: true,
+        page: Page.customLevel,
+      },
+    });
+
+    const currentAi = getComponent<AI>({
+      state,
+      name: componentName.ai,
+      entity: getGame({ state })?.currentPlayer || '',
+    });
+
+    if (currentAi && !currentAi.human) {
+      const box = getAiMove({ state, ai: currentAi });
+
+      if (box) {
+        state = onClickBox({ box, state, ai: currentAi });
+      }
+    }
+
+    state = setComponent<Marker>({
+      state,
+      data: {
+        entity: markerEntity,
+        name: componentName.marker,
+        color: [1, 1, 1],
+        position: [0, 0],
+      },
+    });
+
+    eventBusDispatch('setUIState', state);
+
+    if (currentAi) {
+      setTimeout(() => {
+        emitEvent<GameEvent.ShakeAiBoxesEvent>({
+          type: GameEvent.Type.shakeAiBoxes,
+          payload: {
+            moves: getGame({ state })?.moves || 0,
+            ai: currentAi,
+          },
+        });
+      }, shakeAnimationTimeout);
+    }
+
+    return state;
+  };

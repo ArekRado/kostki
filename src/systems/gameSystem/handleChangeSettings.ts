@@ -53,145 +53,133 @@ export const playersList = () => [
   basicAI('8', purple, set8, false, AIDifficulty.easy),
 ];
 
-export const handleChangePlayers: EventHandler<
-  Game,
-  GameEvent.ChangePlayersEvent
-> = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
-    return state;
-  }
+export const handleChangePlayers: EventHandler<GameEvent.ChangePlayersEvent> =
+  ({ state }) => {
+    const game = getGame({ state });
+    if (!game) {
+      return state;
+    }
 
-  const playersAmount =
-    game.customLevelSettings.players?.length === 8
-      ? 2
-      : game.customLevelSettings.players?.length + 1;
+    const playersAmount =
+      game.customLevelSettings.players?.length === 8
+        ? 2
+        : game.customLevelSettings.players?.length + 1;
 
-  state = setGame({
-    state,
-    data: {
-      customLevelSettings: {
-        ...game.customLevelSettings,
-        players: playersList().slice(0, playersAmount),
+    state = setGame({
+      state,
+      data: {
+        customLevelSettings: {
+          ...game.customLevelSettings,
+          players: playersList().slice(0, playersAmount),
+        },
       },
-    },
-  });
+    });
 
-  eventBusDispatch('setUIState', state);
-  saveStateToData(state);
+    eventBusDispatch('setUIState', state);
+    saveStateToData(state);
 
-  return state;
-};
-
-export const handleChangeDifficulty: EventHandler<
-  Game,
-  GameEvent.ChangeDifficultyEvent
-> = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
     return state;
-  }
+  };
 
-  const difficultyList = [
-    AIDifficulty.easy,
-    AIDifficulty.medium,
-    AIDifficulty.hard,
-  ];
+export const handleChangeDifficulty: EventHandler<GameEvent.ChangeDifficultyEvent> =
+  ({ state }) => {
+    const game = getGame({ state });
+    if (!game) {
+      return state;
+    }
 
-  const index = difficultyList.findIndex(
-    (difficulty) => difficulty === game.customLevelSettings.difficulty
-  );
+    const difficultyList = [
+      AIDifficulty.easy,
+      AIDifficulty.medium,
+      AIDifficulty.hard,
+    ];
 
-  const nextDifficulty =
-    index === -1
-      ? difficultyList[0]
-      : difficultyList[index + 1] ?? difficultyList[0];
+    const index = difficultyList.findIndex(
+      (difficulty) => difficulty === game.customLevelSettings.difficulty
+    );
 
-  state = setGame({
-    state,
-    data: {
-      customLevelSettings: {
-        ...game.customLevelSettings,
-        difficulty: nextDifficulty,
+    const nextDifficulty =
+      index === -1
+        ? difficultyList[0]
+        : difficultyList[index + 1] ?? difficultyList[0];
+
+    state = setGame({
+      state,
+      data: {
+        customLevelSettings: {
+          ...game.customLevelSettings,
+          difficulty: nextDifficulty,
+        },
       },
-    },
-  });
+    });
 
-  eventBusDispatch('setUIState', state);
-  saveStateToData(state);
+    eventBusDispatch('setUIState', state);
+    saveStateToData(state);
 
-  return state;
-};
-
-export const handleChangeQuickStart: EventHandler<
-  Game,
-  GameEvent.ChangeQuickStartEvent
-> = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
     return state;
-  }
+  };
 
-  state = setGame({
-    state,
-    data: {
-      customLevelSettings: {
-        ...game.customLevelSettings,
-        quickStart: !game.customLevelSettings.quickStart,
+export const handleChangeQuickStart: EventHandler<GameEvent.ChangeQuickStartEvent> =
+  ({ state }) => {
+    const game = getGame({ state });
+    if (!game) {
+      return state;
+    }
+
+    state = setGame({
+      state,
+      data: {
+        customLevelSettings: {
+          ...game.customLevelSettings,
+          quickStart: !game.customLevelSettings.quickStart,
+        },
       },
-    },
-  });
+    });
 
-  eventBusDispatch('setUIState', state);
-  saveStateToData(state);
+    eventBusDispatch('setUIState', state);
+    saveStateToData(state);
 
-  return state;
-};
-
-export const handleChangeColorBlindMode: EventHandler<
-  Game,
-  GameEvent.ChangeColorBlindModeEvent
-> = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
     return state;
-  }
+  };
 
-  state = setGame({
-    state,
-    data: {
-      colorBlindMode: !game.colorBlindMode,
-    },
-  });
+export const handleChangeColorBlindMode: EventHandler<GameEvent.ChangeColorBlindModeEvent> =
+  ({ state }) => {
+    const game = getGame({ state });
+    if (!game) {
+      return state;
+    }
 
-  eventBusDispatch('setUIState', state);
-  saveStateToData(state);
+    state = setGame({
+      state,
+      data: {
+        colorBlindMode: !game.colorBlindMode,
+      },
+    });
 
-  return state;
-};
+    eventBusDispatch('setUIState', state);
+    saveStateToData(state);
 
-export const handleChangeMapType: EventHandler<
-  Game,
-  GameEvent.ChangeMapTypeEvent
-> = ({ state }) => {
-  eventBusDispatch('setUIState', state);
-  saveStateToData(state);
+    return state;
+  };
 
-  return state;
-};
+export const handleChangeMapType: EventHandler<GameEvent.ChangeMapTypeEvent> =
+  ({ state }) => {
+    eventBusDispatch('setUIState', state);
+    saveStateToData(state);
 
-export const handleShowNewVersion: EventHandler<
-  Game,
-  GameEvent.ShowNewVersionEvent
-> = ({ state }) => {
-  state = setGame({
-    state,
-    data: { newVersionAvailable: true },
-  });
-  return state;
-};
+    return state;
+  };
 
-export const handleReload: EventHandler<Game, GameEvent.ReloadEvent> = ({
+export const handleShowNewVersion: EventHandler<GameEvent.ShowNewVersionEvent> =
+  ({ state }) => {
+    state = setGame({
+      state,
+      data: { newVersionAvailable: true },
+    });
+    return state;
+  };
+
+export const handleReload: EventHandler<GameEvent.ReloadEvent> = ({
   state,
 }) => {
   window.location.reload();

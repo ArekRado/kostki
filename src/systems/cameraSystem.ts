@@ -70,11 +70,4 @@ export const cameraSystem = (state: State) =>
 
       return state;
     },
-    // update: ({ state }) => {
-    //   state = setBackground({ state, data: {} });
-    //   state = setTurnIndicator({ state, data: {} });
-    //   state = setLogo({ state, data: {} });
-
-    //   return state;
-    // },
   });

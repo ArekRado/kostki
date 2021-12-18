@@ -9,8 +9,8 @@ export type Vector3D = [number, number, number];
 
 export type Guid = string;
 
-export type EventHandler<ComponentData, Events> = (params: {
-  event: Events;
+export type EventHandler<Event> = (params: {
+  event: Event;
   state: State;
 }) => State;
 

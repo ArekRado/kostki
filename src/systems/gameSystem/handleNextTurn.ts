@@ -74,7 +74,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   return state;
 };
 
-export const handleNextTurn: EventHandler<Game, GameEvent.NextTurnEvent> = ({
+export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent> = ({
   state,
 }) => {
   const game = getGame({ state });

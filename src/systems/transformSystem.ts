@@ -5,18 +5,18 @@ import { componentName, getComponent, setComponent } from '../ecs/component';
 import { scene } from '..';
 
 const syncTransformWithBabylon = ({ transform }: { transform: Transform }) => {
-  const transformNode = scene.getTransformNodeByUniqueId(
-    parseFloat(transform.entity)
-  );
+  // const transformNode = scene.getTransformNodeByUniqueId(
+  //   parseFloat(transform.entity)
+  // );
 
-  if (transformNode) {
-    transformNode.position.x = transform.position[0];
-    transformNode.position.y = transform.position[1];
+  // if (transformNode) {
+  //   transformNode.position.x = transform.position[0];
+  //   transformNode.position.y = transform.position[1];
 
-    transformNode.rotation.x = transform.rotation[0];
-    transformNode.rotation.y = transform.rotation[1];
-    transformNode.rotation.z = transform.rotation[2];
-  }
+  //   transformNode.rotation.x = transform.rotation[0];
+  //   transformNode.rotation.y = transform.rotation[1];
+  //   transformNode.rotation.z = transform.rotation[2];
+  // }
 };
 
 const getParentPosition = (

@@ -13,10 +13,21 @@ export enum componentName {
   logo = 'logo',
   
   event = 'event',
-  camera = 'camera',
-  animation = 'animation',
   time = 'time',
   transform = 'transform',
+
+  sprite = 'sprite',
+  animation = 'animation',
+  collideBox = 'collideBox',
+  collideCircle = 'collideCircle',
+  blueprint = 'blueprint',
+  mouseInteraction = 'mouseInteraction',
+  camera = 'camera',
+  text = 'text',
+  line = 'line',
+  rectangle = 'rectangle',
+  circle = 'circle',
+  ellipse = 'ellipse',
 }
 
 type SetComponentParams<Data> = {

@@ -1,10 +1,9 @@
-import { Box, EventHandler } from '../../ecs/type';
-import { emitEvent } from '../../eventSystem';
+import { EventHandler } from '../../ecs/type';
 import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { resetBoxRotation } from './resetBoxRotation';
 
-export const rotateHandler: EventHandler<Box, BoxEvent.Rotate> = ({
+export const rotateHandler: EventHandler<BoxEvent.Rotate> = ({
   state,
   event,
 }) => {

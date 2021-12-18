@@ -1,5 +1,10 @@
 import { Camera, EventHandler } from '../../ecs/type';
-import { CameraEvent, getCamera, getCameraSize, setCamera } from '../cameraSystem';
+import {
+  CameraEvent,
+  getCamera,
+  getCameraSize,
+  setCamera,
+} from '../cameraSystem';
 import { camera, scene } from '../..';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 
@@ -25,7 +30,7 @@ export const adjustBabylonCameraToComponentCamera = ({
   return size;
 };
 
-export const handleResize: EventHandler<Camera, CameraEvent.ResizeEvent> = ({
+export const handleResize: EventHandler<CameraEvent.ResizeEvent> = ({
   state,
 }) => {
   const camera = getCamera({ state });

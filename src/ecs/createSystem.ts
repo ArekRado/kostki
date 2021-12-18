@@ -94,7 +94,6 @@ export type CreateGlobalSystemParams<Events> = {
   create?: (params: { state: State }) => State;
   tick?: (params: { state: State }) => State;
   priority?: number;
-  event?: EventHandler<undefined, Events>;
 };
 
 export type GlobalSystem = {

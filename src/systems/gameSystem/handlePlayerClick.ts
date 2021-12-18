@@ -5,44 +5,46 @@ import { onClickBox } from '../boxSystem/onClickBox';
 import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 
-export const handlePlayerClick: EventHandler<Game, GameEvent.PlayerClickEvent> =
-  ({ state, event }) => {
-    const game = getGame({ state });
-    if (!game) {
-      return state;
-    }
-    const { currentPlayer, gameStarted, boxRotationQueue } = game;
+export const handlePlayerClick: EventHandler<GameEvent.PlayerClickEvent> = ({
+  state,
+  event,
+}) => {
+  const game = getGame({ state });
+  if (!game) {
+    return state;
+  }
+  const { currentPlayer, gameStarted, boxRotationQueue } = game;
 
-    const box = getComponent<Box>({
+  const box = getComponent<Box>({
+    state,
+    name: componentName.box,
+    entity: event.payload.boxEntity,
+  });
+
+  const canClickOnBox =
+    box?.player === undefined || box?.player === currentPlayer;
+
+  if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
+    const ai = getComponent<AI>({
+      name: componentName.ai,
       state,
-      name: componentName.box,
-      entity: event.payload.boxEntity,
+      entity: currentPlayer,
     });
 
-    const canClickOnBox =
-      box?.player === undefined || box?.player === currentPlayer;
-
-    if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
-      const ai = getComponent<AI>({
-        name: componentName.ai,
+    if (box && ai?.human) {
+      state = setMarker({
         state,
-        entity: currentPlayer,
+        data: {
+          color: ai.color,
+          position: [
+            box.gridPosition[0] * boxWithGap,
+            box.gridPosition[1] * boxWithGap,
+          ],
+        },
       });
-
-      if (box && ai?.human) {
-        state = setMarker({
-          state,
-          data: {
-            color: ai.color,
-            position: [
-              box.gridPosition[0] * boxWithGap,
-              box.gridPosition[1] * boxWithGap,
-            ],
-          },
-        });
-        state = onClickBox({ box, state, ai });
-      }
+      state = onClickBox({ box, state, ai });
     }
+  }
 
-    return state;
-  };
+  return state;
+};

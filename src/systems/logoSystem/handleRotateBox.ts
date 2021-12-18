@@ -6,7 +6,7 @@ import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from '../boxSystem/createRotationBoxAnimation';
 import { resetBoxRotation } from '../boxSystem/resetBoxRotation';
 import { playersList } from '../gameSystem/handleChangeSettings';
-import { getLogo, logoEntity, LogoEvent } from '../logoSystem';
+import { getLogo, LogoEvent } from '../logoSystem';
 import { logoGrid } from './logoGrid';
 
 const getRandomColor = () => {
@@ -29,7 +29,7 @@ const getRandomTexture = () => {
   return set1[randomIndex];
 };
 
-export const handleRotateBox: EventHandler<Logo, LogoEvent.RotateBoxEvent> = ({
+export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent> = ({
   state,
 }) => {
   const isLogoDefined = getLogo({ state });

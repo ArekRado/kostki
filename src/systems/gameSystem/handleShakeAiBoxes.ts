@@ -7,10 +7,7 @@ import { Animation } from '../../ecs/ecsType';
 import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem';
 import { emitEvent } from '../../eventSystem';
 
-export const handleShakeAiBoxes: EventHandler<
-  Game,
-  GameEvent.ShakeAiBoxesEvent
-> = ({
+export const handleShakeAiBoxes: EventHandler<GameEvent.ShakeAiBoxesEvent> = ({
   state,
   event: {
     payload: { ai, moves },
@@ -19,19 +16,19 @@ export const handleShakeAiBoxes: EventHandler<
   const game = getGame({ state });
 
   // player did move, do not distribut too often!
-  if (game && game?.moves !== moves) {
-    setTimeout(() => {
-      emitEvent<GameEvent.ShakeAiBoxesEvent>({
-        type: GameEvent.Type.shakeAiBoxes,
-        payload: {
-          moves: game.moves,
-          ai,
-        },
-      });
-    }, shakeAnimationTimeout);
+  // if (game && game?.moves !== moves) {
+  //   setTimeout(() => {
+  //     emitEvent<GameEvent.ShakeAiBoxesEvent>({
+  //       type: GameEvent.Type.shakeAiBoxes,
+  //       payload: {
+  //         moves: game.moves,
+  //         ai,
+  //       },
+  //     });
+  //   }, shakeAnimationTimeout);
 
-    return state;
-  }
+  //   return state;
+  // }
 
   game?.grid.forEach((boxEntity) => {
     const box = getComponent<Box>({
@@ -156,15 +153,15 @@ export const handleShakeAiBoxes: EventHandler<
     }
   });
 
-  setTimeout(() => {
-    emitEvent<GameEvent.ShakeAiBoxesEvent>({
-      type: GameEvent.Type.shakeAiBoxes,
-      payload: {
-        moves: game?.moves || 0,
-        ai,
-      },
-    });
-  }, shakeAnimationTimeout);
+  // setTimeout(() => {
+  //   emitEvent<GameEvent.ShakeAiBoxesEvent>({
+  //     type: GameEvent.Type.shakeAiBoxes,
+  //     payload: {
+  //       moves: game?.moves || 0,
+  //       ai,
+  //     },
+  //   });
+  // }, shakeAnimationTimeout);
 
   return state;
 };
