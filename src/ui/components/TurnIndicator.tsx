@@ -1,5 +1,5 @@
 import React from 'react';
-import { Color } from '../../ecs/type';
+import { Color } from '../../type';
 import { Typography } from '../components/Typography';
 import { Flex } from './Flex';
 

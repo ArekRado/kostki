@@ -1,9 +1,8 @@
 import 'regenerator-runtime/runtime';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { aiBlueprint } from '../blueprints/aiBlueprint';
-import { componentName, getComponent } from '../ecs/component';
-import { runOneFrame } from '../ecs/runOneFrame';
-import { AI, Box, Entity } from '../ecs/type';
+import { AI, Box, name } from '../type';
+import { Entity, getComponent, runOneFrame } from '@arekrado/canvas-engine';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getGame } from '../systems/gameSystem';
 import { getGameInitialState } from '../getGameInitialState';
@@ -14,7 +13,7 @@ const player2 = 'player2';
 
 const basicAI = (entity: Entity): AI => ({
   entity,
-  name: componentName.ai,
+  name: name.ai,
   human: false,
   level: AIDifficulty.hard,
   color: [0, 0, 1],
@@ -51,7 +50,7 @@ describe('game', () => {
     const middleBoxEntity = getDataGrid({ state })[1][1].entity;
     const middleBox = getComponent<Box>({
       state,
-      name: componentName.box,
+      name: name.box,
       entity: middleBoxEntity,
     });
 

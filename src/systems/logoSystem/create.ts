@@ -1,7 +1,7 @@
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import { scene } from '../..';
 import { logoBlueprint } from '../../blueprints/logoBlueprint';
-import { State } from '../../ecs/type';
+import { State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { logoEntity, LogoEvent } from '../logoSystem';
 import { updateLogoPosition } from './updateLogoPosition';

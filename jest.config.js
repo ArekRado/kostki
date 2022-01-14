@@ -1,5 +1,5 @@
 module.exports = {
-  preset: 'ts-jest',
+  preset: 'babel-jest',
   testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'src'],
   collectCoverage: false,

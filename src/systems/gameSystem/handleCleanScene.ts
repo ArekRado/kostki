@@ -1,14 +1,10 @@
-import {
-  componentName,
-  removeComponentsByName,
-  setComponent,
-} from '../../ecs/component';
-import { EventHandler, Logo, Page, State } from '../../ecs/type';
+import { EventHandler, removeComponentsByName, setComponent } from '@arekrado/canvas-engine';
+import {  Logo, name, Page, State } from '../../type';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { GameEvent, setGame } from '../gameSystem';
 import { logoEntity } from '../logoSystem';
 
-export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent> = ({
+export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent, State> = ({
   state,
   event,
 }) => {
@@ -23,12 +19,12 @@ export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent> = ({
       boxRotationQueue: [],
       gameStarted: false,
     },
-  });
-  state = removeComponentsByName({ name: componentName.box, state });
-  state = removeComponentsByName({ name: componentName.ai, state });
-  state = removeComponentsByName({ name: componentName.marker, state });
-  state = removeComponentsByName({ name: componentName.background, state });
-  state = removeComponentsByName({ name: componentName.logo, state });
+  }) as State;
+  state = removeComponentsByName({ name: name.box, state });
+  state = removeComponentsByName({ name: name.ai, state });
+  state = removeComponentsByName({ name: name.marker, state });
+  state = removeComponentsByName({ name: name.background, state });
+  state = removeComponentsByName({ name: name.logo, state });
 
   state = setScene({ state, page: event.payload.newPage });
 
@@ -39,11 +35,11 @@ export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent> = ({
 
 export const setScene = ({ state, page }: { state: State; page: Page }) => {
   if (page === Page.mainMenu) {
-    state = setComponent<Logo>({
+    state = setComponent<Logo, State>({
       state,
       data: {
         entity: logoEntity,
-        name: componentName.logo,
+        name: name.logo,
       },
     });
   }

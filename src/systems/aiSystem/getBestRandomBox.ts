@@ -1,4 +1,5 @@
-import { Box, Guid } from '../../ecs/type';
+import { Guid } from '@arekrado/canvas-engine';
+import { Box } from '../../type';
 import { DataGrid } from '../aiSystem';
 
 type GetBestRandomBox = (params: {

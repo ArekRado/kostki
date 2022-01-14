@@ -1,9 +1,6 @@
-import { runOneFrame } from './ecs/runOneFrame';
-import { State } from './ecs/type';
 import { getGameInitialState } from './getGameInitialState';
 import { register } from './serviceWorkerRegistration';
 import { GameEvent } from './systems/gameSystem';
-import { CameraEvent } from './systems/cameraSystem';
 import { emitEvent } from './eventSystem';
 import { mountGameUI } from './ui/App';
 
@@ -15,6 +12,8 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { runOneFrame } from '@arekrado/canvas-engine';
+import { CameraEvent } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -91,7 +90,7 @@ if (process.env.NODE_ENV !== 'test') {
     });
   }
 
-  let state: State = getGameInitialState();
+  let state = getGameInitialState();
 
   mountGameUI({ state });
 

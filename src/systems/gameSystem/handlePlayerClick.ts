@@ -1,23 +1,23 @@
+import { EventHandler, getComponent } from '@arekrado/canvas-engine';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { componentName, getComponent } from '../../ecs/component';
-import { AI, Box, EventHandler, Game } from '../../ecs/type';
+import { AI, Box, name, State } from '../../type';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 
-export const handlePlayerClick: EventHandler<GameEvent.PlayerClickEvent> = ({
-  state,
-  event,
-}) => {
+export const handlePlayerClick: EventHandler<
+  GameEvent.PlayerClickEvent,
+  State
+> = ({ state, event }) => {
   const game = getGame({ state });
   if (!game) {
     return state;
   }
   const { currentPlayer, gameStarted, boxRotationQueue } = game;
 
-  const box = getComponent<Box>({
+  const box = getComponent<Box, State>({
     state,
-    name: componentName.box,
+    name: name.box,
     entity: event.payload.boxEntity,
   });
 
@@ -25,8 +25,8 @@ export const handlePlayerClick: EventHandler<GameEvent.PlayerClickEvent> = ({
     box?.player === undefined || box?.player === currentPlayer;
 
   if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
-    const ai = getComponent<AI>({
-      name: componentName.ai,
+    const ai = getComponent<AI, State>({
+      name: name.ai,
       state,
       entity: currentPlayer,
     });

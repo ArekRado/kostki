@@ -1,13 +1,4 @@
-import { componentName, getComponent, setComponent } from '../../ecs/component';
-import {
-  AI,
-  Box,
-  EventHandler,
-  Game,
-  State,
-  Marker,
-  Page,
-} from '../../ecs/type';
+import { AI, Box, Game, State, Marker, Page, name } from '../../type';
 import {
   GameEvent,
   getGame,
@@ -17,7 +8,6 @@ import {
 import { generateId } from '../../utils/generateId';
 import { aiBlueprint } from '../../blueprints/aiBlueprint';
 import { getGridDimensions } from '../../blueprints/gridBlueprint';
-import { setCamera } from '../cameraSystem';
 import { getNextPlayer } from './getNextPlayer';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
@@ -25,6 +15,12 @@ import { markerEntity } from '../markerSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { playLevelStartAnimation } from './playLevelStartAnimation';
 import { emitEvent } from '../../eventSystem';
+import {
+  EventHandler,
+  getComponent,
+  setComponent,
+} from '@arekrado/canvas-engine';
+import { setCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -32,10 +28,10 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
     (acc: State, _, x) =>
       Array.from({ length: 8 }).reduce(
         (acc2: State, _, y) =>
-          setComponent<Box>({
+          setComponent<Box, State>({
             state: acc2,
             data: {
-              name: componentName.box,
+              name: name.box,
               entity: generateId().toString(),
               isAnimating: false,
               dots: 0,
@@ -64,7 +60,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
       position: [center[0], center[1]],
       distance: cameraDistance,
     },
-  });
+  }) as State;
 
   return state;
 };
@@ -83,7 +79,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 
       const currentAi = getComponent<AI>({
         state: acc,
-        name: componentName.ai,
+        name: name.ai,
         entity: game?.currentPlayer || '',
       });
 
@@ -101,7 +97,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
         return acc;
       }
 
-      acc = setComponent<Box>({
+      acc = setComponent<Box, State>({
         state: acc,
         data: {
           ...box,
@@ -112,7 +108,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
 
       const nextPlayer = getNextPlayer({ state: acc });
 
-      acc = setComponent<Game>({
+      acc = setComponent<Game, State>({
         state: acc,
         data: {
           ...game,
@@ -128,75 +124,77 @@ const runQuickStart: RunQuickStart = ({ state }) => {
   return newState || state;
 };
 
-export const handleStartCustomLevel: EventHandler<GameEvent.StartCustomLevelEvent> =
-  ({ state }) => {
-    const component = getGame({ state });
-    if (!component) {
-      return state;
-    }
-
-    state = setLevelFromSettings({ state, game: component });
-
-    state = setGame({
-      state,
-      data: {
-        currentPlayer: getNextPlayer({ state })?.entity,
-      },
-    });
-
-    const game = getGame({ state });
-
-    if (game?.customLevelSettings.quickStart) {
-      state = runQuickStart({ state });
-    }
-
-    playLevelStartAnimation({ state });
-
-    state = setGame({
-      state,
-      data: {
-        gameStarted: true,
-        page: Page.customLevel,
-      },
-    });
-
-    const currentAi = getComponent<AI>({
-      state,
-      name: componentName.ai,
-      entity: getGame({ state })?.currentPlayer || '',
-    });
-
-    if (currentAi && !currentAi.human) {
-      const box = getAiMove({ state, ai: currentAi });
-
-      if (box) {
-        state = onClickBox({ box, state, ai: currentAi });
-      }
-    }
-
-    state = setComponent<Marker>({
-      state,
-      data: {
-        entity: markerEntity,
-        name: componentName.marker,
-        color: [1, 1, 1],
-        position: [0, 0],
-      },
-    });
-
-    eventBusDispatch('setUIState', state);
-
-    if (currentAi) {
-      setTimeout(() => {
-        emitEvent<GameEvent.ShakeAiBoxesEvent>({
-          type: GameEvent.Type.shakeAiBoxes,
-          payload: {
-            moves: getGame({ state })?.moves || 0,
-            ai: currentAi,
-          },
-        });
-      }, shakeAnimationTimeout);
-    }
-
+export const handleStartCustomLevel: EventHandler<
+  GameEvent.StartCustomLevelEvent,
+  State
+> = ({ state }) => {
+  const component = getGame({ state });
+  if (!component) {
     return state;
-  };
+  }
+
+  state = setLevelFromSettings({ state, game: component });
+
+  state = setGame({
+    state,
+    data: {
+      currentPlayer: getNextPlayer({ state })?.entity,
+    },
+  }) as State;
+
+  const game = getGame({ state });
+
+  if (game?.customLevelSettings.quickStart) {
+    state = runQuickStart({ state });
+  }
+
+  playLevelStartAnimation({ state });
+
+  state = setGame({
+    state,
+    data: {
+      gameStarted: true,
+      page: Page.customLevel,
+    },
+  }) as State;
+
+  const currentAi = getComponent<AI>({
+    state,
+    name: name.ai,
+    entity: getGame({ state })?.currentPlayer || '',
+  });
+
+  if (currentAi && !currentAi.human) {
+    const box = getAiMove({ state, ai: currentAi });
+
+    if (box) {
+      state = onClickBox({ box, state, ai: currentAi });
+    }
+  }
+
+  state = setComponent<Marker, State>({
+    state,
+    data: {
+      entity: markerEntity,
+      name: name.marker,
+      color: [1, 1, 1],
+      position: [0, 0],
+    },
+  });
+
+  eventBusDispatch('setUIState', state);
+
+  if (currentAi) {
+    setTimeout(() => {
+      emitEvent<GameEvent.ShakeAiBoxesEvent>({
+        type: GameEvent.Type.shakeAiBoxes,
+        payload: {
+          moves: getGame({ state })?.moves || 0,
+          ai: currentAi,
+        },
+      });
+    }, shakeAnimationTimeout);
+  }
+
+  return state;
+};

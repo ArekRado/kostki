@@ -56,7 +56,7 @@ import set84 from '../assets/4/8.png';
 import set85 from '../assets/5/8.png';
 import set86 from '../assets/6/8.png';
 
-import { AI } from '../ecs/type';
+import { AI } from '../type';
 
 export const set1: AI['textureSet'] = [
   empty,

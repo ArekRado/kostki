@@ -1,4 +1,4 @@
-import { Color } from '../ecs/type';
+import { Color } from '../type';
 import { clamp } from './js/clamp';
 import { hslToRgb } from './hslToRgb';
 import { rgbToHsl } from './rgbToHsl';

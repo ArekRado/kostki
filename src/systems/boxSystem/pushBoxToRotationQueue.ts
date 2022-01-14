@@ -1,5 +1,5 @@
-import { setComponent } from '../../ecs/component';
-import { Entity, Game, State } from '../../ecs/type';
+import { Entity, setComponent } from '@arekrado/canvas-engine';
+import { Game, State } from '../../type';
 import { getGame } from '../gameSystem';
 
 type PushBoxToRotationQueue = (params: {
@@ -13,7 +13,7 @@ export const pushBoxToRotationQueue: PushBoxToRotationQueue = ({
   const game = getGame({ state });
 
   if (game) {
-    return setComponent<Game>({
+    return setComponent<Game, State>({
       state,
       data: {
         ...game,

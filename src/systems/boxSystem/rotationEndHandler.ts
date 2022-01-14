@@ -1,6 +1,5 @@
 import { scene } from '../..';
-import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { Box, EventHandler } from '../../ecs/type';
+import { Box, name, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { BoxEvent } from '../boxSystem';
 import { GameEvent, getGame } from '../gameSystem';
@@ -8,15 +7,20 @@ import { boxExplosion } from './boxExplosion';
 import { getTextureSet } from './getTextureSet';
 import { removeBoxFromRotationQueue } from './removeBoxFromRotationQueue';
 import { resetBoxRotation } from './resetBoxRotation';
+import {
+  EventHandler,
+  getComponent,
+  setComponent,
+} from '@arekrado/canvas-engine';
 
-export const rotationEndHandler: EventHandler<BoxEvent.RotationEndEvent> = ({
-  state,
-  event,
-}) => {
+export const rotationEndHandler: EventHandler<
+  BoxEvent.RotationEndEvent,
+  State
+> = ({ state, event }) => {
   const { ai, shouldExplode, boxEntity } = event.payload;
-  const component = getComponent<Box>({
+  const component = getComponent<Box, State>({
     state,
-    name: componentName.box,
+    name: name.box,
     entity: boxEntity,
   });
 
@@ -56,7 +60,7 @@ export const rotationEndHandler: EventHandler<BoxEvent.RotationEndEvent> = ({
     box.animations = [];
   }
 
-  state = setComponent<Box>({
+  state = setComponent<Box, State>({
     state,
     data: {
       ...component,

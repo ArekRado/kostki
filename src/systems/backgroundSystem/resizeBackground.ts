@@ -1,15 +1,16 @@
+import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { scene } from '../..';
-import { State } from '../../ecs/type';
+import { State } from '../../type';
 import { backgroundEntity } from '../backgroundSystem';
-import { getCamera, getCameraSize } from '../cameraSystem';
+import { getCameraSize } from '../cameraSystem/getCameraSize';
 
 export const resizeBackground = (state: State): State => {
   const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
   const camera = getCamera({ state });
 
-  if (background && camera) {
-    const size = getCameraSize(camera.distance, scene);
+  if (background && camera && state.babylonjs.sceneRef) {
+    const size = getCameraSize(camera.distance, state.babylonjs.sceneRef);
 
     background.position.x = camera.position[0];
     background.position.y = camera.position[1];

@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import React, { FC } from 'react';
 import { Main } from './pages/Main';
 import { useOutline } from './hooks/useOutline';
-import { Page, State } from '../ecs/type';
+import { Page, State } from '../type';
 import { getGame } from '../systems/gameSystem';
 import { useGameState } from './hooks/useGameState';
 import { CustomLevelSettings } from './pages/CustomLevelSettings';

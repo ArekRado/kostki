@@ -1,10 +1,10 @@
-import { setComponent } from '../../ecs/component';
-import { AI, Box, State } from '../../ecs/type';
+import { AI, Box, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { getTextureSet } from './getTextureSet';
 import { pushBoxToRotationQueue } from './pushBoxToRotationQueue';
+import { setComponent } from '@arekrado/canvas-engine';
 
 export const getNextDots = (dots: number): number =>
   dots === 6 ? 1 : dots + 1;
@@ -40,7 +40,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
     state = pushBoxToRotationQueue({ entity, state });
   }
 
-  state = setComponent<Box>({
+  state = setComponent<Box, State>({
     state,
     data: {
       ...box,

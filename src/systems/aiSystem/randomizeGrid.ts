@@ -1,4 +1,4 @@
-import { Guid } from '../../ecs/type';
+import { Guid } from '@arekrado/canvas-engine';
 import { DataGrid } from '../aiSystem';
 
 type RandomizeGrid = (params: {

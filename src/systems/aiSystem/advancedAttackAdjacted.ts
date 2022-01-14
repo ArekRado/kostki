@@ -1,4 +1,4 @@
-import { Entity } from '../../ecs/type';
+import { Entity } from '@arekrado/canvas-engine';
 import { DataGrid, EnhancedBox } from '../aiSystem';
 import { hardAIGridPoints } from './aiGridPoints';
 import { getAdjactedBoxes, getGrid3x3 } from './calculateLocalStrategy';

@@ -1,6 +1,4 @@
-import { createSystem } from '../ecs/createSystem';
-import { componentName, createGetSetForUniqComponent } from '../ecs/component';
-import { State, Background } from '../ecs/type';
+import { State, Background, name } from '../type';
 import { scene } from '..';
 import {
   grayGradient,
@@ -18,12 +16,16 @@ import { create } from './backgroundSystem/create';
 import { resizeBackground } from './backgroundSystem/resizeBackground';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Vector2 } from '@babylonjs/core/Maths/math.vector';
+import {
+  createGetSetForUniqComponent,
+  createSystem,
+} from '@arekrado/canvas-engine';
 
 export const backgroundEntity = '17818552155683748';
 
 const backgroundGetSet = createGetSetForUniqComponent<Background>({
   entity: backgroundEntity,
-  name: componentName.background,
+  name: name.background,
 });
 
 export const getBackground = backgroundGetSet.getComponent;
@@ -39,11 +41,10 @@ export const setBackground = ({
   return backgroundGetSet.setComponent({ state, data });
 };
 
-
 export const backgroundSystem = (state: State) =>
-  createSystem<Background>({
+  createSystem<Background, State>({
     state,
-    name: componentName.background,
+    name: name.background,
     create,
     tick: ({ state, component }) => {
       const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));

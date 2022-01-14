@@ -1,8 +1,7 @@
-import { camera, scene } from '../..';
-import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { State } from '../../ecs/type';
+import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { scene } from '../..';
+import { State } from '../../type';
 import { percentageToValue } from '../../utils/percentageToValue';
-import { getCamera } from '../cameraSystem';
 import { getCameraSizes } from '../cameraSystem/getCameraSizes';
 import { logoEntity } from '../logoSystem';
 import { logoGrid } from './logoGrid';

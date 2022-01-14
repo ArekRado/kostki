@@ -1,12 +1,12 @@
-import { createSystem } from '../ecs/createSystem';
 import {
-  componentName,
-  getComponent,
   createGetSetForUniqComponent,
-} from '../ecs/component';
-import { AI, Entity, Game, State, Scene as GameScene, Page } from '../ecs/type';
+  createSystem,
+  Entity,
+  getComponent,
+} from '@arekrado/canvas-engine';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/system/createEventSystem';
+import { AI, Game, State, Scene as GameScene, Page, name } from '../type';
 import { create } from './gameSystem/create';
-import { ECSEvent } from '../ecs/createEventSystem';
 
 export const gameEntity = 'game';
 
@@ -75,9 +75,9 @@ export namespace GameEvent {
   export type ReloadEvent = ECSEvent<Type.reload, {}>;
 }
 
-const gameGetSet = createGetSetForUniqComponent<Game>({
+const gameGetSet = createGetSetForUniqComponent<Game, State>({
   entity: gameEntity,
-  name: componentName.game,
+  name: name.game,
 });
 
 export const getGame = gameGetSet.getComponent;
@@ -88,7 +88,7 @@ export const getCurrentAi: GetCurrentAi = ({ state }) => {
   const game = getGame({ state });
   const ai = getComponent<AI>({
     state,
-    name: componentName.ai,
+    name: name.ai,
     entity: game?.currentPlayer || '',
   });
 
@@ -96,8 +96,8 @@ export const getCurrentAi: GetCurrentAi = ({ state }) => {
 };
 
 export const gameSystem = (state: State) =>
-  createSystem<Game>({
+  createSystem<Game, State>({
     state,
-    name: componentName.game,
+    name: name.game,
     create,
   });

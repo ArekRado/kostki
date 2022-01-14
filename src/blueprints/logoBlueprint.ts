@@ -1,5 +1,5 @@
 import { scene } from '..';
-import { State } from '../ecs/type';
+import { State } from '../type';
 import { logoGrid } from '../systems/logoSystem/logoGrid';
 import { boxScaleFactor } from '../systems/logoSystem/updateLogoPosition';
 import { boxBlueprint } from './boxBlueprint';

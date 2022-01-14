@@ -1,5 +1,5 @@
 import { scene } from '../..';
-import { State } from '../../ecs/type';
+import { State } from '../../type';
 import { logoEntity } from '../logoSystem';
 import { logoGrid } from './logoGrid';
 

@@ -1,4 +1,4 @@
-import { AI, State } from '../../ecs/type';
+import { AI, State } from '../../type';
 import { set1 } from '../../utils/textureSets';
 import { getGame } from '../gameSystem';
 

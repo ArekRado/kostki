@@ -1,8 +1,13 @@
+import {
+  componentName,
+  getComponent,
+  setComponent,
+  Transform,
+} from '@arekrado/canvas-engine';
 import { scene } from '../..';
 import { boxBlueprint } from '../../blueprints/boxBlueprint';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { AI, Box, Game, State, Transform } from '../../ecs/type';
+import { AI, Box, Game, name, State } from '../../type';
 import { getGame } from '../gameSystem';
 
 export const create = ({
@@ -13,13 +18,13 @@ export const create = ({
   component: Box;
 }) => {
   const { gridPosition } = component;
-  const ai = getComponent<AI>({
+  const ai = getComponent<AI, State>({
     state,
-    name: componentName.ai,
+    name: name.ai,
     entity: component.player || '',
   });
 
-  state = setComponent<Transform>({
+  state = setComponent<Transform, State>({
     state,
     data: {
       name: componentName.transform,
@@ -53,7 +58,7 @@ export const create = ({
     return state;
   }
 
-  state = setComponent<Game>({
+  state = setComponent<Game, State>({
     state,
     data: {
       ...game,

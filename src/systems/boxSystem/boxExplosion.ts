@@ -1,4 +1,4 @@
-import { AI, Box, State } from "../../ecs/type";
+import { AI, Box, State } from "../../type";
 import { safeGet } from "../aiSystem/calculateLocalStrategy";
 import { getDataGrid } from "../aiSystem/getDataGrid";
 import { onClickBox } from "./onClickBox";

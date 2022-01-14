@@ -1,5 +1,6 @@
-import { EventHandler, Logo } from '../../ecs/type';
+import { EventHandler } from '@arekrado/canvas-engine';
 import { emitEvent } from '../../eventSystem';
+import { State } from '../../type';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
 import { BoxEvent } from '../boxSystem';
@@ -29,7 +30,7 @@ const getRandomTexture = () => {
   return set1[randomIndex];
 };
 
-export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent> = ({
+export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
   state,
 }) => {
   const isLogoDefined = getLogo({ state });

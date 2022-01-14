@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
-import { componentName, getComponent } from '../../ecs/component';
-import { AI, Box, Component, Game, Page, State } from '../../ecs/type';
+import { AI, Box, Game, name, Page, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
@@ -11,6 +10,7 @@ import { PageContainer } from '../components/PageContainer';
 import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator';
 import { Typography } from '../components/Typography';
 import { useGameState } from '../hooks/useGameState';
+import { Component, getComponent } from '@arekrado/canvas-engine';
 
 const getAiList = (state: State): TurnIndicatorItem[] => {
   const game = getGame({ state });
@@ -19,7 +19,7 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
     .map((entity) =>
       getComponent<AI>({
         state,
-        name: componentName.ai,
+        name: name.ai,
         entity,
       })
     )
@@ -173,7 +173,7 @@ const getGameStatus = ({
   const amountOfCapturedBoxes = game.grid.reduce((acc, boxEntity) => {
     const box = getComponent<Box>({
       state,
-      name: componentName.box,
+      name: name.box,
       entity: boxEntity,
     });
 

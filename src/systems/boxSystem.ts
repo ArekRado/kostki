@@ -1,9 +1,8 @@
-import { createSystem } from '../ecs/createSystem';
-import { componentName } from '../ecs/component';
-import { AI, Box, Entity, State } from '../ecs/type';
+import { createSystem, Entity } from '@arekrado/canvas-engine';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/system/createEventSystem';
+import { AI, Box, name, State } from '../type';
 import { create } from './boxSystem/create';
 import { remove } from './boxSystem/remove';
-import { ECSEvent } from '../ecs/createEventSystem';
 
 export enum BoxRotationDirection {
   up = 'up',
@@ -37,9 +36,9 @@ export namespace BoxEvent {
 }
 
 export const boxSystem = (state: State) =>
-  createSystem<Box>({
+  createSystem<Box, State>({
     state,
-    name: componentName.box,
+    name: name.box,
     create,
     remove,
   });

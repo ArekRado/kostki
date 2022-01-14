@@ -1,4 +1,4 @@
-import { Color } from '../ecs/type';
+import { Color } from '../type';
 
 const hue2rgb = (p: number, q: number, t: number) => {
   if (t < 0) t += 1;

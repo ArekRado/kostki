@@ -1,8 +1,7 @@
+import { Entity } from '@arekrado/canvas-engine';
 import { scene } from '../..';
-import { AI, Color, Entity } from '../../ecs/type';
-import { emitEvent } from '../../eventSystem';
+import { Color } from '../../type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
-import { BoxEvent } from '../boxSystem';
 
 type ResetBoxRotation = (params: {
   boxUniqueId: Entity;

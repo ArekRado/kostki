@@ -1,4 +1,4 @@
-import { AI, Box, State } from "../../ecs/type";
+import { AI, Box, State } from "../../type";
 import { AIDifficulty } from "../aiSystem";
 import { advancedAttackAdjacted } from "./advancedAttackAdjacted";
 import { easyAIGridPoints, hardAIGridPoints, mediumAIGridPoints } from "./aiGridPoints";

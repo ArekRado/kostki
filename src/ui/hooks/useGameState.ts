@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { State } from '../../ecs/type';
+import { State } from '../../type';
 import { eventBusOn, eventBusRemove } from '../../utils/eventBus';
 
 let stateCache: State | undefined = undefined;

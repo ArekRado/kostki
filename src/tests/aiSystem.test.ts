@@ -1,8 +1,7 @@
 import 'regenerator-runtime/runtime';
 import { humanPlayerEntity } from '../.';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
-import { componentName, setComponent } from '../ecs/component';
-import { AI } from '../ecs/type';
+import { AI, name, State } from '../type';
 import { AIDifficulty } from '../systems/aiSystem';
 import { hardAIGridPoints } from '../systems/aiSystem/aiGridPoints';
 import { getAiMove } from '../systems/aiSystem/getAiMove';
@@ -10,6 +9,7 @@ import { getBestRandomBox } from '../systems/aiSystem/getBestRandomBox';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { getMovesForEmptyBoxes } from '../systems/aiSystem/getMovesForEmptyBoxes';
 import { getGameInitialState } from '../getGameInitialState';
+import { setComponent } from '@arekrado/canvas-engine';
 
 const player2 = 'player2';
 
@@ -35,7 +35,7 @@ export const expectOneOf = (
 
 const basicAi: AI = {
   entity: 'basicAi',
-  name: componentName.ai,
+  name: name.ai,
   human: false,
   level: AIDifficulty.hard,
   color: [0, 0, 1],
@@ -45,7 +45,7 @@ const basicAi: AI = {
 
 const basicAi2: AI = {
   entity: 'basicAi2',
-  name: componentName.ai,
+  name: name.ai,
   human: false,
   level: AIDifficulty.hard,
   color: [0, 1, 1],
@@ -200,7 +200,7 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        state = setComponent<AI>({
+        state = setComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -237,7 +237,7 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        state = setComponent<AI>({
+        state = setComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -274,7 +274,7 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        state = setComponent<AI>({
+        state = setComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -311,7 +311,7 @@ describe('aiSystem', () => {
           state: getGameInitialState(),
         });
 
-        state = setComponent<AI>({
+        state = setComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -351,7 +351,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -400,7 +400,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -438,7 +438,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -485,7 +485,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -530,7 +530,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -569,7 +569,7 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -624,12 +624,12 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -693,12 +693,12 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -768,12 +768,12 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -837,12 +837,12 @@ describe('aiSystem', () => {
         state: getGameInitialState(),
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI>({
+      state = setComponent<AI, State>({
         state,
         data: basicAi2,
       });

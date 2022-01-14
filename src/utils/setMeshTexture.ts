@@ -3,7 +3,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Scene } from '@babylonjs/core/scene';
-import { Color } from '../ecs/type';
+import { Color } from '../type';
 import { getTextureFromCache } from './textureCache';
 
 type SetMeshTexture = (params: {

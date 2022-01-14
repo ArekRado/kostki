@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page } from '../../ecs/type';
+import { Page } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { AIDifficulty } from '../../systems/aiSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';

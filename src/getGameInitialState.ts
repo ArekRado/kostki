@@ -1,38 +1,40 @@
 import { humanPlayerEntity, scene } from '.';
-import { setComponent, componentName } from './ecs/component';
-import { initialState } from './ecs/state';
-import { AI, Background, Camera, Game, Page, State } from './ecs/type';
+// import { AI, Background, Camera, Game, Page, State } from './type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
 import { gameEntity, gameSystem } from './systems/gameSystem';
 import { markerSystem } from './systems/markerSystem';
-import {
-  cameraEntity,
-  cameraSystem,
-  getCameraSize,
-} from './systems/cameraSystem';
+
 import { playersList } from './systems/gameSystem/handleChangeSettings';
 import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
 import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
 import { getSavedData } from './utils/localDb';
-import { timeSystem } from './systems/timeSystem';
-import { animationSystem } from './systems/animationSystem';
-import { transformSystem } from './systems/transformSystem';
+// import { timeSystem } from './systems/timeSystem';
+// import { animationSystem } from './systems/animationSystem';
+// import { transformSystem } from './systems/transformSystem';
+import { AI, Background, Game, name, Page, State } from './type';
+import {
+  Camera,
+  componentName,
+  getState,
+  setComponent,
+} from '@arekrado/canvas-engine';
+import { cameraEntity } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { getCameraSize } from './systems/cameraSystem/getCameraSize';
 
-type GetGameInitialState = () => State;
-export const getGameInitialState: GetGameInitialState = () => {
-  let state = initialState;
+export const getGameInitialState = (): State => {
+  let state = getState<State>({}) as State;
 
   const version = '0.0.7';
 
   // Systems
-  state = timeSystem(state);
-  state = animationSystem(state);
+  // state = timeSystem(state);
+  // state = animationSystem(state);
   state = eventSystem(state);
-  state = cameraSystem(state);
-  state = transformSystem(state);
+  // state = cameraSystem(state);
+  // state = transformSystem(state);
 
   state = boxSystem(state);
   state = aiSystem(state);
@@ -41,11 +43,11 @@ export const getGameInitialState: GetGameInitialState = () => {
   state = backgroundSystem(state);
   state = logoSystem(state);
 
-  state = setComponent<AI>({
+  state = setComponent<AI, State>({
     state,
     data: {
       entity: humanPlayerEntity,
-      name: componentName.ai,
+      name: name.ai,
       human: true,
       level: AIDifficulty.hard,
       color: [0, 0, 1],
@@ -56,14 +58,14 @@ export const getGameInitialState: GetGameInitialState = () => {
 
   const savedData = getSavedData();
 
-  state = setComponent<Game>({
+  state = setComponent<Game, State>({
     state,
     data: {
       version,
       page: Page.mainMenu,
       newVersionAvailable: false,
       entity: gameEntity,
-      name: componentName.game,
+      name: name.game,
       moves: 0,
       grid: [],
       round: 0,
@@ -81,7 +83,7 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  state = setComponent<Camera>({
+  state = setComponent<Camera, State>({
     state,
     data: {
       entity: cameraEntity,
@@ -92,11 +94,11 @@ export const getGameInitialState: GetGameInitialState = () => {
     },
   });
 
-  state = setComponent<Background>({
+  state = setComponent<Background, State>({
     state,
     data: {
       entity: backgroundEntity,
-      name: componentName.background,
+      name: name.background,
       gradientTime: 50000 * Math.random(),
     },
   });

@@ -26,17 +26,8 @@
     "trailingComma": "es5"
   },
   "module": "dist/arek.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/arek.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/arek.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "dependencies": {
+    "@arekrado/canvas-engine": "0.0.77",
     "@arekrado/vector-2d": "0.0.2",
     "@babylonjs/core": "^5.0.0-alpha.59",
     "@stitches/react": "^1.2.6",
@@ -45,12 +36,12 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@types/react": "^17.0.37",
-    "@types/react-dom": "^17.0.11",
-    "@babel/preset-react": "^7.16.0",
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.5",
+    "@babel/preset-react": "^7.16.0",
     "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
     "babel-jest": "^27.0.2",
     "babel-loader": "^8.2.2",
     "babel-plugin-istanbul": "^6.0.0",

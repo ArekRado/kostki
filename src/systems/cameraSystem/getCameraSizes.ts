@@ -1,6 +1,6 @@
+import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { State } from '../../ecs/type';
-import { getCamera } from '../cameraSystem';
+import { State } from '../../type';
 
 export const getCameraSizes = ({
   state,
@@ -29,6 +29,5 @@ export const getCameraSizes = ({
     topEdge: 0,
     boxSize: 0,
     screenSize: [0, 0],
-    
   };
 };

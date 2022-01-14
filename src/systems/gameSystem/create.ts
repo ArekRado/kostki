@@ -1,5 +1,5 @@
 import { scene } from '../..';
-import { Game, State } from '../../ecs/type';
+import { Game, State } from '../../type';
 import { setTextureCache } from '../../utils/textureCache';
 import { set1 } from '../../utils/textureSets';
 

@@ -1,6 +1,6 @@
-import { componentName, getComponent } from "../../ecs/component";
-import { AI, Guid, State } from "../../ecs/type";
-import { getGame } from "../gameSystem";
+import { getComponent, Guid } from '@arekrado/canvas-engine';
+import { AI, State, name } from '../../type';
+import { getGame } from '../gameSystem';
 
 type GetNextActivePlayer = (params: {
   playersQueue: Guid[];
@@ -14,7 +14,7 @@ const getNextActivePlayer: GetNextActivePlayer = ({
 }) => {
   const ai = getComponent<AI>({
     state,
-    name: componentName.ai,
+    name: name.ai,
     entity: playersQueue[index],
   });
 

@@ -1,7 +1,7 @@
-import { componentName, setComponent } from '../ecs/component';
-import { Box, Entity, State } from '../ecs/type';
+import { Box, name, State } from '../type';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
-import { setCamera } from '../systems/cameraSystem';
+import { Entity, setComponent } from '@arekrado/canvas-engine';
+import { setCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 
 export const boxSize = 1;
 export const boxGap = 0.2;
@@ -42,10 +42,10 @@ export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
   state = dataGrid.reduce(
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
-        return setComponent<Box>({
+        return setComponent<Box, State>({
           state: acc2,
           data: {
-            name: componentName.box,
+            name: name.box,
             entity: Math.random().toString(),
             isAnimating: false,
             dots,

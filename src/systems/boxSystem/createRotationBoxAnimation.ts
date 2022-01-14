@@ -1,10 +1,10 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Animation, AnimationEvent } from '@babylonjs/core/Animations';
 import { scene } from '../..';
-import { Box, Color, Entity, State } from '../../ecs/type';
+import { Box, Color, name, State } from '../../type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
 import { BoxRotationDirection } from '../boxSystem';
-import { componentName, getComponent, setComponent } from '../../ecs/component';
+import { Entity, getComponent, setComponent } from '@arekrado/canvas-engine';
 
 export const rotationAnimationName = 'rotationAnimation';
 
@@ -38,13 +38,13 @@ export const createRotationBoxAnimation = ({
   const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
   const box = getComponent<Box>({
     state,
-    name: componentName.box,
+    name: name.box,
     entity: boxUniqueId,
   });
 
   if (boxMesh) {
     if (box) {
-      state = setComponent<Box>({
+      state = setComponent<Box, State>({
         state,
         data: {
           ...box,

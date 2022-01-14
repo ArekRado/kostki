@@ -4,7 +4,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { scene } from '../..';
-import { Background, State } from '../../ecs/type';
+import { Background, State } from '../../type';
 import { backgroundEntity } from '../backgroundSystem';
 import { playersList } from '../gameSystem/handleChangeSettings';
 import { resizeBackground } from './resizeBackground';

@@ -1,15 +1,15 @@
 import 'regenerator-runtime/runtime';
 import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
-import { componentName, setComponent } from '../ecs/component';
-import { AI } from '../ecs/type';
+import { AI, name, State } from '../type';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getAiMove } from '../systems/aiSystem/getAiMove';
 import { getGameInitialState } from '../getGameInitialState';
 import { expectOneOf } from './aiSystem.test';
+import { setComponent } from '@arekrado/canvas-engine';
 
 const basicAi: AI = {
   entity: 'basicAi',
-  name: componentName.ai,
+  name: name.ai,
   human: false,
   level: AIDifficulty.hard,
   color: [0, 0, 1],
@@ -19,7 +19,7 @@ const basicAi: AI = {
 
 const basicAi2: AI = {
   entity: 'basicAi2',
-  name: componentName.ai,
+  name: name.ai,
   human: false,
   level: AIDifficulty.hard,
   color: [0, 1, 1],
@@ -33,12 +33,12 @@ const prepareGrid = (dataGrid: BasicBox[][]) => {
     state: getGameInitialState(),
   });
 
-  state = setComponent<AI>({
+  state = setComponent<AI, State>({
     state,
     data: basicAi,
   });
 
-  state = setComponent<AI>({
+  state = setComponent<AI, State>({
     state,
     data: basicAi2,
   });

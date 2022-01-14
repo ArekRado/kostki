@@ -1,9 +1,10 @@
-import { EventHandler } from '../../ecs/type';
+import { EventHandler } from '@arekrado/canvas-engine';
+import { State } from '../../type';
 import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { resetBoxRotation } from './resetBoxRotation';
 
-export const rotateHandler: EventHandler<BoxEvent.Rotate> = ({
+export const rotateHandler: EventHandler<BoxEvent.Rotate, State> = ({
   state,
   event,
 }) => {

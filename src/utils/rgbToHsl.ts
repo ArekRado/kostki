@@ -1,4 +1,4 @@
-import { Color } from '../ecs/type';
+import { Color } from '../type';
 
 /**
  * Converts an RGB color value to HSL. Conversion formula

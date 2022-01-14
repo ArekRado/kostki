@@ -1,4 +1,4 @@
-import { Game, State } from '../ecs/type';
+import { Game, State } from '../type';
 import { getGame } from '../systems/gameSystem';
 
 const localDbKey = 'localDbKey';

@@ -1,4 +1,4 @@
-import { AI } from '../../ecs/type';
+import { AI } from '../../type';
 import { AIGridPoints } from './../aiSystem/aiGridPoints';
 import { DataGrid, dotStats, EnhancedBox } from '../aiSystem';
 

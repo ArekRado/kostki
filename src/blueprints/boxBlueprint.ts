@@ -1,6 +1,6 @@
 import { GameEvent } from '../systems/gameSystem';
 import { setMeshTexture } from '../utils/setMeshTexture';
-import { AI, Color, State } from '../ecs/type';
+import { AI, Color, State } from '../type';
 import { getTextureSet } from '../systems/boxSystem/getTextureSet';
 import { emitEvent } from '../eventSystem';
 import { Scene } from '@babylonjs/core/scene';

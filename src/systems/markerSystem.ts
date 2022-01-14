@@ -1,6 +1,3 @@
-import { createSystem } from '../ecs/createSystem';
-import { componentName, createGetSetForUniqComponent } from '../ecs/component';
-import { Marker, State } from '../ecs/type';
 import { scene } from '..';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import markerTexture from '../assets/marker.png';
@@ -10,12 +7,17 @@ import { Animation } from '@babylonjs/core/Animations';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { Marker, name, State } from '../type';
+import {
+  createGetSetForUniqComponent,
+  createSystem,
+} from '@arekrado/canvas-engine';
 
 export const markerEntity = '38127445920450264';
 
-const markerGetSet = createGetSetForUniqComponent<Marker>({
+const markerGetSet = createGetSetForUniqComponent<Marker, State>({
   entity: markerEntity,
-  name: componentName.marker,
+  name: name.marker,
 });
 
 export const getMarker = markerGetSet.getComponent;
@@ -74,9 +76,9 @@ export const getAlphaAnimation = () => {
 };
 
 export const markerSystem = (state: State) =>
-  createSystem<Marker>({
+  createSystem<Marker, State>({
     state,
-    name: componentName.marker,
+    name: name.marker,
     create: ({ state, component }) => {
       const marker = Mesh.CreatePlane(
         markerEntity,
@@ -106,29 +108,29 @@ export const markerSystem = (state: State) =>
 
       return state;
     },
-    update: ({ state, component }) => {
-      const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
+    // update: ({ state, component }) => {
+    //   const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
 
-      if (markerMesh) {
-        (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
-          component.color[0],
-          component.color[1],
-          component.color[2]
-        );
+    //   if (markerMesh) {
+    //     (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
+    //       component.color[0],
+    //       component.color[1],
+    //       component.color[2]
+    //     );
 
-        scene.beginAnimation(markerMesh, 0, 1, false);
+    //     scene.beginAnimation(markerMesh, 0, 1, false);
 
-        markerMesh.position.x = component.position[0];
-        markerMesh.position.y = component.position[1];
-        markerMesh.position.z = -1;
+    //     markerMesh.position.x = component.position[0];
+    //     markerMesh.position.y = component.position[1];
+    //     markerMesh.position.z = -1;
 
-        // markerMesh.position = new Vector3(
-        //   boxMesh.position.x,
-        //   boxMesh.position.y,
-        //   boxMesh.position.z - 1
-        // );
-      }
+    //     // markerMesh.position = new Vector3(
+    //     //   boxMesh.position.x,
+    //     //   boxMesh.position.y,
+    //     //   boxMesh.position.z - 1
+    //     // );
+    //   }
 
-      return state;
-    },
+    //   return state;
+    // },
   });

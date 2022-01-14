@@ -1,5 +1,5 @@
 import { scene } from '../..';
-import { Box, State } from '../../ecs/type';
+import { Box, State } from '../../type';
 
 export const remove = ({
   state,

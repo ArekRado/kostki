@@ -1,11 +1,5 @@
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import {
-  componentName,
-  getComponent,
-  getComponentsByName,
-  setComponent,
-} from '../../ecs/component';
-import { AI, Box, EventHandler, Game, State } from '../../ecs/type';
+import { AI, Box, Game, name, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { getAiMove } from '../aiSystem/getAiMove';
@@ -14,15 +8,21 @@ import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
 import { GameEvent, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { getNextPlayer } from './getNextPlayer';
+import {
+  EventHandler,
+  getComponent,
+  getComponentsByName,
+  setComponent,
+} from '@arekrado/canvas-engine';
 
 const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
   const game = getGame({ state });
 
   return (
     game?.grid.reduce((acc, boxEntity) => {
-      const box = getComponent<Box>({
+      const box = getComponent<Box, State>({
         state,
-        name: componentName.box,
+        name: name.box,
         entity: boxEntity,
       });
 
@@ -33,7 +33,7 @@ const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
 const aiLost: AiLost = ({ state, ai, component }) => {
-  state = setComponent<AI>({
+  state = setComponent<AI, State>({
     state,
     data: {
       ...ai,
@@ -41,9 +41,9 @@ const aiLost: AiLost = ({ state, ai, component }) => {
     },
   });
 
-  const allAI = getComponentsByName<AI>({
+  const allAI = getComponentsByName<AI, State>({
     state,
-    name: componentName.ai,
+    name: name.ai,
   });
 
   const amountOfActivedAi = Object.values(allAI || {}).reduce(
@@ -53,7 +53,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
-    state = setComponent<Game>({
+    state = setComponent<Game, State>({
       state,
       data: {
         ...component,
@@ -74,7 +74,7 @@ const aiLost: AiLost = ({ state, ai, component }) => {
   return state;
 };
 
-export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent> = ({
+export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent, State> = ({
   state,
 }) => {
   const game = getGame({ state });
@@ -90,8 +90,8 @@ export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent> = ({
       return state;
     }
 
-    const ai = getComponent<AI>({
-      name: componentName.ai,
+    const ai = getComponent<AI, State>({
+      name: name.ai,
       state,
       entity: nextPlayer.entity,
     });
@@ -100,7 +100,7 @@ export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent> = ({
       return state;
     }
 
-    state = setComponent<Game>({
+    state = setComponent<Game, State>({
       state,
       data: {
         ...game,

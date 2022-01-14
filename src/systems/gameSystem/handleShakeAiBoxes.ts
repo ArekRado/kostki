@@ -1,13 +1,20 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 // import { Animation, BezierCurveEase } from '@babylonjs/core/Animations';
 import { scene } from '../..';
-import { componentName, getComponent, setComponent } from '../../ecs/component';
-import { Box, EventHandler, Game, Transform } from '../../ecs/type';
-import { Animation } from '../../ecs/ecsType';
+import { Box, Game, name, State } from '../../type';
 import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem';
 import { emitEvent } from '../../eventSystem';
+import {
+  componentName,
+  EventHandler,
+  getComponent,
+  Transform,
+} from '@arekrado/canvas-engine';
 
-export const handleShakeAiBoxes: EventHandler<GameEvent.ShakeAiBoxesEvent> = ({
+export const handleShakeAiBoxes: EventHandler<
+  GameEvent.ShakeAiBoxesEvent,
+  State
+> = ({
   state,
   event: {
     payload: { ai, moves },
@@ -33,7 +40,7 @@ export const handleShakeAiBoxes: EventHandler<GameEvent.ShakeAiBoxesEvent> = ({
   game?.grid.forEach((boxEntity) => {
     const box = getComponent<Box>({
       state,
-      name: componentName.box,
+      name: name.box,
       entity: boxEntity,
     });
 
