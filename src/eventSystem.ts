@@ -23,6 +23,7 @@ import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
 import { createEventSystem } from '@arekrado/canvas-engine';
 import { CameraEvent } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { handleResize } from './systems/cameraSystem/handleResize';
 
 type AllEvents = LogoEvent.All | GameEvent.All | BoxEvent.All | CameraEvent.All;
 
@@ -35,9 +36,9 @@ const eventHandler = ({
 }): State => {
   switch (event.type) {
     // // Camera
-    // case CameraEvent.Type.resize:
-    //   state = handleResize({ state, event });
-    //   break;
+    case CameraEvent.Type.resize:
+      state = handleResize({ state, event });
+      break;
 
     // Logo
     case LogoEvent.Type.rotateBox:
@@ -109,8 +110,6 @@ const eventHandler = ({
   return state;
 };
 
-const { emitEvent, eventSystem } = createEventSystem<AllEvents, State>(
-  eventHandler
-);
-
-export { eventSystem, emitEvent };
+export const { emitEvent, eventSystem } = createEventSystem<AllEvents, State>({
+  eventHandler,
+});

@@ -1,5 +1,5 @@
 import { createSystem, Entity } from '@arekrado/canvas-engine';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/system/createEventSystem';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
 import { AI, Box, name, State } from '../type';
 import { create } from './boxSystem/create';
 import { remove } from './boxSystem/remove';

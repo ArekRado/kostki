@@ -17,6 +17,7 @@ export const rotateHandler: EventHandler<BoxEvent.Rotate, State> = ({
           boxUniqueId: event.payload.boxEntity,
           texture: event.payload.texture,
           color: event.payload.color,
+          scene: state.babylonjs.sceneRef,
         });
 
         // emitEvent<BoxEvent.RotationEndEvent>({

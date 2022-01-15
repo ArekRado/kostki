@@ -1,6 +1,5 @@
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Animation, AnimationEvent } from '@babylonjs/core/Animations';
-import { scene } from '../..';
 import { Box, Color, name, State } from '../../type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
 import { BoxRotationDirection } from '../boxSystem';
@@ -33,9 +32,16 @@ export const createRotationBoxAnimation = ({
   texture: string;
   state: State;
 }): State => {
+  const sceneRef = state.babylonjs.sceneRef;
+  if (!sceneRef) {
+    return state;
+  }
+
   const frameEnd = 0.5;
 
-  const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
+  const boxMesh = sceneRef.getTransformNodeByUniqueId(
+    parseInt(boxUniqueId)
+  );
   const box = getComponent<Box>({
     state,
     name: name.box,
@@ -125,18 +131,18 @@ export const createRotationBoxAnimation = ({
 
     boxMesh.animations[boxMesh.animations.length] = rotateAnimation;
 
-    scene.beginAnimation(boxMesh, 0, 1, false);
+    sceneRef.beginAnimation(boxMesh, 0, 1, false);
 
     const children = boxMesh.getChildren();
 
     children.slice(1, children.length).forEach((plane) => {
-      const mesh = scene.getMeshByUniqueId(plane.uniqueId);
+      const mesh = sceneRef.getMeshByUniqueId(plane.uniqueId);
       if (mesh) {
         setMeshTexture({
           mesh,
           color,
           texture,
-          scene,
+          scene: sceneRef,
         });
       }
     });

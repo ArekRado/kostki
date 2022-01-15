@@ -1,9 +1,9 @@
-import { scene } from '../..';
+import { Scene } from '@babylonjs/core/scene';
 import { Game, State } from '../../type';
 import { setTextureCache } from '../../utils/textureCache';
 import { set1 } from '../../utils/textureSets';
 
-const preloadDefaultBoxTextures = () => {
+const preloadDefaultBoxTextures = (scene: Scene) => {
   setTimeout(() => {
     set1.forEach((src) => {
       const image = new Image();
@@ -17,7 +17,12 @@ const preloadDefaultBoxTextures = () => {
 };
 
 export const create = ({ state }: { component: Game; state: State }): State => {
-  preloadDefaultBoxTextures();
+  const sceneRef = state.babylonjs.sceneRef;
+  if (!sceneRef) {
+    return state;
+  }
+
+  preloadDefaultBoxTextures(sceneRef);
 
   return state;
 };

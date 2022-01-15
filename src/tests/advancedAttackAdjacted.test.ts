@@ -30,7 +30,7 @@ const basicAi2: AI = {
 const prepareGrid = (dataGrid: BasicBox[][]) => {
   let state = gridBlueprint({
     dataGrid,
-    state: getGameInitialState(),
+    state: getGameInitialState({}),
   });
 
   state = setComponent<AI, State>({

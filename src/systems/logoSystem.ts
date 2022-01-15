@@ -2,11 +2,11 @@ import { Logo, State, name } from '../type';
 import { updateLogoPosition } from './logoSystem/updateLogoPosition';
 import { create } from './logoSystem/create';
 import { remove } from './logoSystem/remove';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/system/createEventSystem';
 import {
   createGetSetForUniqComponent,
   createSystem,
 } from '@arekrado/canvas-engine';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
 
 export const logoEntity = '8523773494048061';
 
@@ -20,7 +20,7 @@ export namespace LogoEvent {
   export type RotateBoxEvent = ECSEvent<Type.rotateBox, {}>;
 }
 
-const logoGetSet = createGetSetForUniqComponent<Logo>({
+const logoGetSet = createGetSetForUniqComponent<Logo, State>({
   entity: logoEntity,
   name: name.logo,
 });

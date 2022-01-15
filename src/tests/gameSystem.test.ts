@@ -36,7 +36,7 @@ describe('game', () => {
   it.skip('clicking on 6 dots box should expand player color', () => {
     let state = gridBlueprint({
       dataGrid: basicGrid2x2,
-      state: getGameInitialState(),
+      state: getGameInitialState({}),
     });
 
     const game = getGame({ state });

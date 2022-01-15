@@ -35,7 +35,7 @@ const engine =
       });
 
 // Scene
-export const scene = new Scene(engine);
+const scene = new Scene(engine);
 // scene.debugLayer.show();
 engine.runRenderLoop(() => {
   if (scene && scene.activeCamera) {
@@ -44,7 +44,7 @@ engine.runRenderLoop(() => {
 });
 
 // Camera
-export const camera = new UniversalCamera(
+const camera = new UniversalCamera(
   'UniversalCamera',
   new Vector3(0, 0, -1),
   scene
@@ -90,15 +90,21 @@ if (process.env.NODE_ENV !== 'test') {
     });
   }
 
-  let state = getGameInitialState();
+  let state = getGameInitialState({
+    scene,
+    camera,
+    Vector3: Vector3
+  });
 
   mountGameUI({ state });
 
-  const beforeRenderCallback = () => {
-    state = runOneFrame({ state });
-  };
+  if (state.babylonjs.sceneRef) {
+    const beforeRenderCallback = () => {
+      state = runOneFrame({ state });
+    };
 
-  scene.registerBeforeRender(beforeRenderCallback);
+    state.babylonjs.sceneRef.registerBeforeRender(beforeRenderCallback);
+  }
 
   // Resize
   window.addEventListener('resize', () => {

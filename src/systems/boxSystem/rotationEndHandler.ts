@@ -1,4 +1,3 @@
-import { scene } from '../..';
 import { Box, name, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
 import { BoxEvent } from '../boxSystem';
@@ -17,6 +16,7 @@ export const rotationEndHandler: EventHandler<
   BoxEvent.RotationEndEvent,
   State
 > = ({ state, event }) => {
+  const sceneRef = state.babylonjs.sceneRef;
   const { ai, shouldExplode, boxEntity } = event.payload;
   const component = getComponent<Box, State>({
     state,
@@ -24,7 +24,7 @@ export const rotationEndHandler: EventHandler<
     entity: boxEntity,
   });
 
-  if (!component) {
+  if (!component || !sceneRef) {
     return state;
   }
 
@@ -37,6 +37,7 @@ export const rotationEndHandler: EventHandler<
       boxUniqueId: component.entity,
       texture: getTextureSet({ state, ai })[component.dots],
       color: ai.color,
+      scene: sceneRef,
     });
 
     if (shouldExplode) {
@@ -55,7 +56,7 @@ export const rotationEndHandler: EventHandler<
     }
   }
 
-  const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
+  const box = sceneRef.getTransformNodeByUniqueId(parseInt(component.entity));
   if (box) {
     box.animations = [];
   }

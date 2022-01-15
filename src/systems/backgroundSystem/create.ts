@@ -3,7 +3,6 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { scene } from '../..';
 import { Background, State } from '../../type';
 import { backgroundEntity } from '../backgroundSystem';
 import { playersList } from '../gameSystem/handleChangeSettings';
@@ -16,6 +15,9 @@ export const create = ({
   state: State;
   component: Background;
 }): State => {
+  if (!state.babylonjs.sceneRef) {
+    return state;
+  }
   Effect.ShadersStore['customVertexShader'] = ` 
     precision highp float;
     precision highp int;
@@ -102,7 +104,7 @@ export const create = ({
 
   const shaderMaterial = new ShaderMaterial(
     'shader',
-    scene,
+    state.babylonjs.sceneRef,
     {
       vertex: 'custom',
       fragment: 'custom',
@@ -131,7 +133,7 @@ export const create = ({
   const background = MeshBuilder.CreatePlane(
     backgroundEntity,
     { size: 1 },
-    scene
+    state.babylonjs.sceneRef
   );
   background.uniqueId = parseFloat(backgroundEntity);
   background.material = shaderMaterial;

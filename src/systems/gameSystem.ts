@@ -4,8 +4,8 @@ import {
   Entity,
   getComponent,
 } from '@arekrado/canvas-engine';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/system/createEventSystem';
-import { AI, Game, State, Scene as GameScene, Page, name } from '../type';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
+import { AI, Game, State, Page, name } from '../type';
 import { create } from './gameSystem/create';
 
 export const gameEntity = 'game';

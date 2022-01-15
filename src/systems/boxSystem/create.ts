@@ -4,7 +4,6 @@ import {
   setComponent,
   Transform,
 } from '@arekrado/canvas-engine';
-import { scene } from '../..';
 import { boxBlueprint } from '../../blueprints/boxBlueprint';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { AI, Box, Game, name, State } from '../../type';
@@ -17,6 +16,11 @@ export const create = ({
   state: State;
   component: Box;
 }) => {
+  const sceneRef = state.babylonjs.sceneRef;
+  if (!sceneRef) {
+    return state;
+  }
+
   const { gridPosition } = component;
   const ai = getComponent<AI, State>({
     state,
@@ -40,7 +44,7 @@ export const create = ({
   });
 
   boxBlueprint({
-    scene,
+    scene: sceneRef,
     name: `${gridPosition[0]}-${gridPosition[1]}`,
     position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
     uniqueId: parseFloat(component.entity),

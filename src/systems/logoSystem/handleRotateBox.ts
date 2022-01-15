@@ -33,8 +33,9 @@ const getRandomTexture = () => {
 export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
   state,
 }) => {
+  const sceneRef = state.babylonjs.sceneRef;
   const isLogoDefined = getLogo({ state });
-  if (!isLogoDefined) {
+  if (!isLogoDefined || !sceneRef) {
     return state;
   }
 
@@ -51,6 +52,7 @@ export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
         boxUniqueId,
         texture,
         color,
+        scene: sceneRef,
       });
 
       emitEvent<BoxEvent.RotationEndEvent>({

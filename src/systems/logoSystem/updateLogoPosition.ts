@@ -1,5 +1,4 @@
 import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
-import { scene } from '../..';
 import { State } from '../../type';
 import { percentageToValue } from '../../utils/percentageToValue';
 import { getCameraSizes } from '../cameraSystem/getCameraSizes';
@@ -8,8 +7,14 @@ import { logoGrid } from './logoGrid';
 
 export const boxScaleFactor = 3.2;
 
-export const updateLogoPosition = ({ state }: { state: State }) => {
-  const logoNode = scene.getTransformNodeByUniqueId(parseFloat(logoEntity));
+export const updateLogoPosition = ({ state }: { state: State }): void => {
+  if (!state.babylonjs.sceneRef) {
+    return;
+  }
+
+  const logoNode = state.babylonjs.sceneRef.getTransformNodeByUniqueId(
+    parseFloat(logoEntity)
+  );
   const camera = getCamera({ state });
 
   if (!logoNode || !camera) {
@@ -29,15 +34,17 @@ export const updateLogoPosition = ({ state }: { state: State }) => {
 
   logoGrid.forEach((list, i) =>
     list.forEach((boxEntity, j) => {
-      if (boxEntity === '') {
+      if (boxEntity === '' || !state.babylonjs.sceneRef) {
         return;
       }
 
-      const boxNode = scene.getTransformNodeByUniqueId(parseFloat(boxEntity));
+      const boxNode = state.babylonjs.sceneRef.getTransformNodeByUniqueId(
+        parseFloat(boxEntity)
+      );
       if (!boxNode) {
         return;
       }
-      
+
       const boxPosition: [number, number] = [
         logoPosition[0] + j * boxSize,
         logoPosition[1] + -i * boxSize,

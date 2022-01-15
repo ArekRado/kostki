@@ -1,4 +1,3 @@
-import { scene } from '../..';
 import { Box, State } from '../../type';
 
 export const remove = ({
@@ -8,8 +7,12 @@ export const remove = ({
   state: State;
   component: Box;
 }) => {
-  const box = scene.getTransformNodeByUniqueId(parseInt(component.entity));
-  box?.dispose();
+  if (state.babylonjs.sceneRef) {
+    const box = state.babylonjs.sceneRef.getTransformNodeByUniqueId(
+      parseInt(component.entity)
+    );
+    box?.dispose();
+  }
 
   return state;
 };

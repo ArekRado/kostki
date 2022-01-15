@@ -1,5 +1,4 @@
 import { State, Background, name } from '../type';
-import { scene } from '..';
 import {
   grayGradient,
   greenGradient,
@@ -23,7 +22,7 @@ import {
 
 export const backgroundEntity = '17818552155683748';
 
-const backgroundGetSet = createGetSetForUniqComponent<Background>({
+const backgroundGetSet = createGetSetForUniqComponent<Background, State>({
   entity: backgroundEntity,
   name: name.background,
 });
@@ -47,7 +46,12 @@ export const backgroundSystem = (state: State) =>
     name: name.background,
     create,
     tick: ({ state, component }) => {
-      const background = scene.getMeshByUniqueId(parseFloat(backgroundEntity));
+      if (!state.babylonjs.sceneRef) {
+        return state;
+      }
+      const background = state.babylonjs.sceneRef.getMeshByUniqueId(
+        parseFloat(backgroundEntity)
+      );
 
       if (background && background.material) {
         (background.material as ShaderMaterial).setFloat(

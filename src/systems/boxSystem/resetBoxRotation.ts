@@ -1,5 +1,5 @@
 import { Entity } from '@arekrado/canvas-engine';
-import { scene } from '../..';
+import { Scene } from '@babylonjs/core/scene';
 import { Color } from '../../type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
 
@@ -7,12 +7,18 @@ type ResetBoxRotation = (params: {
   boxUniqueId: Entity;
   texture: string;
   color: Color;
+  scene: Scene | undefined;
 }) => void;
 export const resetBoxRotation: ResetBoxRotation = ({
   boxUniqueId,
   texture,
   color,
+  scene,
 }) => {
+  if (!scene) {
+    return;
+  }
+
   const box = scene.getTransformNodeByUniqueId(parseInt(boxUniqueId));
 
   if (box) {

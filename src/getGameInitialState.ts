@@ -1,4 +1,4 @@
-import { humanPlayerEntity, scene } from '.';
+import { humanPlayerEntity } from '.';
 // import { AI, Background, Camera, Game, Page, State } from './type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
@@ -23,11 +23,26 @@ import {
 } from '@arekrado/canvas-engine';
 import { cameraEntity } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 import { getCameraSize } from './systems/cameraSystem/getCameraSize';
+import { Scene } from '@babylonjs/core/scene';
+import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
+import { Vector3 } from '@babylonjs/core';
 
-export const getGameInitialState = (): State => {
-  let state = getState<State>({}) as State;
+export const getGameInitialState = ({
+  scene,
+  camera,
+  Vector3,
+}: {
+  scene?: Scene;
+  camera?: UniversalCamera;
+  Vector3?: any;
+}): State => {
+  let state = getState<State>({
+    scene,
+    camera,
+    Vector3,
+  }) as State;
 
-  const version = '0.0.7';
+  const version = '0.0.8';
 
   // Systems
   // state = timeSystem(state);
@@ -83,16 +98,18 @@ export const getGameInitialState = (): State => {
     },
   });
 
-  state = setComponent<Camera, State>({
-    state,
-    data: {
-      entity: cameraEntity,
-      name: componentName.camera,
-      position: [0, 0],
-      distance: 5,
-      ...getCameraSize(5, scene),
-    },
-  });
+  if (scene) {
+    state = setComponent<Camera, State>({
+      state,
+      data: {
+        entity: cameraEntity,
+        name: componentName.camera,
+        position: [0, 0],
+        distance: 5,
+        ...getCameraSize(5, scene),
+      },
+    });
+  }
 
   state = setComponent<Background, State>({
     state,

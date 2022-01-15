@@ -1,5 +1,4 @@
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
-import { scene } from '../..';
 import { logoBlueprint } from '../../blueprints/logoBlueprint';
 import { State } from '../../type';
 import { emitEvent } from '../../eventSystem';
@@ -7,7 +6,12 @@ import { logoEntity, LogoEvent } from '../logoSystem';
 import { updateLogoPosition } from './updateLogoPosition';
 
 export const create = ({ state }: { state: State }): State => {
-  const logoMesh = new TransformNode('logo', scene);
+  const sceneRef = state.babylonjs.sceneRef;
+  if (!sceneRef) {
+    return state;
+  }
+
+  const logoMesh = new TransformNode('logo', sceneRef);
   logoMesh.uniqueId = parseFloat(logoEntity);
   logoMesh.position.x = 0;
   logoMesh.position.y = 0;

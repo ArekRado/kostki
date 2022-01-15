@@ -1,4 +1,3 @@
-import { scene } from '..';
 import { setMeshTexture } from '../utils/setMeshTexture';
 import markerTexture from '../assets/marker.png';
 import { boxGap, boxSize } from '../blueprints/gridBlueprint';
@@ -80,10 +79,15 @@ export const markerSystem = (state: State) =>
     state,
     name: name.marker,
     create: ({ state, component }) => {
+      const sceneRef = state.babylonjs.sceneRef;
+      if (!sceneRef) {
+        return state;
+      }
+
       const marker = Mesh.CreatePlane(
         markerEntity,
         boxGap + boxSize + boxGap,
-        scene,
+        sceneRef,
         true
       );
 
@@ -91,14 +95,14 @@ export const markerSystem = (state: State) =>
 
       marker.position = new Vector3(9999, 9999, 9999);
 
-      marker.material = new StandardMaterial('material', scene);
+      marker.material = new StandardMaterial('material', sceneRef);
       (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
 
       setMeshTexture({
         mesh: marker,
         color: [1, 1, 1],
         texture: markerTexture,
-        scene,
+        scene: sceneRef,
       });
 
       (marker.material as any).diffuseTexture.hasAlpha = true;
