@@ -1,5 +1,4 @@
 import { humanPlayerEntity } from '.';
-// import { AI, Background, Camera, Game, Page, State } from './type';
 import { AIDifficulty, aiSystem } from './systems/aiSystem';
 import { boxSystem } from './systems/boxSystem';
 import { gameEntity, gameSystem } from './systems/gameSystem';
@@ -11,23 +10,19 @@ import { logoSystem } from './systems/logoSystem';
 import { eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
 import { getSavedData } from './utils/localDb';
-// import { timeSystem } from './systems/timeSystem';
-// import { animationSystem } from './systems/animationSystem';
-// import { transformSystem } from './systems/transformSystem';
 import { AI, Background, Game, name, Page, State } from './type';
 import {
   Camera,
   componentName,
-  getState,
+  getState as getCanvaasEngineState,
   setComponent,
 } from '@arekrado/canvas-engine';
 import { cameraEntity } from '@arekrado/canvas-engine/dist/system/cameraSystem';
 import { getCameraSize } from './systems/cameraSystem/getCameraSize';
 import { Scene } from '@babylonjs/core/scene';
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
-import { Vector3 } from '@babylonjs/core';
 
-export const getGameInitialState = ({
+export const getState = ({
   scene,
   camera,
   Vector3,
@@ -36,7 +31,7 @@ export const getGameInitialState = ({
   camera?: UniversalCamera;
   Vector3?: any;
 }): State => {
-  let state = getState<State>({
+  let state = getCanvaasEngineState<State>({
     scene,
     camera,
     Vector3,

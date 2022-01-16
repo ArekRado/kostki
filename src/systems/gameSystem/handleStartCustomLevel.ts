@@ -20,27 +20,40 @@ import {
   getComponent,
   setComponent,
 } from '@arekrado/canvas-engine';
-import { setCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { setCamera } from '../../wrappers/setCamera';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
   state = Array.from({ length: 8 }).reduce(
     (acc: State, _, x) =>
-      Array.from({ length: 8 }).reduce(
-        (acc2: State, _, y) =>
-          setComponent<Box, State>({
-            state: acc2,
-            data: {
-              name: name.box,
-              entity: generateId().toString(),
-              isAnimating: false,
-              dots: 0,
-              gridPosition: [y, x],
-              player: undefined,
-            },
-          }),
-        acc
-      ),
+      Array.from({ length: 8 }).reduce((acc2: State, _, y) => {
+        const entity = generateId().toString();
+        acc2 = setComponent<Box, State>({
+          state: acc2,
+          data: {
+            name: name.box,
+            entity,
+            isAnimating: false,
+            dots: 0,
+            gridPosition: [y, x],
+            player: undefined,
+          },
+        });
+
+        const game = getGame({ state: acc2 });
+
+        if (!game) {
+          return acc2;
+        }
+
+        return setGame({
+          state: acc2,
+          data: {
+            ...game,
+            grid: [...game.grid, entity],
+          },
+        });
+      }, acc),
     state
   );
 

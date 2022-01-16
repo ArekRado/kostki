@@ -26,10 +26,16 @@ const logoGetSet = createGetSetForUniqComponent<Logo, State>({
 });
 
 export const getLogo = logoGetSet.getComponent;
-export const setLogo = (params: { state: State; data: Partial<Logo> }) => {
-  updateLogoPosition({ state: params.state });
+export const setLogo = ({
+  state,
+  data,
+}: {
+  state: State;
+  data: Partial<Logo>;
+}) => {
+  state = updateLogoPosition({ state });
 
-  return logoGetSet.setComponent(params);
+  return logoGetSet.setComponent({ state, data });
 };
 
 export const logoSystem = (state: State) =>

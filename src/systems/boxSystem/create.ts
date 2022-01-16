@@ -6,8 +6,7 @@ import {
 } from '@arekrado/canvas-engine';
 import { boxBlueprint } from '../../blueprints/boxBlueprint';
 import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { AI, Box, Game, name, State } from '../../type';
-import { getGame } from '../gameSystem';
+import { AI, Box, name, State } from '../../type';
 
 export const create = ({
   state,
@@ -33,10 +32,9 @@ export const create = ({
     data: {
       name: componentName.transform,
       entity: component.entity,
-
       rotation: [0, 0, 0],
       fromParentRotation: [0, 0, 0],
-      scale: [0, 0],
+      scale: [1, 1, 1],
       fromParentScale: [0, 0],
       position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
       fromParentPosition: [0, 0],
@@ -49,25 +47,11 @@ export const create = ({
     position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
     uniqueId: parseFloat(component.entity),
     // texture: ai?.textureSet[component.dots] || empty,
-    color: ai?.color || [1, 1, 1],
+    color: ai?.color || [0, 0, 0],
     ai,
     dots: component.dots,
     state,
     isClickable: true,
-  });
-
-  const game = getGame({ state });
-
-  if (!game) {
-    return state;
-  }
-
-  state = setComponent<Game, State>({
-    state,
-    data: {
-      ...game,
-      grid: [...game.grid, component.entity],
-    },
   });
 
   return state;

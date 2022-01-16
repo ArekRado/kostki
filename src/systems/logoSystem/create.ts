@@ -1,9 +1,9 @@
-import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
-import { logoBlueprint } from '../../blueprints/logoBlueprint';
-import { State } from '../../type';
+import { Box, name, State } from '../../type';
 import { emitEvent } from '../../eventSystem';
-import { logoEntity, LogoEvent } from '../logoSystem';
+import { LogoEvent } from '../logoSystem';
 import { updateLogoPosition } from './updateLogoPosition';
+import { logoGrid } from './logoGrid';
+import { setComponent } from '@arekrado/canvas-engine';
 
 export const create = ({ state }: { state: State }): State => {
   const sceneRef = state.babylonjs.sceneRef;
@@ -11,13 +11,29 @@ export const create = ({ state }: { state: State }): State => {
     return state;
   }
 
-  const logoMesh = new TransformNode('logo', sceneRef);
-  logoMesh.uniqueId = parseFloat(logoEntity);
-  logoMesh.position.x = 0;
-  logoMesh.position.y = 0;
+  state = logoGrid.reduce(
+    (acc1, row, y) =>
+      row.reduce((acc2, boxEntity, x) => {
+        if (boxEntity === '') {
+          return acc2;
+        }
 
-  logoBlueprint({ state });
-  updateLogoPosition({ state });
+        return setComponent<Box, State>({
+          state: acc2,
+          data: {
+            name: name.box,
+            entity: boxEntity,
+            isAnimating: false,
+            dots: 0,
+            gridPosition: [x, y],
+            player: '',
+          },
+        });
+      }, acc1),
+    state
+  );
+
+  state = updateLogoPosition({ state });
 
   emitEvent<LogoEvent.All>({
     type: LogoEvent.Type.rotateBox,

@@ -1,4 +1,4 @@
-import { getGameInitialState } from './getGameInitialState';
+import { getState } from './getState';
 import { register } from './serviceWorkerRegistration';
 import { GameEvent } from './systems/gameSystem';
 import { emitEvent } from './eventSystem';
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV !== 'test') {
     });
   }
 
-  let state = getGameInitialState({
+  let state = getState({
     scene,
     camera,
     Vector3: Vector3

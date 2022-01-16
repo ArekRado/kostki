@@ -5,7 +5,7 @@ import { AI, Box, name } from '../type';
 import { Entity, getComponent, runOneFrame } from '@arekrado/canvas-engine';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getGame } from '../systems/gameSystem';
-import { getGameInitialState } from '../getGameInitialState';
+import { getState } from '../getState';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { onClickBox } from '../systems/boxSystem/onClickBox';
 
@@ -36,7 +36,7 @@ describe('game', () => {
   it.skip('clicking on 6 dots box should expand player color', () => {
     let state = gridBlueprint({
       dataGrid: basicGrid2x2,
-      state: getGameInitialState({}),
+      state: getState({}),
     });
 
     const game = getGame({ state });

@@ -3,7 +3,7 @@ import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
 import { AI, name, State } from '../type';
 import { AIDifficulty } from '../systems/aiSystem';
 import { getAiMove } from '../systems/aiSystem/getAiMove';
-import { getGameInitialState } from '../getGameInitialState';
+import { getState } from '../getState';
 import { expectOneOf } from './aiSystem.test';
 import { setComponent } from '@arekrado/canvas-engine';
 
@@ -30,7 +30,7 @@ const basicAi2: AI = {
 const prepareGrid = (dataGrid: BasicBox[][]) => {
   let state = gridBlueprint({
     dataGrid,
-    state: getGameInitialState({}),
+    state: getState({}),
   });
 
   state = setComponent<AI, State>({

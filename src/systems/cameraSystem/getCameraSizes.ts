@@ -10,7 +10,6 @@ export const getCameraSizes = ({
   boxScaleFactor: number;
 }) => {
   const camera = getCamera({ state });
-
   if (camera) {
     const leftEdge = camera.position[0] + camera.left;
     const topEdge = camera.position[1] + camera.top;
