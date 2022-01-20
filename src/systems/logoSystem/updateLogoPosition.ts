@@ -4,7 +4,7 @@ import {
   setComponent,
   Transform,
 } from '@arekrado/canvas-engine';
-import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { getCamera } from '@arekrado/canvas-engine/dist/system/camera'
 import { State } from '../../type';
 import { percentageToValue } from '../../utils/percentageToValue';
 import { getCameraSizes } from '../cameraSystem/getCameraSizes';
@@ -71,7 +71,11 @@ export const updateLogoPosition = ({ state }: { state: State }): State => {
             data: {
               ...transform,
               position: [boxPosition[0], boxPosition[1]],
-              scale: [1 / boxScaleFactor, 1 / boxScaleFactor],
+              scale: [
+                1 / boxScaleFactor,
+                1 / boxScaleFactor,
+                1 / boxScaleFactor,
+              ],
             },
           });
         }

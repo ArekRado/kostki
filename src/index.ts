@@ -13,7 +13,7 @@ import { Camera } from '@babylonjs/core/Cameras/camera';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { runOneFrame } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -93,7 +93,7 @@ if (process.env.NODE_ENV !== 'test') {
   let state = getState({
     scene,
     camera,
-    Vector3: Vector3
+    Vector3: Vector3,
   });
 
   mountGameUI({ state });

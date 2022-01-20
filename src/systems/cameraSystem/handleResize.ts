@@ -1,5 +1,5 @@
 import { EventHandler } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera'
 import { State } from '../../type';
 import { setCamera } from '../../wrappers/setCamera';
 

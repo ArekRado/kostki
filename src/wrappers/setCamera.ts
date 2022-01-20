@@ -2,7 +2,7 @@ import { Camera } from '@arekrado/canvas-engine';
 import {
   getCamera,
   setCamera as setCanvasEngineCamera,
-} from '@arekrado/canvas-engine/dist/system/cameraSystem';
+} from '@arekrado/canvas-engine/dist/system/camera';
 import { setBackground } from '../systems/backgroundSystem';
 import { setLogo } from '../systems/logoSystem';
 import { State } from '../type';

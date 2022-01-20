@@ -1,4 +1,4 @@
-import { getCamera } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { getCamera } from '@arekrado/canvas-engine/dist/system/camera'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { State } from '../../type';
 import { backgroundEntity } from '../backgroundSystem';

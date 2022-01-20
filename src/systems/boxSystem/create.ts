@@ -35,7 +35,7 @@ export const create = ({
       rotation: [0, 0, 0],
       fromParentRotation: [0, 0, 0],
       scale: [1, 1, 1],
-      fromParentScale: [0, 0],
+      fromParentScale: [1, 1, 1],
       position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
       fromParentPosition: [0, 0],
     },
@@ -47,7 +47,7 @@ export const create = ({
     position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
     uniqueId: parseFloat(component.entity),
     // texture: ai?.textureSet[component.dots] || empty,
-    color: ai?.color || [0, 0, 0],
+    color: ai?.color || [1, 1, 1],
     ai,
     dots: component.dots,
     state,
@@ -56,3 +56,5 @@ export const create = ({
 
   return state;
 };
+
+

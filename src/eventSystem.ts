@@ -22,7 +22,7 @@ import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLe
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
 import { createEventSystem } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/cameraSystem';
+import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera'
 import { handleResize } from './systems/cameraSystem/handleResize';
 
 type AllEvents = LogoEvent.All | GameEvent.All | BoxEvent.All | CameraEvent.All;

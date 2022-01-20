@@ -22,7 +22,7 @@ const clampRotation = (rotation: number) => {
 };
 
 const rightAngle = Math.PI / 2;
-export const rotationAnimationTime = 500;
+export const rotationAnimationTime = 1500;
 
 export const createRotationBoxAnimation = ({
   boxUniqueId,
@@ -109,6 +109,14 @@ export const createRotationBoxAnimation = ({
       clampRotation(rotationVector[2] + currentRotation[2]),
     ];
 
+    // console.log(
+    //   getComponent<AnimationVector3D, State>({
+    //     state,
+    //     entity: boxUniqueId,
+    //     name: componentName.animationVector3D,
+    //   })
+    // );
+
     state = setComponent<AnimationVector3D, State>({
       state,
       data: {
@@ -123,7 +131,8 @@ export const createRotationBoxAnimation = ({
         },
         keyframes: [
           {
-            duration: 500,
+            // duration: rotationAnimationTime - 50,
+            duration: 200,
             timingFunction: 'Linear',
             valueRange: [currentRotation, nextRotation],
           },
