@@ -45,7 +45,7 @@ export const getState = ({
     Color3,
   }) as State;
 
-  const version = '0.0.8';
+  const version = '0.0.9';
 
   // Systems
   // state = timeSystem(state);
