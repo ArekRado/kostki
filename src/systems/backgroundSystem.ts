@@ -44,6 +44,7 @@ export const backgroundSystem = (state: State) =>
   createSystem<Background, State>({
     state,
     name: name.background,
+    componentName: name.background,
     create,
     tick: ({ state, component }) => {
       if (!state.babylonjs.sceneRef) {

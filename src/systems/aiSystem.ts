@@ -1,5 +1,21 @@
-import { createSystem } from '@arekrado/canvas-engine';
+import { createSystem, Entity } from '@arekrado/canvas-engine';
+import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
 import { AI, Box, name, State } from '../type';
+
+export namespace AIEvent {
+  export enum Type {
+    boxRotationEnd = 'AIEvent-boxRotationEnd',
+  }
+
+  export type All = BoxRotationEndEvent;
+
+  export type BoxRotationEndEvent = ECSEvent<
+    Type.boxRotationEnd,
+    {
+      boxEntity: Entity;
+    }
+  >;
+}
 
 export enum AIDifficulty {
   // campaign ai
@@ -30,4 +46,5 @@ export const aiSystem = (state: State) =>
   createSystem<AI, State>({
     state,
     name: name.ai,
+    componentName: name.ai,
   });

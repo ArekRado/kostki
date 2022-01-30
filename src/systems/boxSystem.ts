@@ -1,6 +1,6 @@
-import { createSystem, Entity } from '@arekrado/canvas-engine';
+import { createSystem, Entity, Guid } from '@arekrado/canvas-engine';
 import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
-import { AI, Box, name, State } from '../type';
+import { AI, Box, Color, name, State } from '../type';
 import { create } from './boxSystem/create';
 import { remove } from './boxSystem/remove';
 
@@ -31,7 +31,11 @@ export namespace BoxEvent {
   >;
   export type RotationEndEvent = ECSEvent<
     Type.rotationEnd,
-    { ai: AI | undefined; shouldExplode: boolean; boxEntity: Entity }
+    {
+      boxEntity: Entity;
+      texture: string;
+      color: Color;
+    }
   >;
 }
 
@@ -39,6 +43,7 @@ export const boxSystem = (state: State) =>
   createSystem<Box, State>({
     state,
     name: name.box,
+    componentName: name.box,
     create,
     remove,
   });

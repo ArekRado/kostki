@@ -4,8 +4,7 @@ import { State } from '../../type';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
 import { BoxEvent } from '../boxSystem';
-import { createRotationBoxAnimation } from '../boxSystem/createRotationBoxAnimation';
-import { resetBoxRotation } from '../boxSystem/resetBoxRotation';
+import { createRotationBoxAnimation, rotationAnimationTime } from '../boxSystem/createRotationBoxAnimation';
 import { playersList } from '../gameSystem/handleChangeSettings';
 import { getLogo, LogoEvent } from '../logoSystem';
 import { logoGrid } from './logoGrid';
@@ -47,23 +46,6 @@ export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
   state = createRotationBoxAnimation({
     state,
     boxUniqueId,
-    animationEndCallback: () => {
-      resetBoxRotation({
-        boxUniqueId,
-        texture,
-        color,
-        scene: sceneRef,
-      });
-
-      emitEvent<BoxEvent.RotationEndEvent>({
-        type: BoxEvent.Type.rotationEnd,
-        payload: {
-          ai: undefined,
-          shouldExplode: false,
-          boxEntity: boxUniqueId,
-        },
-      });
-    },
     texture,
     color,
   });
@@ -73,7 +55,7 @@ export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
       type: LogoEvent.Type.rotateBox,
       payload: {},
     });
-  }, Math.random() * 500 + 500);
+  }, Math.random() * 500 + rotationAnimationTime);
 
   return state;
 };

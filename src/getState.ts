@@ -17,10 +17,14 @@ import {
   getState as getCanvaasEngineState,
   setComponent,
 } from '@arekrado/canvas-engine';
-import { cameraEntity } from '@arekrado/canvas-engine/dist/system/camera'
+import { cameraEntity } from '@arekrado/canvas-engine/dist/system/camera';
 import { getCameraSize } from './systems/cameraSystem/getCameraSize';
 import { Scene } from '@babylonjs/core/scene';
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 
 export const getState = ({
   scene,
@@ -35,6 +39,10 @@ export const getState = ({
     scene,
     camera,
     Vector3,
+    StandardMaterial,
+    MeshBuilder,
+    Texture,
+    Color3,
   }) as State;
 
   const version = '0.0.8';

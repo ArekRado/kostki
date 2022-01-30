@@ -1,15 +1,15 @@
 import { Box, Color, name, State } from '../../type';
 import { setMeshTexture } from '../../utils/setMeshTexture';
-import { BoxRotationDirection } from '../boxSystem';
+import { BoxEvent, BoxRotationDirection } from '../boxSystem';
 import {
-  AnimationVector3D,
+  Animation,
   componentName,
   Entity,
   getComponent,
   setComponent,
   Vector3D,
 } from '@arekrado/canvas-engine';
-import { Vector3, Animation, AnimationEvent } from '@babylonjs/core';
+import { emitEvent } from '../../eventSystem';
 
 export const rotationAnimationName = 'rotationAnimation';
 
@@ -22,11 +22,10 @@ const clampRotation = (rotation: number) => {
 };
 
 const rightAngle = Math.PI / 2;
-export const rotationAnimationTime = 1500;
+export const rotationAnimationTime = 500;
 
 export const createRotationBoxAnimation = ({
   boxUniqueId,
-  animationEndCallback,
   direction = BoxRotationDirection.random,
   color,
   texture,
@@ -35,7 +34,6 @@ export const createRotationBoxAnimation = ({
   boxUniqueId: Entity;
   color: Color;
   direction?: BoxRotationDirection;
-  animationEndCallback: () => void;
   texture: string;
   state: State;
 }): State => {
@@ -109,86 +107,32 @@ export const createRotationBoxAnimation = ({
       clampRotation(rotationVector[2] + currentRotation[2]),
     ];
 
-    // console.log(
-    //   getComponent<AnimationVector3D, State>({
-    //     state,
-    //     entity: boxUniqueId,
-    //     name: componentName.animationVector3D,
-    //   })
-    // );
-
-    state = setComponent<AnimationVector3D, State>({
+    state = setComponent<Animation.AnimationComponent, State>({
       state,
       data: {
-        name: componentName.animationVector3D,
+        name: componentName.animation,
         entity: boxUniqueId,
         isPlaying: true,
         isFinished: false,
-        property: {
-          path: 'rotation',
-          component: componentName.transform,
-          entity: boxUniqueId,
-        },
-        keyframes: [
+        currentTime: 0,
+        wrapMode: Animation.WrapMode.once,
+        timingMode: Animation.TimingMode.smooth,
+        properties: [
           {
-            // duration: rotationAnimationTime - 50,
-            duration: 200,
-            timingFunction: 'Linear',
-            valueRange: [currentRotation, nextRotation],
+            path: 'rotation',
+            component: componentName.transform,
+            entity: boxUniqueId,
+            keyframes: [
+              {
+                duration: rotationAnimationTime,
+                timingFunction: 'Linear',
+                valueRange: [currentRotation, nextRotation],
+              },
+            ],
           },
         ],
-        currentTime: 0,
-        wrapMode: 'once',
-        timingMode: 'smooth',
       },
     });
-
-    // const currentRotation = boxMesh.rotation;
-    // const rotationVector = new Vector3(
-    //   rotationProperty === 'x' ? rotationDirection : 0,
-    //   rotationProperty === 'y' ? rotationDirection : 0,
-    //   currentRotation.z
-    // );
-
-    // const nnextRotation = rotationVector.add(currentRotation);
-
-    // const nextRotation = new Vector3(
-    //   clampRotation(nnextRotation.x),
-    //   clampRotation(nnextRotation.y),
-    //   clampRotation(nnextRotation.z)
-    // );
-
-    // const rotateAnimation = new Animation(
-    //   rotationAnimationName,
-    //   'rotation',
-    //   1,
-    //   Animation.ANIMATIONTYPE_VECTOR3,
-    //   Animation.ANIMATIONLOOPMODE_RELATIVE
-    // );
-
-    // const endEvent = new AnimationEvent(frameEnd, animationEndCallback, true);
-
-    // rotateAnimation.addEvent(endEvent);
-
-    // const keyFrames = [];
-
-    // keyFrames.push({
-    //   frame: 0,
-    //   value: currentRotation,
-    // });
-
-    // keyFrames.push({
-    //   frame: frameEnd,
-    //   value: nextRotation,
-    // });
-
-    // rotateAnimation.setKeys(keyFrames);
-
-    // boxMesh.animations[boxMesh.animations.length] = rotateAnimation;
-
-    // sceneRef.beginAnimation(boxMesh, 0, 1, false);
-
-    setTimeout(animationEndCallback, rotationAnimationTime);
 
     const children = boxMesh.getChildren();
 
@@ -203,6 +147,19 @@ export const createRotationBoxAnimation = ({
         });
       }
     });
+
+    if (box) {
+      setTimeout(() => {
+        emitEvent<BoxEvent.RotationEndEvent>({
+          type: BoxEvent.Type.rotationEnd,
+          payload: {
+            boxEntity: box.entity,
+            texture,
+            color,
+          },
+        });
+      }, rotationAnimationTime + 100);
+    }
   }
 
   return state;

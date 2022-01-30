@@ -42,6 +42,7 @@ export const logoSystem = (state: State) =>
   createSystem<Logo, State>({
     state,
     name: name.logo,
+    componentName: name.logo,
     create,
     remove,
   });

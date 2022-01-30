@@ -99,5 +99,6 @@ export const gameSystem = (state: State) =>
   createSystem<Game, State>({
     state,
     name: name.game,
+    componentName: name.game,
     create,
   });

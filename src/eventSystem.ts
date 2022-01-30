@@ -22,10 +22,17 @@ import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLe
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
 import { createEventSystem } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera'
+import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
 import { handleResize } from './systems/cameraSystem/handleResize';
+import { AIEvent } from './systems/aiSystem';
+import { handleBoxRotationEnd } from './systems/aiSystem/handleBoxRotationEnd';
 
-type AllEvents = LogoEvent.All | GameEvent.All | BoxEvent.All | CameraEvent.All;
+type AllEvents =
+  | AIEvent.All
+  | LogoEvent.All
+  | GameEvent.All
+  | BoxEvent.All
+  | CameraEvent.All;
 
 const eventHandler = ({
   state,
@@ -35,6 +42,11 @@ const eventHandler = ({
   event: AllEvents;
 }): State => {
   switch (event.type) {
+    // AI
+    case AIEvent.Type.boxRotationEnd:
+      state = handleBoxRotationEnd({ state, event });
+      break;
+
     // // Camera
     case CameraEvent.Type.resize:
       state = handleResize({ state, event });
