@@ -13,6 +13,7 @@ import {
   Transform,
   Material,
   ECSEvent,
+  removeEntity,
 } from '@arekrado/canvas-engine';
 import { generateId } from '../utils/generateId';
 import { updateComponent } from '@arekrado/canvas-engine/dist/component';
@@ -166,6 +167,11 @@ export const markerSystem = (state: State) =>
           materialEntity: [component.entity],
         },
       });
+
+      return state;
+    },
+    remove: ({ state }) => {
+      state = removeEntity({ state, entity: markerEntity });
 
       return state;
     },

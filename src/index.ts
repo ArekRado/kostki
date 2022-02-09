@@ -139,8 +139,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done - ui should has max container size when screen is too wide
   // done "pop" box animation when level starts
   // done fix marker xD
-  // - event handlers should be moved to separated folders and start with "handle" prefix
-  // - pre-create boxes and reuse part of them when starts level
+  // done event handlers should be moved to separated folders and start with "handle" prefix
+  // - need devtools - remove all components by entity because by name may keep some leftovers
   // - when player is not clicking then "shake boxes"
   // - custom leve settings - add different maps
   // - campaign
@@ -149,6 +149,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done - move ecs to new project package
   // - better eslint - find a way to throw error when user uses setComponent without assigning returned values to variable
   // done - babylonjs tree shacking
-  // - beautify ui
+  // - beautify ui - use tailwind?
+  // - pre-create boxes and reuse part of them when starts level
   // - end - optimization
 }

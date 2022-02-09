@@ -50,10 +50,8 @@ export const boxBlueprint = ({
   scaleFactor?: number;
 }): TransformNode => {
   const size = 1 / scaleFactor;
-  const boxMesh = new TransformNode(`box ${name}`, scene);
-  boxMesh.uniqueId = uniqueId;
-  boxMesh.position.x = position[0];
-  boxMesh.position.y = position[1];
+  const boxMeshTransformNode = new TransformNode(`box ${name}`, scene);
+  boxMeshTransformNode.uniqueId = uniqueId;
 
   [
     [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)], // front
@@ -65,7 +63,7 @@ export const boxBlueprint = ({
   ].forEach(([position, rotation], i) => {
     const plane = MeshBuilder.CreatePlane('plane' + i, { size });
 
-    plane.parent = boxMesh;
+    plane.parent = boxMeshTransformNode;
     plane.material = new StandardMaterial('mat', scene);
 
     setMeshTexture({
@@ -94,5 +92,5 @@ export const boxBlueprint = ({
     }
   });
 
-  return boxMesh;
+  return boxMeshTransformNode;
 };

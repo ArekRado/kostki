@@ -46,7 +46,7 @@ export const getState = ({
     emitEvent,
   }) as State;
 
-  const version = '0.0.11';
+  const version = '0.0.12';
 
   // Systems
   state = eventSystem(state);
