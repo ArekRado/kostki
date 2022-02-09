@@ -14,13 +14,13 @@ export namespace BoxEvent {
   export enum Type {
     onClick = 'BoxEvent-onClick',
     rotationEnd = 'BoxEvent-rotationEnd',
-    rotate = 'BoxEvent-rotate',
+    rotateStart = 'BoxEvent-rotate',
   }
 
   export type All = RotationEndEvent | Rotate;
 
   export type Rotate = ECSEvent<
-    Type.rotate,
+    Type.rotateStart,
     {
       color: [number, number, number];
       texture: string;
@@ -34,6 +34,7 @@ export namespace BoxEvent {
       boxEntity: Entity;
       texture: string;
       color: Color;
+      nextTurn: boolean;
     }
   >;
 }

@@ -15,7 +15,6 @@ export const shakeAnimationTimeout = 2000;
 export namespace GameEvent {
   export enum Type {
     startCustomLevel = 'GameEvent-startCustomLevel',
-    nextTurn = 'GameEvent-nextTurn',
     boxExplosion = 'GameEvent-boxExplosion',
     playerClick = 'GameEvent-playerClick',
     cleanScene = 'GameEvent-cleanScene',
@@ -33,7 +32,6 @@ export namespace GameEvent {
 
   export type All =
     | StartCustomLevelEvent
-    | NextTurnEvent
     | PlayerClickEvent
     | CleanSceneEvent
     | ChangePlayersEvent
@@ -47,7 +45,6 @@ export namespace GameEvent {
     | ShakeAiBoxesEvent;
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
-  export type NextTurnEvent = ECSEvent<Type.nextTurn, {}>;
   export type PlayAgainCustomLevelEvent = ECSEvent<
     Type.playAgainCustomLevel,
     {}

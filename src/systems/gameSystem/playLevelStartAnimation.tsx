@@ -170,7 +170,7 @@ export const playLevelStartAnimation = ({ state }: { state: State }) => {
 
       setTimeout(() => {
         emitEvent<BoxEvent.Rotate>({
-          type: BoxEvent.Type.rotate,
+          type: BoxEvent.Type.rotateStart,
           payload: {
             color: ai.color,
             texture: getTextureSet({ state, ai })[box.dots],

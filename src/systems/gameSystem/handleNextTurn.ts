@@ -65,18 +65,15 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
     return state;
   } else {
-    emitEvent<GameEvent.NextTurnEvent>({
-      type: GameEvent.Type.nextTurn,
-      payload: {},
+    state = startNextTurn({
+      state,
     });
   }
 
   return state;
 };
 
-export const handleNextTurn: EventHandler<GameEvent.NextTurnEvent, State> = ({
-  state,
-}) => {
+export const startNextTurn = ({ state }: { state: State }) => {
   const game = getGame({ state });
   if (!game) {
     return state;

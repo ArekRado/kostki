@@ -8,7 +8,6 @@ import {
   setComponent,
   Animation,
   defaultData,
-  getComponent,
   Mesh,
   MeshType,
   Transform,
@@ -17,6 +16,7 @@ import {
 } from '@arekrado/canvas-engine';
 import { generateId } from '../utils/generateId';
 import { updateComponent } from '@arekrado/canvas-engine/dist/component';
+import { boxRotationAnimationTime } from './boxSystem/createRotationBoxAnimation';
 
 export const markerEntity = '38127445920450264';
 
@@ -43,22 +43,17 @@ export const setMarker = ({
   state: State;
   data: Partial<Marker>;
 }) => {
-  if (state.babylonjs.sceneRef && data.color && data.position) {
-    const material = getComponent<Material, State>({
+  if (state.babylonjs.sceneRef) {
+    state = updateComponent<Material, State>({
       state,
       name: componentName.material,
       entity: markerEntity,
+      update: (material) => ({
+        diffuseColor: data.color
+          ? [data.color[0], data.color[1], data.color[2], 0]
+          : material.diffuseColor,
+      }),
     });
-
-    if (material) {
-      setComponent<Material, State>({
-        state,
-        data: {
-          ...material,
-          diffuseColor: [data.color[0], data.color[1], data.color[2], 0],
-        },
-      });
-    }
 
     state = updateComponent<Transform, State>({
       state,
@@ -70,6 +65,11 @@ export const setMarker = ({
           : transform.position,
       }),
     });
+
+    const appearAnimationEnd: MarkerEvent.AppearAnimationEndEvent = {
+      type: MarkerEvent.Type.appearAnimationEnd,
+      payload: {},
+    };
 
     state = setComponent<Animation.AnimationComponent, State>({
       state,
@@ -88,16 +88,13 @@ export const setMarker = ({
             entity: markerEntity,
             keyframes: [
               {
-                duration: 500,
+                duration: boxRotationAnimationTime - 100,
                 timingFunction: 'Linear',
                 valueRange: [
                   [2, 2, 1],
                   [0.9, 0.9, 1],
                 ],
-                endFrameEvent: {
-                  type: MarkerEvent.Type.appearAnimationEnd,
-                  payload: {},
-                } as MarkerEvent.AppearAnimationEndEvent,
+                endFrameEvent: appearAnimationEnd,
               },
             ],
           },
@@ -107,7 +104,7 @@ export const setMarker = ({
             entity: markerEntity,
             keyframes: [
               {
-                duration: 500,
+                duration: boxRotationAnimationTime - 100,
                 timingFunction: 'Linear',
                 valueRange: [0, 1],
               },

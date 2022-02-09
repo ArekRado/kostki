@@ -46,14 +46,10 @@ export const getState = ({
     emitEvent,
   }) as State;
 
-  const version = '0.0.10';
+  const version = '0.0.11';
 
   // Systems
-  // state = timeSystem(state);
-  // state = animationSystem(state);
   state = eventSystem(state);
-  // state = cameraSystem(state);
-  // state = transformSystem(state);
 
   state = boxSystem(state);
   state = aiSystem(state);

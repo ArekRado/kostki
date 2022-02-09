@@ -36,7 +36,7 @@ export const create = ({ state }: { state: State }): State => {
   state = updateLogoPosition({ state });
 
   emitEvent<LogoEvent.All>({
-    type: LogoEvent.Type.rotateBox,
+    type: LogoEvent.Type.rotateRandomLogoBox,
     payload: {},
   });
 

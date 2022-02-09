@@ -4,7 +4,10 @@ import { State } from '../../type';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
 import { BoxEvent } from '../boxSystem';
-import { createRotationBoxAnimation, rotationAnimationTime } from '../boxSystem/createRotationBoxAnimation';
+import {
+  createRotationBoxAnimation,
+  boxRotationAnimationTime,
+} from '../boxSystem/createRotationBoxAnimation';
 import { playersList } from '../gameSystem/handleChangeSettings';
 import { getLogo, LogoEvent } from '../logoSystem';
 import { logoGrid } from './logoGrid';
@@ -29,7 +32,7 @@ const getRandomTexture = () => {
   return set1[randomIndex];
 };
 
-export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
+export const handleRotateRandomLogoBox: EventHandler<LogoEvent.RotateRandomLogoBoxEvent, State> = ({
   state,
 }) => {
   const sceneRef = state.babylonjs.sceneRef;
@@ -48,14 +51,15 @@ export const handleRotateBox: EventHandler<LogoEvent.RotateBoxEvent, State> = ({
     boxUniqueId,
     texture,
     color,
+    nextTurn: false,
   });
 
   setTimeout(() => {
     emitEvent<LogoEvent.All>({
-      type: LogoEvent.Type.rotateBox,
+      type: LogoEvent.Type.rotateRandomLogoBox,
       payload: {},
     });
-  }, Math.random() * 500 + rotationAnimationTime);
+  }, Math.random() * boxRotationAnimationTime + boxRotationAnimationTime);
 
   return state;
 };

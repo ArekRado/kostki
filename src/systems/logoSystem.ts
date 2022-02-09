@@ -12,12 +12,12 @@ export const logoEntity = '8523773494048061';
 
 export namespace LogoEvent {
   export enum Type {
-    rotateBox = 'LogoEvent-rotateBox',
+    rotateRandomLogoBox = 'LogoEvent-rotateRandomLogoBox',
   }
 
-  export type All = RotateBoxEvent;
+  export type All = RotateRandomLogoBoxEvent;
 
-  export type RotateBoxEvent = ECSEvent<Type.rotateBox, {}>;
+  export type RotateRandomLogoBoxEvent = ECSEvent<Type.rotateRandomLogoBox, {}>;
 }
 
 const logoGetSet = createGetSetForUniqComponent<Logo, State>({

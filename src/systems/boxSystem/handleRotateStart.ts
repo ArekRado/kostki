@@ -3,7 +3,7 @@ import { State } from '../../type';
 import { BoxEvent } from '../boxSystem';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 
-export const rotateHandler: EventHandler<BoxEvent.Rotate, State> = ({
+export const handleRotateStart: EventHandler<BoxEvent.Rotate, State> = ({
   state,
   event,
 }) => {
@@ -14,6 +14,7 @@ export const rotateHandler: EventHandler<BoxEvent.Rotate, State> = ({
       texture: event.payload.texture,
       color: event.payload.color,
       direction: event.payload.direction,
+      nextTurn: false,
     });
   }
 

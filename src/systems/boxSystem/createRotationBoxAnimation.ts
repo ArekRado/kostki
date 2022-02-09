@@ -9,7 +9,6 @@ import {
   setComponent,
   Vector3D,
 } from '@arekrado/canvas-engine';
-import { emitEvent } from '../../eventSystem';
 
 export const rotationAnimationName = 'rotationAnimation';
 
@@ -22,7 +21,7 @@ const clampRotation = (rotation: number) => {
 };
 
 const rightAngle = Math.PI / 2;
-export const rotationAnimationTime = 500;
+export const boxRotationAnimationTime = 500;
 
 export const createRotationBoxAnimation = ({
   boxUniqueId,
@@ -30,12 +29,14 @@ export const createRotationBoxAnimation = ({
   color,
   texture,
   state,
+  nextTurn,
 }: {
   boxUniqueId: Entity;
   color: Color;
   direction?: BoxRotationDirection;
   texture: string;
   state: State;
+  nextTurn: boolean;
 }): State => {
   const sceneRef = state.babylonjs.sceneRef;
   if (!sceneRef) {
@@ -105,6 +106,16 @@ export const createRotationBoxAnimation = ({
       clampRotation(rotationVector[2] + currentRotation[2]),
     ];
 
+    const rotationEndEvent: BoxEvent.RotationEndEvent = {
+      type: BoxEvent.Type.rotationEnd,
+      payload: {
+        boxEntity: box.entity,
+        texture,
+        color,
+        nextTurn,
+      },
+    };
+
     state = setComponent<Animation.AnimationComponent, State>({
       state,
       data: {
@@ -122,17 +133,10 @@ export const createRotationBoxAnimation = ({
             entity: boxUniqueId,
             keyframes: [
               {
-                duration: rotationAnimationTime,
+                duration: boxRotationAnimationTime,
                 timingFunction: 'Linear',
                 valueRange: [currentRotation, nextRotation],
-                endFrameEvent: {
-                  type: BoxEvent.Type.rotationEnd,
-                  payload: {
-                    boxEntity: box.entity,
-                    texture,
-                    color,
-                  },
-                } as BoxEvent.RotationEndEvent,
+                endFrameEvent: rotationEndEvent,
               },
             ],
           },
@@ -153,19 +157,6 @@ export const createRotationBoxAnimation = ({
         });
       }
     });
-
-    // if (box) {
-    //   setTimeout(() => {
-    //     emitEvent<BoxEvent.RotationEndEvent>({
-    //       type: BoxEvent.Type.rotationEnd,
-    //       payload: {
-    //         boxEntity: box.entity,
-    //         texture,
-    //         color,
-    //       },
-    //     });
-    //   }, rotationAnimationTime + 100);
-    // }
   }
 
   return state;

@@ -138,7 +138,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done - close button should be recttangle
   // done - ui should has max container size when screen is too wide
   // done "pop" box animation when level starts
-  // - fix marker xD
+  // done fix marker xD
   // - event handlers should be moved to separated folders and start with "handle" prefix
   // - pre-create boxes and reuse part of them when starts level
   // - when player is not clicking then "shake boxes"

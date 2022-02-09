@@ -1,20 +1,5 @@
-import { ECSEvent, createSystem, Entity } from '@arekrado/canvas-engine';
+import { createSystem } from '@arekrado/canvas-engine';
 import { AI, Box, name, State } from '../type';
-
-export namespace AIEvent {
-  export enum Type {
-    boxRotationEnd = 'AIEvent-boxRotationEnd',
-  }
-
-  export type All = BoxRotationEndEvent;
-
-  export type BoxRotationEndEvent = ECSEvent<
-    Type.boxRotationEnd,
-    {
-      boxEntity: Entity;
-    }
-  >;
-}
 
 export enum AIDifficulty {
   // campaign ai

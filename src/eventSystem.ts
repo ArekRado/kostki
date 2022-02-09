@@ -1,9 +1,7 @@
 import { Page, State } from './type';
 import { BoxEvent } from './systems/boxSystem';
-import { rotateHandler } from './systems/boxSystem/rotateHandler';
-import { rotationEndHandler } from './systems/boxSystem/rotationEndHandler';
-// import { CameraEvent } from './systems/cameraSystem';
-// import { handleResize } from './systems/cameraSystem/handleResize';
+import { handleRotateStart } from './systems/boxSystem/handleRotateStart';
+import { handleRotationEnd } from './systems/boxSystem/handleRotationEnd';
 import { GameEvent } from './systems/gameSystem';
 import {
   handleChangeColorBlindMode,
@@ -15,22 +13,18 @@ import {
   handleShowNewVersion,
 } from './systems/gameSystem/handleChangeSettings';
 import { handleCleanScene } from './systems/gameSystem/handleCleanScene';
-import { handleNextTurn } from './systems/gameSystem/handleNextTurn';
 import { handlePlayerClick } from './systems/gameSystem/handlePlayerClick';
 import { handleShakeAiBoxes } from './systems/gameSystem/handleShakeAiBoxes';
 import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLevel';
 import { LogoEvent } from './systems/logoSystem';
-import { handleRotateBox } from './systems/logoSystem/handleRotateBox';
+import { handleRotateRandomLogoBox } from './systems/logoSystem/handleRotateBox';
 import { createEventSystem } from '@arekrado/canvas-engine';
 import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
 import { handleResize } from './systems/cameraSystem/handleResize';
-import { AIEvent } from './systems/aiSystem';
-import { handleBoxRotationEnd } from './systems/aiSystem/handleBoxRotationEnd';
 import { MarkerEvent } from './systems/markerSystem';
 import { handleAppearAnimationEnd } from './systems/markerSystem/handleAppearAnimationEnd';
 
 type AllEvents =
-  | AIEvent.All
   | LogoEvent.All
   | GameEvent.All
   | BoxEvent.All
@@ -45,23 +39,17 @@ const eventHandler = ({
   event: AllEvents;
 }): State => {
   switch (event.type) {
-    // AI
-    case AIEvent.Type.boxRotationEnd:
-      return handleBoxRotationEnd({ state, event });
-
-    // // Camera
+    // Camera
     case CameraEvent.Type.resize:
       return handleResize({ state, event });
 
     // Logo
-    case LogoEvent.Type.rotateBox:
-      return handleRotateBox({ state, event });
+    case LogoEvent.Type.rotateRandomLogoBox:
+      return handleRotateRandomLogoBox({ state, event });
 
     // Game
     case GameEvent.Type.startCustomLevel:
       return handleStartCustomLevel({ state, event });
-    case GameEvent.Type.nextTurn:
-      return handleNextTurn({ state, event });
     case GameEvent.Type.playerClick:
       return handlePlayerClick({ state, event });
     case GameEvent.Type.cleanScene:
@@ -99,9 +87,9 @@ const eventHandler = ({
 
     // Box
     case BoxEvent.Type.rotationEnd:
-      return rotationEndHandler({ state, event });
-    case BoxEvent.Type.rotate:
-      return rotateHandler({ state, event });
+      return handleRotationEnd({ state, event });
+    case BoxEvent.Type.rotateStart:
+      return handleRotateStart({ state, event });
 
     // Marker
     case MarkerEvent.Type.appearAnimationEnd:
