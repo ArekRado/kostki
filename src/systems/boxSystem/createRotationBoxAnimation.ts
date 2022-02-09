@@ -49,16 +49,14 @@ export const createRotationBoxAnimation = ({
     entity: boxUniqueId,
   });
 
-  if (boxMesh) {
-    if (box) {
-      state = setComponent<Box, State>({
-        state,
-        data: {
-          ...box,
-          isAnimating: true,
-        },
-      });
-    }
+  if (boxMesh && box) {
+    state = setComponent<Box, State>({
+      state,
+      data: {
+        ...box,
+        isAnimating: true,
+      },
+    });
 
     let rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
     let rotationProperty = Math.random() > 0.5 ? 'x' : 'y';
@@ -127,6 +125,14 @@ export const createRotationBoxAnimation = ({
                 duration: rotationAnimationTime,
                 timingFunction: 'Linear',
                 valueRange: [currentRotation, nextRotation],
+                endFrameEvent: {
+                  type: BoxEvent.Type.rotationEnd,
+                  payload: {
+                    boxEntity: box.entity,
+                    texture,
+                    color,
+                  },
+                } as BoxEvent.RotationEndEvent,
               },
             ],
           },
@@ -148,18 +154,18 @@ export const createRotationBoxAnimation = ({
       }
     });
 
-    if (box) {
-      setTimeout(() => {
-        emitEvent<BoxEvent.RotationEndEvent>({
-          type: BoxEvent.Type.rotationEnd,
-          payload: {
-            boxEntity: box.entity,
-            texture,
-            color,
-          },
-        });
-      }, rotationAnimationTime + 100);
-    }
+    // if (box) {
+    //   setTimeout(() => {
+    //     emitEvent<BoxEvent.RotationEndEvent>({
+    //       type: BoxEvent.Type.rotationEnd,
+    //       payload: {
+    //         boxEntity: box.entity,
+    //         texture,
+    //         color,
+    //       },
+    //     });
+    //   }, rotationAnimationTime + 100);
+    // }
   }
 
   return state;

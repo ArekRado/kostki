@@ -1,11 +1,5 @@
-import { setMeshTexture } from '../utils/setMeshTexture';
 import markerTexture from '../assets/marker.png';
 import { boxGap, boxSize } from '../blueprints/gridBlueprint';
-// import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-// import { Animation } from '@babylonjs/core/Animations';
-// import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-// import { Mesh } from '@babylonjs/core/Meshes/mesh';
-// import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Marker, name, State } from '../type';
 import {
   componentName,
@@ -19,13 +13,22 @@ import {
   MeshType,
   Transform,
   Material,
+  ECSEvent,
 } from '@arekrado/canvas-engine';
-import { transform } from '@babel/core';
-import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { generateId } from '../utils/generateId';
-import { Color3, StandardMaterial, Texture } from '@babylonjs/core';
+import { updateComponent } from '@arekrado/canvas-engine/dist/component';
 
 export const markerEntity = '38127445920450264';
+
+export namespace MarkerEvent {
+  export enum Type {
+    appearAnimationEnd = 'MarkerEvent-appearAnimationEnd',
+  }
+
+  export type All = AppearAnimationEndEvent;
+
+  export type AppearAnimationEndEvent = ECSEvent<Type.appearAnimationEnd, {}>;
+}
 
 const markerGetSet = createGetSetForUniqComponent<Marker, State>({
   entity: markerEntity,
@@ -57,21 +60,16 @@ export const setMarker = ({
       });
     }
 
-    const transform = getComponent<Transform, State>({
+    state = updateComponent<Transform, State>({
       state,
-      name: componentName.transform,
       entity: markerEntity,
+      name: componentName.transform,
+      update: (transform) => ({
+        position: data.position
+          ? [data.position[0], data.position[1], -1]
+          : transform.position,
+      }),
     });
-
-    if (transform) {
-      state = setComponent<Transform, State>({
-        state,
-        data: {
-          ...transform,
-          position: [data.position[0], data.position[1], -1],
-        },
-      });
-    }
 
     state = setComponent<Animation.AnimationComponent, State>({
       state,
@@ -96,6 +94,10 @@ export const setMarker = ({
                   [2, 2, 1],
                   [0.9, 0.9, 1],
                 ],
+                endFrameEvent: {
+                  type: MarkerEvent.Type.appearAnimationEnd,
+                  payload: {},
+                } as MarkerEvent.AppearAnimationEndEvent,
               },
             ],
           },
@@ -118,58 +120,6 @@ export const setMarker = ({
 
   return markerGetSet.setComponent({ state, data });
 };
-
-// export const getScaleAnimation = () => {
-//   const scaleAnimation = new Animation(
-//     'getScaleAnimation',
-//     'scaling',
-//     1,
-//     Animation.ANIMATIONTYPE_VECTOR3,
-//     Animation.ANIMATIONLOOPMODE_RELATIVE
-//   );
-
-//   const keyFrames = [];
-
-//   keyFrames.push({
-//     frame: 0,
-//     value: new Vector3(2, 2, 1),
-//   });
-
-//   keyFrames.push({
-//     frame: 0.5,
-//     value: new Vector3(0.9, 0.9, 1),
-//   });
-
-//   scaleAnimation.setKeys(keyFrames);
-
-//   return scaleAnimation;
-// };
-
-// export const getAlphaAnimation = () => {
-//   const alphaAnimation = new Animation(
-//     'getAlphaAnimation',
-//     'material.alpha',
-//     1,
-//     Animation.ANIMATIONTYPE_FLOAT,
-//     Animation.ANIMATIONLOOPMODE_RELATIVE
-//   );
-
-//   const keyFrames = [];
-
-//   keyFrames.push({
-//     frame: 0,
-//     value: 1,
-//   });
-
-//   keyFrames.push({
-//     frame: 0.5,
-//     value: 0,
-//   });
-
-//   alphaAnimation.setKeys(keyFrames);
-
-//   return alphaAnimation;
-// };
 
 export const markerSystem = (state: State) =>
   createSystem<Marker, State>({
@@ -220,56 +170,6 @@ export const markerSystem = (state: State) =>
         },
       });
 
-      // const marker = MeshBuilder.CreatePlane(markerEntity, {
-      //   size,
-      // });
-      // marker.position.x = 5;
-      // marker.position.y = 5;
-
-      // marker.uniqueId = parseInt(component.entity);
-
-      // marker.material = new StandardMaterial('mat', sceneRef);
-      // (marker.material as StandardMaterial).useAlphaFromDiffuseTexture = true;
-      // (marker.material as StandardMaterial).diffuseColor = new Color3(0, 1, 1);
-
-      // const newTexture = new Texture(
-      //   markerTexture,
-      //   sceneRef,
-      //   undefined,
-      //   undefined,
-      //   Texture.NEAREST_NEAREST_MIPLINEAR
-      // );
-      // (marker.material as StandardMaterial).diffuseTexture = newTexture;
-      // (marker.material as any).diffuseTexture.hasAlpha = true;
-
-      // marker.animations[0] = getScaleAnimation();
-      // marker.animations[1] = getAlphaAnimation();
-
       return state;
     },
-    // update: ({ state, component }) => {
-    //   const markerMesh = scene.getMeshByUniqueId(parseInt(markerEntity));
-
-    //   if (markerMesh) {
-    //     (markerMesh.material as StandardMaterial).diffuseColor = new Color3(
-    //       component.color[0],
-    //       component.color[1],
-    //       component.color[2]
-    //     );
-
-    //     scene.beginAnimation(markerMesh, 0, 1, false);
-
-    //     markerMesh.position.x = component.position[0];
-    //     markerMesh.position.y = component.position[1];
-    //     markerMesh.position.z = -1;
-
-    //     // markerMesh.position = new Vector3(
-    //     //   boxMesh.position.x,
-    //     //   boxMesh.position.y,
-    //     //   boxMesh.position.z - 1
-    //     // );
-    //   }
-
-    //   return state;
-    // },
   });

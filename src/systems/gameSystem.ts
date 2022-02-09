@@ -3,8 +3,8 @@ import {
   createSystem,
   Entity,
   getComponent,
+  ECSEvent,
 } from '@arekrado/canvas-engine';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
 import { AI, Game, State, Page, name } from '../type';
 import { create } from './gameSystem/create';
 

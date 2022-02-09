@@ -6,7 +6,7 @@ import {
   createGetSetForUniqComponent,
   createSystem,
 } from '@arekrado/canvas-engine';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
+import { ECSEvent } from '@arekrado/canvas-engine';
 
 export const logoEntity = '8523773494048061';
 

@@ -7,7 +7,7 @@ import { markerSystem } from './systems/markerSystem';
 import { playersList } from './systems/gameSystem/handleChangeSettings';
 import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
 import { logoSystem } from './systems/logoSystem';
-import { eventSystem } from './eventSystem';
+import { emitEvent, eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
 import { getSavedData } from './utils/localDb';
 import { AI, Background, Game, name, Page, State } from './type';
@@ -43,9 +43,10 @@ export const getState = ({
     MeshBuilder,
     Texture,
     Color3,
+    emitEvent,
   }) as State;
 
-  const version = '0.0.9';
+  const version = '0.0.10';
 
   // Systems
   // state = timeSystem(state);

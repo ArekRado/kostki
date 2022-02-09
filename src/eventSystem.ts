@@ -26,13 +26,16 @@ import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
 import { handleResize } from './systems/cameraSystem/handleResize';
 import { AIEvent } from './systems/aiSystem';
 import { handleBoxRotationEnd } from './systems/aiSystem/handleBoxRotationEnd';
+import { MarkerEvent } from './systems/markerSystem';
+import { handleAppearAnimationEnd } from './systems/markerSystem/handleAppearAnimationEnd';
 
 type AllEvents =
   | AIEvent.All
   | LogoEvent.All
   | GameEvent.All
   | BoxEvent.All
-  | CameraEvent.All;
+  | CameraEvent.All
+  | MarkerEvent.All;
 
 const eventHandler = ({
   state,
@@ -44,56 +47,41 @@ const eventHandler = ({
   switch (event.type) {
     // AI
     case AIEvent.Type.boxRotationEnd:
-      state = handleBoxRotationEnd({ state, event });
-      break;
+      return handleBoxRotationEnd({ state, event });
 
     // // Camera
     case CameraEvent.Type.resize:
-      state = handleResize({ state, event });
-      break;
+      return handleResize({ state, event });
 
     // Logo
     case LogoEvent.Type.rotateBox:
-      state = handleRotateBox({ state, event });
-      break;
+      return handleRotateBox({ state, event });
 
     // Game
     case GameEvent.Type.startCustomLevel:
-      state = handleStartCustomLevel({ state, event });
-      break;
+      return handleStartCustomLevel({ state, event });
     case GameEvent.Type.nextTurn:
-      state = handleNextTurn({ state, event });
-      break;
+      return handleNextTurn({ state, event });
     case GameEvent.Type.playerClick:
-      state = handlePlayerClick({ state, event });
-      break;
+      return handlePlayerClick({ state, event });
     case GameEvent.Type.cleanScene:
-      state = handleCleanScene({ state, event });
-      break;
+      return handleCleanScene({ state, event });
     case GameEvent.Type.changePlayers:
-      state = handleChangePlayers({ state, event });
-      break;
+      return handleChangePlayers({ state, event });
     case GameEvent.Type.changeDifficulty:
-      state = handleChangeDifficulty({ state, event });
-      break;
+      return handleChangeDifficulty({ state, event });
     case GameEvent.Type.changeQuickStart:
-      state = handleChangeQuickStart({ state, event });
-      break;
+      return handleChangeQuickStart({ state, event });
     case GameEvent.Type.changeColorBlindMode:
-      state = handleChangeColorBlindMode({ state, event });
-      break;
+      return handleChangeColorBlindMode({ state, event });
     case GameEvent.Type.changeMapType:
-      state = handleChangeMapType({ state, event });
-      break;
+      return handleChangeMapType({ state, event });
     case GameEvent.Type.showNewVersion:
-      state = handleShowNewVersion({ state, event });
-      break;
+      return handleShowNewVersion({ state, event });
     case GameEvent.Type.reload:
-      state = handleReload({ state, event });
-      break;
+      return handleReload({ state, event });
     case GameEvent.Type.shakeAiBoxes:
-      state = handleShakeAiBoxes({ state, event });
-      break;
+      return handleShakeAiBoxes({ state, event });
     case GameEvent.Type.playAgainCustomLevel:
       state = handleCleanScene({
         state,
@@ -104,22 +92,21 @@ const eventHandler = ({
           },
         },
       });
-      state = handleStartCustomLevel({
+      return handleStartCustomLevel({
         state,
         event: { type: GameEvent.Type.startCustomLevel, payload: {} },
       });
 
-      break;
-
     // Box
     case BoxEvent.Type.rotationEnd:
-      state = rotationEndHandler({ state, event });
-      break;
+      return rotationEndHandler({ state, event });
     case BoxEvent.Type.rotate:
-      state = rotateHandler({ state, event });
-      break;
+      return rotateHandler({ state, event });
+
+    // Marker
+    case MarkerEvent.Type.appearAnimationEnd:
+      return handleAppearAnimationEnd({ state, event });
   }
-  return state;
 };
 
 export const { emitEvent, eventSystem } = createEventSystem<AllEvents, State>({

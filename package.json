@@ -27,7 +27,7 @@
   },
   "module": "dist/arek.esm.js",
   "dependencies": {
-    "@arekrado/canvas-engine": "0.0.87",
+    "@arekrado/canvas-engine": "0.0.89",
     "@arekrado/vector-2d": "0.0.5",
     "@babylonjs/core": "^5.0.0-alpha.59",
     "@stitches/react": "^1.2.6",

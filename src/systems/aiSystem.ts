@@ -1,5 +1,4 @@
-import { createSystem, Entity } from '@arekrado/canvas-engine';
-import { ECSEvent } from '@arekrado/canvas-engine/dist/event/createEventSystem';
+import { ECSEvent, createSystem, Entity } from '@arekrado/canvas-engine';
 import { AI, Box, name, State } from '../type';
 
 export namespace AIEvent {
