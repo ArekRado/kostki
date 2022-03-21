@@ -42,7 +42,7 @@
   "orientation": "portrait",
   "display": "fullscreen",
   "start_url": ".",
-  "description": "Super simple kostki game!",
+  "description": "Kostki game",
   "background_color": "#000",
   "theme_color": "#000"
 }
