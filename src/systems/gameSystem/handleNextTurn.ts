@@ -1,15 +1,13 @@
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { AI, Box, Game, name, State } from '../../type';
-import { emitEvent } from '../../eventSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
-import { GameEvent, getGame } from '../gameSystem';
+import { getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { getNextPlayer } from './getNextPlayer';
 import {
-  EventHandler,
   getComponent,
   getComponentsByName,
   setComponent,

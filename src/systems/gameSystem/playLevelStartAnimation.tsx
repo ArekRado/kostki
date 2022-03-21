@@ -1,9 +1,8 @@
 import { AI, Box, name, State } from '../../type';
-import { emitEvent } from '../../eventSystem';
 import { BoxEvent, BoxRotationDirection } from '../boxSystem';
 import { getTextureSet } from '../boxSystem/getTextureSet';
 import { getGame } from '../gameSystem';
-import { getComponent } from '@arekrado/canvas-engine';
+import { emitEvent, getComponent } from '@arekrado/canvas-engine';
 
 const halfPi = Math.PI / 3; // Max value from Math.sin is "Math.PI / 2" but animation end is to fast, divide by 3 makes it perfect
 

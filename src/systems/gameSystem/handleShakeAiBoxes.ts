@@ -2,7 +2,6 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 // import { Animation, BezierCurveEase } from '@babylonjs/core/Animations';
 import { Box, Game, name, State } from '../../type';
 import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem';
-import { emitEvent } from '../../eventSystem';
 import {
   componentName,
   EventHandler,

@@ -1,13 +1,12 @@
-import { EventHandler } from '@arekrado/canvas-engine';
-import { emitEvent } from '../../eventSystem';
-import { State } from '../../type';
+import { emitEvent, EventHandler } from '@arekrado/canvas-engine';
+import { Page, State } from '../../type';
 import { white } from '../../utils/colors';
 import { set1 } from '../../utils/textureSets';
-import { BoxEvent } from '../boxSystem';
 import {
   createRotationBoxAnimation,
   boxRotationAnimationTime,
 } from '../boxSystem/createRotationBoxAnimation';
+import { getGame } from '../gameSystem';
 import { playersList } from '../gameSystem/handleChangeSettings';
 import { getLogo, LogoEvent } from '../logoSystem';
 import { logoGrid } from './logoGrid';
@@ -32,12 +31,14 @@ const getRandomTexture = () => {
   return set1[randomIndex];
 };
 
-export const handleRotateRandomLogoBox: EventHandler<LogoEvent.RotateRandomLogoBoxEvent, State> = ({
-  state,
-}) => {
+export const handleRotateRandomLogoBox: EventHandler<
+  LogoEvent.RotateRandomLogoBoxEvent,
+  State
+> = ({ state }) => {
   const sceneRef = state.babylonjs.sceneRef;
   const isLogoDefined = getLogo({ state });
-  if (!isLogoDefined || !sceneRef) {
+  const game = getGame({ state });
+  if (!isLogoDefined || !sceneRef || !game) {
     return state;
   }
 
@@ -54,12 +55,14 @@ export const handleRotateRandomLogoBox: EventHandler<LogoEvent.RotateRandomLogoB
     nextTurn: false,
   });
 
-  setTimeout(() => {
-    emitEvent<LogoEvent.All>({
-      type: LogoEvent.Type.rotateRandomLogoBox,
-      payload: {},
-    });
-  }, Math.random() * boxRotationAnimationTime + boxRotationAnimationTime);
+  if (game.page === Page.mainMenu) {
+    setTimeout(() => {
+      emitEvent<LogoEvent.All>({
+        type: LogoEvent.Type.rotateRandomLogoBox,
+        payload: {},
+      });
+    }, Math.random() * boxRotationAnimationTime + boxRotationAnimationTime);
+  }
 
   return state;
 };

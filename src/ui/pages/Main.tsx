@@ -1,12 +1,12 @@
 import React from 'react';
 import { Page } from '../../type';
-import { emitEvent } from '../../eventSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
 import { PageContainer } from '../components/PageContainer';
 import { Typography } from '../components/Typography';
 import { useGameState } from '../hooks/useGameState';
+import { emitEvent } from '@arekrado/canvas-engine';
 
 export const Main: React.FC = () => {
   const state = useGameState();

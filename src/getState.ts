@@ -7,17 +7,19 @@ import { markerSystem } from './systems/markerSystem';
 import { playersList } from './systems/gameSystem/handleChangeSettings';
 import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem';
 import { logoSystem } from './systems/logoSystem';
-import { emitEvent, eventSystem } from './eventSystem';
 import { setScene } from './systems/gameSystem/handleCleanScene';
 import { getSavedData } from './utils/localDb';
 import { AI, Background, Game, name, Page, State } from './type';
 import {
+  addEventHandler,
   Camera,
   componentName,
+  createComponent,
   getState as getCanvaasEngineState,
   setComponent,
+  setEntity,
 } from '@arekrado/canvas-engine';
-import { cameraEntity } from '@arekrado/canvas-engine/dist/system/camera';
+import { cameraEntity } from '@arekrado/canvas-engine/system/camera';
 import { getCameraSize } from './systems/cameraSystem/getCameraSize';
 import { Scene } from '@babylonjs/core/scene';
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera';
@@ -25,6 +27,8 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { eventHandler } from './eventSystem';
+import { debugSystem } from '@arekrado/canvas-engine-devtools';
 
 export const getState = ({
   scene,
@@ -43,14 +47,13 @@ export const getState = ({
     MeshBuilder,
     Texture,
     Color3,
-    emitEvent,
   }) as State;
 
   const version = '0.0.12';
 
-  // Systems
-  state = eventSystem(state);
+  addEventHandler(eventHandler);
 
+  // Systems
   state = boxSystem(state);
   state = aiSystem(state);
   state = gameSystem(state);
@@ -58,7 +61,12 @@ export const getState = ({
   state = backgroundSystem(state);
   state = logoSystem(state);
 
-  state = setComponent<AI, State>({
+  if (process.env.NODE_ENV === 'development') {
+    state = debugSystem(state, 'devtools') as State;
+  }
+
+  state = setEntity({ state, entity: humanPlayerEntity });
+  state = createComponent<AI, State>({
     state,
     data: {
       entity: humanPlayerEntity,
@@ -73,7 +81,8 @@ export const getState = ({
 
   const savedData = getSavedData();
 
-  state = setComponent<Game, State>({
+  state = setEntity({ state, entity: gameEntity });
+  state = createComponent<Game, State>({
     state,
     data: {
       version,
@@ -111,7 +120,8 @@ export const getState = ({
     });
   }
 
-  state = setComponent<Background, State>({
+  state = setEntity({ state, entity: backgroundEntity });
+  state = createComponent<Background, State>({
     state,
     data: {
       entity: backgroundEntity,

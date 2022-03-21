@@ -1,4 +1,4 @@
-import { getCamera } from '@arekrado/canvas-engine/dist/system/camera'
+import { getCamera } from '@arekrado/canvas-engine/system/camera'
 import { boxWithGap } from '../../blueprints/gridBlueprint';
 import { State } from '../../type';
 

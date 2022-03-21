@@ -1,5 +1,6 @@
 import {
   componentName,
+  createComponent,
   getComponent,
   setComponent,
   Transform,
@@ -27,7 +28,7 @@ export const create = ({
     entity: component.player || '',
   });
 
-  state = setComponent<Transform, State>({
+  state = createComponent<Transform, State>({
     state,
     data: {
       name: componentName.transform,

@@ -1,9 +1,9 @@
 import { Box, name, State } from '../../type';
-import { emitEvent } from '../../eventSystem';
-import { LogoEvent } from '../logoSystem';
+import { LogoEvent, setLogo } from '../logoSystem';
 import { updateLogoPosition } from './updateLogoPosition';
 import { logoGrid } from './logoGrid';
-import { setComponent } from '@arekrado/canvas-engine';
+import { createComponent, emitEvent, setEntity } from '@arekrado/canvas-engine';
+import { setCamera } from '../../wrappers/setCamera';
 
 export const create = ({ state }: { state: State }): State => {
   const sceneRef = state.babylonjs.sceneRef;
@@ -18,7 +18,8 @@ export const create = ({ state }: { state: State }): State => {
           return acc2;
         }
 
-        return setComponent<Box, State>({
+        acc2 = setEntity({ state: acc2, entity: boxEntity });
+        return createComponent<Box, State>({
           state: acc2,
           data: {
             name: name.box,
@@ -33,7 +34,8 @@ export const create = ({ state }: { state: State }): State => {
     state
   );
 
-  state = updateLogoPosition({ state });
+  // I don't know why updateLogoPosition is not enough
+  state = setCamera({ state, data: {} });
 
   emitEvent<LogoEvent.RotateRandomLogoBoxEvent>({
     type: LogoEvent.Type.rotateRandomLogoBox,

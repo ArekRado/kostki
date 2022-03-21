@@ -1,6 +1,5 @@
 import React from 'react';
 import { Page } from '../../type';
-import { emitEvent } from '../../eventSystem';
 import { AIDifficulty } from '../../systems/aiSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
@@ -10,6 +9,7 @@ import { Check } from '../components/icons/Check';
 import { Cross } from '../components/icons/Cross';
 import { PageContainer } from '../components/PageContainer';
 import { useGameState } from '../hooks/useGameState';
+import { emitEvent } from '@arekrado/canvas-engine';
 
 const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   switch (difficulty) {

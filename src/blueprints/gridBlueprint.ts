@@ -1,6 +1,6 @@
 import { Box, name, State } from '../type';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
-import { Entity, setComponent } from '@arekrado/canvas-engine';
+import { createComponent, Entity, setComponent, setEntity } from '@arekrado/canvas-engine';
 import { setCamera } from '../wrappers/setCamera';
 import { getGame, setGame } from '../systems/gameSystem';
 
@@ -44,7 +44,8 @@ export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
         const entity = Math.random().toString();
-        acc2 = setComponent<Box, State>({
+        acc2 = setEntity({ state: acc2, entity });
+        acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
             name: name.box,

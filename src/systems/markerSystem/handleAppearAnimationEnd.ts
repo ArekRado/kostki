@@ -1,5 +1,5 @@
 import { EventHandler, Transform } from '@arekrado/canvas-engine';
-import { componentName, updateComponent } from '@arekrado/canvas-engine/dist/component';
+import { componentName, updateComponent } from '@arekrado/canvas-engine';
 import { name, State } from '../../type';
 import { markerEntity, MarkerEvent } from '../markerSystem';
 

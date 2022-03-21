@@ -7,16 +7,18 @@ import {
   createSystem,
   setComponent,
   Animation,
-  defaultData,
+  defaultTransform,
   Mesh,
   MeshType,
   Transform,
   Material,
   ECSEvent,
   removeEntity,
+  setEntity,
+  createComponent,
 } from '@arekrado/canvas-engine';
 import { generateId } from '../utils/generateId';
-import { updateComponent } from '@arekrado/canvas-engine/dist/component';
+import { updateComponent } from '@arekrado/canvas-engine';
 import { boxRotationAnimationTime } from './boxSystem/createRotationBoxAnimation';
 
 export const markerEntity = '38127445920450264';
@@ -72,7 +74,7 @@ export const setMarker = ({
       payload: {},
     };
 
-    state = setComponent<Animation.AnimationComponent, State>({
+    state = createComponent<Animation.AnimationComponent, State>({
       state,
       data: {
         name: componentName.animation,
@@ -132,9 +134,9 @@ export const markerSystem = (state: State) =>
 
       const size = boxGap + boxSize + boxGap;
 
-      state = setComponent<Transform, State>({
+      state = createComponent<Transform, State>({
         state,
-        data: defaultData.transform({
+        data: defaultTransform({
           entity: component.entity,
           position: [9999, 9999, 9999],
           scale: [size, size, 1],
@@ -142,7 +144,7 @@ export const markerSystem = (state: State) =>
       });
 
       const materialUniqueId = generateId();
-      state = setComponent<Material, State>({
+      state = createComponent<Material, State>({
         state,
         data: {
           entity: component.entity,
@@ -153,7 +155,7 @@ export const markerSystem = (state: State) =>
         },
       });
 
-      state = setComponent<Mesh, State>({
+      state = createComponent<Mesh, State>({
         state,
         data: {
           entity: component.entity,

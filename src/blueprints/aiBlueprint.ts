@@ -1,11 +1,15 @@
-
 import { AI, Game, name, State } from '../type';
 import { getGame } from '../systems/gameSystem';
-import { removeComponentsByName, setComponent } from '@arekrado/canvas-engine';
+import {
+  createComponent,
+  setComponent,
+  setEntity,
+} from '@arekrado/canvas-engine';
+import { removeEntitiesByComponentName } from '../systems/gameSystem/handleCleanScene';
 
 type AiBlueprint = (params: { state: State; ai: AI[] }) => State;
 export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
-  state = removeComponentsByName<AI, State>({ state, name: name.ai });
+  state = removeEntitiesByComponentName({ state, name: name.ai });
 
   const game = getGame({ state });
 
@@ -20,6 +24,7 @@ export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
   }
 
   return ai.reduce((acc, newAi) => {
-    return setComponent<AI, State>({ state: acc, data: newAi });
+    acc = setEntity({ state: acc, entity: newAi.entity });
+    return createComponent<AI, State>({ state: acc, data: newAi });
   }, state);
 };

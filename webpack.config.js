@@ -3,6 +3,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const config = {
   mode: 'development',
@@ -18,9 +19,28 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/,
+        test: /\.(js|ts|tsx)$/,
+        exclude: [/node_modules/],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                '@babel/preset-typescript',
+                '@babel/preset-react',
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      browsers: ['> 1%'],
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -35,13 +55,21 @@ const config = {
         ],
       },
       {
-        test: /\.ts(x)?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: require.resolve('css-loader'),
+            options: {
+              url: false, // Required as image imports should be handled via JS/TS import statements
+            },
+          },
+        ],
       },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       appMountId: 'app',
       filename: 'index.html',
@@ -51,18 +79,18 @@ const config = {
       process: 'process/browser',
     }),
   ],
-  optimization: {
-    runtimeChunk: 'single',
-    splitChunks: {
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-        },
-      },
-    },
-  },
+  // optimization: {
+  //   runtimeChunk: 'single',
+  //   splitChunks: {
+  //     cacheGroups: {
+  //       vendor: {
+  //         test: /[\\/]node_modules[\\/]/,
+  //         name: 'vendors',
+  //         chunks: 'all',
+  //       },
+  //     },
+  //   },
+  // },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },

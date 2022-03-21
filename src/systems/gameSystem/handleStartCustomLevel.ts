@@ -14,11 +14,13 @@ import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
 import { markerEntity } from '../markerSystem';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { playLevelStartAnimation } from './playLevelStartAnimation';
-import { emitEvent } from '../../eventSystem';
 import {
+  createComponent,
+  emitEvent,
   EventHandler,
   getComponent,
   setComponent,
+  setEntity,
 } from '@arekrado/canvas-engine';
 import { setCamera } from '../../wrappers/setCamera';
 
@@ -28,7 +30,8 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
     (acc: State, _, x) =>
       Array.from({ length: 8 }).reduce((acc2: State, _, y) => {
         const entity = generateId().toString();
-        acc2 = setComponent<Box, State>({
+        acc2 = setEntity({ state: acc2, entity });
+        acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
             name: name.box,
@@ -185,7 +188,8 @@ export const handleStartCustomLevel: EventHandler<
     }
   }
 
-  state = setComponent<Marker, State>({
+  state = setEntity({ state, entity: markerEntity });
+  state = createComponent<Marker, State>({
     state,
     data: {
       entity: markerEntity,

@@ -18,8 +18,7 @@ import { handleShakeAiBoxes } from './systems/gameSystem/handleShakeAiBoxes';
 import { handleStartCustomLevel } from './systems/gameSystem/handleStartCustomLevel';
 import { LogoEvent } from './systems/logoSystem';
 import { handleRotateRandomLogoBox } from './systems/logoSystem/handleRotateBox';
-import { createEventSystem } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
+import { CameraEvent } from '@arekrado/canvas-engine/system/camera';
 import { handleResize } from './systems/cameraSystem/handleResize';
 import { MarkerEvent } from './systems/markerSystem';
 import { handleAppearAnimationEnd } from './systems/markerSystem/handleAppearAnimationEnd';
@@ -31,7 +30,7 @@ type AllEvents =
   | CameraEvent.All
   | MarkerEvent.All;
 
-const eventHandler = ({
+export const eventHandler = ({
   state,
   event,
 }: {
@@ -51,6 +50,14 @@ const eventHandler = ({
     case GameEvent.Type.startCustomLevel:
       return handleStartCustomLevel({ state, event });
     case GameEvent.Type.playerClick:
+      // const x: State = {
+      //   entity: state.entity,
+      //   component: state.component,
+      //   system: state.system,
+      //   globalSystem: state.globalSystem,
+      //   babylonjs: {},
+      // };
+      // console.log(JSON.stringify(x));
       return handlePlayerClick({ state, event });
     case GameEvent.Type.cleanScene:
       return handleCleanScene({ state, event });
@@ -95,8 +102,6 @@ const eventHandler = ({
     case MarkerEvent.Type.appearAnimationEnd:
       return handleAppearAnimationEnd({ state, event });
   }
-};
 
-export const { emitEvent, eventSystem } = createEventSystem<AllEvents, State>({
-  eventHandler,
-});
+  return state;
+};

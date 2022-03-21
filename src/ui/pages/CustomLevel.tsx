@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import { AI, Box, Game, name, Page, State } from '../../type';
-import { emitEvent } from '../../eventSystem';
 import { GameEvent, getGame } from '../../systems/gameSystem';
 import { Button } from '../components/Button';
 import { Flex } from '../components/Flex';
@@ -10,7 +9,7 @@ import { PageContainer } from '../components/PageContainer';
 import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator';
 import { Typography } from '../components/Typography';
 import { useGameState } from '../hooks/useGameState';
-import { Component, getComponent } from '@arekrado/canvas-engine';
+import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine';
 
 const getAiList = (state: State): TurnIndicatorItem[] => {
   const game = getGame({ state });

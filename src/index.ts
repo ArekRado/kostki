@@ -1,7 +1,6 @@
 import { getState } from './getState';
 import { register } from './serviceWorkerRegistration';
 import { GameEvent } from './systems/gameSystem';
-import { emitEvent } from './eventSystem';
 import { mountGameUI } from './ui/App';
 
 import { Engine } from '@babylonjs/core/Engines/engine';
@@ -12,8 +11,10 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
-import { runOneFrame } from '@arekrado/canvas-engine';
-import { CameraEvent } from '@arekrado/canvas-engine/dist/system/camera';
+import { emitEvent, runOneFrame } from '@arekrado/canvas-engine';
+import { CameraEvent } from '@arekrado/canvas-engine/system/camera';
+
+import './style.css'
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 export const humanPlayerEntity = 'humanPlayer';
@@ -141,6 +142,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done fix marker xD
   // done event handlers should be moved to separated folders and start with "handle" prefix
   // - need devtools - remove all components by entity because by name may keep some leftovers
+  // - replace setComponent by create/update
   // - when player is not clicking then "shake boxes"
   // - custom leve settings - add different maps
   // - campaign

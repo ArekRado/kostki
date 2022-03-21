@@ -1,41 +1,63 @@
-import { EventHandler, removeComponentsByName, setComponent } from '@arekrado/canvas-engine';
-import {  Logo, name, Page, State } from '../../type';
+import {
+  createComponent,
+  EventHandler,
+  getComponentsByName,
+  removeEntity,
+  setEntity,
+} from '@arekrado/canvas-engine';
+import { Logo, name, Page, State } from '../../type';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { GameEvent, setGame } from '../gameSystem';
 import { logoEntity } from '../logoSystem';
 
-export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent, State> = ({
+export const removeEntitiesByComponentName = ({
   state,
-  event,
+  name,
+}: {
+  state: State;
+  name: string;
 }) => {
-  state = setGame({
-    state,
-    data: {
-      page: event.payload.newPage,
-      round: 0,
-      grid: [],
-      currentPlayer: '',
-      playersQueue: [],
-      boxRotationQueue: [],
-      gameStarted: false,
-    },
-  }) as State;
-  state = removeComponentsByName({ name: name.box, state });
-  state = removeComponentsByName({ name: name.ai, state });
-  state = removeComponentsByName({ name: name.marker, state });
-  state = removeComponentsByName({ name: name.background, state });
-  state = removeComponentsByName({ name: name.logo, state });
+  const components = getComponentsByName({ state, name });
 
-  state = setScene({ state, page: event.payload.newPage });
-
-  eventBusDispatch('setUIState', state);
-
-  return state;
+  return components
+    ? Object.keys(components).reduce(
+        (acc, entity) => removeEntity({ state: acc, entity }),
+        state
+      )
+    : state;
 };
+
+export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent, State> =
+  ({ state, event }) => {
+    state = setGame({
+      state,
+      data: {
+        page: event.payload.newPage,
+        round: 0,
+        grid: [],
+        currentPlayer: '',
+        playersQueue: [],
+        boxRotationQueue: [],
+        gameStarted: false,
+      },
+    }) as State;
+    state = removeEntitiesByComponentName({ name: name.box, state });
+    state = removeEntitiesByComponentName({ name: name.ai, state });
+    state = removeEntitiesByComponentName({ name: name.marker, state });
+    state = removeEntitiesByComponentName({ name: name.background, state });
+    state = removeEntitiesByComponentName({ name: name.logo, state });
+
+    state = setScene({ state, page: event.payload.newPage });
+
+    eventBusDispatch('setUIState', state);
+
+    return state;
+  };
 
 export const setScene = ({ state, page }: { state: State; page: Page }) => {
   if (page === Page.mainMenu) {
-    state = setComponent<Logo, State>({
+    state = setEntity({ state, entity: logoEntity });
+    state = createComponent<Logo, State>({
       state,
       data: {
         entity: logoEntity,

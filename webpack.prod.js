@@ -5,6 +5,7 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const config = {
   mode: 'production',
@@ -20,9 +21,28 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/,
+        test: /\.(js|ts|tsx)$/,
+        exclude: [/node_modules/],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                '@babel/preset-typescript',
+                '@babel/preset-react',
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      browsers: ['> 1%'],
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -41,9 +61,16 @@ const config = {
       //   type: "asset",
       // },
       {
-        test: /\.ts(x)?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
+        test: /\.css$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: require.resolve('css-loader'),
+            options: {
+              url: false, // Required as image imports should be handled via JS/TS import statements
+            },
+          },
+        ],
       },
     ],
   },
@@ -85,7 +112,7 @@ const config = {
     new WebpackPwaManifest({
       name: 'Kostki',
       short_name: 'Kostki',
-      description: 'Super simple kostki game!',
+      description: 'Kostki game',
       background_color: '#000',
       theme_color: '#000',
       display: 'fullscreen',
@@ -107,6 +134,7 @@ const config = {
         },
       ],
     }),
+    new MiniCssExtractPlugin(),
   ],
   optimization: {
     runtimeChunk: 'single',
