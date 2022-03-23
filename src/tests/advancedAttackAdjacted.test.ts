@@ -5,7 +5,7 @@ import { AIDifficulty } from '../systems/aiSystem';
 import { getAiMove } from '../systems/aiSystem/getAiMove';
 import { getState } from '../getState';
 import { expectOneOf } from './aiSystem.test';
-import { setComponent } from '@arekrado/canvas-engine';
+import { createComponent } from '@arekrado/canvas-engine';
 
 const basicAi: AI = {
   entity: 'basicAi',
@@ -33,12 +33,12 @@ const prepareGrid = (dataGrid: BasicBox[][]) => {
     state: getState({}),
   });
 
-  state = setComponent<AI, State>({
+  state = createComponent<AI, State>({
     state,
     data: basicAi,
   });
 
-  state = setComponent<AI, State>({
+  state = createComponent<AI, State>({
     state,
     data: basicAi2,
   });

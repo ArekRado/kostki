@@ -1,8 +1,8 @@
-import { AI, Box, State } from '../../type';
+import { AI, Box, name, State } from '../../type';
 import { createRotationBoxAnimation } from './createRotationBoxAnimation';
 import { getTextureSet } from './getTextureSet';
 import { pushBoxToRotationQueue } from './pushBoxToRotationQueue';
-import { setComponent } from '@arekrado/canvas-engine';
+import { updateComponent } from '@arekrado/canvas-engine';
 import { getGame } from '../gameSystem';
 
 export const getNextDots = (dots: number): number =>
@@ -31,14 +31,15 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
     state = pushBoxToRotationQueue({ entity, state });
   }
 
-  state = setComponent<Box, State>({
+  state = updateComponent<Box, State>({
     state,
-    data: {
-      ...box,
+    name: name.box,
+    entity,
+    update: () => ({
       isAnimating: true,
       player: ai?.entity || '',
       dots,
-    },
+    }),
   });
 
   return state;

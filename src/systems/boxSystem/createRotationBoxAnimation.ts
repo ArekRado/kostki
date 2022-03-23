@@ -4,9 +4,9 @@ import { BoxEvent, BoxRotationDirection } from '../boxSystem';
 import {
   Animation,
   componentName,
+  createComponent,
   Entity,
-  getComponent,
-  setComponent,
+  updateComponent,
   Vector3D,
 } from '@arekrado/canvas-engine';
 
@@ -44,19 +44,21 @@ export const createRotationBoxAnimation = ({
   }
 
   const boxMesh = sceneRef.getTransformNodeByUniqueId(parseInt(boxUniqueId));
-  const box = getComponent<Box>({
-    state,
-    name: name.box,
-    entity: boxUniqueId,
-  });
+  // const box = getComponent<Box>({
+  //   state,
+  //   name: name.box,
+  //   entity: boxUniqueId,
+  // });
 
-  if (boxMesh && box) {
-    state = setComponent<Box, State>({
+  if (boxMesh) {
+    state = updateComponent<Box, State>({
       state,
-      data: {
+      name: name.box,
+      entity: boxUniqueId,
+      update: (box) => ({
         ...box,
         isAnimating: true,
-      },
+      }),
     });
 
     let rotationDirection = rightAngle * (Math.random() > 0.5 ? 1 : -1);
@@ -109,14 +111,14 @@ export const createRotationBoxAnimation = ({
     const rotationEndEvent: BoxEvent.RotationEndEvent = {
       type: BoxEvent.Type.rotationEnd,
       payload: {
-        boxEntity: box.entity,
+        boxEntity: boxUniqueId,
         texture,
         color,
         nextTurn,
       },
     };
 
-    state = setComponent<Animation.AnimationComponent, State>({
+    state = createComponent<Animation.AnimationComponent, State>({
       state,
       data: {
         name: componentName.animation,

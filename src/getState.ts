@@ -15,9 +15,7 @@ import {
   Camera,
   componentName,
   createComponent,
-  emitEvent,
   getState as getCanvaasEngineState,
-  setComponent,
   setEntity,
 } from '@arekrado/canvas-engine';
 import { cameraEntity } from '@arekrado/canvas-engine/system/camera';
@@ -29,11 +27,7 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { eventHandler } from './eventSystem';
-import { debugSystem } from '@arekrado/canvas-engine-devtools';
-import {
-  DevtoolsEvent,
-  loadAndMountDevtools,
-} from './utils/handleEnableDevtools';
+import { loadAndMountDevtools } from './utils/handleEnableDevtools';
 
 export const getState = ({
   scene,
@@ -109,7 +103,7 @@ export const getState = ({
   });
 
   if (scene) {
-    state = setComponent<Camera, State>({
+    state = createComponent<Camera, State>({
       state,
       data: {
         entity: cameraEntity,

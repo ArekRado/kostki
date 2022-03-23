@@ -2,7 +2,6 @@ import { AI, Game, name, State } from '../type';
 import { getGame } from '../systems/gameSystem';
 import {
   createComponent,
-  setComponent,
   setEntity,
 } from '@arekrado/canvas-engine';
 import { removeEntitiesByComponentName } from '../systems/gameSystem/handleCleanScene';
@@ -14,7 +13,7 @@ export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
   const game = getGame({ state });
 
   if (game) {
-    state = setComponent<Game, State>({
+    state = createComponent<Game, State>({
       state,
       data: {
         ...game,

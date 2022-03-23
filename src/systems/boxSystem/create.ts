@@ -2,7 +2,6 @@ import {
   componentName,
   createComponent,
   getComponent,
-  setComponent,
   Transform,
 } from '@arekrado/canvas-engine';
 import { boxBlueprint } from '../../blueprints/boxBlueprint';

@@ -141,8 +141,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done "pop" box animation when level starts
   // done fix marker xD
   // done event handlers should be moved to separated folders and start with "handle" prefix
-  // - need devtools - remove all components by entity because by name may keep some leftovers
-  // - replace setComponent by create/update
+  // done need devtools - remove all components by entity because by name may keep some leftovers
+  // done replace setComponent by create/update
   // - when player is not clicking then "shake boxes"
   // - custom leve settings - add different maps
   // - campaign

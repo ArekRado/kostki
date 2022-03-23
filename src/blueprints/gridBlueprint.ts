@@ -1,6 +1,6 @@
 import { Box, name, State } from '../type';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
-import { createComponent, Entity, setComponent, setEntity } from '@arekrado/canvas-engine';
+import { createComponent, Entity, setEntity } from '@arekrado/canvas-engine';
 import { setCamera } from '../wrappers/setCamera';
 import { getGame, setGame } from '../systems/gameSystem';
 

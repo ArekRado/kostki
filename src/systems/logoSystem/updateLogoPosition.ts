@@ -1,8 +1,7 @@
 import {
   componentName,
-  getComponent,
-  setComponent,
   Transform,
+  updateComponent,
 } from '@arekrado/canvas-engine';
 import { getCamera } from '@arekrado/canvas-engine/system/camera';
 import { State } from '../../type';
@@ -59,28 +58,38 @@ export const updateLogoPosition = ({ state }: { state: State }): State => {
         // boxNode.position.x = logoNode.position.x + boxPosition[0];
         // boxNode.position.y = logoNode.position.y + boxPosition[1];
 
-        const transform = getComponent<Transform, State>({
+        // const transform = getComponent<Transform, State>({
+        //   state: acc2,
+        //   name: componentName.transform,
+        //   entity: boxEntity,
+        // });
+
+        // if (transform) {
+        // return setComponent<Transform, State>({
+        //   state: acc2,
+        //   data: {
+        //     ...transform,
+        //     position: [boxPosition[0], boxPosition[1]],
+        //     scale: [
+        //       1 / boxScaleFactor,
+        //       1 / boxScaleFactor,
+        //       1 / boxScaleFactor,
+        //     ],
+        //   },
+        // });
+
+        return updateComponent<Transform, State>({
           state: acc2,
           name: componentName.transform,
           entity: boxEntity,
+          update: () => ({
+            position: [boxPosition[0], boxPosition[1]],
+            scale: [1 / boxScaleFactor, 1 / boxScaleFactor, 1 / boxScaleFactor],
+          }),
         });
+        // }
 
-        if (transform) {
-          return setComponent<Transform, State>({
-            state: acc2,
-            data: {
-              ...transform,
-              position: [boxPosition[0], boxPosition[1]],
-              scale: [
-                1 / boxScaleFactor,
-                1 / boxScaleFactor,
-                1 / boxScaleFactor,
-              ],
-            },
-          });
-        }
-
-        return acc2;
+        // return acc2;
 
         // boxNode.scaling.x = 1 / boxScaleFactor;
         // boxNode.scaling.y = 1 / boxScaleFactor;

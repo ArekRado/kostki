@@ -9,7 +9,7 @@ import { getBestRandomBox } from '../systems/aiSystem/getBestRandomBox';
 import { getDataGrid } from '../systems/aiSystem/getDataGrid';
 import { getMovesForEmptyBoxes } from '../systems/aiSystem/getMovesForEmptyBoxes';
 import { getState } from '../getState';
-import { setComponent } from '@arekrado/canvas-engine';
+import { createComponent } from '@arekrado/canvas-engine';
 
 const player2 = 'player2';
 
@@ -200,7 +200,7 @@ describe('aiSystem', () => {
           state: getState({}),
         });
 
-        state = setComponent<AI, State>({
+        state = createComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -237,7 +237,7 @@ describe('aiSystem', () => {
           state: getState({}),
         });
 
-        state = setComponent<AI, State>({
+        state = createComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -274,7 +274,7 @@ describe('aiSystem', () => {
           state: getState({}),
         });
 
-        state = setComponent<AI, State>({
+        state = createComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -311,7 +311,7 @@ describe('aiSystem', () => {
           state: getState({}),
         });
 
-        state = setComponent<AI, State>({
+        state = createComponent<AI, State>({
           state,
           data: basicAi,
         });
@@ -351,7 +351,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -400,7 +400,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -438,7 +438,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -485,7 +485,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -530,7 +530,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -569,7 +569,7 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
@@ -624,12 +624,12 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -693,12 +693,12 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -768,12 +768,12 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi2,
       });
@@ -837,12 +837,12 @@ describe('aiSystem', () => {
         state: getState({}),
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi,
       });
 
-      state = setComponent<AI, State>({
+      state = createComponent<AI, State>({
         state,
         data: basicAi2,
       });

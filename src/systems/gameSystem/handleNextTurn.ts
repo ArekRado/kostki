@@ -4,13 +4,13 @@ import { eventBusDispatch } from '../../utils/eventBus';
 import { getAiMove } from '../aiSystem/getAiMove';
 import { onClickBox } from '../boxSystem/onClickBox';
 import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
-import { getGame } from '../gameSystem';
+import { gameEntity, getGame } from '../gameSystem';
 import { setMarker } from '../markerSystem';
 import { getNextPlayer } from './getNextPlayer';
 import {
   getComponent,
   getComponentsByName,
-  setComponent,
+  updateComponent,
 } from '@arekrado/canvas-engine';
 
 const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
@@ -31,12 +31,13 @@ const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
 
 type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
 const aiLost: AiLost = ({ state, ai, component }) => {
-  state = setComponent<AI, State>({
+  state = updateComponent<AI, State>({
     state,
-    data: {
-      ...ai,
+    name: name.ai,
+    entity: ai.entity,
+    update: () => ({
       active: false,
-    },
+    }),
   });
 
   const allAI = getComponentsByName<AI, State>({
@@ -51,12 +52,13 @@ const aiLost: AiLost = ({ state, ai, component }) => {
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
-    state = setComponent<Game, State>({
+    state = updateComponent<Game, State>({
       state,
-      data: {
-        ...component,
+      name: name.game,
+      entity: gameEntity,
+      update: () => ({
         gameStarted: false,
-      },
+      }),
     });
 
     eventBusDispatch('setUIState', state);
@@ -95,13 +97,14 @@ export const startNextTurn = ({ state }: { state: State }) => {
       return state;
     }
 
-    state = setComponent<Game, State>({
+    state = updateComponent<Game, State>({
       state,
-      data: {
-        ...game,
+      name: name.game,
+      entity: gameEntity,
+      update: (game) => ({
         currentPlayer: ai.entity,
         moves: game.moves + 1,
-      },
+      }),
     });
 
     if (ai.active) {

@@ -5,7 +5,6 @@ import {
   componentName,
   createGetSetForUniqComponent,
   createSystem,
-  setComponent,
   Animation,
   defaultTransform,
   Mesh,
@@ -14,7 +13,6 @@ import {
   Material,
   ECSEvent,
   removeEntity,
-  setEntity,
   createComponent,
 } from '@arekrado/canvas-engine';
 import { generateId } from '../utils/generateId';

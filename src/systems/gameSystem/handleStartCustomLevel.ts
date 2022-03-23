@@ -1,5 +1,6 @@
 import { AI, Box, Game, State, Marker, Page, name } from '../../type';
 import {
+  gameEntity,
   GameEvent,
   getGame,
   setGame,
@@ -19,8 +20,8 @@ import {
   emitEvent,
   EventHandler,
   getComponent,
-  setComponent,
   setEntity,
+  updateComponent,
 } from '@arekrado/canvas-engine';
 import { setCamera } from '../../wrappers/setCamera';
 
@@ -113,23 +114,23 @@ const runQuickStart: RunQuickStart = ({ state }) => {
         return acc;
       }
 
-      acc = setComponent<Box, State>({
+      acc = updateComponent<Box, State>({
         state: acc,
-        data: {
-          ...box,
+        name: name.box,
+        entity: box.entity,
+        update: () => ({
           player: currentAi.entity,
           dots: getNextDots(box.dots),
-        },
+        }),
       });
 
-      const nextPlayer = getNextPlayer({ state: acc });
-
-      acc = setComponent<Game, State>({
+      acc = updateComponent<Game, State>({
         state: acc,
-        data: {
-          ...game,
-          currentPlayer: nextPlayer?.entity || '',
-        },
+        name: name.game,
+        entity: gameEntity,
+        update: () => ({
+          currentPlayer: getNextPlayer({ state: acc })?.entity || '',
+        }),
       });
 
       return acc;
