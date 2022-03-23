@@ -22,13 +22,15 @@ import { CameraEvent } from '@arekrado/canvas-engine/system/camera';
 import { handleResize } from './systems/cameraSystem/handleResize';
 import { MarkerEvent } from './systems/markerSystem';
 import { handleAppearAnimationEnd } from './systems/markerSystem/handleAppearAnimationEnd';
+import { DevtoolsEvent, handleEnableDevtools } from './utils/handleEnableDevtools';
 
 type AllEvents =
   | LogoEvent.All
   | GameEvent.All
   | BoxEvent.All
   | CameraEvent.All
-  | MarkerEvent.All;
+  | MarkerEvent.All
+  | DevtoolsEvent.All;
 
 export const eventHandler = ({
   state,
@@ -101,6 +103,10 @@ export const eventHandler = ({
     // Marker
     case MarkerEvent.Type.appearAnimationEnd:
       return handleAppearAnimationEnd({ state, event });
+
+    // Devtools
+    case DevtoolsEvent.Type.enable:
+      return handleEnableDevtools({ state, event });
   }
 
   return state;

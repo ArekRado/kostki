@@ -15,6 +15,7 @@ import {
   Camera,
   componentName,
   createComponent,
+  emitEvent,
   getState as getCanvaasEngineState,
   setComponent,
   setEntity,
@@ -29,6 +30,10 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { eventHandler } from './eventSystem';
 import { debugSystem } from '@arekrado/canvas-engine-devtools';
+import {
+  DevtoolsEvent,
+  loadAndMountDevtools,
+} from './utils/handleEnableDevtools';
 
 export const getState = ({
   scene,
@@ -60,10 +65,6 @@ export const getState = ({
   state = markerSystem(state);
   state = backgroundSystem(state);
   state = logoSystem(state);
-
-  if (process.env.NODE_ENV === 'development') {
-    state = debugSystem(state, 'devtools') as State;
-  }
 
   state = setEntity({ state, entity: humanPlayerEntity });
   state = createComponent<AI, State>({
@@ -147,6 +148,10 @@ export const getState = ({
   // removeState();
 
   state = setScene({ state, page: Page.mainMenu });
+
+  if (process.env.NODE_ENV === 'development') {
+    loadAndMountDevtools();
+  }
 
   return state;
 };

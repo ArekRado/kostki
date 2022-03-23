@@ -1,6 +1,6 @@
 import { EventHandler, Transform } from '@arekrado/canvas-engine';
 import { componentName, updateComponent } from '@arekrado/canvas-engine';
-import { name, State } from '../../type';
+import { State } from '../../type';
 import { markerEntity, MarkerEvent } from '../markerSystem';
 
 export const handleAppearAnimationEnd: EventHandler<
