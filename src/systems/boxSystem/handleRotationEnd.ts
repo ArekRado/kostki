@@ -16,7 +16,7 @@ import { startNextTurn } from '../gameSystem/handleNextTurn';
 export const handleRotationEnd: EventHandler<BoxEvent.RotationEndEvent, State> =
   ({ state, event }) => {
     const sceneRef = state.babylonjs.sceneRef;
-    const { boxEntity, texture, color, nextTurn } = event.payload;
+    const { boxEntity, texture, color, nextTurn, shouldExplode } = event.payload;
     const box = getComponent<Box, State>({
       state,
       name: name.box,
@@ -76,8 +76,6 @@ export const handleRotationEnd: EventHandler<BoxEvent.RotationEndEvent, State> =
     });
 
     if (nextTurn && ai && game && box) {
-      const shouldExplode = box.dots === 1;
-
       if (shouldExplode) {
         state = boxExplosion({
           state,

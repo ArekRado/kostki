@@ -1,4 +1,4 @@
-import { AI, Color, name, State } from '../../type';
+import { AI, Color, Game, name, State } from '../../type';
 import { AIDifficulty } from '../aiSystem';
 import {
   gray,
@@ -20,11 +20,11 @@ import {
   set7,
   set8,
 } from '../../utils/textureSets';
-import { GameEvent, getGame, setGame } from '../gameSystem';
+import { gameEntity, GameEvent, getGame } from '../gameSystem';
 import { humanPlayerEntity } from '../..';
 import { eventBusDispatch } from '../../utils/eventBus';
 import { saveStateToData } from '../../utils/localDb';
-import { Entity, EventHandler } from '@arekrado/canvas-engine';
+import { Entity, EventHandler, updateComponent } from '@arekrado/canvas-engine';
 
 export const basicAI = (
   entity: Entity,
@@ -67,15 +67,17 @@ export const handleChangePlayers: EventHandler<
       ? 2
       : game.customLevelSettings.players?.length + 1;
 
-  state = setGame({
+  state = updateComponent<Game, State>({
     state,
-    data: {
+    entity: gameEntity,
+    name: name.game,
+    update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
         players: playersList().slice(0, playersAmount),
       },
-    },
-  }) as State;
+    }),
+  });
 
   eventBusDispatch('setUIState', state);
   saveStateToData(state);
@@ -107,14 +109,16 @@ export const handleChangeDifficulty: EventHandler<
       ? difficultyList[0]
       : difficultyList[index + 1] ?? difficultyList[0];
 
-  state = setGame({
+  state = updateComponent<Game, State>({
     state,
-    data: {
+    entity: gameEntity,
+    name: name.game,
+    update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
         difficulty: nextDifficulty,
       },
-    },
+    }),
   });
 
   eventBusDispatch('setUIState', state);
@@ -127,19 +131,16 @@ export const handleChangeQuickStart: EventHandler<
   GameEvent.ChangeQuickStartEvent,
   State
 > = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
-    return state;
-  }
-
-  state = setGame({
+  state = updateComponent<Game, State>({
     state,
-    data: {
+    entity: gameEntity,
+    name: name.game,
+    update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
         quickStart: !game.customLevelSettings.quickStart,
       },
-    },
+    }),
   });
 
   eventBusDispatch('setUIState', state);
@@ -152,16 +153,13 @@ export const handleChangeColorBlindMode: EventHandler<
   GameEvent.ChangeColorBlindModeEvent,
   State
 > = ({ state }) => {
-  const game = getGame({ state });
-  if (!game) {
-    return state;
-  }
-
-  state = setGame({
+  state = updateComponent<Game, State>({
     state,
-    data: {
+    entity: gameEntity,
+    name: name.game,
+    update: (game) => ({
       colorBlindMode: !game.colorBlindMode,
-    },
+    }),
   });
 
   eventBusDispatch('setUIState', state);
@@ -184,10 +182,15 @@ export const handleShowNewVersion: EventHandler<
   GameEvent.ShowNewVersionEvent,
   State
 > = ({ state }) => {
-  state = setGame({
+  state = updateComponent<Game, State>({
     state,
-    data: { newVersionAvailable: true },
+    entity: gameEntity,
+    name: name.game,
+    update: () => ({
+      newVersionAvailable: true,
+    }),
   });
+
   return state;
 };
 

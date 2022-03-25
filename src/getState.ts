@@ -93,12 +93,12 @@ export const getState = ({
       gameStarted: false,
       playersQueue: [],
       boxRotationQueue: [],
-      colorBlindMode: savedData?.colorBlindMode || false,
+      colorBlindMode: savedData?.colorBlindMode ?? false,
       customLevelSettings: {
-        players: savedData?.players || playersList().slice(0, 4),
-        difficulty: savedData?.difficulty || AIDifficulty.medium,
-        quickStart: savedData?.quickStart || true,
-        mapType: savedData?.mapType || '',
+        players: savedData?.players ?? playersList().slice(0, 4),
+        difficulty: savedData?.difficulty ?? AIDifficulty.medium,
+        quickStart: savedData?.quickStart ?? true,
+        mapType: savedData?.mapType ?? '',
       },
     },
   });

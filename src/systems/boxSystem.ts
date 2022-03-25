@@ -35,6 +35,7 @@ export namespace BoxEvent {
       texture: string;
       color: Color;
       nextTurn: boolean;
+      shouldExplode: boolean;
     }
   >;
 }

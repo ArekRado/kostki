@@ -30,6 +30,7 @@ export const createRotationBoxAnimation = ({
   texture,
   state,
   nextTurn,
+  shouldExplode,
 }: {
   boxUniqueId: Entity;
   color: Color;
@@ -37,6 +38,7 @@ export const createRotationBoxAnimation = ({
   texture: string;
   state: State;
   nextTurn: boolean;
+  shouldExplode: boolean;
 }): State => {
   const sceneRef = state.babylonjs.sceneRef;
   if (!sceneRef) {
@@ -115,6 +117,7 @@ export const createRotationBoxAnimation = ({
         texture,
         color,
         nextTurn,
+        shouldExplode,
       },
     };
 

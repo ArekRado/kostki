@@ -148,6 +148,8 @@ if (process.env.NODE_ENV !== 'test') {
   // nope AND smoothly quickly back to roattion 000 when user does action
   // done AND not shake white boxes 
   // done AND should wait for 8 seconds of no user events
+  // done fix click on white boxes
+  // - fix level end
   // - custom leve settings - add different maps
   // - campaign
   // - change gradiens when user changes color
