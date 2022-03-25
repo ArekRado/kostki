@@ -10,7 +10,7 @@ import { create } from './gameSystem/create';
 
 export const gameEntity = 'game';
 
-export const shakeAnimationTimeout = 2000;
+export const shakeAnimationTimeout = 4000;
 
 export namespace GameEvent {
   export enum Type {
@@ -49,10 +49,7 @@ export namespace GameEvent {
     Type.playAgainCustomLevel,
     {}
   >;
-  export type ShakeAiBoxesEvent = ECSEvent<
-    Type.shakeAiBoxes,
-    { ai: AI; moves: number }
-  >;
+  export type ShakeAiBoxesEvent = ECSEvent<Type.shakeAiBoxes, { ai: AI }>;
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,
     { boxEntity: Entity }

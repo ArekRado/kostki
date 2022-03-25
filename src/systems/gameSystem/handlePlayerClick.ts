@@ -13,6 +13,7 @@ export const handlePlayerClick: EventHandler<
   if (!game) {
     return state;
   }
+
   const { currentPlayer, gameStarted, boxRotationQueue } = game;
 
   const box = getComponent<Box, State>({

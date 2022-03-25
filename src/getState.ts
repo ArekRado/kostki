@@ -48,7 +48,7 @@ export const getState = ({
     Color3,
   }) as State;
 
-  const version = '0.0.12';
+  const version = '0.0.13';
 
   addEventHandler(eventHandler);
 
@@ -83,6 +83,7 @@ export const getState = ({
       version,
       page: Page.mainMenu,
       newVersionAvailable: false,
+      lastBoxClickTimestamp: 0,
       entity: gameEntity,
       name: name.game,
       moves: 0,

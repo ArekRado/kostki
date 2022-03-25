@@ -24,6 +24,7 @@ import {
   updateComponent,
 } from '@arekrado/canvas-engine';
 import { setCamera } from '../../wrappers/setCamera';
+import { getTime } from '@arekrado/canvas-engine/system/time';
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State;
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
@@ -207,12 +208,18 @@ export const handleStartCustomLevel: EventHandler<
       emitEvent<GameEvent.ShakeAiBoxesEvent>({
         type: GameEvent.Type.shakeAiBoxes,
         payload: {
-          moves: getGame({ state })?.moves || 0,
           ai: currentAi,
         },
       });
     }, shakeAnimationTimeout);
   }
+
+  state = updateComponent<Game, State>({
+    state,
+    name: name.game,
+    entity: gameEntity,
+    update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
+  });
 
   return state;
 };

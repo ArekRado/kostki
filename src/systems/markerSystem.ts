@@ -77,6 +77,7 @@ export const setMarker = ({
       data: {
         name: componentName.animation,
         entity: markerEntity,
+        deleteWhenFinished: true,
         isPlaying: true,
         isFinished: false,
         currentTime: 0,

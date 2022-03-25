@@ -126,6 +126,7 @@ export const createRotationBoxAnimation = ({
         isPlaying: true,
         isFinished: false,
         currentTime: 0,
+        deleteWhenFinished: true,
         wrapMode: Animation.WrapMode.once,
         timingMode: Animation.TimingMode.smooth,
         properties: [

@@ -1,5 +1,5 @@
 {
-  "version": "0.0.12",
+  "version": "0.0.13",
   "name": "kostki",
   "author": "Arek Rado",
   "license": "GNU",
@@ -27,8 +27,8 @@
   },
   "module": "dist/arek.esm.js",
   "dependencies": {
-    "@arekrado/canvas-engine": "0.0.95",
-    "@arekrado/canvas-engine-devtools": "0.0.8",
+    "@arekrado/canvas-engine": "0.0.97",
+    "@arekrado/canvas-engine-devtools": "0.0.9",
     "@arekrado/vector-2d": "0.0.5",
     "@babylonjs/core": "^5.0.0-alpha.59",
     "@stitches/react": "^1.2.6",

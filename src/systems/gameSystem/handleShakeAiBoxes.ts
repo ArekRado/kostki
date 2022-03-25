@@ -1,13 +1,17 @@
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-// import { Animation, BezierCurveEase } from '@babylonjs/core/Animations';
-import { Box, Game, name, State } from '../../type';
+import { Box, name, State } from '../../type';
 import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem';
 import {
   componentName,
+  createComponent,
   EventHandler,
   getComponent,
   Transform,
+  Animation,
+  emitEvent,
 } from '@arekrado/canvas-engine';
+import { getTime } from '@arekrado/canvas-engine/system/time';
+
+const idleTime = shakeAnimationTimeout * 2;
 
 export const handleShakeAiBoxes: EventHandler<
   GameEvent.ShakeAiBoxesEvent,
@@ -15,10 +19,14 @@ export const handleShakeAiBoxes: EventHandler<
 > = ({
   state,
   event: {
-    payload: { ai, moves },
+    payload: { ai },
   },
 }) => {
   const game = getGame({ state });
+  const time = getTime({ state });
+
+  const lastBoxClickTimestamp = game?.lastBoxClickTimestamp || 0;
+  const timeNow = time?.timeNow || 0;
 
   // player did move, do not distribut too often!
   // if (game && game?.moves !== moves) {
@@ -34,139 +42,100 @@ export const handleShakeAiBoxes: EventHandler<
 
   //   return state;
   // }
+  if (timeNow > lastBoxClickTimestamp + idleTime) {
+    game?.grid.forEach((boxEntity) => {
+      const box = getComponent<Box>({
+        state,
+        name: name.box,
+        entity: boxEntity,
+      });
 
-  game?.grid.forEach((boxEntity) => {
-    const box = getComponent<Box>({
-      state,
-      name: name.box,
-      entity: boxEntity,
+      const animation = getComponent<Animation.AnimationComponent>({
+        state,
+        name: componentName.animation,
+        entity: boxEntity,
+      });
+
+      // Do not shake boxes which are already animated
+      if (animation || box?.player !== ai.entity) {
+        return;
+      }
+
+      const transform = getComponent<Transform>({
+        state,
+        name: componentName.transform,
+        entity: boxEntity,
+      });
+
+      if (transform) {
+        const rotationValue = Math.PI / 16;
+
+        state = createComponent<Animation.AnimationComponent, State>({
+          state,
+          data: {
+            name: componentName.animation,
+            entity: boxEntity,
+            deleteWhenFinished: true,
+            isPlaying: true,
+            isFinished: false,
+            currentTime: 0,
+            wrapMode: Animation.WrapMode.once,
+            timingMode: Animation.TimingMode.smooth,
+            properties: [
+              {
+                path: 'rotation',
+                component: componentName.transform,
+                entity: boxEntity,
+                keyframes: [
+                  {
+                    duration: 150,
+                    timingFunction: 'Linear',
+                    valueRange: [
+                      [0, 0, 0],
+                      [0, 0, rotationValue],
+                    ],
+                  },
+                  {
+                    duration: 300,
+                    timingFunction: 'Linear',
+                    valueRange: [
+                      [0, 0, rotationValue],
+                      [0, 0, -rotationValue],
+                    ],
+                  },
+                  {
+                    duration: 300,
+                    timingFunction: 'Linear',
+                    valueRange: [
+                      [0, 0, -rotationValue],
+                      [0, 0, 0],
+                    ],
+                  },
+                  {
+                    duration: 50,
+                    timingFunction: 'Linear',
+                    valueRange: [
+                      [0, 0, 0],
+                      [0, 0, 0],
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      }
     });
+  }
 
-    if (box?.player !== ai.entity) {
-      return;
-    }
-
-    // const boxMesh = scene.getTransformNodeByUniqueId(parseInt(boxEntity));
-    // if (!boxMesh || box.isAnimating) {
-    //   // Stupid babylon, seriously it's so hard to check if animation is playing?
-    //   return;
-    // }
-
-    //   const currentRotation = boxMesh.rotation;
-
-    //   const shakeAnimation = new Animation(
-    //     'shakeAnimation',
-    //     'rotation',
-    //     6,
-    //     Animation.ANIMATIONTYPE_VECTOR3,
-    //     Animation.ANIMATIONLOOPMODE_RELATIVE
-    //   );
-
-    //   const keyFrames = [];
-    //   keyFrames.push({
-    //     frame: 0,
-    //     value: currentRotation,
-    //   });
-    //   keyFrames.push({
-    //     frame: 1,
-    //     value: new Vector3(
-    //       currentRotation.x,
-    //       currentRotation.y,
-    //       currentRotation.z - Math.PI / 16
-    //     ),
-    //   });
-    //   keyFrames.push({
-    //     frame: 2,
-    //     value: new Vector3(
-    //       currentRotation.x,
-    //       currentRotation.y,
-    //       currentRotation.z + Math.PI / 16
-    //     ),
-    //   });
-    //   keyFrames.push({
-    //     frame: 3,
-    //     value: currentRotation,
-    //   });
-
-    //   shakeAnimation.setKeys(keyFrames);
-    //   shakeAnimation.setEasingFunction(new BezierCurveEase(0.37, 0, 0.63, 1));
-    //   boxMesh.animations[0] = shakeAnimation;
-
-    //   scene.beginAnimation(boxMesh, 0, 3, false, 1);
-
-    const transform = getComponent<Transform>({
-      state,
-      name: componentName.transform,
-      entity: boxEntity,
+  setTimeout(() => {
+    emitEvent<GameEvent.ShakeAiBoxesEvent>({
+      type: GameEvent.Type.shakeAiBoxes,
+      payload: {
+        ai,
+      },
     });
-
-    if (transform) {
-      const rotationValue = Math.PI / 4;
-
-      // state = setComponent<Animation>({
-      //   state,
-      //   data: {
-      //     name: componentName.animation,
-      //     entity: boxEntity,
-
-      //     isPlaying: true,
-      //     isFinished: false,
-      //     property: {
-      //       path: 'rotation',
-      //       component: componentName.transform,
-      //       entityId: boxEntity,
-      //     },
-      //     keyframes: [
-      //       {
-      //         duration: 300,
-      //         timingFunction: 'Linear',
-      //         value: {
-      //           type: 'vector3D',
-      //           value: [0, 0, 0],
-      //         },
-      //       },
-      //       {
-      //         duration: 600,
-      //         timingFunction: 'Linear',
-      //         value: {
-      //           type: 'vector3D',
-      //           value: [0, 0, 1],
-      //         },
-      //       },
-      //       {
-      //         duration: 300,
-      //         timingFunction: 'Linear',
-      //         value: {
-      //           type: 'vector3D',
-      //           value: [0, 0, -1],
-      //         },
-      //       },
-      //       {
-      //         duration: 0,
-      //         timingFunction: 'Linear',
-      //         value: {
-      //           type: 'vector3D',
-      //           value: [0, 0, 0],
-      //         },
-      //       },
-      //     ],
-      //     currentTime: 0,
-      //     wrapMode: 'once',
-      //     timingMode: 'smooth', // string animation should always works as step
-      //   },
-      // });
-    }
-  });
-
-  // setTimeout(() => {
-  //   emitEvent<GameEvent.ShakeAiBoxesEvent>({
-  //     type: GameEvent.Type.shakeAiBoxes,
-  //     payload: {
-  //       moves: game?.moves || 0,
-  //       ai,
-  //     },
-  //   });
-  // }, shakeAnimationTimeout);
+  }, shakeAnimationTimeout);
 
   return state;
 };

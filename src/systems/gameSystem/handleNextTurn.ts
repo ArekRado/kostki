@@ -12,6 +12,7 @@ import {
   getComponentsByName,
   updateComponent,
 } from '@arekrado/canvas-engine';
+import { getTime } from '@arekrado/canvas-engine/system/time';
 
 const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
   const game = getGame({ state });
@@ -79,6 +80,13 @@ export const startNextTurn = ({ state }: { state: State }) => {
     return state;
   }
   const { gameStarted, boxRotationQueue } = game;
+
+  state = updateComponent<Game, State>({
+    state,
+    name: name.game,
+    entity: gameEntity,
+    update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
+  });
 
   if (gameStarted && boxRotationQueue.length === 0) {
     const nextPlayer = getNextPlayer({ state });

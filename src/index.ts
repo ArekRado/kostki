@@ -143,7 +143,11 @@ if (process.env.NODE_ENV !== 'test') {
   // done event handlers should be moved to separated folders and start with "handle" prefix
   // done need devtools - remove all components by entity because by name may keep some leftovers
   // done replace setComponent by create/update
-  // - when player is not clicking then "shake boxes"
+  // done when player is not clicking then "shake boxes"
+  // done shake should not stop rotation animation 
+  // nope AND smoothly quickly back to roattion 000 when user does action
+  // done AND not shake white boxes 
+  // done AND should wait for 8 seconds of no user events
   // - custom leve settings - add different maps
   // - campaign
   // - change gradiens when user changes color

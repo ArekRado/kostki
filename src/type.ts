@@ -61,7 +61,7 @@ export type Game = Component<{
   version: string;
   page: Page;
   moves: number;
-
+  lastBoxClickTimestamp: number;
   newVersionAvailable: boolean;
   round: number;
   grid: Entity[];
