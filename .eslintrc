@@ -2,17 +2,17 @@
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint",
-    "prettier",
-    // "react-hooks",
+    // "prettier",
+    "react-hooks",
     "react"
   ],
   "extends": [
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended",
-    "prettier",
-    // "plugin:react-hooks/recommended"
+    // "plugin:prettier/recommended",
+    // "prettier",
+    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
   ],
   "parserOptions": {
@@ -21,7 +21,8 @@
     ], // Specify it only for TypeScript files
   },
   "rules": {
-    "prettier/prettier": 2,
+    "@typescript-eslint/no-namespace": 0
+  //   "prettier/prettier": 2,
   },
   "settings": {
     "react": {

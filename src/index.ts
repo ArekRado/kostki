@@ -155,7 +155,7 @@ if (process.env.NODE_ENV !== 'test') {
   // - change gradiens when user changes color
   // - update dependencies
   // done - move ecs to new project package
-  // - better eslint - find a way to throw error when user uses setComponent without assigning returned values to variable
+  // - shit doesnt work - eslint
   // done - babylonjs tree shacking
   // - beautify ui - use tailwind?
   // - pre-create boxes and reuse part of them when starts level

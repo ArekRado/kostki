@@ -55,7 +55,7 @@ export enum Page {
   customLevelSettings = 'customLevelSettings',
 }
 
-export type Logo = {};
+export type Logo = Component<unknown>;
 
 export type Game = Component<{
   version: string;
