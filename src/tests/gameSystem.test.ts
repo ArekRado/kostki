@@ -9,8 +9,6 @@ import { getState } from '../getState'
 import { getDataGrid } from '../systems/aiSystem/getDataGrid'
 import { onClickBox } from '../systems/boxSystem/onClickBox'
 
-const player2 = 'player2'
-
 const basicAI = (entity: Entity): AI => ({
   entity,
   name: name.ai,

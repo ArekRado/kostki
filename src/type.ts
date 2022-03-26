@@ -20,6 +20,10 @@ declare global {
       PUBLIC_URL: string
     }
   }
+
+  interface Window {
+    loadAndMountDevtools: () => void
+  }
 }
 
 export type Breakpoints<Value = number> = [Value, Value, Value]

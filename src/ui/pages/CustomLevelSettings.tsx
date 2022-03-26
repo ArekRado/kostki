@@ -59,11 +59,11 @@ export const CustomLevelSettings: React.FC = () => {
       payload: {},
     })
 
-  const changeMapType = () =>
-    emitEvent<GameEvent.ChangeMapTypeEvent>({
-      type: GameEvent.Type.changeMapType,
-      payload: {},
-    })
+  // const changeMapType = () =>
+  //   emitEvent<GameEvent.ChangeMapTypeEvent>({
+  //     type: GameEvent.Type.changeMapType,
+  //     payload: {},
+  //   })
 
   const startCustomLevel = () =>
     emitEvent<GameEvent.StartCustomLevelEvent>({

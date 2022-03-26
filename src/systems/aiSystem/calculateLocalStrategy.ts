@@ -2,8 +2,8 @@ import { AI } from '../../type'
 import { AIGridPoints } from './../aiSystem/aiGridPoints'
 import { DataGrid, dotStats, EnhancedBox } from '../aiSystem'
 
-export const safeGet = (array: any[][], i: number, j: number) =>
-  array ? (array[j] ? array[j][i] : undefined) : undefined
+export const safeGet = (array: EnhancedBox[][], i: number, j: number) =>
+  array?.[j]?.[i]
 
 export const getAdjactedBoxes = (
   grid3x3: EnhancedBox[][],
@@ -158,8 +158,8 @@ type LocalStrategyDiagonall = (params: {
 }) => number
 export const localStrategyDiagonall: LocalStrategyDiagonall = ({
   grid3x3,
-  preferEmptyBoxes,
-  currentPlayer,
+  // preferEmptyBoxes,
+  // currentPlayer,
   aIGridPoints,
 }) => {
   const currentBox = grid3x3[1][1]

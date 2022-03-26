@@ -30,8 +30,8 @@ const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
   )
 }
 
-type AiLost = (params: { state: State; ai: AI; component: Game }) => State
-const aiLost: AiLost = ({ state, ai, component }) => {
+type AiLost = (params: { state: State; ai: AI }) => State
+const aiLost: AiLost = ({ state, ai }) => {
   state = updateComponent<AI, State>({
     state,
     name: name.ai,
@@ -119,7 +119,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
       if (ai.human) {
         const humanBoxes = sumAiBoxes({ state, ai })
         if (humanBoxes === 0) {
-          state = aiLost({ state, component: game, ai })
+          state = aiLost({ state, ai })
         }
       } else {
         const box = getAiMove({ state, ai })
@@ -139,7 +139,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
           state = pushBoxToRotationQueue({ state, entity: box.entity })
         } else {
           // AI can't move which means it lost
-          state = aiLost({ state, component: game, ai })
+          state = aiLost({ state, ai })
         }
       }
     }

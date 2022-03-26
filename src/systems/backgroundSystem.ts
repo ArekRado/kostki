@@ -1,16 +1,16 @@
 import { State, Background, name } from '../type'
 import {
-  grayGradient,
-  greenGradient,
+  // grayGradient,
+  // greenGradient,
   tealGradient,
-  orangeGradient,
-  yellowGradient,
-  redGradient,
-  pinkGradient,
-  purpleGradient,
-  getSimilarNumber,
+  // orangeGradient,
+  // yellowGradient,
+  // redGradient,
+  // pinkGradient,
+  // purpleGradient,
+  // getSimilarNumber,
 } from '../utils/colors'
-import { playersList } from './gameSystem/handleChangeSettings'
+// import { playersList } from './gameSystem/handleChangeSettings'
 import { create } from './backgroundSystem/create'
 import { resizeBackground } from './backgroundSystem/resizeBackground'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
@@ -55,7 +55,7 @@ export const backgroundSystem = (state: State) =>
       )
 
       if (background && background.material) {
-        ;(background.material as ShaderMaterial).setFloat(
+        (background.material as ShaderMaterial).setFloat(
           'iTime',
           performance.now() / 1000 + component.gradientTime,
         )

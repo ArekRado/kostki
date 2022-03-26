@@ -1,6 +1,5 @@
 import { Box, name, State } from '../../type'
-import { LogoEvent, setLogo } from '../logoSystem'
-import { updateLogoPosition } from './updateLogoPosition'
+import { LogoEvent } from '../logoSystem'
 import { logoGrid } from './logoGrid'
 import { createComponent, emitEvent, setEntity } from '@arekrado/canvas-engine'
 import { setCamera } from '../../wrappers/setCamera'

@@ -15,7 +15,7 @@ export const loadAndMountDevtools = () => {
   })
 }
 
-;(window as any).loadAndMountDevtools = loadAndMountDevtools
+window.loadAndMountDevtools = loadAndMountDevtools
 
 export namespace DevtoolsEvent {
   export enum Type {

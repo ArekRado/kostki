@@ -3,18 +3,12 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
-import { Background, State } from '../../type'
+import { State } from '../../type'
 import { backgroundEntity } from '../backgroundSystem'
 import { playersList } from '../gameSystem/handleChangeSettings'
 import { resizeBackground } from './resizeBackground'
 
-export const create = ({
-  state,
-  component,
-}: {
-  state: State
-  component: Background
-}): State => {
+export const create = ({ state }: { state: State }): State => {
   if (!state.babylonjs.sceneRef) {
     return state
   }

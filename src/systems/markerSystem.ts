@@ -28,7 +28,7 @@ export namespace MarkerEvent {
 
   export type All = AppearAnimationEndEvent
 
-  export type AppearAnimationEndEvent = ECSEvent<Type.appearAnimationEnd, {}>
+  export type AppearAnimationEndEvent = ECSEvent<Type.appearAnimationEnd, null>
 }
 
 const markerGetSet = createGetSetForUniqComponent<Marker, State>({
@@ -69,7 +69,7 @@ export const setMarker = ({
 
     const appearAnimationEnd: MarkerEvent.AppearAnimationEndEvent = {
       type: MarkerEvent.Type.appearAnimationEnd,
-      payload: {},
+      payload: null,
     }
 
     state = createComponent<Animation.AnimationComponent, State>({

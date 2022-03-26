@@ -30,7 +30,7 @@ export const boxBlueprint = ({
   scene,
   name,
   uniqueId,
-  position,
+  // position,
   color,
   state,
   ai,
@@ -41,7 +41,7 @@ export const boxBlueprint = ({
   scene: Scene
   name: string
   uniqueId: number
-  position: [number, number]
+  // position: [number, number]
   color: Color
   state: State
   ai: AI | undefined
@@ -52,7 +52,6 @@ export const boxBlueprint = ({
   const size = 1 / scaleFactor
   const boxMeshTransformNode = new TransformNode(`box ${name}`, scene)
   boxMeshTransformNode.uniqueId = uniqueId
-
   ;[
     [new Vector3(0, 0, -size / 2), new Vector3(0, 0, 0)], // front
     [new Vector3(-size / 2, 0, 0), new Vector3(0, Math.PI / 2, 0)], //
@@ -61,7 +60,7 @@ export const boxBlueprint = ({
     [new Vector3(0, size / 2, 0), new Vector3(Math.PI / 2, 0, 0)], //
     [new Vector3(0, -size / 2, 0), new Vector3(-Math.PI / 2, 0, 0)], //
   ].forEach(([position, rotation], i) => {
-    const plane = MeshBuilder.CreatePlane('plane' + i, { size })
+    const plane = MeshBuilder.CreatePlane('plane' + i.toString(), { size })
 
     plane.parent = boxMeshTransformNode
     plane.material = new StandardMaterial('mat', scene)

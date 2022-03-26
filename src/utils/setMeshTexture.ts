@@ -19,7 +19,7 @@ export const setMeshTexture: SetMeshTexture = ({
   color,
 }) => {
   if (color) {
-    ;(mesh.material as StandardMaterial).diffuseColor = new Color3(
+    (mesh.material as StandardMaterial).diffuseColor = new Color3(
       color[0],
       color[1],
       color[2],

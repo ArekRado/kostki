@@ -44,10 +44,10 @@ export namespace GameEvent {
     | PlayAgainCustomLevelEvent
     | ShakeAiBoxesEvent
 
-  export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>
+  export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, null>
   export type PlayAgainCustomLevelEvent = ECSEvent<
     Type.playAgainCustomLevel,
-    {}
+    null
   >
   export type ShakeAiBoxesEvent = ECSEvent<Type.shakeAiBoxes, { ai: AI }>
   export type PlayerClickEvent = ECSEvent<
@@ -56,17 +56,17 @@ export namespace GameEvent {
   >
   export type CleanSceneEvent = ECSEvent<Type.cleanScene, { newPage: Page }>
 
-  export type ChangePlayersEvent = ECSEvent<Type.changePlayers, {}>
-  export type ChangeDifficultyEvent = ECSEvent<Type.changeDifficulty, {}>
-  export type ChangeQuickStartEvent = ECSEvent<Type.changeQuickStart, {}>
+  export type ChangePlayersEvent = ECSEvent<Type.changePlayers, null>
+  export type ChangeDifficultyEvent = ECSEvent<Type.changeDifficulty, null>
+  export type ChangeQuickStartEvent = ECSEvent<Type.changeQuickStart, null>
   export type ChangeColorBlindModeEvent = ECSEvent<
     Type.changeColorBlindMode,
-    {}
+    null
   >
-  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>
+  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, null>
 
-  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, {}>
-  export type ReloadEvent = ECSEvent<Type.reload, {}>
+  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, null>
+  export type ReloadEvent = ECSEvent<Type.reload, null>
 }
 
 const gameGetSet = createGetSetForUniqComponent<Game, State>({

@@ -17,7 +17,10 @@ export namespace LogoEvent {
 
   export type All = RotateRandomLogoBoxEvent
 
-  export type RotateRandomLogoBoxEvent = ECSEvent<Type.rotateRandomLogoBox, {}>
+  export type RotateRandomLogoBoxEvent = ECSEvent<
+    Type.rotateRandomLogoBox,
+    null
+  >
 }
 
 const logoGetSet = createGetSetForUniqComponent<Logo, State>({

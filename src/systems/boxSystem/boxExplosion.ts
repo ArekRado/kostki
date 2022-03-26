@@ -19,7 +19,7 @@ export const boxExplosion: BoxExplosion = ({ state, ai, box }) => {
     safeGet(dataGrid, y + 1, x),
   ]
     .filter((box) => box !== undefined)
-    .reduce((acc, box, i) => {
+    .reduce((acc, box) => {
       acc = onClickBox({
         ai,
         box,
