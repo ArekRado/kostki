@@ -1,14 +1,14 @@
-import { Entity } from '@arekrado/canvas-engine';
-import { DataGrid, EnhancedBox } from '../aiSystem';
-import { hardAIGridPoints } from './aiGridPoints';
-import { getAdjactedBoxes, getGrid3x3 } from './calculateLocalStrategy';
+import { Entity } from '@arekrado/canvas-engine'
+import { DataGrid, EnhancedBox } from '../aiSystem'
+import { hardAIGridPoints } from './aiGridPoints'
+import { getAdjactedBoxes, getGrid3x3 } from './calculateLocalStrategy'
 
 type CheckAdjactedBox = (params: {
-  currentPlayer: Entity;
-  adjactedBox: EnhancedBox;
-  dataGrid: DataGrid;
-  position: [number, number];
-}) => boolean;
+  currentPlayer: Entity
+  adjactedBox: EnhancedBox
+  dataGrid: DataGrid
+  position: [number, number]
+}) => boolean
 const checkAdjactedBox: CheckAdjactedBox = ({
   currentPlayer,
   adjactedBox,
@@ -17,9 +17,9 @@ const checkAdjactedBox: CheckAdjactedBox = ({
 }) => {
   // AND enemy box is not adjacted to any non-player boxes (undefined is ok) which have more dots than enemy box (equal is ok)
 
-  const grid3x3 = getGrid3x3(dataGrid, [i, j]);
+  const grid3x3 = getGrid3x3(dataGrid, [i, j])
   // adjacted boxes of adjacted box
-  const adjactedBoxes = getAdjactedBoxes(grid3x3);
+  const adjactedBoxes = getAdjactedBoxes(grid3x3)
 
   const adjactedAdjactedBoxesAreNotProtectingBox = adjactedBoxes.every(
     (box) => {
@@ -29,22 +29,22 @@ const checkAdjactedBox: CheckAdjactedBox = ({
         box.player === currentPlayer ||
         box.player === undefined
       ) {
-        return true;
+        return true
       } else if (box.dots <= adjactedBox.dots) {
-        return true;
+        return true
       }
 
-      return false;
-    }
-  );
+      return false
+    },
+  )
 
-  return adjactedAdjactedBoxesAreNotProtectingBox;
-};
+  return adjactedAdjactedBoxesAreNotProtectingBox
+}
 
 type AdvancedAttackAdjacted = (params: {
-  currentPlayer: Entity;
-  dataGrid: DataGrid;
-}) => DataGrid;
+  currentPlayer: Entity
+  dataGrid: DataGrid
+}) => DataGrid
 /**
  * Tries to determine if it's worth to capture adjacted boxes:
  *
@@ -68,30 +68,30 @@ export const advancedAttackAdjacted: AdvancedAttackAdjacted = ({
   return dataGrid.reduce((acc1, row, i) => {
     acc1[i] = row.reduce((acc2, box, j) => {
       if (box.player !== currentPlayer) {
-        return acc2;
+        return acc2
       }
 
-      const grid3x3 = getGrid3x3(dataGrid, [i, j]);
-      const adjactedBoxes = getAdjactedBoxes(grid3x3);
+      const grid3x3 = getGrid3x3(dataGrid, [i, j])
+      const adjactedBoxes = getAdjactedBoxes(grid3x3)
 
       const isAdjactedToAny6DotsBox = adjactedBoxes.some(
-        (box) => box?.dots === 6
-      );
+        (box) => box?.dots === 6,
+      )
 
       if (isAdjactedToAny6DotsBox) {
-        return acc2;
+        return acc2
       }
 
       const points = adjactedBoxes.reduce((acc, adjactedBox) => {
         if (!adjactedBox) {
-          return acc;
+          return acc
         }
 
         const isAdjactedToEnemyBox =
           adjactedBox.player !== undefined &&
-          adjactedBox.player !== currentPlayer;
+          adjactedBox.player !== currentPlayer
 
-        const hasEqualOrMoreDotsThanEnemyBox = box.dots >= adjactedBox.dots;
+        const hasEqualOrMoreDotsThanEnemyBox = box.dots >= adjactedBox.dots
 
         if (isAdjactedToEnemyBox && hasEqualOrMoreDotsThanEnemyBox) {
           const isWorhtToAttackThisBox = checkAdjactedBox({
@@ -99,18 +99,18 @@ export const advancedAttackAdjacted: AdvancedAttackAdjacted = ({
             adjactedBox,
             dataGrid,
             position: adjactedBox.gridPosition,
-          });
+          })
 
           if (isWorhtToAttackThisBox) {
-            const turnsToCaptureBox = 6 / box.dots;
+            const turnsToCaptureBox = 6 / box.dots
             acc +=
               (adjactedBox.dots * hardAIGridPoints.advancedAttack) /
-              turnsToCaptureBox;
+              turnsToCaptureBox
           }
         }
 
-        return acc;
-      }, 0);
+        return acc
+      }, 0)
 
       // // Check if all branches are not protected
       // const branchIsProtected = points.some((point) => point === 0);
@@ -118,9 +118,9 @@ export const advancedAttackAdjacted: AdvancedAttackAdjacted = ({
       //   ? 0
       //   : points.reduce((acc, point) => acc + point, 0);
 
-      acc2[j] = { ...box, points: box.points + points };
-      return acc2;
-    }, row);
-    return acc1;
-  }, dataGrid);
-};
+      acc2[j] = { ...box, points: box.points + points }
+      return acc2
+    }, row)
+    return acc1
+  }, dataGrid)
+}

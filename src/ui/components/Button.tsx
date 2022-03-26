@@ -1,4 +1,4 @@
-import { styled } from '../styled';
+import { styled } from '../styled'
 
 export const Button = styled('button', {
   border: '5px solid black',
@@ -19,4 +19,4 @@ export const Button = styled('button', {
   '&:focus': {
     transform: 'scale(0.98)',
   },
-});
+})

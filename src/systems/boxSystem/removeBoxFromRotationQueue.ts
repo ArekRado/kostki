@@ -1,11 +1,11 @@
-import { Entity, updateComponent } from '@arekrado/canvas-engine';
-import { Game, name, State } from '../../type';
-import { gameEntity } from '../gameSystem';
+import { Entity, updateComponent } from '@arekrado/canvas-engine'
+import { Game, name, State } from '../../type'
+import { gameEntity } from '../gameSystem'
 
 type RemoveBoxFromRotationQueue = (params: {
-  entity: Entity;
-  state: State;
-}) => State;
+  entity: Entity
+  state: State
+}) => State
 export const removeBoxFromRotationQueue: RemoveBoxFromRotationQueue = ({
   entity,
   state,
@@ -16,8 +16,8 @@ export const removeBoxFromRotationQueue: RemoveBoxFromRotationQueue = ({
     entity: gameEntity,
     update: (game) => ({
       boxRotationQueue: game.boxRotationQueue.filter(
-        (boxEntity) => boxEntity !== entity
+        (boxEntity) => boxEntity !== entity,
       ),
     }),
-  });
-};
+  })
+}

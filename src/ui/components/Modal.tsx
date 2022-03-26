@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { styled } from '../styled';
-import { CSS } from '@stitches/react';
+import React, { FC } from 'react'
+import { styled } from '../styled'
+import { CSS } from '@stitches/react'
 
 export const ModalBackdrop = styled('div', {
   position: 'absolute',
@@ -12,19 +12,19 @@ export const ModalBackdrop = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  
+
   pointerEvents: 'auto',
-});
+})
 
 export const ModalBody = styled('div', {
   border: '5px solid black',
   background: 'white',
-});
+})
 
 export const Modal: FC<{ css: CSS }> = ({ children, css }) => {
   return (
     <ModalBackdrop>
       <ModalBody css={css}>{children}</ModalBody>
     </ModalBackdrop>
-  );
-};
+  )
+}

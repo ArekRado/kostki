@@ -1,16 +1,16 @@
-import { AI, Box, State } from "../../type";
-import { safeGet } from "../aiSystem/calculateLocalStrategy";
-import { getDataGrid } from "../aiSystem/getDataGrid";
-import { onClickBox } from "./onClickBox";
-import { pushBoxToRotationQueue } from "./pushBoxToRotationQueue";
+import { AI, Box, State } from '../../type'
+import { safeGet } from '../aiSystem/calculateLocalStrategy'
+import { getDataGrid } from '../aiSystem/getDataGrid'
+import { onClickBox } from './onClickBox'
+import { pushBoxToRotationQueue } from './pushBoxToRotationQueue'
 
-type BoxExplosion = (params: { state: State; box: Box; ai: AI }) => State;
+type BoxExplosion = (params: { state: State; box: Box; ai: AI }) => State
 export const boxExplosion: BoxExplosion = ({ state, ai, box }) => {
   const {
     gridPosition: [x, y],
-  } = box;
+  } = box
 
-  const dataGrid = getDataGrid({ state });
+  const dataGrid = getDataGrid({ state })
 
   state = [
     safeGet(dataGrid, y, x - 1),
@@ -24,10 +24,10 @@ export const boxExplosion: BoxExplosion = ({ state, ai, box }) => {
         ai,
         box,
         state: acc,
-      });
+      })
 
-      return pushBoxToRotationQueue({ entity: box.entity, state: acc });
-    }, state);
+      return pushBoxToRotationQueue({ entity: box.entity, state: acc })
+    }, state)
 
-  return state;
-};
+  return state
+}

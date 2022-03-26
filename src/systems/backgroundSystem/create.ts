@@ -1,22 +1,22 @@
-import { Effect } from '@babylonjs/core/Materials/effect';
-import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
-import { Color3 } from '@babylonjs/core/Maths/math.color';
-import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { Background, State } from '../../type';
-import { backgroundEntity } from '../backgroundSystem';
-import { playersList } from '../gameSystem/handleChangeSettings';
-import { resizeBackground } from './resizeBackground';
+import { Effect } from '@babylonjs/core/Materials/effect'
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
+import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
+import { Background, State } from '../../type'
+import { backgroundEntity } from '../backgroundSystem'
+import { playersList } from '../gameSystem/handleChangeSettings'
+import { resizeBackground } from './resizeBackground'
 
 export const create = ({
   state,
   component,
 }: {
-  state: State;
-  component: Background;
+  state: State
+  component: Background
 }): State => {
   if (!state.babylonjs.sceneRef) {
-    return state;
+    return state
   }
   Effect.ShadersStore['customVertexShader'] = ` 
     precision highp float;
@@ -36,7 +36,7 @@ export const create = ({
         gl_Position = worldViewProjection * vec4(position, 1);
         vUV = uv;
     }
-  `;
+  `
 
   Effect.ShadersStore['customFragmentShader'] = `
     precision highp float;
@@ -100,7 +100,7 @@ export const create = ({
   
         gl_FragColor = vec4(color,1.0);
     }
-  `;
+  `
 
   const shaderMaterial = new ShaderMaterial(
     'shader',
@@ -119,31 +119,31 @@ export const create = ({
         'colors',
         'gridColors',
       ],
-    }
-  );
+    },
+  )
 
-  shaderMaterial.setFloat('time', performance.now());
+  shaderMaterial.setFloat('time', performance.now())
   shaderMaterial.setVector3(
     'resolution',
-    new Vector3(window.innerWidth, window.innerHeight, 0)
-  );
+    new Vector3(window.innerWidth, window.innerHeight, 0),
+  )
 
-  shaderMaterial.backFaceCulling = false;
+  shaderMaterial.backFaceCulling = false
 
   const background = MeshBuilder.CreatePlane(
     backgroundEntity,
     { size: 1 },
-    state.babylonjs.sceneRef
-  );
-  background.uniqueId = parseFloat(backgroundEntity);
-  background.material = shaderMaterial;
+    state.babylonjs.sceneRef,
+  )
+  background.uniqueId = parseFloat(backgroundEntity)
+  background.material = shaderMaterial
 
-  const colors = playersList();
+  const colors = playersList()
 
-  (background.material as ShaderMaterial).setColor3Array(
+  ;(background.material as ShaderMaterial).setColor3Array(
     'colors',
-    colors.map(({ color: [r, g, b] }) => new Color3(r, g, b))
-  );
+    colors.map(({ color: [r, g, b] }) => new Color3(r, g, b)),
+  )
 
-  return resizeBackground(state);
-};
+  return resizeBackground(state)
+}

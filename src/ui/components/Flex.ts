@@ -1,3 +1,3 @@
-import { styled } from '../styled';
+import { styled } from '../styled'
 
-export const Flex = styled('div', { display: 'flex' });
+export const Flex = styled('div', { display: 'flex' })

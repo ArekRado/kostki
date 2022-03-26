@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const Cross = () => (
   <svg
@@ -16,4 +16,4 @@ export const Cross = () => (
       clipRule="evenodd"
     ></path>
   </svg>
-);
+)

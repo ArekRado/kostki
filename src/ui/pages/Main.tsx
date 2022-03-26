@@ -1,16 +1,16 @@
-import React from 'react';
-import { Page } from '../../type';
-import { GameEvent, getGame } from '../../systems/gameSystem';
-import { Button } from '../components/Button';
-import { Flex } from '../components/Flex';
-import { PageContainer } from '../components/PageContainer';
-import { Typography } from '../components/Typography';
-import { useGameState } from '../hooks/useGameState';
-import { emitEvent } from '@arekrado/canvas-engine';
+import React from 'react'
+import { Page } from '../../type'
+import { GameEvent, getGame } from '../../systems/gameSystem'
+import { Button } from '../components/Button'
+import { Flex } from '../components/Flex'
+import { PageContainer } from '../components/PageContainer'
+import { Typography } from '../components/Typography'
+import { useGameState } from '../hooks/useGameState'
+import { emitEvent } from '@arekrado/canvas-engine'
 
 export const Main: React.FC = () => {
-  const state = useGameState();
-  const game = state && getGame({ state });
+  const state = useGameState()
+  const game = state && getGame({ state })
 
   return (
     <PageContainer
@@ -37,7 +37,7 @@ export const Main: React.FC = () => {
               payload: {
                 newPage: Page.customLevelSettings,
               },
-            });
+            })
           }}
         >
           Start
@@ -50,7 +50,7 @@ export const Main: React.FC = () => {
               payload: {
                 newPage: Page.customLevelSettings,
               },
-            });
+            })
           }}
         >
           Custom Level
@@ -70,5 +70,5 @@ export const Main: React.FC = () => {
         {game?.version}
       </Typography>
     </PageContainer>
-  );
-};
+  )
+}

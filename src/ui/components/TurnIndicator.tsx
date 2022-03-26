@@ -1,16 +1,16 @@
-import React from 'react';
-import { Color } from '../../type';
-import { Typography } from '../components/Typography';
-import { Flex } from './Flex';
+import React from 'react'
+import { Color } from '../../type'
+import { Typography } from '../components/Typography'
+import { Flex } from './Flex'
 
 export type TurnIndicatorItem = {
-  entity: string;
-  color: Color;
-  human: boolean;
-  hasCurrentTurn: boolean;
-  name: string;
-  active: boolean;
-};
+  entity: string
+  color: Color
+  human: boolean
+  hasCurrentTurn: boolean
+  name: string
+  active: boolean
+}
 
 export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
   ai,
@@ -61,5 +61,5 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
         </Flex>
       ))}
     </Flex>
-  );
-};
+  )
+}

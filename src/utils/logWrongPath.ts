@@ -1,6 +1,6 @@
-import { State } from '../type';
+import { State } from '../type'
 
 export const logWrongPath = (state: State): State => {
-  console.trace('Wrong path', state);
-  return state;
-};
+  console.trace('Wrong path', state)
+  return state
+}

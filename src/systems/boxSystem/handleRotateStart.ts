@@ -1,7 +1,7 @@
-import { EventHandler } from '@arekrado/canvas-engine';
-import { State } from '../../type';
-import { BoxEvent } from '../boxSystem';
-import { createRotationBoxAnimation } from './createRotationBoxAnimation';
+import { EventHandler } from '@arekrado/canvas-engine'
+import { State } from '../../type'
+import { BoxEvent } from '../boxSystem'
+import { createRotationBoxAnimation } from './createRotationBoxAnimation'
 
 export const handleRotateStart: EventHandler<BoxEvent.Rotate, State> = ({
   state,
@@ -15,8 +15,8 @@ export const handleRotateStart: EventHandler<BoxEvent.Rotate, State> = ({
       color: event.payload.color,
       direction: event.payload.direction,
       nextTurn: false,
-    });
+    })
   }
 
-  return state;
-};
+  return state
+}

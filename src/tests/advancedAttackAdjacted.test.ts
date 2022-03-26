@@ -1,11 +1,11 @@
-import 'regenerator-runtime/runtime';
-import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint';
-import { AI, name, State } from '../type';
-import { AIDifficulty } from '../systems/aiSystem';
-import { getAiMove } from '../systems/aiSystem/getAiMove';
-import { getState } from '../getState';
-import { expectOneOf } from './aiSystem.test';
-import { createComponent } from '@arekrado/canvas-engine';
+import 'regenerator-runtime/runtime'
+import { BasicBox, gridBlueprint } from '../blueprints/gridBlueprint'
+import { AI, name, State } from '../type'
+import { AIDifficulty } from '../systems/aiSystem'
+import { getAiMove } from '../systems/aiSystem/getAiMove'
+import { getState } from '../getState'
+import { expectOneOf } from './aiSystem.test'
+import { createComponent } from '@arekrado/canvas-engine'
 
 const basicAi: AI = {
   entity: 'basicAi',
@@ -15,7 +15,7 @@ const basicAi: AI = {
   color: [0, 0, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,
-};
+}
 
 const basicAi2: AI = {
   entity: 'basicAi2',
@@ -25,31 +25,31 @@ const basicAi2: AI = {
   color: [0, 1, 1],
   textureSet: ['', '', '', '', '', '', ''],
   active: true,
-};
+}
 
 const prepareGrid = (dataGrid: BasicBox[][]) => {
   let state = gridBlueprint({
     dataGrid,
     state: getState({}),
-  });
+  })
 
   state = createComponent<AI, State>({
     state,
     data: basicAi,
-  });
+  })
 
   state = createComponent<AI, State>({
     state,
     data: basicAi2,
-  });
+  })
 
   const box = getAiMove({
     state,
     ai: basicAi,
-  });
+  })
 
-  return box?.gridPosition || [];
-};
+  return box?.gridPosition || []
+}
 
 describe('advancedAttackAdjacted', () => {
   it('ai1 should click on a proper box', () => {
@@ -79,10 +79,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 5, player: basicAi2.entity },
         { dots: 0, player: undefined },
       ],
-    ]);
+    ])
 
-    expectOneOf([[1, 1]], box);
-  });
+    expectOneOf([[1, 1]], box)
+  })
 
   it.skip('ai1 should click on a proper box', () => {
     /*
@@ -114,10 +114,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 1, player: basicAi2.entity },
         { dots: 0, player: undefined },
       ],
-    ]);
+    ])
 
-    expectOneOf([[1, 1]], box);
-  });
+    expectOneOf([[1, 1]], box)
+  })
 
   it('ai1 should click on a proper box', () => {
     /*
@@ -146,10 +146,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 4, player: undefined },
         { dots: 6, player: basicAi.entity },
       ],
-    ]);
+    ])
 
-    expectOneOf([[0, 2]], box);
-  });
+    expectOneOf([[0, 2]], box)
+  })
 
   it('ai1 should click on a proper box', () => {
     /*
@@ -178,10 +178,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 5, player: basicAi2.entity },
         { dots: 6, player: basicAi.entity },
       ],
-    ]);
+    ])
 
-    expectOneOf([[0, 2]], box);
-  });
+    expectOneOf([[0, 2]], box)
+  })
 
   it('ai1 should click on a proper box', () => {
     /*
@@ -210,10 +210,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 5, player: basicAi2.entity },
         { dots: 6, player: basicAi.entity },
       ],
-    ]);
+    ])
 
-    expectOneOf([[2, 2]], box);
-  });
+    expectOneOf([[2, 2]], box)
+  })
 
   it('ai1 should click on a proper box', () => {
     /*
@@ -252,10 +252,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 1, player: undefined },
         { dots: 1, player: undefined },
       ],
-    ]);
+    ])
 
-    expectOneOf([[2, 2]], box);
-  });
+    expectOneOf([[2, 2]], box)
+  })
 
   it('ai1 should click on a proper box', () => {
     /*
@@ -294,10 +294,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 6, player: basicAi.entity },
         { dots: 0, player: undefined },
       ],
-    ]);
+    ])
 
-    expectOneOf([[3, 2]], box);
-  });
+    expectOneOf([[3, 2]], box)
+  })
 
   it.skip('ai1 should click on a proper box', () => {
     /*
@@ -331,10 +331,10 @@ describe('advancedAttackAdjacted', () => {
         { dots: 3, player: basicAi2.entity },
         { dots: 4, player: basicAi.entity },
       ],
-    ]);
+    ])
 
-    expectOneOf([[1, 2]], box);
-  });
+    expectOneOf([[1, 2]], box)
+  })
 
   it.skip('ai1 should click on a proper box', () => {
     /*
@@ -367,8 +367,8 @@ describe('advancedAttackAdjacted', () => {
         { dots: 0, player: undefined },
         { dots: 0, player: undefined },
       ],
-    ]);
+    ])
 
-    expectOneOf([[1, 3]], box);
-  });
-});
+    expectOneOf([[1, 3]], box)
+  })
+})

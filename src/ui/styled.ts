@@ -1,4 +1,4 @@
-import { createStitches } from '@stitches/react';
+import { createStitches } from '@stitches/react'
 
 export const { styled, css } = createStitches({
   theme: {
@@ -17,11 +17,11 @@ export const { styled, css } = createStitches({
     radii: {},
     shadows: {},
     zIndices: {
-      'modal': 1,
+      modal: 1,
     },
     transitions: {},
   },
   media: {
     bp1: '(min-width: 1024px)',
   },
-});
+})

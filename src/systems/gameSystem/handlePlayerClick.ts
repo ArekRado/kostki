@@ -1,36 +1,36 @@
-import { EventHandler, getComponent } from '@arekrado/canvas-engine';
-import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { AI, Box, name, State } from '../../type';
-import { onClickBox } from '../boxSystem/onClickBox';
-import { GameEvent, getGame } from '../gameSystem';
-import { setMarker } from '../markerSystem';
+import { EventHandler, getComponent } from '@arekrado/canvas-engine'
+import { boxWithGap } from '../../blueprints/gridBlueprint'
+import { AI, Box, name, State } from '../../type'
+import { onClickBox } from '../boxSystem/onClickBox'
+import { GameEvent, getGame } from '../gameSystem'
+import { setMarker } from '../markerSystem'
 
 export const handlePlayerClick: EventHandler<
   GameEvent.PlayerClickEvent,
   State
 > = ({ state, event }) => {
-  const game = getGame({ state });
+  const game = getGame({ state })
   if (!game) {
-    return state;
+    return state
   }
 
-  const { currentPlayer, gameStarted, boxRotationQueue } = game;
+  const { currentPlayer, gameStarted, boxRotationQueue } = game
 
   const box = getComponent<Box, State>({
     state,
     name: name.box,
     entity: event.payload.boxEntity,
-  });
+  })
 
   const canClickOnBox =
-    box?.player === undefined || box?.player === currentPlayer;
+    box?.player === undefined || box?.player === currentPlayer
 
   if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
     const ai = getComponent<AI, State>({
       name: name.ai,
       state,
       entity: currentPlayer,
-    });
+    })
 
     if (box && ai?.human) {
       state = setMarker({
@@ -42,10 +42,10 @@ export const handlePlayerClick: EventHandler<
             box.gridPosition[1] * boxWithGap,
           ],
         },
-      });
-      state = onClickBox({ box, state, ai });
+      })
+      state = onClickBox({ box, state, ai })
     }
   }
 
-  return state;
-};
+  return state
+}

@@ -1,20 +1,20 @@
-import { AI, Box, Game, State, Marker, Page, name } from '../../type';
+import { AI, Box, Game, State, Marker, Page, name } from '../../type'
 import {
   gameEntity,
   GameEvent,
   getGame,
   setGame,
   shakeAnimationTimeout,
-} from '../gameSystem';
-import { generateId } from '../../utils/generateId';
-import { aiBlueprint } from '../../blueprints/aiBlueprint';
-import { getGridDimensions } from '../../blueprints/gridBlueprint';
-import { getNextPlayer } from './getNextPlayer';
-import { getAiMove } from '../aiSystem/getAiMove';
-import { getNextDots, onClickBox } from '../boxSystem/onClickBox';
-import { markerEntity } from '../markerSystem';
-import { eventBusDispatch } from '../../utils/eventBus';
-import { playLevelStartAnimation } from './playLevelStartAnimation';
+} from '../gameSystem'
+import { generateId } from '../../utils/generateId'
+import { aiBlueprint } from '../../blueprints/aiBlueprint'
+import { getGridDimensions } from '../../blueprints/gridBlueprint'
+import { getNextPlayer } from './getNextPlayer'
+import { getAiMove } from '../aiSystem/getAiMove'
+import { getNextDots, onClickBox } from '../boxSystem/onClickBox'
+import { markerEntity } from '../markerSystem'
+import { eventBusDispatch } from '../../utils/eventBus'
+import { playLevelStartAnimation } from './playLevelStartAnimation'
 import {
   createComponent,
   emitEvent,
@@ -22,17 +22,17 @@ import {
   getComponent,
   setEntity,
   updateComponent,
-} from '@arekrado/canvas-engine';
-import { setCamera } from '../../wrappers/setCamera';
-import { getTime } from '@arekrado/canvas-engine/system/time';
+} from '@arekrado/canvas-engine'
+import { setCamera } from '../../wrappers/setCamera'
+import { getTime } from '@arekrado/canvas-engine/system/time'
 
-type setLevelFromSettings = (params: { state: State; game: Game }) => State;
+type setLevelFromSettings = (params: { state: State; game: Game }) => State
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
   state = Array.from({ length: 8 }).reduce(
     (acc: State, _, x) =>
       Array.from({ length: 8 }).reduce((acc2: State, _, y) => {
-        const entity = generateId().toString();
-        acc2 = setEntity({ state: acc2, entity });
+        const entity = generateId().toString()
+        acc2 = setEntity({ state: acc2, entity })
         acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
@@ -43,12 +43,12 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
             gridPosition: [y, x],
             player: undefined,
           },
-        });
+        })
 
-        const game = getGame({ state: acc2 });
+        const game = getGame({ state: acc2 })
 
         if (!game) {
-          return acc2;
+          return acc2
         }
 
         return setGame({
@@ -57,10 +57,10 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
             ...game,
             grid: [...game.grid, entity],
           },
-        });
+        })
       }, acc),
-    state
-  );
+    state,
+  )
 
   state = aiBlueprint({
     state,
@@ -68,9 +68,9 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
       ...ai,
       level: game.customLevelSettings.difficulty,
     })),
-  });
+  })
 
-  const { center, cameraDistance } = getGridDimensions({ state });
+  const { center, cameraDistance } = getGridDimensions({ state })
 
   state = setCamera({
     state,
@@ -78,41 +78,41 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
       position: [center[0], center[1]],
       distance: cameraDistance,
     },
-  }) ;
+  })
 
-  return state;
-};
+  return state
+}
 
-type RunQuickStart = (params: { state: State }) => State;
+type RunQuickStart = (params: { state: State }) => State
 const runQuickStart: RunQuickStart = ({ state }) => {
-  const game = getGame({ state });
-  const gridLength = game?.grid.length || 1;
-  const playersLength = game?.customLevelSettings.players.length || 1;
+  const game = getGame({ state })
+  const gridLength = game?.grid.length || 1
+  const playersLength = game?.customLevelSettings.players.length || 1
   // Run same amount of moves as boxes in a grid
-  const movesAmout = gridLength - (gridLength % playersLength);
+  const movesAmout = gridLength - (gridLength % playersLength)
 
   const newState = Array.from({ length: movesAmout * 2 }).reduce(
     (acc: State) => {
-      const game = getGame({ state: acc });
+      const game = getGame({ state: acc })
 
       const currentAi = getComponent<AI>({
         state: acc,
         name: name.ai,
         entity: game?.currentPlayer || '',
-      });
+      })
 
       if (!game || !currentAi) {
-        return acc;
+        return acc
       }
 
       const box = getAiMove({
         state: acc,
         ai: currentAi,
         preferEmptyBoxes: true,
-      });
+      })
 
       if (!box) {
-        return acc;
+        return acc
       }
 
       acc = updateComponent<Box, State>({
@@ -123,7 +123,7 @@ const runQuickStart: RunQuickStart = ({ state }) => {
           player: currentAi.entity,
           dots: getNextDots(box.dots),
         }),
-      });
+      })
 
       acc = updateComponent<Game, State>({
         state: acc,
@@ -132,41 +132,41 @@ const runQuickStart: RunQuickStart = ({ state }) => {
         update: () => ({
           currentPlayer: getNextPlayer({ state: acc })?.entity || '',
         }),
-      });
+      })
 
-      return acc;
+      return acc
     },
-    state
-  );
+    state,
+  )
 
-  return newState || state;
-};
+  return newState || state
+}
 
 export const handleStartCustomLevel: EventHandler<
   GameEvent.StartCustomLevelEvent,
   State
 > = ({ state }) => {
-  const component = getGame({ state });
+  const component = getGame({ state })
   if (!component) {
-    return state;
+    return state
   }
 
-  state = setLevelFromSettings({ state, game: component });
+  state = setLevelFromSettings({ state, game: component })
 
   state = setGame({
     state,
     data: {
       currentPlayer: getNextPlayer({ state })?.entity,
     },
-  }) ;
+  })
 
-  const game = getGame({ state });
+  const game = getGame({ state })
 
   if (game?.customLevelSettings.quickStart) {
-    state = runQuickStart({ state });
+    state = runQuickStart({ state })
   }
 
-  playLevelStartAnimation({ state });
+  playLevelStartAnimation({ state })
 
   state = setGame({
     state,
@@ -174,23 +174,23 @@ export const handleStartCustomLevel: EventHandler<
       gameStarted: true,
       page: Page.customLevel,
     },
-  }) ;
+  })
 
   const currentAi = getComponent<AI>({
     state,
     name: name.ai,
     entity: getGame({ state })?.currentPlayer || '',
-  });
+  })
 
   if (currentAi && !currentAi.human) {
-    const box = getAiMove({ state, ai: currentAi });
+    const box = getAiMove({ state, ai: currentAi })
 
     if (box) {
-      state = onClickBox({ box, state, ai: currentAi });
+      state = onClickBox({ box, state, ai: currentAi })
     }
   }
 
-  state = setEntity({ state, entity: markerEntity });
+  state = setEntity({ state, entity: markerEntity })
   state = createComponent<Marker, State>({
     state,
     data: {
@@ -199,9 +199,9 @@ export const handleStartCustomLevel: EventHandler<
       color: [1, 1, 1],
       position: [0, 0],
     },
-  });
+  })
 
-  eventBusDispatch('setUIState', state);
+  eventBusDispatch('setUIState', state)
 
   if (currentAi) {
     setTimeout(() => {
@@ -210,8 +210,8 @@ export const handleStartCustomLevel: EventHandler<
         payload: {
           ai: currentAi,
         },
-      });
-    }, shakeAnimationTimeout);
+      })
+    }, shakeAnimationTimeout)
   }
 
   state = updateComponent<Game, State>({
@@ -219,7 +219,7 @@ export const handleStartCustomLevel: EventHandler<
     name: name.game,
     entity: gameEntity,
     update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
-  });
+  })
 
-  return state;
-};
+  return state
+}

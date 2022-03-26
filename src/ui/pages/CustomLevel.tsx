@@ -1,18 +1,18 @@
-import React, { FC, useState } from 'react';
-import { AI, Box, Game, name, Page, State } from '../../type';
-import { GameEvent, getGame } from '../../systems/gameSystem';
-import { Button } from '../components/Button';
-import { Flex } from '../components/Flex';
-import { Burger } from '../components/icons/Burger';
-import { Modal } from '../components/Modal';
-import { PageContainer } from '../components/PageContainer';
-import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator';
-import { Typography } from '../components/Typography';
-import { useGameState } from '../hooks/useGameState';
-import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine';
+import React, { FC, useState } from 'react'
+import { AI, Box, Game, name, Page, State } from '../../type'
+import { GameEvent, getGame } from '../../systems/gameSystem'
+import { Button } from '../components/Button'
+import { Flex } from '../components/Flex'
+import { Burger } from '../components/icons/Burger'
+import { Modal } from '../components/Modal'
+import { PageContainer } from '../components/PageContainer'
+import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator'
+import { Typography } from '../components/Typography'
+import { useGameState } from '../hooks/useGameState'
+import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine'
 
 const getAiList = (state: State): TurnIndicatorItem[] => {
-  const game = getGame({ state });
+  const game = getGame({ state })
 
   const aiList = game?.playersQueue
     .map((entity) =>
@@ -20,9 +20,9 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
         state,
         name: name.ai,
         entity,
-      })
+      }),
     )
-    .filter((ai) => !!ai) as Component<AI>[];
+    .filter((ai) => !!ai) as Component<AI>[]
 
   return aiList.map((ai) => ({
     entity: ai.entity,
@@ -31,8 +31,8 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
     human: ai.human,
     hasCurrentTurn: game?.currentPlayer === ai.entity,
     name: ai.human ? 'Player' : 'Computer',
-  }));
-};
+  }))
+}
 
 const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
   onClose,
@@ -54,7 +54,7 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
         onClick={() => {
-          onClose(false);
+          onClose(false)
         }}
       >
         No
@@ -64,14 +64,14 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
             payload: { newPage: Page.mainMenu },
-          });
+          })
         }}
       >
         Yes
       </Button>
     </Flex>
   </Modal>
-);
+)
 
 const PlayerLostModal: FC = () => (
   <Modal
@@ -92,7 +92,7 @@ const PlayerLostModal: FC = () => (
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
             payload: { newPage: Page.mainMenu },
-          });
+          })
         }}
       >
         Back to main menu
@@ -102,14 +102,14 @@ const PlayerLostModal: FC = () => (
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
             payload: {},
-          });
+          })
         }}
       >
         Play again
       </Button>
     </Flex>
   </Modal>
-);
+)
 
 const PlayerWonModal: FC = () => (
   <Modal
@@ -130,7 +130,7 @@ const PlayerWonModal: FC = () => (
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
             payload: { newPage: Page.mainMenu },
-          });
+          })
         }}
       >
         Back to main menu
@@ -140,14 +140,14 @@ const PlayerWonModal: FC = () => (
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
             payload: {},
-          });
+          })
         }}
       >
         Play again
       </Button>
     </Flex>
   </Modal>
-);
+)
 
 enum GameStatus {
   playerWon = 'playerWon',
@@ -160,42 +160,42 @@ const getGameStatus = ({
   game,
   state,
 }: {
-  state: State;
-  game: Game;
-  aiList: TurnIndicatorItem[];
+  state: State
+  game: Game
+  aiList: TurnIndicatorItem[]
 }): GameStatus => {
   if (game.gameStarted === true) {
-    return GameStatus.gameInProgress;
+    return GameStatus.gameInProgress
   }
 
-  const humanAi = aiList.find((ai) => ai.human);
+  const humanAi = aiList.find((ai) => ai.human)
   const amountOfCapturedBoxes = game.grid.reduce((acc, boxEntity) => {
     const box = getComponent<Box>({
       state,
       name: name.box,
       entity: boxEntity,
-    });
+    })
 
-    return box?.player === humanAi?.entity ? acc + 1 : acc;
-  }, 0);
+    return box?.player === humanAi?.entity ? acc + 1 : acc
+  }, 0)
 
-  if (amountOfCapturedBoxes === 0) return GameStatus.playerLost;
-  if (amountOfCapturedBoxes === game.grid.length) return GameStatus.playerLost;
+  if (amountOfCapturedBoxes === 0) return GameStatus.playerLost
+  if (amountOfCapturedBoxes === game.grid.length) return GameStatus.playerLost
 
-  return GameStatus.gameInProgress;
-};
+  return GameStatus.gameInProgress
+}
 
 export const CustomLevel: React.FC = () => {
-  const state = useGameState();
-  const game = state && getGame({ state });
-  const aiList = state ? getAiList(state) : [];
+  const state = useGameState()
+  const game = state && getGame({ state })
+  const aiList = state ? getAiList(state) : []
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
 
   const gameStatus: GameStatus =
     game && state
       ? getGameStatus({ game, aiList, state })
-      : GameStatus.gameInProgress;
+      : GameStatus.gameInProgress
 
   return (
     <PageContainer
@@ -227,11 +227,11 @@ export const CustomLevel: React.FC = () => {
           padding: '0.75rem',
         }}
         onClick={() => {
-          setShowModal(true);
+          setShowModal(true)
         }}
       >
         <Burger />
       </Button>
     </PageContainer>
-  );
-};
+  )
+}

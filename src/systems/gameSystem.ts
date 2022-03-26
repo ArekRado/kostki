@@ -4,13 +4,13 @@ import {
   Entity,
   getComponent,
   ECSEvent,
-} from '@arekrado/canvas-engine';
-import { AI, Game, State, Page, name } from '../type';
-import { create } from './gameSystem/create';
+} from '@arekrado/canvas-engine'
+import { AI, Game, State, Page, name } from '../type'
+import { create } from './gameSystem/create'
 
-export const gameEntity = 'game';
+export const gameEntity = 'game'
 
-export const shakeAnimationTimeout = 4000;
+export const shakeAnimationTimeout = 4000
 
 export namespace GameEvent {
   export enum Type {
@@ -42,52 +42,52 @@ export namespace GameEvent {
     | ShowNewVersionEvent
     | ReloadEvent
     | PlayAgainCustomLevelEvent
-    | ShakeAiBoxesEvent;
+    | ShakeAiBoxesEvent
 
-  export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>;
+  export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, {}>
   export type PlayAgainCustomLevelEvent = ECSEvent<
     Type.playAgainCustomLevel,
     {}
-  >;
-  export type ShakeAiBoxesEvent = ECSEvent<Type.shakeAiBoxes, { ai: AI }>;
+  >
+  export type ShakeAiBoxesEvent = ECSEvent<Type.shakeAiBoxes, { ai: AI }>
   export type PlayerClickEvent = ECSEvent<
     Type.playerClick,
     { boxEntity: Entity }
-  >;
-  export type CleanSceneEvent = ECSEvent<Type.cleanScene, { newPage: Page }>;
+  >
+  export type CleanSceneEvent = ECSEvent<Type.cleanScene, { newPage: Page }>
 
-  export type ChangePlayersEvent = ECSEvent<Type.changePlayers, {}>;
-  export type ChangeDifficultyEvent = ECSEvent<Type.changeDifficulty, {}>;
-  export type ChangeQuickStartEvent = ECSEvent<Type.changeQuickStart, {}>;
+  export type ChangePlayersEvent = ECSEvent<Type.changePlayers, {}>
+  export type ChangeDifficultyEvent = ECSEvent<Type.changeDifficulty, {}>
+  export type ChangeQuickStartEvent = ECSEvent<Type.changeQuickStart, {}>
   export type ChangeColorBlindModeEvent = ECSEvent<
     Type.changeColorBlindMode,
     {}
-  >;
-  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>;
+  >
+  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, {}>
 
-  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, {}>;
-  export type ReloadEvent = ECSEvent<Type.reload, {}>;
+  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, {}>
+  export type ReloadEvent = ECSEvent<Type.reload, {}>
 }
 
 const gameGetSet = createGetSetForUniqComponent<Game, State>({
   entity: gameEntity,
   name: name.game,
-});
+})
 
-export const getGame = gameGetSet.getComponent;
-export const setGame = gameGetSet.setComponent;
+export const getGame = gameGetSet.getComponent
+export const setGame = gameGetSet.setComponent
 
-type GetCurrentAi = (params: { state: State }) => AI | undefined;
+type GetCurrentAi = (params: { state: State }) => AI | undefined
 export const getCurrentAi: GetCurrentAi = ({ state }) => {
-  const game = getGame({ state });
+  const game = getGame({ state })
   const ai = getComponent<AI>({
     state,
     name: name.ai,
     entity: game?.currentPlayer || '',
-  });
+  })
 
-  return ai;
-};
+  return ai
+}
 
 export const gameSystem = (state: State) =>
   createSystem<Game, State>({
@@ -95,4 +95,4 @@ export const gameSystem = (state: State) =>
     name: name.game,
     componentName: name.game,
     create,
-  });
+  })

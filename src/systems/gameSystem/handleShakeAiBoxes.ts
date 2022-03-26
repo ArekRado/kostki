@@ -1,5 +1,5 @@
-import { Box, name, State } from '../../type';
-import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem';
+import { Box, name, State } from '../../type'
+import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem'
 import {
   componentName,
   createComponent,
@@ -8,10 +8,10 @@ import {
   Transform,
   Animation,
   emitEvent,
-} from '@arekrado/canvas-engine';
-import { getTime } from '@arekrado/canvas-engine/system/time';
+} from '@arekrado/canvas-engine'
+import { getTime } from '@arekrado/canvas-engine/system/time'
 
-const idleTime = shakeAnimationTimeout * 2;
+const idleTime = shakeAnimationTimeout * 2
 
 export const handleShakeAiBoxes: EventHandler<
   GameEvent.ShakeAiBoxesEvent,
@@ -22,11 +22,11 @@ export const handleShakeAiBoxes: EventHandler<
     payload: { ai },
   },
 }) => {
-  const game = getGame({ state });
-  const time = getTime({ state });
+  const game = getGame({ state })
+  const time = getTime({ state })
 
-  const lastBoxClickTimestamp = game?.lastBoxClickTimestamp || 0;
-  const timeNow = time?.timeNow || 0;
+  const lastBoxClickTimestamp = game?.lastBoxClickTimestamp || 0
+  const timeNow = time?.timeNow || 0
 
   // player did move, do not distribut too often!
   // if (game && game?.moves !== moves) {
@@ -48,27 +48,27 @@ export const handleShakeAiBoxes: EventHandler<
         state,
         name: name.box,
         entity: boxEntity,
-      });
+      })
 
       const animation = getComponent<Animation.AnimationComponent>({
         state,
         name: componentName.animation,
         entity: boxEntity,
-      });
+      })
 
       // Do not shake boxes which are already animated
       if (animation || box?.player !== ai.entity) {
-        return;
+        return
       }
 
       const transform = getComponent<Transform>({
         state,
         name: componentName.transform,
         entity: boxEntity,
-      });
+      })
 
       if (transform) {
-        const rotationValue = Math.PI / 16;
+        const rotationValue = Math.PI / 16
 
         state = createComponent<Animation.AnimationComponent, State>({
           state,
@@ -123,9 +123,9 @@ export const handleShakeAiBoxes: EventHandler<
               },
             ],
           },
-        });
+        })
       }
-    });
+    })
   }
 
   setTimeout(() => {
@@ -134,8 +134,8 @@ export const handleShakeAiBoxes: EventHandler<
       payload: {
         ai,
       },
-    });
-  }, shakeAnimationTimeout);
+    })
+  }, shakeAnimationTimeout)
 
-  return state;
-};
+  return state
+}

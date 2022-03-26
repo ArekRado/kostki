@@ -3,29 +3,29 @@ import {
   createComponent,
   getComponent,
   Transform,
-} from '@arekrado/canvas-engine';
-import { boxBlueprint } from '../../blueprints/boxBlueprint';
-import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { AI, Box, name, State } from '../../type';
+} from '@arekrado/canvas-engine'
+import { boxBlueprint } from '../../blueprints/boxBlueprint'
+import { boxWithGap } from '../../blueprints/gridBlueprint'
+import { AI, Box, name, State } from '../../type'
 
 export const create = ({
   state,
   component,
 }: {
-  state: State;
-  component: Box;
+  state: State
+  component: Box
 }) => {
-  const sceneRef = state.babylonjs.sceneRef;
+  const sceneRef = state.babylonjs.sceneRef
   if (!sceneRef) {
-    return state;
+    return state
   }
 
-  const { gridPosition } = component;
+  const { gridPosition } = component
   const ai = getComponent<AI, State>({
     state,
     name: name.ai,
     entity: component.player || '',
-  });
+  })
 
   state = createComponent<Transform, State>({
     state,
@@ -39,7 +39,7 @@ export const create = ({
       position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
       fromParentPosition: [0, 0],
     },
-  });
+  })
 
   boxBlueprint({
     scene: sceneRef,
@@ -52,9 +52,7 @@ export const create = ({
     dots: component.dots,
     state,
     isClickable: true,
-  });
+  })
 
-  return state;
-};
-
-
+  return state
+}

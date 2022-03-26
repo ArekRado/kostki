@@ -1,33 +1,33 @@
 export type AIGridPoints = {
-  emptyBox: number;
-  preferEmptyBoxes: number;
-  advancedAttack: number;
+  emptyBox: number
+  preferEmptyBoxes: number
+  advancedAttack: number
 
   adjacted: {
-    playerMoreThanOponent: number;
-    playerEqualToOponent: number;
-    playerLessThanOponent: number;
+    playerMoreThanOponent: number
+    playerEqualToOponent: number
+    playerLessThanOponent: number
 
-    playerMoreThanPlayer: number;
-    playerEqualToPlayer: number;
-    playerLessThanPlayer: number;
+    playerMoreThanPlayer: number
+    playerEqualToPlayer: number
+    playerLessThanPlayer: number
 
-    sixToSix: number;
-    toBorder: number;
-  };
+    sixToSix: number
+    toBorder: number
+  }
 
   diagonall: {
-    playerMoreThanOponent: number;
-    playerEqualToOponent: number;
-    playerLessThanOponent: number;
+    playerMoreThanOponent: number
+    playerEqualToOponent: number
+    playerLessThanOponent: number
 
-    playerMoreThanPlayer: number;
-    playerEqualToPlayer: number;
-    playerLessThanPlayer: number;
+    playerMoreThanPlayer: number
+    playerEqualToPlayer: number
+    playerLessThanPlayer: number
 
-    toBorder: number;
-  };
-};
+    toBorder: number
+  }
+}
 
 export const hardAIGridPoints: AIGridPoints = {
   emptyBox: 50,
@@ -58,7 +58,7 @@ export const hardAIGridPoints: AIGridPoints = {
 
     toBorder: 0,
   },
-};
+}
 
 export const mediumAIGridPoints: AIGridPoints = {
   emptyBox: 50,
@@ -89,7 +89,7 @@ export const mediumAIGridPoints: AIGridPoints = {
 
     toBorder: 0,
   },
-};
+}
 
 export const easyAIGridPoints: AIGridPoints = {
   emptyBox: 50,
@@ -115,9 +115,9 @@ export const easyAIGridPoints: AIGridPoints = {
     playerLessThanOponent: 5,
 
     playerMoreThanPlayer: -2,
-    playerEqualToPlayer:0,
+    playerEqualToPlayer: 0,
     playerLessThanPlayer: 0,
 
     toBorder: 0,
   },
-};
+}

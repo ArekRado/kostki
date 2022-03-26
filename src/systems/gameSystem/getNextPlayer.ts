@@ -1,12 +1,12 @@
-import { getComponent, Guid } from '@arekrado/canvas-engine';
-import { AI, State, name } from '../../type';
-import { getGame } from '../gameSystem';
+import { getComponent, Guid } from '@arekrado/canvas-engine'
+import { AI, State, name } from '../../type'
+import { getGame } from '../gameSystem'
 
 type GetNextActivePlayer = (params: {
-  playersQueue: Guid[];
-  index: number;
-  state: State;
-}) => AI | undefined;
+  playersQueue: Guid[]
+  index: number
+  state: State
+}) => AI | undefined
 const getNextActivePlayer: GetNextActivePlayer = ({
   playersQueue,
   index,
@@ -16,36 +16,36 @@ const getNextActivePlayer: GetNextActivePlayer = ({
     state,
     name: name.ai,
     entity: playersQueue[index],
-  });
+  })
 
   if (ai?.active) {
-    return ai;
+    return ai
   }
 
   return getNextActivePlayer({
     playersQueue,
     index: index >= playersQueue.length ? 0 : index + 1,
     state,
-  });
-};
+  })
+}
 
-type GetNextPlayer = (params: { state: State }) => AI | undefined;
+type GetNextPlayer = (params: { state: State }) => AI | undefined
 export const getNextPlayer: GetNextPlayer = ({ state }) => {
-  const game = getGame({ state });
+  const game = getGame({ state })
 
   if (!game) {
-    return undefined;
+    return undefined
   }
 
   const currentPlayerIndex = game.playersQueue.findIndex(
-    (entity) => game.currentPlayer === entity
-  );
+    (entity) => game.currentPlayer === entity,
+  )
 
   const nextAi = getNextActivePlayer({
     playersQueue: game.playersQueue,
     index: currentPlayerIndex + 1,
     state,
-  });
+  })
 
-  return nextAi;
-};
+  return nextAi
+}

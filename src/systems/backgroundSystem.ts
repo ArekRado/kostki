@@ -1,4 +1,4 @@
-import { State, Background, name } from '../type';
+import { State, Background, name } from '../type'
 import {
   grayGradient,
   greenGradient,
@@ -9,36 +9,36 @@ import {
   pinkGradient,
   purpleGradient,
   getSimilarNumber,
-} from '../utils/colors';
-import { playersList } from './gameSystem/handleChangeSettings';
-import { create } from './backgroundSystem/create';
-import { resizeBackground } from './backgroundSystem/resizeBackground';
-import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
-import { Vector2 } from '@babylonjs/core/Maths/math.vector';
+} from '../utils/colors'
+import { playersList } from './gameSystem/handleChangeSettings'
+import { create } from './backgroundSystem/create'
+import { resizeBackground } from './backgroundSystem/resizeBackground'
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
+import { Vector2 } from '@babylonjs/core/Maths/math.vector'
 import {
   createGetSetForUniqComponent,
   createSystem,
-} from '@arekrado/canvas-engine';
+} from '@arekrado/canvas-engine'
 
-export const backgroundEntity = '17818552155683748';
+export const backgroundEntity = '17818552155683748'
 
 const backgroundGetSet = createGetSetForUniqComponent<Background, State>({
   entity: backgroundEntity,
   name: name.background,
-});
+})
 
-export const getBackground = backgroundGetSet.getComponent;
+export const getBackground = backgroundGetSet.getComponent
 export const setBackground = ({
   state,
   data,
 }: {
-  state: State;
-  data: Partial<Background>;
+  state: State
+  data: Partial<Background>
 }) => {
-  resizeBackground(state);
+  resizeBackground(state)
 
-  return backgroundGetSet.setComponent({ state, data });
-};
+  return backgroundGetSet.setComponent({ state, data })
+}
 
 export const backgroundSystem = (state: State) =>
   createSystem<Background, State>({
@@ -48,29 +48,29 @@ export const backgroundSystem = (state: State) =>
     create,
     tick: ({ state, component }) => {
       if (!state.babylonjs.sceneRef) {
-        return state;
+        return state
       }
       const background = state.babylonjs.sceneRef.getMeshByUniqueId(
-        parseFloat(backgroundEntity)
-      );
+        parseFloat(backgroundEntity),
+      )
 
       if (background && background.material) {
-        (background.material as ShaderMaterial).setFloat(
+        ;(background.material as ShaderMaterial).setFloat(
           'iTime',
-          performance.now() / 1000 + component.gradientTime
-        );
+          performance.now() / 1000 + component.gradientTime,
+        )
 
-        (background.material as ShaderMaterial).setVector2(
+        ;(background.material as ShaderMaterial).setVector2(
           'iResolution',
-          new Vector2(window.innerWidth, window.innerHeight)
-        );
+          new Vector2(window.innerWidth, window.innerHeight),
+        )
 
-        (background.material as ShaderMaterial).setFloats(
+        ;(background.material as ShaderMaterial).setFloats(
           'iColors',
-          tealGradient.flat()
-        );
+          tealGradient.flat(),
+        )
       }
 
-      return state;
+      return state
     },
-  });
+  })

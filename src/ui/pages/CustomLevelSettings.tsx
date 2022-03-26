@@ -1,75 +1,75 @@
-import React from 'react';
-import { Page } from '../../type';
-import { AIDifficulty } from '../../systems/aiSystem';
-import { GameEvent, getGame } from '../../systems/gameSystem';
-import { Button } from '../components/Button';
-import { Flex } from '../components/Flex';
-import { Grid } from '../components/Grid';
-import { Check } from '../components/icons/Check';
-import { Cross } from '../components/icons/Cross';
-import { PageContainer } from '../components/PageContainer';
-import { useGameState } from '../hooks/useGameState';
-import { emitEvent } from '@arekrado/canvas-engine';
+import React from 'react'
+import { Page } from '../../type'
+import { AIDifficulty } from '../../systems/aiSystem'
+import { GameEvent, getGame } from '../../systems/gameSystem'
+import { Button } from '../components/Button'
+import { Flex } from '../components/Flex'
+import { Grid } from '../components/Grid'
+import { Check } from '../components/icons/Check'
+import { Cross } from '../components/icons/Cross'
+import { PageContainer } from '../components/PageContainer'
+import { useGameState } from '../hooks/useGameState'
+import { emitEvent } from '@arekrado/canvas-engine'
 
 const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   switch (difficulty) {
     case AIDifficulty.disabled:
-      return 'Disabled';
+      return 'Disabled'
     case AIDifficulty.random:
-      return 'Random';
+      return 'Random'
 
     case AIDifficulty.easy:
-      return 'Easy';
+      return 'Easy'
     case AIDifficulty.medium:
-      return 'Medium';
+      return 'Medium'
     case AIDifficulty.hard:
-      return 'Hard';
+      return 'Hard'
   }
-};
+}
 
 export const CustomLevelSettings: React.FC = () => {
-  const gameState = useGameState();
-  const game = gameState && getGame({ state: gameState });
+  const gameState = useGameState()
+  const game = gameState && getGame({ state: gameState })
 
   if (!game) {
-    return null;
+    return null
   }
 
   const changePlayers = () =>
     emitEvent<GameEvent.ChangePlayersEvent>({
       type: GameEvent.Type.changePlayers,
       payload: {},
-    });
+    })
 
   const changeDifficulty = () =>
     emitEvent<GameEvent.ChangeDifficultyEvent>({
       type: GameEvent.Type.changeDifficulty,
       payload: {},
-    });
+    })
 
   const changeQuickStart = () =>
     emitEvent<GameEvent.ChangeQuickStartEvent>({
       type: GameEvent.Type.changeQuickStart,
       payload: {},
-    });
+    })
 
   const changeColorBlindMode = () =>
     emitEvent<GameEvent.ChangeColorBlindModeEvent>({
       type: GameEvent.Type.changeColorBlindMode,
       payload: {},
-    });
+    })
 
   const changeMapType = () =>
     emitEvent<GameEvent.ChangeMapTypeEvent>({
       type: GameEvent.Type.changeMapType,
       payload: {},
-    });
+    })
 
   const startCustomLevel = () =>
     emitEvent<GameEvent.StartCustomLevelEvent>({
       type: GameEvent.Type.startCustomLevel,
       payload: {},
-    });
+    })
 
   const backToMainMenu = () =>
     emitEvent<GameEvent.CleanSceneEvent>({
@@ -77,7 +77,7 @@ export const CustomLevelSettings: React.FC = () => {
       payload: {
         newPage: Page.mainMenu,
       },
-    });
+    })
 
   return (
     <PageContainer
@@ -211,5 +211,5 @@ export const CustomLevelSettings: React.FC = () => {
         <Button onClick={startCustomLevel}>Start</Button>
       </Flex>
     </PageContainer>
-  );
-};
+  )
+}

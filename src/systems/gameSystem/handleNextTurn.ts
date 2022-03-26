@@ -1,21 +1,21 @@
-import { boxWithGap } from '../../blueprints/gridBlueprint';
-import { AI, Box, Game, name, State } from '../../type';
-import { eventBusDispatch } from '../../utils/eventBus';
-import { getAiMove } from '../aiSystem/getAiMove';
-import { onClickBox } from '../boxSystem/onClickBox';
-import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue';
-import { gameEntity, getGame } from '../gameSystem';
-import { setMarker } from '../markerSystem';
-import { getNextPlayer } from './getNextPlayer';
+import { boxWithGap } from '../../blueprints/gridBlueprint'
+import { AI, Box, Game, name, State } from '../../type'
+import { eventBusDispatch } from '../../utils/eventBus'
+import { getAiMove } from '../aiSystem/getAiMove'
+import { onClickBox } from '../boxSystem/onClickBox'
+import { pushBoxToRotationQueue } from '../boxSystem/pushBoxToRotationQueue'
+import { gameEntity, getGame } from '../gameSystem'
+import { setMarker } from '../markerSystem'
+import { getNextPlayer } from './getNextPlayer'
 import {
   getComponent,
   getComponentsByName,
   updateComponent,
-} from '@arekrado/canvas-engine';
-import { getTime } from '@arekrado/canvas-engine/system/time';
+} from '@arekrado/canvas-engine'
+import { getTime } from '@arekrado/canvas-engine/system/time'
 
 const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
-  const game = getGame({ state });
+  const game = getGame({ state })
 
   return (
     game?.grid.reduce((acc, boxEntity) => {
@@ -23,14 +23,14 @@ const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
         state,
         name: name.box,
         entity: boxEntity,
-      });
+      })
 
-      return box?.player === ai.entity ? acc + 1 : acc;
+      return box?.player === ai.entity ? acc + 1 : acc
     }, 0) || 0
-  );
-};
+  )
+}
 
-type AiLost = (params: { state: State; ai: AI; component: Game }) => State;
+type AiLost = (params: { state: State; ai: AI; component: Game }) => State
 const aiLost: AiLost = ({ state, ai, component }) => {
   state = updateComponent<AI, State>({
     state,
@@ -39,17 +39,17 @@ const aiLost: AiLost = ({ state, ai, component }) => {
     update: () => ({
       active: false,
     }),
-  });
+  })
 
   const allAI = getComponentsByName<AI, State>({
     state,
     name: name.ai,
-  });
+  })
 
   const amountOfActivedAi = Object.values(allAI || {}).reduce(
     (acc, ai) => (ai.active ? acc + 1 : acc),
-    0
-  );
+    0,
+  )
 
   // last player is active, time to end game
   if (amountOfActivedAi === 1) {
@@ -60,49 +60,49 @@ const aiLost: AiLost = ({ state, ai, component }) => {
       update: () => ({
         gameStarted: false,
       }),
-    });
+    })
 
-    eventBusDispatch('setUIState', state);
+    eventBusDispatch('setUIState', state)
 
-    return state;
+    return state
   } else {
     state = startNextTurn({
       state,
-    });
+    })
   }
 
-  return state;
-};
+  return state
+}
 
 export const startNextTurn = ({ state }: { state: State }) => {
-  const game = getGame({ state });
+  const game = getGame({ state })
   if (!game) {
-    return state;
+    return state
   }
-  const { gameStarted, boxRotationQueue } = game;
+  const { gameStarted, boxRotationQueue } = game
 
   state = updateComponent<Game, State>({
     state,
     name: name.game,
     entity: gameEntity,
     update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
-  });
+  })
 
   if (gameStarted && boxRotationQueue.length === 0) {
-    const nextPlayer = getNextPlayer({ state });
+    const nextPlayer = getNextPlayer({ state })
 
     if (!nextPlayer) {
-      return state;
+      return state
     }
 
     const ai = getComponent<AI, State>({
       name: name.ai,
       state,
       entity: nextPlayer.entity,
-    });
+    })
 
     if (!ai) {
-      return state;
+      return state
     }
 
     state = updateComponent<Game, State>({
@@ -113,16 +113,16 @@ export const startNextTurn = ({ state }: { state: State }) => {
         currentPlayer: ai.entity,
         moves: game.moves + 1,
       }),
-    });
+    })
 
     if (ai.active) {
       if (ai.human) {
-        const humanBoxes = sumAiBoxes({ state, ai });
+        const humanBoxes = sumAiBoxes({ state, ai })
         if (humanBoxes === 0) {
-          state = aiLost({ state, component: game, ai });
+          state = aiLost({ state, component: game, ai })
         }
       } else {
-        const box = getAiMove({ state, ai });
+        const box = getAiMove({ state, ai })
 
         if (box) {
           state = setMarker({
@@ -134,18 +134,18 @@ export const startNextTurn = ({ state }: { state: State }) => {
                 box.gridPosition[1] * boxWithGap,
               ],
             },
-          });
-          state = onClickBox({ box, state, ai });
-          state = pushBoxToRotationQueue({ state, entity: box.entity });
+          })
+          state = onClickBox({ box, state, ai })
+          state = pushBoxToRotationQueue({ state, entity: box.entity })
         } else {
           // AI can't move which means it lost
-          state = aiLost({ state, component: game, ai });
+          state = aiLost({ state, component: game, ai })
         }
       }
     }
   }
 
-  eventBusDispatch('setUIState', state);
+  eventBusDispatch('setUIState', state)
 
-  return state;
-};
+  return state
+}

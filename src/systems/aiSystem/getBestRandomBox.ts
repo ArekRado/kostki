@@ -1,36 +1,36 @@
-import { Guid } from '@arekrado/canvas-engine';
-import { Box } from '../../type';
-import { DataGrid } from '../aiSystem';
+import { Guid } from '@arekrado/canvas-engine'
+import { Box } from '../../type'
+import { DataGrid } from '../aiSystem'
 
 type GetBestRandomBox = (params: {
-  currentPlayer: Guid;
-  dataGrid: DataGrid;
-}) => Box | undefined;
+  currentPlayer: Guid
+  dataGrid: DataGrid
+}) => Box | undefined
 export const getBestRandomBox: GetBestRandomBox = ({
   currentPlayer,
   dataGrid,
 }) => {
-  let highestScore = -Infinity;
-  let highestBoxes: Box[] = [];
+  let highestScore = -Infinity
+  let highestBoxes: Box[] = []
 
   dataGrid.forEach((row) => {
     row.forEach((box) => {
-      const isEmpty = box.player === undefined;
-      const isPlayer = box.player === currentPlayer;
+      const isEmpty = box.player === undefined
+      const isPlayer = box.player === currentPlayer
 
       if (isEmpty || isPlayer) {
         if (box.points > highestScore) {
-          highestBoxes = [];
+          highestBoxes = []
         }
 
         if (box.points >= highestScore) {
-          highestScore = box.points;
-          highestBoxes.push(box);
+          highestScore = box.points
+          highestBoxes.push(box)
         }
       }
-    });
-  });
+    })
+  })
 
-  const randomIndex = Math.floor(Math.random() * highestBoxes.length);
-  return highestBoxes[randomIndex];
-};
+  const randomIndex = Math.floor(Math.random() * highestBoxes.length)
+  return highestBoxes[randomIndex]
+}

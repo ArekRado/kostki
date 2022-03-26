@@ -1,7 +1,7 @@
-import { ECSEvent, createSystem, Entity } from '@arekrado/canvas-engine';
-import { AI, Box, Color, name, State } from '../type';
-import { create } from './boxSystem/create';
-import { remove } from './boxSystem/remove';
+import { ECSEvent, createSystem, Entity } from '@arekrado/canvas-engine'
+import { AI, Box, Color, name, State } from '../type'
+import { create } from './boxSystem/create'
+import { remove } from './boxSystem/remove'
 
 export enum BoxRotationDirection {
   up = 'up',
@@ -17,27 +17,27 @@ export namespace BoxEvent {
     rotateStart = 'BoxEvent-rotate',
   }
 
-  export type All = RotationEndEvent | Rotate;
+  export type All = RotationEndEvent | Rotate
 
   export type Rotate = ECSEvent<
     Type.rotateStart,
     {
-      color: [number, number, number];
-      texture: string;
-      direction: BoxRotationDirection;
-      boxEntity: Entity;
+      color: [number, number, number]
+      texture: string
+      direction: BoxRotationDirection
+      boxEntity: Entity
     }
-  >;
+  >
   export type RotationEndEvent = ECSEvent<
     Type.rotationEnd,
     {
-      boxEntity: Entity;
-      texture: string;
-      color: Color;
-      nextTurn: boolean;
-      shouldExplode: boolean;
+      boxEntity: Entity
+      texture: string
+      color: Color
+      nextTurn: boolean
+      shouldExplode: boolean
     }
-  >;
+  >
 }
 
 export const boxSystem = (state: State) =>
@@ -47,4 +47,4 @@ export const boxSystem = (state: State) =>
     componentName: name.box,
     create,
     remove,
-  });
+  })

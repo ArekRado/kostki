@@ -1,7 +1,7 @@
-import { EventHandler, Transform } from '@arekrado/canvas-engine';
-import { componentName, updateComponent } from '@arekrado/canvas-engine';
-import { State } from '../../type';
-import { markerEntity, MarkerEvent } from '../markerSystem';
+import { EventHandler, Transform } from '@arekrado/canvas-engine'
+import { componentName, updateComponent } from '@arekrado/canvas-engine'
+import { State } from '../../type'
+import { markerEntity, MarkerEvent } from '../markerSystem'
 
 export const handleAppearAnimationEnd: EventHandler<
   MarkerEvent.AppearAnimationEndEvent,
@@ -14,7 +14,7 @@ export const handleAppearAnimationEnd: EventHandler<
     update: () => ({
       position: [9999, 9999, 1],
     }),
-  });
+  })
 
-  return state;
-};
+  return state
+}

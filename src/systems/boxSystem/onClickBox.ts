@@ -1,17 +1,16 @@
-import { AI, Box, name, State } from '../../type';
-import { createRotationBoxAnimation } from './createRotationBoxAnimation';
-import { getTextureSet } from './getTextureSet';
-import { pushBoxToRotationQueue } from './pushBoxToRotationQueue';
-import { updateComponent } from '@arekrado/canvas-engine';
+import { AI, Box, name, State } from '../../type'
+import { createRotationBoxAnimation } from './createRotationBoxAnimation'
+import { getTextureSet } from './getTextureSet'
+import { pushBoxToRotationQueue } from './pushBoxToRotationQueue'
+import { updateComponent } from '@arekrado/canvas-engine'
 
-export const getNextDots = (dots: number): number =>
-  dots === 6 ? 1 : dots + 1;
+export const getNextDots = (dots: number): number => (dots === 6 ? 1 : dots + 1)
 
-type OnClickBox = (params: { state: State; ai: AI; box: Box }) => State;
+type OnClickBox = (params: { state: State; ai: AI; box: Box }) => State
 export const onClickBox: OnClickBox = ({ state, ai, box }) => {
-  const { entity } = box;
+  const { entity } = box
 
-  const dots = getNextDots(box.dots);
+  const dots = getNextDots(box.dots)
 
   if (process.env.NODE_ENV !== 'test') {
     state = createRotationBoxAnimation({
@@ -21,10 +20,10 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
       color: ai.color,
       nextTurn: true,
       shouldExplode: box.dots === 6,
-    });
+    })
   }
 
-  state = pushBoxToRotationQueue({ entity, state });
+  state = pushBoxToRotationQueue({ entity, state })
 
   state = updateComponent<Box, State>({
     state,
@@ -35,7 +34,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
       player: ai?.entity || '',
       dots,
     }),
-  });
+  })
 
-  return state;
-};
+  return state
+}

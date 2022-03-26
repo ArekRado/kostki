@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export const Burger = () => (
   <svg
@@ -15,4 +15,4 @@ export const Burger = () => (
       clipRule="evenodd"
     ></path>
   </svg>
-);
+)

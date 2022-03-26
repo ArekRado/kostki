@@ -1,11 +1,11 @@
-import { Entity, updateComponent } from '@arekrado/canvas-engine';
-import { Game, name, State } from '../../type';
-import { gameEntity } from '../gameSystem';
+import { Entity, updateComponent } from '@arekrado/canvas-engine'
+import { Game, name, State } from '../../type'
+import { gameEntity } from '../gameSystem'
 
 type PushBoxToRotationQueue = (params: {
-  entity: Entity;
-  state: State;
-}) => State;
+  entity: Entity
+  state: State
+}) => State
 export const pushBoxToRotationQueue: PushBoxToRotationQueue = ({
   entity,
   state,
@@ -17,5 +17,5 @@ export const pushBoxToRotationQueue: PushBoxToRotationQueue = ({
     update: (game) => ({
       boxRotationQueue: [...game.boxRotationQueue, entity],
     }),
-  });
-};
+  })
+}

@@ -1,6 +1,6 @@
-import markerTexture from '../assets/marker.png';
-import { boxGap, boxSize } from '../blueprints/gridBlueprint';
-import { Marker, name, State } from '../type';
+import markerTexture from '../assets/marker.png'
+import { boxGap, boxSize } from '../blueprints/gridBlueprint'
+import { Marker, name, State } from '../type'
 import {
   componentName,
   createGetSetForUniqComponent,
@@ -14,35 +14,35 @@ import {
   ECSEvent,
   removeEntity,
   createComponent,
-} from '@arekrado/canvas-engine';
-import { generateId } from '../utils/generateId';
-import { updateComponent } from '@arekrado/canvas-engine';
-import { boxRotationAnimationTime } from './boxSystem/createRotationBoxAnimation';
+} from '@arekrado/canvas-engine'
+import { generateId } from '../utils/generateId'
+import { updateComponent } from '@arekrado/canvas-engine'
+import { boxRotationAnimationTime } from './boxSystem/createRotationBoxAnimation'
 
-export const markerEntity = '38127445920450264';
+export const markerEntity = '38127445920450264'
 
 export namespace MarkerEvent {
   export enum Type {
     appearAnimationEnd = 'MarkerEvent-appearAnimationEnd',
   }
 
-  export type All = AppearAnimationEndEvent;
+  export type All = AppearAnimationEndEvent
 
-  export type AppearAnimationEndEvent = ECSEvent<Type.appearAnimationEnd, {}>;
+  export type AppearAnimationEndEvent = ECSEvent<Type.appearAnimationEnd, {}>
 }
 
 const markerGetSet = createGetSetForUniqComponent<Marker, State>({
   entity: markerEntity,
   name: name.marker,
-});
+})
 
-export const getMarker = markerGetSet.getComponent;
+export const getMarker = markerGetSet.getComponent
 export const setMarker = ({
   state,
   data,
 }: {
-  state: State;
-  data: Partial<Marker>;
+  state: State
+  data: Partial<Marker>
 }) => {
   if (state.babylonjs.sceneRef) {
     state = updateComponent<Material, State>({
@@ -54,7 +54,7 @@ export const setMarker = ({
           ? [data.color[0], data.color[1], data.color[2], 0]
           : material.diffuseColor,
       }),
-    });
+    })
 
     state = updateComponent<Transform, State>({
       state,
@@ -65,12 +65,12 @@ export const setMarker = ({
           ? [data.position[0], data.position[1], -1]
           : transform.position,
       }),
-    });
+    })
 
     const appearAnimationEnd: MarkerEvent.AppearAnimationEndEvent = {
       type: MarkerEvent.Type.appearAnimationEnd,
       payload: {},
-    };
+    }
 
     state = createComponent<Animation.AnimationComponent, State>({
       state,
@@ -114,11 +114,11 @@ export const setMarker = ({
           },
         ],
       },
-    });
+    })
   }
 
-  return markerGetSet.setComponent({ state, data });
-};
+  return markerGetSet.setComponent({ state, data })
+}
 
 export const markerSystem = (state: State) =>
   createSystem<Marker, State>({
@@ -126,12 +126,12 @@ export const markerSystem = (state: State) =>
     name: name.marker,
     componentName: name.marker,
     create: ({ state, component }) => {
-      const sceneRef = state.babylonjs.sceneRef;
+      const sceneRef = state.babylonjs.sceneRef
       if (!sceneRef) {
-        return state;
+        return state
       }
 
-      const size = boxGap + boxSize + boxGap;
+      const size = boxGap + boxSize + boxGap
 
       state = createComponent<Transform, State>({
         state,
@@ -140,9 +140,9 @@ export const markerSystem = (state: State) =>
           position: [9999, 9999, 9999],
           scale: [size, size, 1],
         }),
-      });
+      })
 
-      const materialUniqueId = generateId();
+      const materialUniqueId = generateId()
       state = createComponent<Material, State>({
         state,
         data: {
@@ -152,7 +152,7 @@ export const markerSystem = (state: State) =>
           diffuseTexture: markerTexture,
           diffuseColor: [1, 0, 1, 0],
         },
-      });
+      })
 
       state = createComponent<Mesh, State>({
         state,
@@ -167,13 +167,13 @@ export const markerSystem = (state: State) =>
           sideOrientation: 0,
           materialEntity: [component.entity],
         },
-      });
+      })
 
-      return state;
+      return state
     },
     remove: ({ state }) => {
-      state = removeEntity({ state, entity: markerEntity });
+      state = removeEntity({ state, entity: markerEntity })
 
-      return state;
+      return state
     },
-  });
+  })

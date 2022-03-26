@@ -1,19 +1,19 @@
-import { Color } from '../type';
-import { clamp } from './js/clamp';
-import { hslToRgb } from './hslToRgb';
-import { rgbToHsl } from './rgbToHsl';
+import { Color } from '../type'
+import { clamp } from './js/clamp'
+import { hslToRgb } from './hslToRgb'
+import { rgbToHsl } from './rgbToHsl'
 
-export const white: Color = [1, 1, 1];
-export const black: Color = [0, 0, 0];
+export const white: Color = [1, 1, 1]
+export const black: Color = [0, 0, 0]
 
-export const gray: Color = [0.6, 0.6, 0.6];
-export const green: Color = [0.11, 0.79, 0.29];
-export const teal: Color = [0.09, 0.84, 1];
-export const orange: Color = [1, 0.73, 0.29];
-export const yellow: Color = [0.99, 0.97, 0.32];
-export const red: Color = [0.99, 0.42, 0.45];
-export const pink: Color = [0.99, 0.47, 0.94];
-export const purple: Color = [0.67, 0.23, 0.94];
+export const gray: Color = [0.6, 0.6, 0.6]
+export const green: Color = [0.11, 0.79, 0.29]
+export const teal: Color = [0.09, 0.84, 1]
+export const orange: Color = [1, 0.73, 0.29]
+export const yellow: Color = [0.99, 0.97, 0.32]
+export const red: Color = [0.99, 0.42, 0.45]
+export const pink: Color = [0.99, 0.47, 0.94]
+export const purple: Color = [0.67, 0.23, 0.94]
 
 export type ColorGradient = [
   Color,
@@ -25,16 +25,16 @@ export type ColorGradient = [
   Color,
   Color,
   Color,
-  Color
-];
+  Color,
+]
 
-const colorPercentage = 0.2;
+const colorPercentage = 0.2
 
 export const getSimilarNumber = (value: number, percentage: number): number =>
-  value + Math.random() * percentage - Math.random() * percentage;
+  value + Math.random() * percentage - Math.random() * percentage
 
 export const getSimilarColor = (rgbColor: Color): Color => {
-  const hslColor = rgbToHsl(rgbColor);
+  const hslColor = rgbToHsl(rgbColor)
   const similarHslColor: Color = [
     hslColor[0],
     clamp({
@@ -47,10 +47,10 @@ export const getSimilarColor = (rgbColor: Color): Color => {
       min: 0.3,
       max: 0.7,
     }),
-  ];
+  ]
 
-  return hslToRgb([similarHslColor[0], similarHslColor[1], similarHslColor[2]]);
-};
+  return hslToRgb([similarHslColor[0], similarHslColor[1], similarHslColor[2]])
+}
 
 const createGradient = (mainColor: Color): ColorGradient => [
   getSimilarColor(mainColor),
@@ -63,16 +63,16 @@ const createGradient = (mainColor: Color): ColorGradient => [
   getSimilarColor(mainColor),
   getSimilarColor(mainColor),
   getSimilarColor(mainColor),
-];
+]
 
-export const grayGradient: ColorGradient = createGradient(gray);
-export const greenGradient: ColorGradient = createGradient(green);
-export const tealGradient: ColorGradient = createGradient(teal);
-export const orangeGradient: ColorGradient = createGradient(orange);
-export const yellowGradient: ColorGradient = createGradient(yellow);
-export const redGradient: ColorGradient = createGradient(red);
-export const pinkGradient: ColorGradient = createGradient(pink);
-export const purpleGradient: ColorGradient = createGradient(purple);
+export const grayGradient: ColorGradient = createGradient(gray)
+export const greenGradient: ColorGradient = createGradient(green)
+export const tealGradient: ColorGradient = createGradient(teal)
+export const orangeGradient: ColorGradient = createGradient(orange)
+export const yellowGradient: ColorGradient = createGradient(yellow)
+export const redGradient: ColorGradient = createGradient(red)
+export const pinkGradient: ColorGradient = createGradient(pink)
+export const purpleGradient: ColorGradient = createGradient(purple)
 
 // https://coolors.co/9a9a9a-1dcb4b-17d8ff-ffbb4a-fef952-fe6d73-fe7af0-ad3cf1
 // [
