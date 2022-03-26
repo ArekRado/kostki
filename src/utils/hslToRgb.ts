@@ -21,13 +21,13 @@ const hue2rgb = (p: number, q: number, t: number) => {
  * @return  Array           The RGB representation
  */
 export const hslToRgb = ([h, s, l]: Color): Color => {
-  var r, g, b;
+  let r, g, b;
 
   if (s == 0) {
     r = g = b = l; // achromatic
   } else {
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    var p = 2 * l - q;
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
 
     r = hue2rgb(p, q, h + 1 / 3);
     g = hue2rgb(p, q, h);

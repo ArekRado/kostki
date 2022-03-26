@@ -5,14 +5,26 @@ import {
   Entity,
   InitialState,
   System,
-} from '@arekrado/canvas-engine';
-import { AIDifficulty } from './systems/aiSystem';
+} from '@arekrado/canvas-engine'
+import { AIDifficulty } from './systems/aiSystem'
 
 // Utils
 
-export type Breakpoints<Value = number> = [Value, Value, Value];
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      GITHUB_AUTH_TOKEN: string
+      NODE_ENV: 'development' | 'production' | 'test'
+      PORT?: string
+      PWD: string
+      PUBLIC_URL: string
+    }
+  }
+}
 
-export type Color = [number, number, number];
+export type Breakpoints<Value = number> = [Value, Value, Value]
+
+export type Color = [number, number, number]
 
 export enum name {
   box = 'box',
@@ -26,19 +38,19 @@ export enum name {
 // Component
 
 export type Box = Component<{
-  isAnimating: boolean;
-  gridPosition: [number, number];
-  dots: number;
-  player: Entity | undefined;
-}>;
+  isAnimating: boolean
+  gridPosition: [number, number]
+  dots: number
+  player: Entity | undefined
+}>
 
 export type AI = Component<{
-  human: boolean;
-  active: boolean;
-  level: AIDifficulty;
-  color: Color;
-  textureSet: [string, string, string, string, string, string, string];
-}>;
+  human: boolean
+  active: boolean
+  level: AIDifficulty
+  color: Color
+  textureSet: [string, string, string, string, string, string, string]
+}>
 
 /**
  * @deprecated
@@ -55,49 +67,49 @@ export enum Page {
   customLevelSettings = 'customLevelSettings',
 }
 
-export type Logo = Component<unknown>;
+export type Logo = Component<unknown>
 
 export type Game = Component<{
-  version: string;
-  page: Page;
-  moves: number;
-  lastBoxClickTimestamp: number;
-  newVersionAvailable: boolean;
-  round: number;
-  grid: Entity[];
-  currentPlayer: Entity;
-  playersQueue: Entity[];
-  boxRotationQueue: Entity[];
-  gameStarted: boolean;
+  version: string
+  page: Page
+  moves: number
+  lastBoxClickTimestamp: number
+  newVersionAvailable: boolean
+  round: number
+  grid: Entity[]
+  currentPlayer: Entity
+  playersQueue: Entity[]
+  boxRotationQueue: Entity[]
+  gameStarted: boolean
 
   customLevelSettings: {
-    players: AI[];
-    difficulty: AIDifficulty;
-    quickStart: boolean;
-    mapType: string;
-  };
-  colorBlindMode: boolean;
-}>;
+    players: AI[]
+    difficulty: AIDifficulty
+    quickStart: boolean
+    mapType: string
+  }
+  colorBlindMode: boolean
+}>
 
 export type Marker = Component<{
-  color: Color;
-  position: [number, number];
-}>;
+  color: Color
+  position: [number, number]
+}>
 
 export type Background = Component<{
-  gradientTime: number;
-}>;
+  gradientTime: number
+}>
 
 // State
 
 type Components = {
-  box: Dictionary<Box>;
-  ai: Dictionary<AI>;
-  game: Dictionary<Game>;
-  marker: Dictionary<Marker>;
-  background: Dictionary<Background>;
-  logo: Dictionary<Logo>; // todo remove?
-};
+  box: Dictionary<Box>
+  ai: Dictionary<AI>
+  game: Dictionary<Game>
+  marker: Dictionary<Marker>
+  background: Dictionary<Background>
+  logo: Dictionary<Logo> // todo remove?
+}
 
 type Systems =
   | System<Box, AnyStateForSystem>
@@ -105,6 +117,6 @@ type Systems =
   | System<Game, AnyStateForSystem>
   | System<Marker, AnyStateForSystem>
   | System<Background, AnyStateForSystem>
-  | System<Logo, AnyStateForSystem>;
+  | System<Logo, AnyStateForSystem>
 
-export type State = InitialState<Components, Systems>;
+export type State = InitialState<Components, Systems>

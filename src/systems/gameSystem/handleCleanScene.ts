@@ -40,7 +40,7 @@ export const handleCleanScene: EventHandler<GameEvent.CleanSceneEvent, State> =
         boxRotationQueue: [],
         gameStarted: false,
       },
-    }) as State;
+    }) ;
     state = removeEntitiesByComponentName({ name: name.box, state });
     state = removeEntitiesByComponentName({ name: name.ai, state });
     state = removeEntitiesByComponentName({ name: name.marker, state });

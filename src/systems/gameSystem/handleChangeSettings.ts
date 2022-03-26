@@ -122,7 +122,7 @@ export const handleChangeDifficulty: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
-  saveStateToData(state as State);
+  saveStateToData(state );
 
   return state;
 };
@@ -144,7 +144,7 @@ export const handleChangeQuickStart: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
-  saveStateToData(state as State);
+  saveStateToData(state );
 
   return state;
 };
@@ -163,7 +163,7 @@ export const handleChangeColorBlindMode: EventHandler<
   });
 
   eventBusDispatch('setUIState', state);
-  saveStateToData(state as State);
+  saveStateToData(state );
 
   return state;
 };
@@ -173,7 +173,7 @@ export const handleChangeMapType: EventHandler<
   State
 > = ({ state }) => {
   eventBusDispatch('setUIState', state);
-  saveStateToData(state as State);
+  saveStateToData(state );
 
   return state;
 };

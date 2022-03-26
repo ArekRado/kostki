@@ -1,13 +1,13 @@
-import ReactDOM from 'react-dom';
-import React, { FC } from 'react';
-import { Main } from './pages/Main';
-import { useOutline } from './hooks/useOutline';
-import { Page, State } from '../type';
-import { getGame } from '../systems/gameSystem';
-import { useGameState } from './hooks/useGameState';
-import { CustomLevelSettings } from './pages/CustomLevelSettings';
-import { CustomLevel } from './pages/CustomLevel';
-import { globalCss } from '@stitches/react';
+import ReactDOM from 'react-dom'
+import React, { FC } from 'react'
+import { Main } from './pages/Main'
+import { useOutline } from './hooks/useOutline'
+import { Page, State } from '../type'
+import { getGame } from '../systems/gameSystem'
+import { useGameState } from './hooks/useGameState'
+import { CustomLevelSettings } from './pages/CustomLevelSettings'
+import { CustomLevel } from './pages/CustomLevel'
+import { globalCss } from '@stitches/react'
 
 const globalStyles = globalCss({
   '*': {
@@ -20,32 +20,33 @@ const globalStyles = globalCss({
     outlineStyle: 'solid',
     outlineColor: '$outline',
   },
-});
+})
 
 const App: FC<{ state: State }> = ({ state }) => {
-  useOutline();
-  globalStyles();
+  useOutline()
+  globalStyles()
 
-  const gameState = useGameState();
-  const page = getGame({ state: gameState || state })?.page;
+  const gameState = useGameState()
+  const page = getGame({ state: gameState || state })?.page
 
   switch (page) {
     case Page.mainMenu:
-      return <Main />;
+      return <Main />
     case Page.customLevelSettings:
-      return <CustomLevelSettings />;
+      return <CustomLevelSettings />
     case Page.customLevel:
-      return <CustomLevel />;
+      return <CustomLevel />
 
     case undefined:
-      return null;
+      return null
   }
-};
+}
 
-export const mountGameUI = ({ state }: { state: State }) =>
+export const mountGameUI = ({ state }: { state: State }) => {
   ReactDOM.render(
     <React.StrictMode>
       <App state={state} />
     </React.StrictMode>,
-    document.getElementById('gameUi')
-  );
+    document.getElementById('gameUi'),
+  )
+}

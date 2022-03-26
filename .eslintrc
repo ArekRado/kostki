@@ -21,8 +21,9 @@
     ], // Specify it only for TypeScript files
   },
   "rules": {
-    "@typescript-eslint/no-namespace": 0
-  //   "prettier/prettier": 2,
+    "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/no-floating-promises": 0,
+    //   "prettier/prettier": 2,
   },
   "settings": {
     "react": {

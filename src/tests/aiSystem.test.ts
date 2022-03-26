@@ -60,7 +60,7 @@ const basicGrid2x2 = [
 
 describe('aiSystem', () => {
   it('getDataGrid - should return all boxes in a matrix', () => {
-    let state = gridBlueprint({
+    const state = gridBlueprint({
       dataGrid: basicGrid2x2,
 
       state: getState({}),
@@ -83,7 +83,7 @@ describe('aiSystem', () => {
 
   describe('getMovesForEmptyBoxes', () => {
     it('all empty boxes - should return grid with points', () => {
-      let state = gridBlueprint({
+      const state = gridBlueprint({
         dataGrid: basicGrid2x2,
 
         state: getState({}),
@@ -101,7 +101,7 @@ describe('aiSystem', () => {
     });
 
     it('one non empty box - should return grid with points', () => {
-      let state = gridBlueprint({
+      const state = gridBlueprint({
         dataGrid: [
           [basicBox, { ...basicBox, dots: 1 }],
           [{ ...basicBox, player: humanPlayerEntity }, basicBox],
@@ -124,7 +124,7 @@ describe('aiSystem', () => {
 
   describe.skip('getBestRandomBox', () => {
     it('should return best box to click', () => {
-      let state = gridBlueprint({
+      const state = gridBlueprint({
         dataGrid: [
           [
             { ...basicBox, player: humanPlayerEntity },
@@ -149,7 +149,7 @@ describe('aiSystem', () => {
     });
 
     it('should return best box to click', () => {
-      let state = gridBlueprint({
+      const state = gridBlueprint({
         dataGrid: [
           [
             { ...basicBox, dots: 1 },

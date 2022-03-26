@@ -78,7 +78,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
       position: [center[0], center[1]],
       distance: cameraDistance,
     },
-  }) as State;
+  }) ;
 
   return state;
 };
@@ -158,7 +158,7 @@ export const handleStartCustomLevel: EventHandler<
     data: {
       currentPlayer: getNextPlayer({ state })?.entity,
     },
-  }) as State;
+  }) ;
 
   const game = getGame({ state });
 
@@ -174,7 +174,7 @@ export const handleStartCustomLevel: EventHandler<
       gameStarted: true,
       page: Page.customLevel,
     },
-  }) as State;
+  }) ;
 
   const currentAi = getComponent<AI>({
     state,
