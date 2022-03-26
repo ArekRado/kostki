@@ -158,7 +158,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done AND not shake white boxes
   // done AND should wait for 8 seconds of no user events
   // done fix click on white boxes
-  // - fix level end
+  // done fix level end
   // - custom leve settings - add different maps
   // - campaign
   // - change gradiens when user changes color

@@ -101,7 +101,7 @@ const PlayerLostModal: FC = () => (
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
-            payload: {},
+            payload: null,
           })
         }}
       >
@@ -139,7 +139,7 @@ const PlayerWonModal: FC = () => (
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
-            payload: {},
+            payload: null,
           })
         }}
       >
@@ -180,7 +180,7 @@ const getGameStatus = ({
   }, 0)
 
   if (amountOfCapturedBoxes === 0) return GameStatus.playerLost
-  if (amountOfCapturedBoxes === game.grid.length) return GameStatus.playerLost
+  if (amountOfCapturedBoxes === game.grid.length) return GameStatus.playerWon
 
   return GameStatus.gameInProgress
 }
