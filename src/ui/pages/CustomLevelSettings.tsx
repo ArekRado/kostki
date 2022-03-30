@@ -10,6 +10,7 @@ import { Cross } from '../components/icons/Cross'
 import { PageContainer } from '../components/PageContainer'
 import { useGameState } from '../hooks/useGameState'
 import { emitEvent } from '@arekrado/canvas-engine'
+import { MapList } from '../components/MapList'
 
 const mapDifficultyToText = (difficulty: AIDifficulty): string => {
   switch (difficulty) {
@@ -38,37 +39,37 @@ export const CustomLevelSettings: React.FC = () => {
   const changePlayers = () =>
     emitEvent<GameEvent.ChangePlayersEvent>({
       type: GameEvent.Type.changePlayers,
-      payload: {},
+      payload: null,
     })
 
   const changeDifficulty = () =>
     emitEvent<GameEvent.ChangeDifficultyEvent>({
       type: GameEvent.Type.changeDifficulty,
-      payload: {},
+      payload: null,
     })
 
   const changeQuickStart = () =>
     emitEvent<GameEvent.ChangeQuickStartEvent>({
       type: GameEvent.Type.changeQuickStart,
-      payload: {},
+      payload: null,
     })
 
   const changeColorBlindMode = () =>
     emitEvent<GameEvent.ChangeColorBlindModeEvent>({
       type: GameEvent.Type.changeColorBlindMode,
-      payload: {},
+      payload: null,
     })
 
   // const changeMapType = () =>
   //   emitEvent<GameEvent.ChangeMapTypeEvent>({
   //     type: GameEvent.Type.changeMapType,
-  //     payload: {},
+  //     payload: null,
   //   })
 
   const startCustomLevel = () =>
     emitEvent<GameEvent.StartCustomLevelEvent>({
       type: GameEvent.Type.startCustomLevel,
-      payload: {},
+      payload: null,
     })
 
   const backToMainMenu = () =>
@@ -90,13 +91,11 @@ export const CustomLevelSettings: React.FC = () => {
     >
       <Flex
         css={{
-          flexDirection: 'column',
-          justifyContent: 'center',
           gridRow: '1 / 1',
           gridColumn: '1 / 3',
         }}
       >
-        Select level (todo)
+        <MapList />
       </Flex>
 
       <Grid

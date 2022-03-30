@@ -3,8 +3,8 @@ import { styled } from '../styled'
 export const Button = styled('button', {
   border: '5px solid black',
   background: 'white',
-  padding: '20px 15px',
-  fontSize: '1.5rem',
+  padding: '10px 7px',
+  fontSize: '1rem',
   whiteSpace: 'nowrap',
 
   cursor: 'pointer',

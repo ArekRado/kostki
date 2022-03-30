@@ -10,7 +10,7 @@ import { create } from './gameSystem/create'
 
 export const gameEntity = 'game'
 
-export const shakeAnimationTimeout = 4000
+export const shakeAnimationTimeout = 3000
 
 export namespace GameEvent {
   export enum Type {

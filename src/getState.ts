@@ -26,6 +26,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { eventHandler } from './eventSystem'
 import { loadAndMountDevtools } from './utils/handleEnableDevtools'
+import { gameMapsBlueprint } from './blueprints/mapsBlueprint'
 
 type GetCanvaasEngineStateParams = Parameters<typeof getCanvaasEngineState>['0']
 
@@ -143,6 +144,8 @@ export const getState = ({
   // removeState();
 
   state = setScene({ state, page: Page.mainMenu })
+
+  state = gameMapsBlueprint({ state })
 
   if (process.env.NODE_ENV === 'development') {
     loadAndMountDevtools()

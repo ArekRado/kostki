@@ -37,6 +37,7 @@ export enum name {
   marker = 'marker',
   background = 'background',
   logo = 'logo',
+  gameMap = 'gameMap',
 }
 
 // Component
@@ -90,7 +91,7 @@ export type Game = Component<{
     players: AI[]
     difficulty: AIDifficulty
     quickStart: boolean
-    mapType: string
+    mapType: Entity
   }
   colorBlindMode: boolean
 }>
@@ -104,6 +105,20 @@ export type Background = Component<{
   gradientTime: number
 }>
 
+export type GameMap = Component<{
+  players: Pick<AI, 'human' | 'color' | 'level'>[]
+  grid: (
+    | {
+        /**
+         * index of players array
+         */
+        player?: number
+        dots: number
+      }
+    | undefined
+  )[][]
+}>
+
 // State
 
 type Components = {
@@ -113,6 +128,7 @@ type Components = {
   marker: Dictionary<Marker>
   background: Dictionary<Background>
   logo: Dictionary<Logo> // todo remove?
+  gameMap: Dictionary<GameMap>
 }
 
 type Systems =

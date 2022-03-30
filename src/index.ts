@@ -164,7 +164,7 @@ if (process.env.NODE_ENV !== 'test') {
   // - change gradiens when user changes color
   // - update dependencies
   // done - move ecs to new project package
-  // - shit doesnt work - eslint
+  // - eslint-prettier
   // done - babylonjs tree shacking
   // - beautify ui - use tailwind?
   // - pre-create boxes and reuse part of them when starts level
