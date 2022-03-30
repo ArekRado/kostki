@@ -13,8 +13,6 @@ import {
   purple,
 } from '../utils/colors'
 
-type A = GameMap['grid'][0][0]
-
 const maps: Omit<GameMap, 'entity' | 'name'>[] = [
   {
     players: [
