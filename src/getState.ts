@@ -15,6 +15,7 @@ import {
   Camera,
   componentName,
   createComponent,
+  getComponentsByName,
   getState as getCanvaasEngineState,
   setEntity,
 } from '@arekrado/canvas-engine'
@@ -49,7 +50,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.13'
+  const version = '0.0.14'
 
   addEventHandler(eventHandler)
 
@@ -77,13 +78,17 @@ export const getState = ({
 
   const savedData = getSavedData()
 
+  state = gameMapsBlueprint({ state })
+
+  const firstMap = getComponentsByName({ state, name: name.gameMap })
+  const firstMapEntity = Object.keys(firstMap || {})[0] ?? ''
+
   state = setEntity({ state, entity: gameEntity })
   state = createComponent<Game, State>({
     state,
     data: {
       version,
       page: Page.mainMenu,
-      newVersionAvailable: false,
       lastBoxClickTimestamp: 0,
       entity: gameEntity,
       name: name.game,
@@ -99,7 +104,7 @@ export const getState = ({
         players: savedData?.players ?? playersList().slice(0, 4),
         difficulty: savedData?.difficulty ?? AIDifficulty.medium,
         quickStart: savedData?.quickStart ?? true,
-        mapType: savedData?.mapType ?? '',
+        mapType: savedData?.mapType ?? firstMapEntity,
       },
     },
   })
@@ -144,8 +149,6 @@ export const getState = ({
   // removeState();
 
   state = setScene({ state, page: Page.mainMenu })
-
-  state = gameMapsBlueprint({ state })
 
   if (process.env.NODE_ENV === 'development') {
     loadAndMountDevtools()

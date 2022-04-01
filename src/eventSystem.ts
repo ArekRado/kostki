@@ -94,7 +94,7 @@ export const eventHandler = ({
       })
       return handleStartCustomLevel({
         state,
-        event: { type: GameEvent.Type.startCustomLevel, payload: {} },
+        event: { type: GameEvent.Type.startCustomLevel, payload: null },
       })
 
     // Box

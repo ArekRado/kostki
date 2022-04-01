@@ -15,6 +15,10 @@ export const loadAndMountDevtools = () => {
   })
 }
 
+if (process.env.NODE_ENV === 'production') {
+  console.info('📐 call "window.loadAndMountDevtools()" to open devtools')
+}
+
 window.loadAndMountDevtools = loadAndMountDevtools
 
 export namespace DevtoolsEvent {

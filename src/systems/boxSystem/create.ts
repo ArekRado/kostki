@@ -36,7 +36,7 @@ export const create = ({
       fromParentRotation: [0, 0, 0],
       scale: [1, 1, 1],
       fromParentScale: [1, 1, 1],
-      position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
+      position: [gridPosition[0] * boxWithGap, -gridPosition[1] * boxWithGap],
       fromParentPosition: [0, 0],
     },
   })
@@ -44,7 +44,7 @@ export const create = ({
   boxBlueprint({
     scene: sceneRef,
     name: `${gridPosition[0]}-${gridPosition[1]}`,
-    position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
+    // position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
     uniqueId: parseFloat(component.entity),
     // texture: ai?.textureSet[component.dots] || empty,
     color: ai?.color || [1, 1, 1],

@@ -63,7 +63,10 @@ export namespace GameEvent {
     Type.changeColorBlindMode,
     null
   >
-  export type ChangeMapTypeEvent = ECSEvent<Type.changeMapType, null>
+  export type ChangeMapTypeEvent = ECSEvent<
+    Type.changeMapType,
+    { gameMapEntity: Entity }
+  >
 
   export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, null>
   export type ReloadEvent = ECSEvent<Type.reload, null>

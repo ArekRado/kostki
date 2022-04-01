@@ -1,4 +1,4 @@
-import { AI, Box, Game, State, Marker, Page, name } from '../../type'
+import { AI, Box, Game, State, Marker, Page, name, GameMap } from '../../type'
 import {
   gameEntity,
   GameEvent,
@@ -28,9 +28,23 @@ import { getTime } from '@arekrado/canvas-engine/system/time'
 
 type setLevelFromSettings = (params: { state: State; game: Game }) => State
 export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
-  state = Array.from({ length: 8 }).reduce(
-    (acc: State, _, x) =>
-      Array.from({ length: 8 }).reduce((acc2: State, _, y) => {
+  const gameMap = getComponent<GameMap, State>({
+    state,
+    name: name.gameMap,
+    entity: game.customLevelSettings.mapType,
+  })
+
+  if (!gameMap) {
+    return state
+  }
+
+  state = gameMap.grid.reduce(
+    (acc: State, row, x) =>
+      row.reduce((acc2: State, box, y) => {
+        if (!box) {
+          return acc2
+        }
+
         const entity = generateId().toString()
         acc2 = setEntity({ state: acc2, entity })
         acc2 = createComponent<Box, State>({

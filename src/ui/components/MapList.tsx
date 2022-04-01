@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
 import { useGameState } from '../hooks/useGameState'
 import { styled } from '@stitches/react'
-import { getComponentsByName } from '@arekrado/canvas-engine'
+import { emitEvent, Entity, getComponentsByName } from '@arekrado/canvas-engine'
 import { GameMap, name } from '../../type'
+import { GameEvent, getGame } from '../../systems/gameSystem'
 
 const ScrolledList = styled(Flex, {
   overflowX: 'auto',
@@ -18,10 +19,7 @@ const ScrolledList = styled(Flex, {
 
 const GridContainer = styled('div', {
   display: 'grid',
-  gap: '5px',
-  // justifyContent: 'center',
-  // alignItems: 'center',
-  // maxWidth: '100%',
+  gap: '3px',
   maxHeight: '100%',
   margin: '0 auto',
 })
@@ -31,64 +29,10 @@ const MiniBox = styled('div', {
   borderStyle: 'solid',
   borderColor: 'black',
   boxSizing: 'border-box',
-  // width: '100%',
-  // height: '100%',
+  backgroundColor: 'white',
 })
 
-// type MapGrid = Array<
-//   (GameMap['grid'][0][0] & { position: Vector2D; size: number }) | undefined
-// >
-
-// type EnchancedGameMap = Omit<GameMap, 'grid'> & {
-//   longerSide: number
-//   grid: MapGrid
-// }
-
-// const getLongerSide = (gameMap: GameMap): EnchancedGameMap['longerSide'] =>
-//   gameMap.grid.length > gameMap.grid?.[0]?.length
-//     ? gameMap.grid.length
-//     : gameMap.grid?.[0]?.length || 0
-
-// const getShorterSide = (gameMap: GameMap): EnchancedGameMap['longerSide'] =>
-//   gameMap.grid.length > gameMap.grid?.[0]?.length
-//     ? gameMap.grid?.[0]?.length || 0
-//     : gameMap.grid.length
-
-// const getGridPositions = (gameMap: GameMap): MapGrid => {
-//   const [longerSide, shorterSide] = [
-//     getLongerSide(gameMap),
-//     getShorterSide(gameMap),
-//   ]
-
-//   const size = 100 / longerSide
-//   const shift = [
-//     ((longerSide - gameMap.grid?.[0]?.length || 0) * size) / 2,
-//     ((longerSide - gameMap.grid.length) * size) / 2,
-//   ]
-
-//   const list: MapGrid = [] as MapGrid
-
-//   gameMap.grid.forEach((row, y) => {
-//     row.forEach((box, x) => {
-//       if (!box) {
-//         return
-//       }
-
-//       const enhancedBox: MapGrid[0] = {
-//         ...box,
-//         size,
-//         position: [
-//           (x * 100) / longerSide + shift[0],
-//           (y * 100) / longerSide + shift[1],
-//         ],
-//       }
-
-//       list.push(enhancedBox)
-//     })
-//   })
-
-//   return list
-// }
+const mapListId = 'mapList'
 
 export const MapList: React.FC = () => {
   const gameState = useGameState()
@@ -102,24 +46,35 @@ export const MapList: React.FC = () => {
       : {},
   )
 
-  // const gameMapsWithGrids: EnchancedGameMap[] = gameMaps.map((gameMap) => {
-  //   const longerSide = getLongerSide(gameMap)
+  const changeMapType = (gameMapEntity: Entity) =>
+    emitEvent<GameEvent.ChangeMapTypeEvent>({
+      type: GameEvent.Type.changeMapType,
+      payload: { gameMapEntity },
+    })
 
-  //   return {
-  //     ...gameMap,
-  //     longerSide,
-  //     grid: getGridPositions(gameMap),
-  //   }
-  // })
+  useEffect(() => {
+    const scrollContainer = document.querySelector(`#${mapListId}`)
+    if (!scrollContainer) {
+      return
+    }
+    const scrollEvent = (evt: Event & { deltaY: number }) => {
+      scrollContainer.scrollLeft += evt.deltaY
+    }
 
-  // const changeMapType = () =>
-  //   emitEvent<GameEvent.ChangeMapTypeEvent>({
-  //     type: GameEvent.Type.changeMapType,
-  //     payload: null,
-  //   })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    scrollContainer?.addEventListener<any>('wheel', scrollEvent)
+
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      scrollContainer?.removeEventListener<any>('wheel', scrollEvent)
+    }
+  }, [])
+
+  const game = gameState ? getGame({ state: gameState }) : null
+  const mapType = game?.customLevelSettings.mapType
 
   return (
-    <ScrolledList>
+    <ScrolledList id={mapListId}>
       {gameMaps.map((mapGrid) => (
         <Button
           key={mapGrid.entity}
@@ -127,7 +82,16 @@ export const MapList: React.FC = () => {
             padding: '5px',
             aspectRatio: '1 / 1',
             height: '100%',
+            border: 'none',
+
+            transition: '0.2s background-color ease',
+
+            backgroundColor:
+              mapType === mapGrid.entity
+                ? 'rgba(255,255,255,0.5)'
+                : 'rgba(255,255,255,0.0)',
           }}
+          onClick={() => changeMapType(mapGrid.entity)}
         >
           <GridContainer
             css={{
@@ -139,8 +103,8 @@ export const MapList: React.FC = () => {
             }}
           >
             {mapGrid.grid
-              .map((row, i) =>
-                row.reduce((acc, box, j) => {
+              .map((row, j) =>
+                row.reduce((acc, box, i) => {
                   if (!box) {
                     return acc
                   }

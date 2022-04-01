@@ -12,11 +12,11 @@ export const getGridDimensions = ({ state }: { state: State }) => {
   const dataGrid: BasicBox[][] = getDataGrid({ state })
 
   const boxWithGap = boxSize + boxGap
-  const gridWidth = dataGrid[0] ? dataGrid[0].length * boxWithGap : 1
+  const gridWidth = dataGrid[0] ? -dataGrid[0].length * boxWithGap : 1
   const gridHeight = dataGrid.length * boxWithGap
   const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight
 
-  const center = [(gridWidth - 1 - boxGap) / 2, (gridHeight - 1 - boxGap) / 2]
+  const center = [(gridWidth + 1 + boxGap) / 2, (gridHeight - 1 - boxGap) / 2]
 
   return {
     width: gridWidth,

@@ -160,6 +160,7 @@ if (process.env.NODE_ENV !== 'test') {
   // done fix click on white boxes
   // done fix level end
   // - custom leve settings - add different maps
+  // - when webgl is not supported use css gradient
   // - campaign
   // - change gradiens when user changes color
   // - update dependencies

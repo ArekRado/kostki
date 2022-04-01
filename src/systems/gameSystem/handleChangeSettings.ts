@@ -171,7 +171,23 @@ export const handleChangeColorBlindMode: EventHandler<
 export const handleChangeMapType: EventHandler<
   GameEvent.ChangeMapTypeEvent,
   State
-> = ({ state }) => {
+> = ({
+  state,
+  event: {
+    payload: { gameMapEntity },
+  },
+}) => {
+  state = updateComponent<Game, State>({
+    state,
+    entity: gameEntity,
+    name: name.game,
+    update: (game) => ({
+      customLevelSettings: {
+        ...game.customLevelSettings,
+        mapType: gameMapEntity,
+      },
+    }),
+  })
   eventBusDispatch('setUIState', state)
   saveStateToData(state)
 
@@ -182,14 +198,14 @@ export const handleShowNewVersion: EventHandler<
   GameEvent.ShowNewVersionEvent,
   State
 > = ({ state }) => {
-  state = updateComponent<Game, State>({
-    state,
-    entity: gameEntity,
-    name: name.game,
-    update: () => ({
-      newVersionAvailable: true,
-    }),
-  })
+  // state = updateComponent<Game, State>({
+  //   state,
+  //   entity: gameEntity,
+  //   name: name.game,
+  //   update: () => ({
+  //     newVersionAvailable: true,
+  //   }),
+  // })
 
   return state
 }
