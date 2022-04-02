@@ -25,23 +25,13 @@ export const handleShakeAiBoxes: EventHandler<
   const game = getGame({ state })
   const time = getTime({ state })
 
+  if (game?.gameStarted === false) {
+    return state
+  }
+
   const lastBoxClickTimestamp = game?.lastBoxClickTimestamp || 0
   const timeNow = time?.timeNow || 0
 
-  // player did move, do not distribut too often!
-  // if (game && game?.moves !== moves) {
-  //   setTimeout(() => {
-  //     emitEvent<GameEvent.ShakeAiBoxesEvent>({
-  //       type: GameEvent.Type.shakeAiBoxes,
-  //       payload: {
-  //         moves: game.moves,
-  //         ai,
-  //       },
-  //     });
-  //   }, shakeAnimationTimeout);
-
-  //   return state;
-  // }
   if (timeNow > lastBoxClickTimestamp + idleTime) {
     game?.grid.forEach((boxEntity) => {
       const box = getComponent<Box>({
