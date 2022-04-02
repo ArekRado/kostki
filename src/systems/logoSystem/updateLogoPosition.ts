@@ -17,7 +17,6 @@ export const updateLogoPosition = ({ state }: { state: State }): State => {
     return state
   }
 
-  // const logoNode = sceneRef.getTransformNodeByUniqueId(parseFloat(logoEntity));
   const camera = getCamera({ state })
 
   if (!camera) {
@@ -42,41 +41,10 @@ export const updateLogoPosition = ({ state }: { state: State }): State => {
           return acc2
         }
 
-        // const boxNode = sceneRef.getTransformNodeByUniqueId(
-        //   parseFloat(boxEntity)
-        // );
-
-        // if (!boxNode) {
-        //   return acc2;
-        // }
-
         const boxPosition: [number, number] = [
           logoPosition[0] + j * boxSize,
           logoPosition[1] + -i * boxSize,
         ]
-
-        // boxNode.position.x = logoNode.position.x + boxPosition[0];
-        // boxNode.position.y = logoNode.position.y + boxPosition[1];
-
-        // const transform = getComponent<Transform, State>({
-        //   state: acc2,
-        //   name: componentName.transform,
-        //   entity: boxEntity,
-        // });
-
-        // if (transform) {
-        // return setComponent<Transform, State>({
-        //   state: acc2,
-        //   data: {
-        //     ...transform,
-        //     position: [boxPosition[0], boxPosition[1]],
-        //     scale: [
-        //       1 / boxScaleFactor,
-        //       1 / boxScaleFactor,
-        //       1 / boxScaleFactor,
-        //     ],
-        //   },
-        // });
 
         return updateComponent<Transform, State>({
           state: acc2,
@@ -87,12 +55,6 @@ export const updateLogoPosition = ({ state }: { state: State }): State => {
             scale: [1 / boxScaleFactor, 1 / boxScaleFactor, 1 / boxScaleFactor],
           }),
         })
-        // }
-
-        // return acc2;
-
-        // boxNode.scaling.x = 1 / boxScaleFactor;
-        // boxNode.scaling.y = 1 / boxScaleFactor;
       }, acc1),
     state,
   )

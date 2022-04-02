@@ -3,7 +3,7 @@ import {
   getCamera,
   setCamera as setCanvasEngineCamera,
 } from '@arekrado/canvas-engine/system/camera'
-import { setLogo } from '../systems/logoSystem'
+import { updateLogoPosition } from '../systems/logoSystem/updateLogoPosition'
 import { State } from '../type'
 
 export const setCamera = ({
@@ -19,7 +19,8 @@ export const setCamera = ({
     state,
     data: { ...camera, ...data },
   }) as State
-  state = setLogo({ state, data: {} })
+
+  state = updateLogoPosition({ state })
 
   return state
 }

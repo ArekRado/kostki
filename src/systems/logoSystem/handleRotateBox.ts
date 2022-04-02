@@ -1,5 +1,5 @@
-import { emitEvent, EventHandler } from '@arekrado/canvas-engine'
-import { Page, State } from '../../type'
+import { emitEvent, EventHandler, getComponent } from '@arekrado/canvas-engine'
+import { Page, State, name } from '../../type'
 import { white } from '../../utils/colors'
 import { set1 } from '../../utils/textureSets'
 import {
@@ -8,7 +8,7 @@ import {
 } from '../boxSystem/createRotationBoxAnimation'
 import { getGame } from '../gameSystem'
 import { playersList } from '../gameSystem/handleChangeSettings'
-import { getLogo, LogoEvent } from '../logoSystem'
+import { logoEntity, LogoEvent } from '../logoSystem'
 import { logoGrid } from './logoGrid'
 
 const getRandomColor = () => {
@@ -36,7 +36,11 @@ export const handleRotateRandomLogoBox: EventHandler<
   State
 > = ({ state }) => {
   const sceneRef = state.babylonjs.sceneRef
-  const isLogoDefined = getLogo({ state })
+  const isLogoDefined = getComponent({
+    state,
+    name: name.logo,
+    entity: logoEntity,
+  })
   const game = getGame({ state })
   if (!isLogoDefined || !sceneRef || !game) {
     return state
@@ -53,13 +57,14 @@ export const handleRotateRandomLogoBox: EventHandler<
     texture,
     color,
     nextTurn: false,
+    shouldExplode: false,
   })
 
   if (game.page === Page.mainMenu) {
     setTimeout(() => {
       emitEvent<LogoEvent.All>({
         type: LogoEvent.Type.rotateRandomLogoBox,
-        payload: {},
+        payload: null,
       })
     }, Math.random() * boxRotationAnimationTime + boxRotationAnimationTime)
   }

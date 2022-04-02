@@ -84,7 +84,7 @@ export const MapList: React.FC = () => {
             height: '100%',
             border: 'none',
 
-            transition: '0.2s background-color ease',
+            transition: '0.2s transform, 0.2s background-color',
 
             backgroundColor:
               mapType === mapGrid.entity

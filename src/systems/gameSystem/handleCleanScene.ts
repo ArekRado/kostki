@@ -1,10 +1,14 @@
 import {
+  Camera,
+  componentName,
   createComponent,
   EventHandler,
   getComponentsByName,
   removeEntity,
-  setEntity,
+  updateComponent,
 } from '@arekrado/canvas-engine'
+import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
+import { cameraEntity } from '@arekrado/canvas-engine/system/camera'
 import { Logo, name, Page, State } from '../../type'
 import { eventBusDispatch } from '../../utils/eventBus'
 import { GameEvent, setGame } from '../gameSystem'
@@ -58,7 +62,17 @@ export const handleCleanScene: EventHandler<
 
 export const setScene = ({ state, page }: { state: State; page: Page }) => {
   if (page === Page.mainMenu) {
-    state = setEntity({ state, entity: logoEntity })
+    state = updateComponent<Camera, State>({
+      state,
+      entity: cameraEntity,
+      name: componentName.camera,
+      update: () => ({
+        position: [0, 0],
+        distance: 5,
+      }),
+    })
+
+    state = createEntity({ state, entity: logoEntity })
     state = createComponent<Logo, State>({
       state,
       data: {
