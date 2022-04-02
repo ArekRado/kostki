@@ -184,7 +184,7 @@ export const handleChangeMapType: EventHandler<
     update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
-        mapType: gameMapEntity,
+        mapEntity: gameMapEntity,
       },
     }),
   })

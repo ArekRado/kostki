@@ -102,7 +102,7 @@ export const getState = ({
         players: savedData?.players ?? playersList().slice(0, 4),
         difficulty: savedData?.difficulty ?? AIDifficulty.medium,
         quickStart: savedData?.quickStart ?? true,
-        mapType: savedData?.mapType ?? firstMapEntity,
+        mapEntity: savedData?.mapType ?? firstMapEntity,
       },
     },
   })

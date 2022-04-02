@@ -13,7 +13,7 @@ export const boxGap = 0.2
 export const boxWithGap = boxSize + boxGap
 
 export const getGridDimensions = ({ state }: { state: State }) => {
-  const mapType = getGame({ state })?.customLevelSettings.mapType
+  const mapType = getGame({ state })?.customLevelSettings.mapEntity
   const gameMap = getComponent<GameMap>({
     state,
     name: name.gameMap,

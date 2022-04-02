@@ -7,7 +7,7 @@ type SavedData = {
   players: Game['customLevelSettings']['players']
   difficulty: Game['customLevelSettings']['difficulty']
   quickStart: Game['customLevelSettings']['quickStart']
-  mapType: Game['customLevelSettings']['mapType']
+  mapEntity: Game['customLevelSettings']['mapEntity']
   colorBlindMode: Game['colorBlindMode']
 }
 
@@ -22,7 +22,7 @@ export const saveStateToData = (state: State) => {
       players: game.customLevelSettings.players,
       difficulty: game.customLevelSettings.difficulty,
       quickStart: game.customLevelSettings.quickStart,
-      mapType: game.customLevelSettings.mapType,
+      mapEntity: game.customLevelSettings.mapEntity,
       colorBlindMode: game.colorBlindMode,
     })
 }

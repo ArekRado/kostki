@@ -31,7 +31,7 @@ export const setLevelFromSettings: setLevelFromSettings = ({ state, game }) => {
   const gameMap = getComponent<GameMap, State>({
     state,
     name: name.gameMap,
-    entity: game.customLevelSettings.mapType,
+    entity: game.customLevelSettings.mapEntity,
   })
 
   if (!gameMap) {

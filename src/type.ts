@@ -90,7 +90,7 @@ export type Game = Component<{
     players: AI[]
     difficulty: AIDifficulty
     quickStart: boolean
-    mapType: Entity
+    mapEntity: Entity
   }
   colorBlindMode: boolean
 }>

@@ -70,7 +70,7 @@ export const MapList: React.FC<{ css: CSS }> = ({ css }) => {
   }, [])
 
   const game = gameState ? getGame({ state: gameState }) : null
-  const mapType = game?.customLevelSettings.mapType
+  const mapType = game?.customLevelSettings.mapEntity
 
   return (
     <ScrolledList id={mapListId} css={css}>
