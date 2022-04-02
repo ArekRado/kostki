@@ -162,8 +162,8 @@ if (process.env.NODE_ENV !== 'test') {
   // done AND should wait for 8 seconds of no user events
   // done fix click on white boxes
   // done fix level end
-  // - custom leve settings - add different maps
-  // - when webgl is not supported use css gradient
+  // - custom leve settings - add more maps
+  // done when webgl is not supported use css gradient
   // - campaign
   // - change gradiens when user changes color
   // - update dependencies

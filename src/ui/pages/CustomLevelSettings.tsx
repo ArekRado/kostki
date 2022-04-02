@@ -89,14 +89,12 @@ export const CustomLevelSettings: React.FC = () => {
         flex: 1,
       }}
     >
-      <Flex
+      <MapList
         css={{
           gridRow: '1 / 1',
           gridColumn: '1 / 3',
         }}
-      >
-        <MapList />
-      </Flex>
+      />
 
       <Grid
         css={{
@@ -108,7 +106,6 @@ export const CustomLevelSettings: React.FC = () => {
           },
 
           gridGap: '0.5rem',
-
 
           gridRow: '2 / 2',
           gridColumn: '1 / 3',

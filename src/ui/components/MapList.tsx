@@ -2,14 +2,13 @@ import React, { useEffect } from 'react'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
 import { useGameState } from '../hooks/useGameState'
-import { styled } from '@stitches/react'
+import { CSS, styled } from '@stitches/react'
 import { emitEvent, Entity, getComponentsByName } from '@arekrado/canvas-engine'
 import { GameMap, name } from '../../type'
 import { GameEvent, getGame } from '../../systems/gameSystem'
 
 const ScrolledList = styled(Flex, {
   overflowX: 'auto',
-  cursor: 'grab',
   gap: '10px',
   userSelect: 'all',
   pointerEvents: 'all',
@@ -34,7 +33,7 @@ const MiniBox = styled('div', {
 
 const mapListId = 'mapList'
 
-export const MapList: React.FC = () => {
+export const MapList: React.FC<{ css: CSS }> = ({ css }) => {
   const gameState = useGameState()
 
   const gameMaps = Object.values(
@@ -74,7 +73,7 @@ export const MapList: React.FC = () => {
   const mapType = game?.customLevelSettings.mapType
 
   return (
-    <ScrolledList id={mapListId}>
+    <ScrolledList id={mapListId} css={css}>
       {gameMaps.map((mapGrid) => (
         <Button
           key={mapGrid.entity}
