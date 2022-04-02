@@ -1,4 +1,3 @@
-import { boxWithGap } from '../../blueprints/gridBlueprint'
 import { AI, Box, Game, name, State } from '../../type'
 import { eventBusDispatch } from '../../utils/eventBus'
 import { getAiMove } from '../aiSystem/getAiMove'
@@ -8,8 +7,10 @@ import { gameEntity, getGame } from '../gameSystem'
 import { setMarker } from '../markerSystem'
 import { getNextPlayer } from './getNextPlayer'
 import {
+  componentName,
   getComponent,
   getComponentsByName,
+  Transform,
   updateComponent,
 } from '@arekrado/canvas-engine'
 import { getTime } from '@arekrado/canvas-engine/system/time'
@@ -124,14 +125,20 @@ export const startNextTurn = ({ state }: { state: State }) => {
       } else {
         const box = getAiMove({ state, ai })
 
+        const boxTransform = getComponent<Transform>({
+          name: componentName.transform,
+          entity: box?.entity || '',
+          state,
+        })
+
         if (box) {
           state = setMarker({
             state,
             data: {
               color: ai.color,
               position: [
-                box.gridPosition[0] * boxWithGap,
-                box.gridPosition[1] * boxWithGap,
+                boxTransform?.position[0]??0,
+                boxTransform?.position[1]??0,
               ],
             },
           })

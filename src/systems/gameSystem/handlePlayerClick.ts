@@ -1,5 +1,9 @@
-import { EventHandler, getComponent } from '@arekrado/canvas-engine'
-import { boxWithGap } from '../../blueprints/gridBlueprint'
+import {
+  componentName,
+  EventHandler,
+  getComponent,
+  Transform,
+} from '@arekrado/canvas-engine'
 import { AI, Box, name, State } from '../../type'
 import { onClickBox } from '../boxSystem/onClickBox'
 import { GameEvent, getGame } from '../gameSystem'
@@ -25,7 +29,13 @@ export const handlePlayerClick: EventHandler<
   const canClickOnBox =
     box?.player === undefined || box?.player === currentPlayer
 
-  if (gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
+  const boxTransform = getComponent<Transform>({
+    name: componentName.transform,
+    entity: event.payload.boxEntity,
+    state,
+  })
+
+  if (boxTransform && gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
     const ai = getComponent<AI, State>({
       name: name.ai,
       state,
@@ -38,9 +48,9 @@ export const handlePlayerClick: EventHandler<
         data: {
           color: ai.color,
           position: [
-            box.gridPosition[0] * boxWithGap,
-            box.gridPosition[1] * boxWithGap,
-          ],
+            boxTransform.position[0],
+            boxTransform.position[1]
+          ]
         },
       })
       state = onClickBox({ box, state, ai })

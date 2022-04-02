@@ -100,10 +100,6 @@ export type Marker = Component<{
   position: [number, number]
 }>
 
-export type Background = Component<{
-  gradientTime: number
-}>
-
 export type GameMap = Component<{
   players: Pick<AI, 'human' | 'color' | 'level'>[]
   grid: (
@@ -125,7 +121,6 @@ type Components = {
   ai: Dictionary<AI>
   game: Dictionary<Game>
   marker: Dictionary<Marker>
-  background: Dictionary<Background>
   logo: Dictionary<Logo> // todo remove?
   gameMap: Dictionary<GameMap>
 }
@@ -135,7 +130,6 @@ type Systems =
   | System<AI, AnyStateForSystem>
   | System<Game, AnyStateForSystem>
   | System<Marker, AnyStateForSystem>
-  | System<Background, AnyStateForSystem>
   | System<Logo, AnyStateForSystem>
 
 export type State = InitialState<Components, Systems>

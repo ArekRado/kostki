@@ -5,11 +5,10 @@ import { gameEntity, gameSystem } from './systems/gameSystem'
 import { markerSystem } from './systems/markerSystem'
 
 import { playersList } from './systems/gameSystem/handleChangeSettings'
-import { backgroundEntity, backgroundSystem } from './systems/backgroundSystem'
 import { logoSystem } from './systems/logoSystem'
 import { setScene } from './systems/gameSystem/handleCleanScene'
 import { getSavedData } from './utils/localDb'
-import { AI, Background, Game, name, Page, State } from './type'
+import { AI, Game, name, Page, State } from './type'
 import {
   addEventHandler,
   Camera,
@@ -50,7 +49,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.14'
+  const version = '0.0.15'
 
   addEventHandler(eventHandler)
 
@@ -59,7 +58,6 @@ export const getState = ({
   state = aiSystem(state)
   state = gameSystem(state)
   state = markerSystem(state)
-  state = backgroundSystem(state)
   state = logoSystem(state)
 
   state = setEntity({ state, entity: humanPlayerEntity })
@@ -121,16 +119,6 @@ export const getState = ({
       },
     })
   }
-
-  state = setEntity({ state, entity: backgroundEntity })
-  state = createComponent<Background, State>({
-    state,
-    data: {
-      entity: backgroundEntity,
-      name: name.background,
-      gradientTime: 50000 * Math.random(),
-    },
-  })
 
   // const savedState = getSavedState();
   // const savedStateVersion = getGame({

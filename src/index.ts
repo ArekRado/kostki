@@ -9,7 +9,7 @@ import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Camera } from '@babylonjs/core/Cameras/camera'
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
-import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { emitEvent, runOneFrame } from '@arekrado/canvas-engine'
 import { CameraEvent } from '@arekrado/canvas-engine/system/camera'
 
@@ -38,6 +38,7 @@ const engine =
 // Scene
 const scene = new Scene(engine)
 // scene.debugLayer.show();
+
 engine.runRenderLoop(() => {
   if (scene && scene.activeCamera) {
     scene.render()
@@ -99,6 +100,8 @@ if (process.env.NODE_ENV !== 'test') {
     //   },
     // )
   }
+  scene.clearColor = new Color4(0, 0, 0, 0);
+  document.querySelector('#loader')?.remove()
 
   let state = getState({
     scene,
