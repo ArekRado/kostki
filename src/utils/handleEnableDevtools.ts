@@ -7,6 +7,8 @@ import {
 import { State } from '../type'
 
 export const loadAndMountDevtools = () => {
+  import('../style.css');
+
   import('@arekrado/canvas-engine-devtools').then(({ debugSystem }) => {
     emitEvent<DevtoolsEvent.Enable>({
       type: DevtoolsEvent.Type.enable,

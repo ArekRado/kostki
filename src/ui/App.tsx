@@ -5,9 +5,10 @@ import { useOutline } from './hooks/useOutline'
 import { Page, State } from '../type'
 import { getGame } from '../systems/gameSystem'
 import { useGameState } from './hooks/useGameState'
-import { CustomLevelSettings } from './pages/CustomLevelSettings'
+import { CustomLevelSettings } from './pages/CustomLevelSettings/CustomLevelSettings'
 import { CustomLevel } from './pages/CustomLevel'
 import { globalCss } from '@stitches/react'
+import { CampaignLevelSelect } from './pages/CampaignLevelSelect'
 
 const globalStyles = globalCss({
   '*': {
@@ -32,6 +33,8 @@ const App: FC<{ state: State }> = ({ state }) => {
   switch (page) {
     case Page.mainMenu:
       return <Main />
+    case Page.campaignLevelSelect:
+      return <CampaignLevelSelect />
     case Page.customLevelSettings:
       return <CustomLevelSettings />
     case Page.customLevel:

@@ -28,6 +28,7 @@ export namespace GameEvent {
     changeMapType = 'GameEvent-changeMapType',
     showNewVersion = 'GameEvent-showNewVersion',
     reload = 'GameEvent-reload',
+    startCampaignLevel = 'GameEvent-startCampaignLevel',
   }
 
   export type All =
@@ -43,6 +44,7 @@ export namespace GameEvent {
     | ReloadEvent
     | PlayAgainCustomLevelEvent
     | ShakeAiBoxesEvent
+    | StartCampaignLevelEvent
 
   export type StartCustomLevelEvent = ECSEvent<Type.startCustomLevel, null>
   export type PlayAgainCustomLevelEvent = ECSEvent<
@@ -70,6 +72,10 @@ export namespace GameEvent {
 
   export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, null>
   export type ReloadEvent = ECSEvent<Type.reload, null>
+  export type StartCampaignLevelEvent = ECSEvent<
+    Type.startCampaignLevel,
+    { mapEntity: Entity }
+  >
 }
 
 const gameGetSet = createGetSetForUniqComponent<Game, State>({

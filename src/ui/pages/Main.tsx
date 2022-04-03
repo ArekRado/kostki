@@ -35,7 +35,7 @@ export const Main: React.FC = () => {
             emitEvent<GameEvent.CleanSceneEvent>({
               type: GameEvent.Type.cleanScene,
               payload: {
-                newPage: Page.customLevelSettings,
+                newPage: Page.campaignLevelSelect,
               },
             })
           }}

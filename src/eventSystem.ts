@@ -26,6 +26,7 @@ import {
   DevtoolsEvent,
   handleEnableDevtools,
 } from './utils/handleEnableDevtools'
+import { handleStartCampaignLevel } from './systems/gameSystem/handleStartCampaignLevel'
 
 type AllEvents =
   | LogoEvent.All
@@ -54,6 +55,8 @@ export const eventHandler = ({
     // Game
     case GameEvent.Type.startCustomLevel:
       return handleStartCustomLevel({ state, event })
+    case GameEvent.Type.startCampaignLevel:
+      return handleStartCampaignLevel({ state, event })
     case GameEvent.Type.playerClick:
       // const x: State = {
       //   entity: state.entity,

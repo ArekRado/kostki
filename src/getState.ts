@@ -49,7 +49,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.15'
+  const version = '0.0.16'
 
   addEventHandler(eventHandler)
 
@@ -76,7 +76,7 @@ export const getState = ({
 
   const savedData = getSavedData()
 
-  state = gameMapsBlueprint({ state })
+  state = gameMapsBlueprint({ state,savedData })
 
   const firstMap = getComponentsByName({ state, name: name.gameMap })
   const firstMapEntity = Object.keys(firstMap || {})[0] ?? ''
@@ -98,11 +98,12 @@ export const getState = ({
       playersQueue: [],
       boxRotationQueue: [],
       colorBlindMode: savedData?.colorBlindMode ?? false,
+  
       customLevelSettings: {
         players: savedData?.players ?? playersList().slice(0, 4),
         difficulty: savedData?.difficulty ?? AIDifficulty.medium,
         quickStart: savedData?.quickStart ?? true,
-        mapEntity: savedData?.mapType ?? firstMapEntity,
+        mapEntity: savedData?.mapEntity ?? firstMapEntity,
       },
     },
   })
@@ -119,22 +120,6 @@ export const getState = ({
       },
     })
   }
-
-  // const savedState = getSavedState();
-  // const savedStateVersion = getGame({
-  //   state: savedState || initialState,
-  // })?.version;
-
-  // if (savedState && savedStateVersion === version) {
-  //   state = {
-  //     ...state,
-  //     entity: savedState.entity,
-  //     component: savedState.component,
-  //   };
-
-  //   // state = recreateAllComponents({ state });
-  // }
-  // removeState();
 
   state = setScene({ state, page: Page.mainMenu })
 

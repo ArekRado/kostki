@@ -13,7 +13,6 @@ import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { emitEvent, runOneFrame } from '@arekrado/canvas-engine'
 import { CameraEvent } from '@arekrado/canvas-engine/system/camera'
 
-import './style.css'
 import { doNothing } from './utils/js/doNothing'
 
 const canvas = document.getElementById('game') as HTMLCanvasElement
@@ -172,5 +171,6 @@ if (process.env.NODE_ENV !== 'test') {
   // done - babylonjs tree shacking
   // - beautify ui - use tailwind?
   // - pre-create boxes and reuse part of them when starts level
+  // - add author and github link
   // - end - optimization
 }

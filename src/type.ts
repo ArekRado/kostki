@@ -68,6 +68,7 @@ export enum Scene {
 
 export enum Page {
   mainMenu = 'mainMenu',
+  campaignLevelSelect = 'campaignLevelSelect',
   customLevel = 'customLevel',
   customLevelSettings = 'customLevelSettings',
 }
@@ -85,7 +86,6 @@ export type Game = Component<{
   playersQueue: Entity[]
   boxRotationQueue: Entity[]
   gameStarted: boolean
-
   customLevelSettings: {
     players: AI[]
     difficulty: AIDifficulty
@@ -101,6 +101,11 @@ export type Marker = Component<{
 }>
 
 export type GameMap = Component<{
+  /**
+   * Used to sort maps in a campaign grid
+   */
+  campaignNumber: number
+  locked: boolean
   players: Pick<AI, 'human' | 'color' | 'level'>[]
   grid: (
     | {

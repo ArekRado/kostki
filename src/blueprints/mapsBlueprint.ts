@@ -1,10 +1,40 @@
 import { name, State, GameMap } from '../type'
 import { createComponent } from '@arekrado/canvas-engine'
 import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
+import { SavedData } from '../utils/localDb'
+import { red, teal } from '../utils/colors'
+import { AIDifficulty } from '../systems/aiSystem'
 
 const maps: Omit<GameMap, 'name'>[] = [
   {
+    entity: 'gameMap-campaign-0',
+    campaignNumber: -1,
+    locked: false,
+    players: [
+      {
+        human: true,
+        color: teal,
+        level: AIDifficulty.easy,
+      },
+      {
+        human: false,
+        color: red,
+        level: AIDifficulty.easy,
+      },
+    ],
+    grid: [
+    
+      [
+        { player: -1, dots: 0 },
+        { player: -1, dots: 0 },
+      ],
+
+    ],
+  },
+  {
     entity: 'gameMap-small-0',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -59,6 +89,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-small-1',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -113,6 +145,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-small-2',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -167,6 +201,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-medium-0',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -236,6 +272,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-medium-1',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -305,6 +343,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-medium-2',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -374,6 +414,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-0',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -460,6 +502,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-1',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -546,6 +590,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-2',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -632,6 +678,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-3',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -718,6 +766,8 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
   {
     entity: 'gameMap-4',
+    campaignNumber: -1,
+    locked: true,
     players: [],
     grid: [
       [
@@ -804,14 +854,25 @@ const maps: Omit<GameMap, 'name'>[] = [
   },
 ]
 
-export const gameMapsBlueprint = ({ state }: { state: State }): State => {
+export const gameMapsBlueprint = ({
+  state,
+  savedData,
+}: {
+  state: State
+  savedData: Partial<SavedData> | null
+}): State => {
   maps.forEach((map) => {
     state = createEntity({ state, entity: map.entity })
+
+    const locked = !!savedData?.unlockedCampaignMapEntities?.find(
+      (unlockedMapEntity) => unlockedMapEntity === map.entity,
+    )
 
     state = createComponent<GameMap, State>({
       state,
       data: {
         name: name.gameMap,
+        locked,
         ...map,
       },
     })

@@ -30,7 +30,7 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
     active: ai.active,
     human: ai.human,
     hasCurrentTurn: game?.currentPlayer === ai.entity,
-    name: ai.human ? 'Player' : 'Computer',
+    name: ai.human ? 'You' : 'Enemy',
   }))
 }
 

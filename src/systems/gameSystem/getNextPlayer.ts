@@ -33,7 +33,7 @@ type GetNextPlayer = (params: { state: State }) => AI | undefined
 export const getNextPlayer: GetNextPlayer = ({ state }) => {
   const game = getGame({ state })
 
-  if (!game) {
+  if (!game || game?.playersQueue.length === 0) {
     return undefined
   }
 
