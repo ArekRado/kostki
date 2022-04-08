@@ -5,8 +5,8 @@ import {
   Transform,
 } from '@arekrado/canvas-engine'
 import { boxBlueprint } from '../../blueprints/boxBlueprint'
-import { boxWithGap } from '../../blueprints/gridBlueprint'
 import { AI, Box, name, State } from '../../type'
+import { boxWithGap } from './boxSizes'
 
 export const create = ({
   state,
@@ -36,7 +36,7 @@ export const create = ({
       fromParentRotation: [0, 0, 0],
       scale: [1, 1, 1],
       fromParentScale: [1, 1, 1],
-      position: [gridPosition[0] * boxWithGap, -gridPosition[1] * boxWithGap],
+      position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
       fromParentPosition: [0, 0],
     },
   })

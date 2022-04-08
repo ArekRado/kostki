@@ -1,40 +1,8 @@
-import { Box, GameMap, name, State } from '../type'
-import {
-  createComponent,
-  Entity,
-  getComponent,
-  setEntity,
-} from '@arekrado/canvas-engine'
+import { Box, name, State } from '../type'
+import { createComponent, Entity, setEntity } from '@arekrado/canvas-engine'
 import { setCamera } from '../wrappers/setCamera'
 import { getGame, setGame } from '../systems/gameSystem'
-
-export const boxSize = 1
-export const boxGap = 0.2
-export const boxWithGap = boxSize + boxGap
-
-export const getGridDimensions = ({ state }: { state: State }) => {
-  const mapType = getGame({ state })?.customLevelSettings.mapEntity
-  const gameMap = getComponent<GameMap>({
-    state,
-    name: name.gameMap,
-    entity: mapType || '',
-  })
-
-  const grid = gameMap?.grid ?? [[]]
-  const boxWithGap = boxSize + boxGap
-  const gridWidth = grid[0] ? -grid[0].length * boxWithGap : 1
-  const gridHeight = grid.length * boxWithGap
-  const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight
-
-  const center = [(gridWidth + 1 + boxGap) / 2, (gridHeight - 1 - boxGap) / 2]
-
-  return {
-    width: gridWidth,
-    height: gridHeight,
-    center,
-    cameraDistance: longerDimension / 2 + boxGap,
-  }
-}
+import { getGridDimensions } from '../systems/gameSystem/startLevelUtils'
 
 export type BasicBox = { dots: number; player: Entity | undefined }
 

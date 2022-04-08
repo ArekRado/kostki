@@ -21,11 +21,17 @@ export const handleStartCustomLevel: EventHandler<
     },
   })
 
-  if (getGame({ state })?.customLevelSettings.quickStart) {
+  const game = getGame({ state })
+
+  if (!game) {
+    return state
+  }
+
+  if (game?.customLevelSettings.quickStart) {
     state = runQuickStart({ state })
   }
 
-  state = startLevel({ state })
+  state = startLevel({ state, mapEntity: game?.customLevelSettings.mapEntity })
 
   return state
 }

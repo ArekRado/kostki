@@ -22,7 +22,7 @@ export const handleStartCampaignLevel: EventHandler<
     },
   })
 
-  state = startLevel({ state })
+  state = startLevel({ state, mapEntity })
 
   return state
 }

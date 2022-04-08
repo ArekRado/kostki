@@ -8,7 +8,6 @@ import {
 } from '../gameSystem'
 import { generateId } from '../../utils/generateId'
 import { aiBlueprint } from '../../blueprints/aiBlueprint'
-import { getGridDimensions } from '../../blueprints/gridBlueprint'
 import { getNextPlayer } from './getNextPlayer'
 import { getAiMove } from '../aiSystem/getAiMove'
 import { getNextDots, onClickBox } from '../boxSystem/onClickBox'
@@ -27,9 +26,46 @@ import {
 import { setCamera } from '../../wrappers/setCamera'
 import { getTime } from '@arekrado/canvas-engine/system/time'
 import { playersList } from './handleChangeSettings'
+import { clamp } from '../../utils/js/clamp'
+import { boxGap, boxWithGap } from '../boxSystem/boxSizes'
 
-const centerCameraInMapCenter = ({ state }: { state: State }) => {
-  const { center, cameraDistance } = getGridDimensions({ state })
+export const getGridDimensions = ({
+  grid,
+}: {
+  grid: GameMap['grid'] | undefined
+}) => {
+  const gridWidth = grid?.[0] ? grid?.[0].length * boxWithGap : boxWithGap
+  const gridHeight = grid !== undefined ? grid.length * boxWithGap : boxWithGap
+  const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight
+
+  const center = [(gridWidth - boxWithGap) / 2, (gridHeight - boxWithGap) / 2]
+
+  return {
+    gridWidth,
+    gridHeight,
+    center,
+    cameraDistance: clamp({
+      value: longerDimension / 2 + boxGap,
+      min: 3,
+      max: Infinity,
+    }),
+  }
+}
+
+const centerCameraInMapCenter = ({
+  state,
+  mapEntity,
+}: {
+  state: State
+  mapEntity: Entity
+}) => {
+  const gameMap = getComponent<GameMap>({
+    state,
+    name: name.gameMap,
+    entity: mapEntity,
+  })
+
+  const { center, cameraDistance } = getGridDimensions({ grid: gameMap?.grid })
 
   return setCamera({
     state,
@@ -217,7 +253,13 @@ export const runQuickStart: RunQuickStart = ({ state }) => {
   return newState || state
 }
 
-export const startLevel = ({ state }: { state: State }) => {
+export const startLevel = ({
+  state,
+  mapEntity,
+}: {
+  state: State
+  mapEntity: Entity
+}) => {
   playLevelStartAnimation({ state })
 
   state = setGame({
@@ -273,7 +315,7 @@ export const startLevel = ({ state }: { state: State }) => {
     update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
   })
 
-  state = centerCameraInMapCenter({ state })
+  state = centerCameraInMapCenter({ state, mapEntity })
 
   return state
 }

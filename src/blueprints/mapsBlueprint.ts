@@ -23,12 +23,10 @@ const maps: Omit<GameMap, 'name'>[] = [
       },
     ],
     grid: [
-    
       [
         { player: -1, dots: 0 },
         { player: -1, dots: 0 },
       ],
-
     ],
   },
   {
@@ -864,7 +862,7 @@ export const gameMapsBlueprint = ({
   maps.forEach((map) => {
     state = createEntity({ state, entity: map.entity })
 
-    const locked = !!savedData?.unlockedCampaignMapEntities?.find(
+    const locked = !savedData?.unlockedCampaignMapEntities?.find(
       (unlockedMapEntity) => unlockedMapEntity === map.entity,
     )
 
@@ -872,8 +870,8 @@ export const gameMapsBlueprint = ({
       state,
       data: {
         name: name.gameMap,
-        locked,
         ...map,
+        locked,
       },
     })
   })

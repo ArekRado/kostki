@@ -1,5 +1,4 @@
 import markerTexture from '../assets/marker.png'
-import { boxGap, boxSize } from '../blueprints/gridBlueprint'
 import { Marker, name, State } from '../type'
 import {
   componentName,
@@ -18,6 +17,7 @@ import {
 import { generateId } from '../utils/generateId'
 import { updateComponent } from '@arekrado/canvas-engine'
 import { boxRotationAnimationTime } from './boxSystem/createRotationBoxAnimation'
+import { boxGap, boxSize } from './boxSystem/boxSizes'
 
 export const markerEntity = '38127445920450264'
 
