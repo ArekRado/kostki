@@ -10,7 +10,7 @@ const GridContainer = styled('div', {
   alignItems: 'center',
   alignContent: 'center',
   '@bp1': {
-    gap: '3px'
+    gap: '3px',
   },
 })
 
@@ -23,7 +23,7 @@ const MiniBox = styled('div', {
   aspectRatio: '1 / 1',
 
   '@bp1': {
-    borderWidth: '2px'
+    borderWidth: '2px',
   },
 })
 
@@ -31,7 +31,7 @@ export const MapGrid: React.FC<{ gameMap: GameMap }> = ({ gameMap }) => (
   <GridContainer
     css={{
       gridTemplateColumns: `repeat(${gameMap.grid[0]?.length}, 1fr)`,
-      gridTemplateRows: `repeat(${gameMap.grid?.length || 0}, 1fr)`,
+      gridTemplateRows: `repeat(${gameMap.grid?.length - 1 || 0}, 1fr)`,
       aspectRatio: `${gameMap.grid?.length} / ${gameMap.grid?.[0]?.length}`,
     }}
   >
@@ -42,13 +42,16 @@ export const MapGrid: React.FC<{ gameMap: GameMap }> = ({ gameMap }) => (
             return acc
           }
 
+          const x = i
+          const y = row.length - j
+
           return [
             ...acc,
             <MiniBox
               key={`${i}-${j}`}
               css={{
-                gridColumn: `${i + 1} / ${i + 1}`,
-                gridRow: `${j + 1} / ${j + 1}`,
+                gridColumn: `${x + 1} / ${x + 1}`,
+                gridRow: `${y + 1} / ${y + 1}`,
               }}
             />,
           ]

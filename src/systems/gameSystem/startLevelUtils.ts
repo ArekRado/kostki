@@ -38,11 +38,9 @@ export const getGridDimensions = ({
   const gridHeight = grid !== undefined ? grid.length * boxWithGap : boxWithGap
   const longerDimension = gridWidth > gridHeight ? gridWidth : gridHeight
 
-  const center = [(gridWidth - boxWithGap) / 2, (gridHeight - boxWithGap) / 2]
+  const center = [(gridHeight - boxWithGap) / 2, (gridWidth - boxWithGap) / 2]
 
   return {
-    gridWidth,
-    gridHeight,
     center,
     cameraDistance: clamp({
       value: longerDimension / 2 + boxGap,

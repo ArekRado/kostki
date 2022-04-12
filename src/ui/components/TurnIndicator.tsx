@@ -37,7 +37,7 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
               width: '0.5rem',
               height: '0.5rem',
               border: '0.125rem solid black',
-              '@bp1': {
+              '@bp2': {
                 width: '2rem',
                 height: '2rem',
                 border: '0.25rem solid black',
@@ -53,7 +53,7 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
             css={{
               fontSize: '0.75rem',
               textDecoration: active ? '' : 'line-through',
-              '@bp1': { fontSize: '1.5rem' },
+              '@bp2': { fontSize: '1.5rem' },
             }}
           >
             {name}

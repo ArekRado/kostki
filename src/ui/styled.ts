@@ -22,6 +22,8 @@ export const { styled, css } = createStitches({
     transitions: {},
   },
   media: {
-    bp1: '(min-width: 1024px)',
+    bp1: '(max-width: 768px)',
+    bp2: '(min-width: 769px)',
+    bp3: '(min-width: 1024px)',
   },
 })

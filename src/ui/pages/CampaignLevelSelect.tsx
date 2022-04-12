@@ -51,7 +51,7 @@ export const CampaignLevelSelect: React.FC = () => {
           gridTemplateColumns: 'repeat(4, 1fr)',
           alignContent: 'baseline',
           gridGap: '0.5rem',
-          '@bp1': {
+          '@bp2': {
             gridTemplateColumns: 'repeat(10, 1fr)',
             gridGap: '1rem',
           },

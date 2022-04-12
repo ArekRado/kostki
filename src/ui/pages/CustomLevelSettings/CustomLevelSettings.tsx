@@ -100,7 +100,7 @@ export const CustomLevelSettings: React.FC = () => {
         css={{
           gridTemplateRows: '1fr 1fr 1fr 1fr',
           gridTemplateColumns: '1fr',
-          '@bp1': {
+          '@bp2': {
             gridTemplateRows: '1fr 1fr',
             gridTemplateColumns: '1fr 1fr',
           },
@@ -134,7 +134,7 @@ export const CustomLevelSettings: React.FC = () => {
             gridColumn: '1 / 1',
             alignSelf: 'center',
 
-            '@bp1': {
+            '@bp2': {
               gridRow: '1 / 1',
               gridColumn: '2 / 2',
             },
@@ -153,7 +153,7 @@ export const CustomLevelSettings: React.FC = () => {
             gridColumn: '1 / 1',
             alignSelf: 'center',
 
-            '@bp1': {
+            '@bp2': {
               gridRow: '2 / 2',
               gridColumn: '1 / 1',
             },
@@ -174,7 +174,7 @@ export const CustomLevelSettings: React.FC = () => {
             gridColumn: '1 / 1',
             alignSelf: 'center',
 
-            '@bp1': {
+            '@bp2': {
               gridRow: '2 / 2',
               gridColumn: '2 / 2',
             },
