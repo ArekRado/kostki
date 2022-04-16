@@ -75,6 +75,13 @@ export enum Page {
 
 export type Logo = Component<unknown>
 
+export enum CustomLevelSettingsDifficulty {
+  easy = 'customLevelSettings easy',
+  medium = 'customLevelSettings medium',
+  hard = 'customLevelSettings hard',
+  random = 'customLevelSettings random',
+}
+
 export type Game = Component<{
   version: string
   page: Page
@@ -88,7 +95,7 @@ export type Game = Component<{
   gameStarted: boolean
   customLevelSettings: {
     players: AI[]
-    difficulty: AIDifficulty
+    difficulty: CustomLevelSettingsDifficulty
     quickStart: boolean
     mapEntity: Entity
   }

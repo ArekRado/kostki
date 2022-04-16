@@ -900,12 +900,12 @@ export const gameMapsBlueprint = ({
   savedData,
 }: {
   state: State
-  savedData: Partial<SavedData> | null
+  savedData: SavedData
 }): State => {
   maps.forEach((map) => {
     state = createEntity({ state, entity: map.entity })
 
-    const locked = !savedData?.unlockedCampaignMapEntities?.find(
+    const locked = !savedData.unlockedCampaignMapEntities.find(
       (unlockedMapEntity) => unlockedMapEntity === map.entity,
     )
 

@@ -1,4 +1,14 @@
-import { AI, Box, Game, State, Marker, Page, name, GameMap } from '../../type'
+import {
+  AI,
+  Box,
+  Game,
+  State,
+  Marker,
+  Page,
+  name,
+  GameMap,
+  CustomLevelSettingsDifficulty,
+} from '../../type'
 import {
   gameEntity,
   GameEvent,
@@ -29,6 +39,23 @@ import { getTime } from '@arekrado/canvas-engine/system/time'
 import { playersList } from './handleChangeSettings'
 import { clamp } from '../../utils/js/clamp'
 import { boxGap, boxWithGap } from '../boxSystem/boxSizes'
+import { AIDifficulty } from '../aiSystem'
+
+const mapCustomLevelSettingsDifficultyToAIDifficulty = (
+  customLevelSettingsDifficulty: CustomLevelSettingsDifficulty,
+): AIDifficulty => {
+  switch (customLevelSettingsDifficulty) {
+    case CustomLevelSettingsDifficulty.easy:
+      return AIDifficulty.easy
+    case CustomLevelSettingsDifficulty.medium:
+      return AIDifficulty.medium
+    case CustomLevelSettingsDifficulty.hard:
+      return AIDifficulty.hard
+    case CustomLevelSettingsDifficulty.random:
+      const index = Math.floor(Math.random() * 3)
+      return [AIDifficulty.easy, AIDifficulty.medium, AIDifficulty.hard][index]
+  }
+}
 
 export const getGridDimensions = ({
   grid,
@@ -163,7 +190,9 @@ export const setLevelFromGameSettings: SetLevelFromGameSettings = ({
     state,
     ai: game.customLevelSettings.players.map((ai) => ({
       ...ai,
-      level: game.customLevelSettings.difficulty,
+      level: mapCustomLevelSettingsDifficultyToAIDifficulty(
+        game.customLevelSettings.difficulty,
+      ),
     })),
   })
 

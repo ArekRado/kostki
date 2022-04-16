@@ -1,4 +1,4 @@
-import { AI, Color, Game, name, State } from '../../type'
+import { AI, Color, CustomLevelSettingsDifficulty, Game, name, State } from '../../type'
 import { AIDifficulty } from '../aiSystem'
 import {
   gray,
@@ -95,9 +95,10 @@ export const handleChangeDifficulty: EventHandler<
   }
 
   const difficultyList = [
-    AIDifficulty.easy,
-    AIDifficulty.medium,
-    AIDifficulty.hard,
+    CustomLevelSettingsDifficulty.easy,
+    CustomLevelSettingsDifficulty.medium,
+    CustomLevelSettingsDifficulty.hard,
+    CustomLevelSettingsDifficulty.random,
   ]
 
   const index = difficultyList.findIndex(

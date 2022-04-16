@@ -1,6 +1,5 @@
 import React from 'react'
-import { Page } from '../../../type'
-import { AIDifficulty } from '../../../systems/aiSystem'
+import { CustomLevelSettingsDifficulty, Page } from '../../../type'
 import { GameEvent, getGame } from '../../../systems/gameSystem'
 import { Button } from '../../components/Button'
 import { Flex } from '../../components/Flex'
@@ -12,18 +11,15 @@ import { useGameState } from '../../hooks/useGameState'
 import { emitEvent } from '@arekrado/canvas-engine'
 import { MapList } from './MapList'
 
-const mapDifficultyToText = (difficulty: AIDifficulty): string => {
+const mapDifficultyToText = (difficulty: CustomLevelSettingsDifficulty): string => {
   switch (difficulty) {
-    case AIDifficulty.disabled:
-      return 'Disabled'
-    case AIDifficulty.random:
+    case CustomLevelSettingsDifficulty.random:
       return 'Random'
-
-    case AIDifficulty.easy:
+    case CustomLevelSettingsDifficulty.easy:
       return 'Easy'
-    case AIDifficulty.medium:
+    case CustomLevelSettingsDifficulty.medium:
       return 'Medium'
-    case AIDifficulty.hard:
+    case CustomLevelSettingsDifficulty.hard:
       return 'Hard'
   }
 }
@@ -59,12 +55,6 @@ export const CustomLevelSettings: React.FC = () => {
       type: GameEvent.Type.changeColorBlindMode,
       payload: null,
     })
-
-  // const changeMapType = () =>
-  //   emitEvent<GameEvent.ChangeMapTypeEvent>({
-  //     type: GameEvent.Type.changeMapType,
-  //     payload: null,
-  //   })
 
   const startCustomLevel = () =>
     emitEvent<GameEvent.StartCustomLevelEvent>({

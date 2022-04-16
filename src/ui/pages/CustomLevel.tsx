@@ -10,6 +10,7 @@ import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator'
 import { Typography } from '../components/Typography'
 import { useGameState } from '../hooks/useGameState'
 import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine'
+import { AIDifficulty } from '../../systems/aiSystem'
 
 const getAiList = (state: State): TurnIndicatorItem[] => {
   const game = getGame({ state })
@@ -24,14 +25,40 @@ const getAiList = (state: State): TurnIndicatorItem[] => {
     )
     .filter((ai) => !!ai) as Component<AI>[]
 
-  return aiList.map((ai) => ({
-    entity: ai.entity,
-    color: ai.color,
-    active: ai.active,
-    human: ai.human,
-    hasCurrentTurn: game?.currentPlayer === ai.entity,
-    name: ai.human ? 'You' : 'Enemy',
-  }))
+  return aiList.map((ai) => {
+    let name = ''
+
+    if (ai.human) {
+      name = 'You'
+    } else {
+      switch (ai.level) {
+        case AIDifficulty.disabled:
+          name = 'Enemy disabled'
+          break
+        case AIDifficulty.easy:
+          name = 'Enemy easy'
+          break
+        case AIDifficulty.medium:
+          name = 'Enemy medium'
+          break
+        case AIDifficulty.hard:
+          name = 'Enemy hard'
+          break
+        case AIDifficulty.random:
+          name = 'Enemy random'
+          break
+      }
+    }
+
+    return {
+      entity: ai.entity,
+      color: ai.color,
+      active: ai.active,
+      human: ai.human,
+      hasCurrentTurn: game?.currentPlayer === ai.entity,
+      name,
+    }
+  })
 }
 
 const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({

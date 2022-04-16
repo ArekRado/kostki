@@ -1,6 +1,13 @@
-import { Game, GameMap, name, State } from '../type'
+import {
+  CustomLevelSettingsDifficulty,
+  Game,
+  GameMap,
+  name,
+  State,
+} from '../type'
 import { getGame } from '../systems/gameSystem'
 import { Entity, getComponentsByName } from '@arekrado/canvas-engine'
+import { playersList } from '../systems/gameSystem/handleChangeSettings'
 
 const localDbKey = 'localDbKey'
 
@@ -13,8 +20,47 @@ export type SavedData = {
   colorBlindMode: Game['colorBlindMode']
 }
 
-export const getSavedData = (): Partial<SavedData> | null =>
-  JSON.parse(localStorage.getItem(localDbKey) || 'null') as SavedData | null
+export const getSavedData = (): SavedData => {
+  const data: unknown = JSON.parse(localStorage.getItem(localDbKey) || 'null')
+
+  if (typeof data === 'object' && data !== null) {
+    const maybeData = data as Partial<SavedData>
+    let difficulty: CustomLevelSettingsDifficulty =
+      CustomLevelSettingsDifficulty.easy
+
+    switch (maybeData.difficulty) {
+      case CustomLevelSettingsDifficulty.easy:
+        difficulty = CustomLevelSettingsDifficulty.easy
+        break
+      case CustomLevelSettingsDifficulty.medium:
+        difficulty = CustomLevelSettingsDifficulty.medium
+        break
+      case CustomLevelSettingsDifficulty.hard:
+        difficulty = CustomLevelSettingsDifficulty.hard
+        break
+      case CustomLevelSettingsDifficulty.random:
+        difficulty = CustomLevelSettingsDifficulty.random
+        break
+    }
+
+    return {
+      unlockedCampaignMapEntities: maybeData.unlockedCampaignMapEntities ?? [],
+      difficulty,
+      colorBlindMode: maybeData?.colorBlindMode ?? false,
+      players: maybeData?.players ?? playersList().slice(0, 4),
+      quickStart: maybeData?.quickStart ?? true,
+      mapEntity: maybeData?.mapEntity ?? '',
+    }
+  }
+  return {
+    unlockedCampaignMapEntities: [],
+    difficulty: CustomLevelSettingsDifficulty.easy,
+    colorBlindMode: false,
+    players: playersList().slice(0, 4),
+    quickStart: true,
+    mapEntity: '',
+  }
+}
 
 export const saveStateToData = (state: State) => {
   const game = getGame({ state })

@@ -3,12 +3,10 @@ import { AIDifficulty, aiSystem } from './systems/aiSystem'
 import { boxSystem } from './systems/boxSystem'
 import { gameEntity, gameSystem } from './systems/gameSystem'
 import { markerSystem } from './systems/markerSystem'
-
-import { playersList } from './systems/gameSystem/handleChangeSettings'
 import { logoSystem } from './systems/logoSystem'
 import { setScene } from './systems/gameSystem/handleCleanScene'
 import { getSavedData } from './utils/localDb'
-import { AI, Game, name, Page, State } from './type'
+import { AI, Game, GameMap, name, Page, State } from './type'
 import {
   addEventHandler,
   Camera,
@@ -49,7 +47,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.18'
+  const version = '0.0.19'
 
   addEventHandler(eventHandler)
 
@@ -76,10 +74,14 @@ export const getState = ({
 
   const savedData = getSavedData()
 
-  state = gameMapsBlueprint({ state,savedData })
+  state = gameMapsBlueprint({ state, savedData })
 
-  const firstMap = getComponentsByName({ state, name: name.gameMap })
-  const firstMapEntity = Object.keys(firstMap || {})[0] ?? ''
+  const maps = Object.values(
+    getComponentsByName<GameMap>({ state, name: name.gameMap }) ?? {},
+  )
+  const firstMapEntity = maps.find(
+    ({ campaignNumber }) => campaignNumber === -1,
+  )
 
   state = setEntity({ state, entity: gameEntity })
   state = createComponent<Game, State>({
@@ -97,13 +99,13 @@ export const getState = ({
       gameStarted: false,
       playersQueue: [],
       boxRotationQueue: [],
-      colorBlindMode: savedData?.colorBlindMode ?? false,
-  
+      colorBlindMode: savedData.colorBlindMode,
+
       customLevelSettings: {
-        players: savedData?.players ?? playersList().slice(0, 4),
-        difficulty: savedData?.difficulty ?? AIDifficulty.medium,
-        quickStart: savedData?.quickStart ?? true,
-        mapEntity: savedData?.mapEntity ?? firstMapEntity,
+        players: savedData.players,
+        difficulty: savedData.difficulty,
+        quickStart: savedData.quickStart,
+        mapEntity: savedData.mapEntity || firstMapEntity?.entity || '',
       },
     },
   })
