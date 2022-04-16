@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkkostki=self.webpackChunkkostki||[]).push([[896],{8896:(s,t,e)=>{e.r(t),e.d(t,{run:()=>c});var a=e(6925),k=e(186);const c=s=>a.S1({dsn:"https://99ffdbf9c6064a54b819cdc5b7d46d24@o1206618.ingest.sentry.io/6340193",integrations:[new k.gE],tracesSampleRate:1,blacklistUrls:["//localhost/"],release:`kostki@${s}`})}}]);
