@@ -1,5 +1,10 @@
 import React from 'react'
-import { CustomLevelSettingsDifficulty, Page } from '../../../type'
+import {
+  CustomLevelSettingsDifficulty,
+  GameMap,
+  Page,
+  name,
+} from '../../../type'
 import { GameEvent, getGame } from '../../../systems/gameSystem'
 import { Button } from '../../components/Button'
 import { Flex } from '../../components/Flex'
@@ -8,10 +13,12 @@ import { Check } from '../../components/icons/Check'
 import { Cross } from '../../components/icons/Cross'
 import { PageContainer } from '../../components/PageContainer'
 import { useGameState } from '../../hooks/useGameState'
-import { emitEvent } from '@arekrado/canvas-engine'
+import { emitEvent, getComponentsByName } from '@arekrado/canvas-engine'
 import { MapList } from './MapList'
 
-const mapDifficultyToText = (difficulty: CustomLevelSettingsDifficulty): string => {
+const mapDifficultyToText = (
+  difficulty: CustomLevelSettingsDifficulty,
+): string => {
   switch (difficulty) {
     case CustomLevelSettingsDifficulty.random:
       return 'Random'
@@ -27,8 +34,18 @@ const mapDifficultyToText = (difficulty: CustomLevelSettingsDifficulty): string 
 export const CustomLevelSettings: React.FC = () => {
   const gameState = useGameState()
   const game = gameState && getGame({ state: gameState })
+  const selectedMapEntity = game?.customLevelSettings.mapEntity
 
-  if (!game) {
+  const gameMaps = Object.values(
+    gameState
+      ? getComponentsByName<GameMap>({
+          state: gameState,
+          name: name.gameMap,
+        }) ?? {}
+      : {},
+  ).filter(({ campaignNumber }) => campaignNumber === -1)
+
+  if (!game || !gameMaps) {
     return null
   }
 
@@ -80,6 +97,8 @@ export const CustomLevelSettings: React.FC = () => {
       }}
     >
       <MapList
+        selectedMapEntity={selectedMapEntity ?? ''}
+        gameMaps={gameMaps}
         css={{
           gridRow: '1 / 1',
           gridColumn: '1 / 3',
