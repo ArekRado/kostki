@@ -13,10 +13,7 @@ import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { emitEvent, runOneFrame } from '@arekrado/canvas-engine'
 import { CameraEvent } from '@arekrado/canvas-engine/system/camera'
 import { doNothing } from './utils/js/doNothing'
-
-if (process.env.NODE_ENV === 'production') {
-  import('./utils/sentry')
-}
+import { getGame } from './systems/gameSystem'
 
 const canvas = document.getElementById('game') as HTMLCanvasElement
 export const humanPlayerEntity = 'humanPlayer'
@@ -102,7 +99,7 @@ if (process.env.NODE_ENV !== 'test') {
     //   },
     // )
   }
-  scene.clearColor = new Color4(0, 0, 0, 0);
+  scene.clearColor = new Color4(0, 0, 0, 0)
   document.querySelector('#loader')?.remove()
 
   let state = getState({
@@ -110,6 +107,12 @@ if (process.env.NODE_ENV !== 'test') {
     camera,
     Vector3: Vector3,
   })
+
+  if (process.env.NODE_ENV === 'production') {
+    import('./utils/sentry').then(({ run }) => {
+      run(getGame({ state })?.version ?? '')
+    })
+  }
 
   mountGameUI({ state })
 
