@@ -17,6 +17,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    crossOriginLoading: 'anonymous',
   },
   module: {
     rules: [

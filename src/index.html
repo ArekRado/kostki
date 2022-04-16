@@ -73,8 +73,6 @@
         scrollbar-width: thin;
       }
 
-
-
       #loader {
         background-color: black;
         z-index: 0;
@@ -135,5 +133,20 @@
         });
       }
     </script> -->
+
+    <script
+      src="https://browser.sentry-cdn.com/6.19.6/bundle.tracing.min.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="text/javascript">
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.init({
+          dsn: 'https://99ffdbf9c6064a54b819cdc5b7d46d24@o1206618.ingest.sentry.io/6340193',
+          integrations: [new Sentry.Integrations.BrowserTracing()],
+          tracesSampleRate: 1.0,
+        })
+      }
+    </script>
   </body>
 </html>

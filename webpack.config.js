@@ -1,9 +1,9 @@
-const webpack = require('webpack');
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const WebpackPwaManifest = require('webpack-pwa-manifest')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const config = {
   mode: 'development',
@@ -15,6 +15,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    crossOriginLoading: 'anonymous',
   },
   module: {
     rules: [
@@ -94,6 +95,6 @@ const config = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
-};
+}
 
-module.exports = config;
+module.exports = config

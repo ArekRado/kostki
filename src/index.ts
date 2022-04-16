@@ -13,7 +13,6 @@ import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { emitEvent, runOneFrame } from '@arekrado/canvas-engine'
 import { CameraEvent } from '@arekrado/canvas-engine/system/camera'
 import { doNothing } from './utils/js/doNothing'
-import { getGame } from './systems/gameSystem'
 
 const canvas = document.getElementById('game') as HTMLCanvasElement
 export const humanPlayerEntity = 'humanPlayer'
@@ -107,12 +106,6 @@ if (process.env.NODE_ENV !== 'test') {
     camera,
     Vector3: Vector3,
   })
-
-  if (process.env.NODE_ENV === 'production') {
-    import('./utils/sentry').then(({ run }) => {
-      run(getGame({ state })?.version ?? '')
-    })
-  }
 
   mountGameUI({ state })
 
