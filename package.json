@@ -27,6 +27,8 @@
     "@arekrado/canvas-engine": "0.0.97",
     "@arekrado/canvas-engine-devtools": "0.0.9",
     "@arekrado/vector-2d": "0.0.5",
+    "@sentry/browser": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
     "@stitches/react": "^1.2.7",
     "just-safe-set": "^4.0.2",
     "react": "^17.0.2",
