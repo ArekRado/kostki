@@ -29,7 +29,7 @@ export const MapList: React.FC<{ css: CSS }> = ({ css }) => {
           name: name.gameMap,
         }) ?? {}
       : {},
-  )
+  ).filter(({ campaignNumber }) => campaignNumber === -1)
 
   const changeMapType = (gameMapEntity: Entity) =>
     emitEvent<GameEvent.ChangeMapTypeEvent>({

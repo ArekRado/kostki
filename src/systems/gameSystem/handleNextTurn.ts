@@ -117,12 +117,13 @@ export const startNextTurn = ({ state }: { state: State }) => {
     })
 
     if (ai.active) {
-      if (ai.human) {
-        const humanBoxes = sumAiBoxes({ state, ai })
-        if (humanBoxes === 0) {
-          state = aiLost({ state, ai })
-        }
-      } else {
+      const boxesAmount = sumAiBoxes({ state, ai })
+
+      if (boxesAmount === 0) {
+        state = aiLost({ state, ai })
+      }
+
+      if (ai.human === false) {
         const box = getAiMove({ state, ai })
 
         const boxTransform = getComponent<Transform>({
@@ -137,16 +138,16 @@ export const startNextTurn = ({ state }: { state: State }) => {
             data: {
               color: ai.color,
               position: [
-                boxTransform?.position[0]??0,
-                boxTransform?.position[1]??0,
+                boxTransform?.position[0] ?? 0,
+                boxTransform?.position[1] ?? 0,
               ],
             },
           })
           state = onClickBox({ box, state, ai })
           state = pushBoxToRotationQueue({ state, entity: box.entity })
         } else {
-          // AI can't move which means it lost
-          state = aiLost({ state, ai })
+          // disabled ai cant move
+          state = startNextTurn({ state })
         }
       }
     }

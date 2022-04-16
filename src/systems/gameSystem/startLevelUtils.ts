@@ -20,6 +20,7 @@ import {
   Entity,
   generateEntity,
   getComponent,
+  getComponentsByName,
   setEntity,
   updateComponent,
 } from '@arekrado/canvas-engine'
@@ -76,12 +77,30 @@ const centerCameraInMapCenter = ({
 
 const createGrid = ({
   state,
-  grid,
+  gameMap,
 }: {
   state: State
-  grid: GameMap['grid']
-}): State =>
-  grid.reduce(
+  gameMap: GameMap
+}): State => {
+  const players = Object.values(
+    getComponentsByName<AI>({ state, name: name.ai }) ?? {},
+  )
+
+  const getPlayer = (index: number | undefined) => {
+    const color = gameMap.players[index ?? -1]?.color
+
+    if (color) {
+      return players.find(
+        (player) =>
+          player.color[0] === color[0] &&
+          player.color[1] === color[1] &&
+          player.color[2] === color[2],
+      )?.entity
+    }
+
+    return undefined
+  }
+  return gameMap.grid.reduce(
     (acc: State, row, x) =>
       row.reduce((acc2: State, box, y) => {
         if (!box) {
@@ -96,9 +115,9 @@ const createGrid = ({
             name: name.box,
             entity,
             isAnimating: false,
-            dots: 0,
+            dots: box.dots,
             gridPosition: [y, x],
-            player: undefined,
+            player: box.player === -1 ? undefined : getPlayer(box.player),
           },
         })
 
@@ -118,6 +137,7 @@ const createGrid = ({
       }, acc),
     state,
   )
+}
 
 type SetLevelFromGameSettings = (params: { state: State }) => State
 export const setLevelFromGameSettings: SetLevelFromGameSettings = ({
@@ -139,8 +159,6 @@ export const setLevelFromGameSettings: SetLevelFromGameSettings = ({
     return state
   }
 
-  state = createGrid({ state, grid: gameMap.grid })
-
   state = aiBlueprint({
     state,
     ai: game.customLevelSettings.players.map((ai) => ({
@@ -148,6 +166,8 @@ export const setLevelFromGameSettings: SetLevelFromGameSettings = ({
       level: game.customLevelSettings.difficulty,
     })),
   })
+
+  state = createGrid({ state, gameMap })
 
   return state
 }
@@ -176,8 +196,6 @@ export const setLevelFromMapEntity: SetLevelFromMapEntity = ({
     return state
   }
 
-  state = createGrid({ state, grid: gameMap.grid })
-
   state = aiBlueprint({
     state,
     ai: gameMap.players.map((ai, i) => ({
@@ -188,6 +206,8 @@ export const setLevelFromMapEntity: SetLevelFromMapEntity = ({
       textureSet: playersList()[i].textureSet,
     })),
   })
+
+  state = createGrid({ state, gameMap })
 
   return state
 }
@@ -314,6 +334,8 @@ export const startLevel = ({
   })
 
   state = centerCameraInMapCenter({ state, mapEntity })
+
+  eventBusDispatch('setUIState', state)
 
   return state
 }

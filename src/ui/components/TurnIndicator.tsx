@@ -1,3 +1,5 @@
+import { Entity } from '@arekrado/canvas-engine'
+import { styled } from '@stitches/react'
 import React from 'react'
 import { Color } from '../../type'
 import { Typography } from '../components/Typography'
@@ -12,23 +14,48 @@ export type TurnIndicatorItem = {
   active: boolean
 }
 
+const Highlighter = styled('div', {
+  backgroundColor: 'rgba(255,255,255,0.6)',
+  position: 'absolute',
+  top: '0',
+  left: '0',
+  width: '100%',
+  transition: 'transform 0.5s cubic-bezier(.77,0,.18,1) 0s',
+  zIndex: '$turnIndicatorHighlighter',
+})
+
+const getId = (entity: Entity) => `TurnIndicator${entity}`
+
 export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
   ai,
 }) => {
+  const activeAI = ai.find(({ hasCurrentTurn }) => hasCurrentTurn) ?? ai[0]
+  const element = document.getElementById(getId(activeAI?.entity ?? ''))
+  const rec = element?.getBoundingClientRect()
+  const position = element ? [element.offsetLeft, element.offsetTop] : [0, 0]
+
   return (
     <Flex
       css={{
         flexDirection: 'column',
+        position: 'relative',
       }}
     >
-      {ai.map(({ entity, name, color, hasCurrentTurn, active }) => (
+      <Highlighter
+        css={{
+          transform: `translate(${position[0]}px, ${position[1]}px)`,
+          height: `${rec?.height ?? 0}px`,
+        }}
+      />
+      {ai.map(({ entity, name, color, active }) => (
         <Flex
+          id={getId(entity)}
           key={entity}
           css={{
             alignItems: 'center',
             padding: '0.125rem',
             paddingRight: '1rem',
-            backgroundColor: hasCurrentTurn ? 'rgba(255,255,255,0.6)' : '',
+            zIndex: '$turnIndicatorText',
           }}
         >
           <Flex
@@ -53,6 +80,7 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
             css={{
               fontSize: '0.75rem',
               textDecoration: active ? '' : 'line-through',
+              color: active ? '$gray900' : '$gray500',
               '@bp2': { fontSize: '1.5rem' },
             }}
           >

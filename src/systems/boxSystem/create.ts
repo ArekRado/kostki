@@ -47,9 +47,11 @@ export const create = ({
     // position: [gridPosition[0] * boxWithGap, gridPosition[1] * boxWithGap],
     uniqueId: parseFloat(component.entity),
     // texture: ai?.textureSet[component.dots] || empty,
-    color: ai?.color || [1, 1, 1],
+    color: [1, 1, 1],
+    // color: ai?.color || [1, 1, 1],
     ai,
-    dots: component.dots,
+    dots: 0,
+    // dots: component.dots,
     state,
     isClickable: true,
   })
