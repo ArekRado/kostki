@@ -140,12 +140,12 @@
     ></script>
 
     <script type="text/javascript">
-      if (process.env.NODE_ENV === 'production') {
+      if (window.location.host === 'arekrado.github.io') {
         Sentry.init({
           dsn: 'https://99ffdbf9c6064a54b819cdc5b7d46d24@o1206618.ingest.sentry.io/6340193',
           integrations: [new Sentry.Integrations.BrowserTracing()],
           tracesSampleRate: 1.0,
-          release: '0.0.21'
+          release: '0.0.22',
         })
       }
     </script>

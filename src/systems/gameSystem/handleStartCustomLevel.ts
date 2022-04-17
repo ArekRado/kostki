@@ -7,11 +7,23 @@ import {
   setLevelFromGameSettings,
   startLevel,
 } from './startLevelUtils'
+import { Game, name } from '../../type'
+import { gameEntity } from '../gameSystem'
+import { updateComponent } from '@arekrado/canvas-engine'
 
 export const handleStartCustomLevel: EventHandler<
   GameEvent.StartCustomLevelEvent,
   State
 > = ({ state }) => {
+  state = updateComponent<Game, State>({
+    state,
+    name: name.game,
+    entity: gameEntity,
+    update: () => ({
+      statistics: [],
+    }),
+  })
+
   state = setLevelFromGameSettings({ state })
 
   state = setGame({

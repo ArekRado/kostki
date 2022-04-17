@@ -95,7 +95,7 @@ export type Game = Component<{
   gameStarted: boolean
   statistics: {
     aiEntity: Entity
-    dotsSum: number
+    // dotsSum: number
     boxesSum: number
   }[][]
   customLevelSettings: {

@@ -1,7 +1,7 @@
-import { State } from '../../type'
-import { GameEvent, setGame } from '../gameSystem'
+import { Game, State, name } from '../../type'
+import { gameEntity, GameEvent, setGame } from '../gameSystem'
 import { getNextPlayer } from './getNextPlayer'
-import { EventHandler } from '@arekrado/canvas-engine'
+import { EventHandler, updateComponent } from '@arekrado/canvas-engine'
 import { setLevelFromMapEntity, startLevel } from './startLevelUtils'
 
 export const handleStartCampaignLevel: EventHandler<
@@ -13,6 +13,15 @@ export const handleStartCampaignLevel: EventHandler<
     payload: { mapEntity },
   },
 }) => {
+  state = updateComponent<Game, State>({
+    state,
+    name: name.game,
+    entity: gameEntity,
+    update: () => ({
+      statistics: [],
+    }),
+  })
+
   state = setLevelFromMapEntity({ state, mapEntity })
 
   state = setGame({
@@ -20,6 +29,15 @@ export const handleStartCampaignLevel: EventHandler<
     data: {
       currentPlayer: getNextPlayer({ state })?.entity,
     },
+  })
+
+  state = updateComponent<Game, State>({
+    state,
+    name: name.game,
+    entity: gameEntity,
+    update: () => ({
+      currentPlayer: getNextPlayer({ state })?.entity,
+    }),
   })
 
   state = startLevel({ state, mapEntity })

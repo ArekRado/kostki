@@ -40,6 +40,7 @@ import { playersList } from './handleChangeSettings'
 import { clamp } from '../../utils/js/clamp'
 import { boxGap, boxWithGap } from '../boxSystem/boxSizes'
 import { AIDifficulty } from '../aiSystem'
+import { collectTurnStatistics } from './handleNextTurn'
 
 const mapCustomLevelSettingsDifficultyToAIDifficulty = (
   customLevelSettingsDifficulty: CustomLevelSettingsDifficulty,
@@ -292,6 +293,8 @@ export const runQuickStart: RunQuickStart = ({ state }) => {
         }),
       })
 
+      acc = collectTurnStatistics({ state: acc })
+
       return acc
     },
     state,
@@ -360,7 +363,6 @@ export const startLevel = ({
     name: name.game,
     entity: gameEntity,
     update: () => ({
-      statistics: [],
       lastBoxClickTimestamp: getTime({ state })?.timeNow || 0,
     }),
   })

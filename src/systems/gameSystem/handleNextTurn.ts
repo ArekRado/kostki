@@ -15,7 +15,7 @@ import {
 } from '@arekrado/canvas-engine'
 import { getTime } from '@arekrado/canvas-engine/system/time'
 
-const collectTurnStatistics = ({ state }: { state: State }): State => {
+export const collectTurnStatistics = ({ state }: { state: State }): State => {
   const aiList = Object.values(
     getComponentsByName<AI>({ state, name: name.ai }) ?? {},
   )
@@ -28,7 +28,7 @@ const collectTurnStatistics = ({ state }: { state: State }): State => {
 
     return {
       aiEntity: ai.entity,
-      dotsSum: aiBoxes.reduce((acc, box) => acc + box.dots, 0),
+      // dotsSum: aiBoxes.reduce((acc, box) => acc + box.dots, 0),
       boxesSum: aiBoxes.length,
     }
   })
@@ -38,7 +38,6 @@ const collectTurnStatistics = ({ state }: { state: State }): State => {
     entity: gameEntity,
     state,
     update: (game) => ({
-      ...game,
       statistics: [...game.statistics, turnStatistics],
     }),
   })
@@ -154,9 +153,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
 
       if (boxesAmount === 0) {
         state = aiLost({ state, ai })
-      }
-
-      if (ai.human === false) {
+      } else if (ai.human === false) {
         const box = getAiMove({ state, ai })
 
         const boxTransform = getComponent<Transform>({

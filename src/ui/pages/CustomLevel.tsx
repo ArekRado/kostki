@@ -76,12 +76,9 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
       Are you sure you want to finish the game?
     </Typography>
 
-    <div>
-      <StackedAreaChart />
-    </div>
-
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           onClose(false)
         }}
@@ -89,6 +86,7 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
         No
       </Button>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
@@ -112,8 +110,20 @@ const PlayerLostModal: FC = () => (
   >
     <Typography css={{ textAlign: 'center' }}>You lost</Typography>
 
+    <Flex
+      css={{
+        width: '90%',
+        height: '90%',
+        alignSelf: 'center',
+        margin: '1rem',
+      }}
+    >
+      <StackedAreaChart />
+    </Flex>
+
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
@@ -124,6 +134,7 @@ const PlayerLostModal: FC = () => (
         Back to main menu
       </Button>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,
@@ -147,8 +158,20 @@ const PlayerWonModal: FC = () => (
   >
     <Typography css={{ textAlign: 'center' }}>You won</Typography>
 
+    <Flex
+      css={{
+        width: '90%',
+        height: '90%',
+        alignSelf: 'center',
+        margin: '1rem',
+      }}
+    >
+      <StackedAreaChart />
+    </Flex>
+
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           emitEvent<GameEvent.CleanSceneEvent>({
             type: GameEvent.Type.cleanScene,
@@ -159,6 +182,7 @@ const PlayerWonModal: FC = () => (
         Back to main menu
       </Button>
       <Button
+        css={{ width: '40%' }}
         onClick={() => {
           emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
             type: GameEvent.Type.playAgainCustomLevel,

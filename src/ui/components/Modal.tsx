@@ -30,6 +30,7 @@ const popup = keyframes({
 export const ModalBody = styled('div', {
   border: '5px solid black',
   background: 'white',
+  padding: '1rem',
 
   '@bp1': {
     width: '80%',
