@@ -93,6 +93,11 @@ export type Game = Component<{
   playersQueue: Entity[]
   boxRotationQueue: Entity[]
   gameStarted: boolean
+  statistics: {
+    aiEntity: Entity
+    dotsSum: number
+    boxesSum: number
+  }[][]
   customLevelSettings: {
     players: AI[]
     difficulty: CustomLevelSettingsDifficulty

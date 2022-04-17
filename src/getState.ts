@@ -100,7 +100,7 @@ export const getState = ({
       playersQueue: [],
       boxRotationQueue: [],
       colorBlindMode: savedData.colorBlindMode,
-
+      statistics: [],
       customLevelSettings: {
         players: savedData.players,
         difficulty: savedData.difficulty,

@@ -359,7 +359,10 @@ export const startLevel = ({
     state,
     name: name.game,
     entity: gameEntity,
-    update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
+    update: () => ({
+      statistics: [],
+      lastBoxClickTimestamp: getTime({ state })?.timeNow || 0,
+    }),
   })
 
   state = centerCameraInMapCenter({ state, mapEntity })

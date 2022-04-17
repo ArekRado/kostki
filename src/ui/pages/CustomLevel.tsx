@@ -11,6 +11,7 @@ import { Typography } from '../components/Typography'
 import { useGameState } from '../hooks/useGameState'
 import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine'
 import { AIDifficulty } from '../../systems/aiSystem'
+import { StackedAreaChart } from '../components/StackedAreaChart'
 
 const getAiList = (state: State): TurnIndicatorItem[] => {
   const game = getGame({ state })
@@ -66,9 +67,6 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
 }) => (
   <Modal
     css={{
-      width: '70%',
-      height: '40%',
-
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-around',
@@ -77,6 +75,10 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
     <Typography css={{ textAlign: 'center' }}>
       Are you sure you want to finish the game?
     </Typography>
+
+    <div>
+      <StackedAreaChart />
+    </div>
 
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
@@ -103,9 +105,6 @@ const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
 const PlayerLostModal: FC = () => (
   <Modal
     css={{
-      width: '70%',
-      height: '40%',
-
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-around',
@@ -141,9 +140,6 @@ const PlayerLostModal: FC = () => (
 const PlayerWonModal: FC = () => (
   <Modal
     css={{
-      width: '70%',
-      height: '40%',
-
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-around',
