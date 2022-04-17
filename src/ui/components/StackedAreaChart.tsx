@@ -27,7 +27,7 @@ const getColors = (state: State | undefined) =>
       ).reduce((acc, ai) => {
         acc[ai.entity] = ai.color
         return acc
-      }, {} as Record<Entity, AI['color']>)
+      }, {} as Record<Entity, AI['color'] | undefined>)
     : {}
 
 const sumPreviousAiBoxes = (
@@ -63,11 +63,11 @@ export const StackedAreaChart: React.FC = () => {
     const colors = getColors(state)
 
     const newData = game?.statistics[0].map(({ aiEntity }, aiIndex) => {
-      const color = colors[aiEntity]
+      const color = colors[aiEntity] ?? [0, 0, 0]
       const points = game?.statistics.map((turnData, turnNumber) => {
         const { boxesSum } = turnData[aiIndex]
 
-        const x = (turnNumber / (totalTurns-1)) * width
+        const x = (turnNumber / (totalTurns - 1)) * width
         const y = (boxesSum / totalBoxes) * height
         const yOffset =
           (sumPreviousAiBoxes(turnData, aiIndex) / totalBoxes) * height
@@ -84,8 +84,6 @@ export const StackedAreaChart: React.FC = () => {
 
     setData(newData ?? [])
   }, [game?.statistics, game?.grid.length, state, height, width])
-
-  console.log(game?.statistics)
 
   return (
     <Container ref={containerRef}>
