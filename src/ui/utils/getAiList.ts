@@ -37,7 +37,7 @@ export const getAiList = (state: State): TurnIndicatorItem[] => {
           name = 'Enemy hard'
           break
         case AIDifficulty.random:
-          name = 'Enemy random'
+          name = 'Enemy'
           break
       }
     }

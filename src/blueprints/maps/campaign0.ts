@@ -38,8 +38,8 @@ export const campaign0: Omit<GameMap, 'name'> = {
       { player: 1, dots: 2 },
     ],
     [
-      { player: 0, dots: 3 },
       { player: 0, dots: 2 },
+      { player: 0, dots: 5 },
       { player: 1, dots: 3 },
       { player: 1, dots: 1 },
     ],

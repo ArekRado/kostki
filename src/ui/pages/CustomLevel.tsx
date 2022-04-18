@@ -46,7 +46,7 @@ const PlayerWonModal: FC = () => (
           })
         }}
       >
-        Back to main menu
+        Main menu
       </Button>
       <Button
         css={{ width: '40%' }}

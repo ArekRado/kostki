@@ -134,6 +134,10 @@ export type GameMap = Component<{
   )[][]
 }>
 
+export type Tutorial = Component<{
+  tipText: string | null
+}>
+
 // State
 
 type Components = {
@@ -143,6 +147,7 @@ type Components = {
   marker: Dictionary<Marker>
   logo: Dictionary<Logo> // todo remove?
   gameMap: Dictionary<GameMap>
+  tutorial: Dictionary<Tutorial>
 }
 
 type Systems =

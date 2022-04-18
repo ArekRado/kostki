@@ -1,9 +1,9 @@
-import { Entity, getComponentsByName } from '@arekrado/canvas-engine'
 import { styled } from '@stitches/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { getGame } from '../../systems/gameSystem'
-import { AI, Game, gameComponent, State } from '../../type'
+import { AI, Game } from '../../type'
 import { useGameState } from '../hooks/useGameState'
+import { getAiColors } from '../utils/getAiColors'
 
 const Container = styled('div', {
   position: 'relative',
@@ -19,16 +19,6 @@ const SvgContent = styled('svg', {
   width: '100%',
   height: '100%',
 })
-
-const getColors = (state: State | undefined) =>
-  state
-    ? Object.values(
-        getComponentsByName<AI>({ state, name: gameComponent.ai }) ?? {},
-      ).reduce((acc, ai) => {
-        acc[ai.entity] = ai.color
-        return acc
-      }, {} as Record<Entity, AI['color'] | undefined>)
-    : {}
 
 const sumPreviousAiBoxes = (
   turnData: Game['statistics'][0],
@@ -60,7 +50,7 @@ export const StackedAreaChart: React.FC = () => {
   useEffect(() => {
     const totalBoxes = game?.grid.length ?? 0
     const totalTurns = game?.statistics.length ?? 0
-    const colors = getColors(state)
+    const colors = getAiColors(state)
 
     const newData = game?.statistics?.[0]?.map(({ aiEntity }, aiIndex) => {
       const color = colors[aiEntity] ?? [0, 0, 0]

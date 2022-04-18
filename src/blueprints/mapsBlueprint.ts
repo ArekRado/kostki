@@ -2,8 +2,6 @@ import { gameComponent, State, GameMap } from '../type'
 import { createComponent } from '@arekrado/canvas-engine'
 import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
 import { SavedData } from '../utils/localDb'
-import { campaign0 } from './maps/campaign0'
-import { campaign1 } from './maps/campaign1'
 import { small0 } from './maps/small0'
 import { small1 } from './maps/small1'
 import { small2 } from './maps/small2'
@@ -15,6 +13,10 @@ import { huge0 } from './maps/huge0'
 import { huge2 } from './maps/huge2'
 import { huge3 } from './maps/huge3'
 import { huge4 } from './maps/huge4'
+import { campaign0 } from './maps/campaign0'
+import { campaign1 } from './maps/campaign1'
+import { campaign2 } from './maps/campaign2'
+import { campaign3 } from './maps/campaign3'
 
 const maps: Omit<GameMap, 'name'>[] = [
   small0,
@@ -31,6 +33,8 @@ const maps: Omit<GameMap, 'name'>[] = [
 
   campaign0,
   campaign1,
+  campaign2,
+  campaign3,
 ]
 
 export const gameMapsBlueprint = ({

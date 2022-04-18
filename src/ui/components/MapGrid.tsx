@@ -1,6 +1,7 @@
 import React from 'react'
 import { styled } from '@stitches/react'
 import { GameMap } from '../../type'
+import { white } from '../../utils/colors'
 
 const GridContainer = styled('div', {
   display: 'grid',
@@ -27,7 +28,9 @@ const MiniBox = styled('div', {
   },
 })
 
-export const MapGrid: React.FC<{ gameMap: GameMap }> = ({ gameMap }) => (
+export const MapGrid: React.FC<{
+  gameMap: GameMap
+}> = ({ gameMap }) => (
   <GridContainer
     css={{
       gridTemplateColumns: `repeat(${gameMap.grid[0]?.length}, 1fr)`,
@@ -42,6 +45,7 @@ export const MapGrid: React.FC<{ gameMap: GameMap }> = ({ gameMap }) => (
             return acc
           }
 
+          const color = gameMap.players[box.player ?? -1]?.color ?? white
           const x = i
           const y = row.length - j
 
@@ -52,6 +56,9 @@ export const MapGrid: React.FC<{ gameMap: GameMap }> = ({ gameMap }) => (
               css={{
                 gridColumn: `${x + 1} / ${x + 1}`,
                 gridRow: `${y + 1} / ${y + 1}`,
+                backgroundColor: `rgb(${color[0] * 255},${color[1] * 255},${
+                  color[2] * 255
+                })`,
               }}
             />,
           ]

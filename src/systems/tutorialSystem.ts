@@ -1,5 +1,5 @@
 import handTexture from '../assets/hand.png'
-import { gameComponent, State } from '../type'
+import { gameComponent, State, Tutorial } from '../type'
 import {
   componentName,
   createSystem,
@@ -11,7 +11,6 @@ import {
   ECSEvent,
   removeEntity,
   createComponent,
-  Component,
 } from '@arekrado/canvas-engine'
 import { generateId } from '../utils/generateId'
 import { boxGap, boxSize } from './boxSystem/boxSizes'
@@ -31,7 +30,7 @@ export namespace MarkerEvent {
 }
 
 export const tutorialSystem = (state: State) =>
-  createSystem<Component<unknown>, State>({
+  createSystem<Tutorial, State>({
     state,
     name: gameComponent.tutorial,
     componentName: gameComponent.tutorial,

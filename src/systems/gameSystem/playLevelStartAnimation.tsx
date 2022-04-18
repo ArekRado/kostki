@@ -128,7 +128,7 @@ export const playLevelStartAnimation = ({ state }: { state: State }) => {
   const game = getGame({ state })
 
   const gridMaxSideLength = Math.sqrt(game?.grid.length || 1) - 1
-  const maxTime = 2000
+  const maxTime = 250 * gridMaxSideLength
 
   const allAnimations = [
     centerToOutsideTransition({

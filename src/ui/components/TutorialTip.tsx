@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
 import { styled } from '../styled'
-import { CSS, keyframes } from '@stitches/react'
+import { popup } from './Modal'
 
-export const ModalBackdrop = styled('div', {
+export const TutorialTipBackdrop = styled('div', {
   position: 'absolute',
   top: 0,
   left: 0,
@@ -16,20 +16,9 @@ export const ModalBackdrop = styled('div', {
   pointerEvents: 'auto',
 })
 
-export const popup = keyframes({
-  '0%': {
-    opacity: 0,
-    transform: 'scale(0.9) translateY(100px)',
-  },
-  '100%': {
-    opacity: 1,
-    transform: 'scale(1) translateY(0px)',
-  },
-})
-
-export const ModalBody = styled('div', {
+export const TutorialTipBody = styled('div', {
   border: '5px solid black',
-  background: 'white',
+  background: 'rgba(255,255,255,0.5)',
   padding: '1rem',
 
   '@bp1': {
@@ -48,10 +37,10 @@ export const ModalBody = styled('div', {
   animation: `${popup.toString()} 300ms`,
 })
 
-export const Modal: FC<{ css: CSS }> = ({ children, css }) => {
+export const TutorialTip: FC = ({ children }) => {
   return (
-    <ModalBackdrop>
-      <ModalBody css={css}>{children}</ModalBody>
-    </ModalBackdrop>
+    <TutorialTipBackdrop>
+      <TutorialTipBody>{children}</TutorialTipBody>
+    </TutorialTipBackdrop>
   )
 }

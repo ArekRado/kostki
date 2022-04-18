@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { gameComponent, GameMap, Page, State } from '../../type'
+import { gameComponent, GameMap, Page, State, Tutorial } from '../../type'
 import { GameEvent, getGame } from '../../systems/gameSystem'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
@@ -19,6 +19,8 @@ import { StackedAreaChart } from '../components/StackedAreaChart'
 import { GameStatus, getGameStatus } from '../utils/getGameStatus'
 import { getAiList } from '../utils/getAiList'
 import { PlayerLostModal } from '../components/PlayerLostModal'
+import { tutorialEntity } from '../../systems/tutorialSystem'
+import { TutorialTip } from '../components/TutorialTip'
 
 const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
   onClose,
@@ -137,6 +139,13 @@ const getNextMapEntity = ({
 export const CampaignLevel: React.FC = () => {
   const state = useGameState()
   const game = state && getGame({ state })
+  const tutorial =
+    state &&
+    getComponent<Tutorial>({
+      state,
+      entity: tutorialEntity,
+      name: gameComponent.tutorial,
+    })
   const aiList = state ? getAiList(state) : []
 
   const [showModal, setShowModal] = useState(false)
@@ -169,6 +178,7 @@ export const CampaignLevel: React.FC = () => {
         />
       )}
       {gameStatus === GameStatus.playerLost && <PlayerLostModal />}
+      {tutorial?.tipText && <TutorialTip>{tutorial?.tipText}</TutorialTip>}
 
       <Flex
         css={{
