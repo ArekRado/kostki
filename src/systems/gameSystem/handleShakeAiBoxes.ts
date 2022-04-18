@@ -1,4 +1,4 @@
-import { Box, name, State } from '../../type'
+import { Box, gameComponent, State } from '../../type'
 import { GameEvent, getGame, shakeAnimationTimeout } from '../gameSystem'
 import {
   componentName,
@@ -36,7 +36,7 @@ export const handleShakeAiBoxes: EventHandler<
     game?.grid.forEach((boxEntity) => {
       const box = getComponent<Box>({
         state,
-        name: name.box,
+        name: gameComponent.box,
         entity: boxEntity,
       })
 

@@ -1,5 +1,5 @@
 import { Entity, updateComponent } from '@arekrado/canvas-engine'
-import { Game, name, State } from '../../type'
+import { Game, gameComponent, State } from '../../type'
 import { gameEntity } from '../gameSystem'
 
 type RemoveBoxFromRotationQueue = (params: {
@@ -12,7 +12,7 @@ export const removeBoxFromRotationQueue: RemoveBoxFromRotationQueue = ({
 }) => {
   return updateComponent<Game, State>({
     state,
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     update: (game) => ({
       boxRotationQueue: game.boxRotationQueue.filter(

@@ -9,6 +9,7 @@ import { CustomLevelSettings } from './pages/CustomLevelSettings/CustomLevelSett
 import { CustomLevel } from './pages/CustomLevel'
 import { globalCss } from '@stitches/react'
 import { CampaignLevelSelect } from './pages/CampaignLevelSelect'
+import { CampaignLevel } from './pages/CampaignLevel'
 
 const globalStyles = globalCss({
   '*': {
@@ -35,6 +36,8 @@ const App: FC<{ state: State }> = ({ state }) => {
       return <Main />
     case Page.campaignLevelSelect:
       return <CampaignLevelSelect />
+    case Page.campaignLevel:
+      return <CampaignLevel />
     case Page.customLevelSettings:
       return <CustomLevelSettings />
     case Page.customLevel:

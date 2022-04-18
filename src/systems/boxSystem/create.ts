@@ -5,7 +5,7 @@ import {
   Transform,
 } from '@arekrado/canvas-engine'
 import { boxBlueprint } from '../../blueprints/boxBlueprint'
-import { AI, Box, name, State } from '../../type'
+import { AI, Box, gameComponent, State } from '../../type'
 import { boxWithGap } from './boxSizes'
 
 export const create = ({
@@ -23,7 +23,7 @@ export const create = ({
   const { gridPosition } = component
   const ai = getComponent<AI, State>({
     state,
-    name: name.ai,
+    name: gameComponent.ai,
     entity: component.player || '',
   })
 

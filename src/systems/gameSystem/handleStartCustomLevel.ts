@@ -1,4 +1,4 @@
-import { State } from '../../type'
+import { Page, State } from '../../type'
 import { GameEvent, getGame, setGame } from '../gameSystem'
 import { getNextPlayer } from './getNextPlayer'
 import { EventHandler } from '@arekrado/canvas-engine'
@@ -7,9 +7,10 @@ import {
   setLevelFromGameSettings,
   startLevel,
 } from './startLevelUtils'
-import { Game, name } from '../../type'
+import { Game, gameComponent } from '../../type'
 import { gameEntity } from '../gameSystem'
 import { updateComponent } from '@arekrado/canvas-engine'
+import { collectTurnStatistics } from './handleNextTurn'
 
 export const handleStartCustomLevel: EventHandler<
   GameEvent.StartCustomLevelEvent,
@@ -17,14 +18,17 @@ export const handleStartCustomLevel: EventHandler<
 > = ({ state }) => {
   state = updateComponent<Game, State>({
     state,
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     update: () => ({
       statistics: [],
+      gameStarted: true,
+      page: Page.customLevel,
     }),
   })
 
   state = setLevelFromGameSettings({ state })
+  state = collectTurnStatistics({ state })
 
   state = setGame({
     state,

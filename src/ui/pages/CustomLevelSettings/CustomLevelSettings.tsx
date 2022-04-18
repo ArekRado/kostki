@@ -3,7 +3,7 @@ import {
   CustomLevelSettingsDifficulty,
   GameMap,
   Page,
-  name,
+  gameComponent,
 } from '../../../type'
 import { GameEvent, getGame } from '../../../systems/gameSystem'
 import { Button } from '../../components/Button'
@@ -40,7 +40,7 @@ export const CustomLevelSettings: React.FC = () => {
     gameState
       ? getComponentsByName<GameMap>({
           state: gameState,
-          name: name.gameMap,
+          name: gameComponent.gameMap,
         }) ?? {}
       : {},
   ).filter(({ campaignNumber }) => campaignNumber === -1)

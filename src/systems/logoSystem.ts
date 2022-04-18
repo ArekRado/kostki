@@ -1,4 +1,4 @@
-import { Logo, State, name } from '../type'
+import { Logo, State, gameComponent } from '../type'
 import { create } from './logoSystem/create'
 import { remove } from './logoSystem/remove'
 import { createSystem } from '@arekrado/canvas-engine'
@@ -22,8 +22,8 @@ export namespace LogoEvent {
 export const logoSystem = (state: State) =>
   createSystem<Logo, State>({
     state,
-    name: name.logo,
-    componentName: name.logo,
+    name: gameComponent.logo,
+    componentName: gameComponent.logo,
     create,
     // update: ({ state }) => {
     //   state = updateLogoPosition({ state })

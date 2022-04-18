@@ -2,7 +2,7 @@ import { Entity, getComponentsByName } from '@arekrado/canvas-engine'
 import { styled } from '@stitches/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { getGame } from '../../systems/gameSystem'
-import { AI, Game, name, State } from '../../type'
+import { AI, Game, gameComponent, State } from '../../type'
 import { useGameState } from '../hooks/useGameState'
 
 const Container = styled('div', {
@@ -23,7 +23,7 @@ const SvgContent = styled('svg', {
 const getColors = (state: State | undefined) =>
   state
     ? Object.values(
-        getComponentsByName<AI>({ state, name: name.ai }) ?? {},
+        getComponentsByName<AI>({ state, name: gameComponent.ai }) ?? {},
       ).reduce((acc, ai) => {
         acc[ai.entity] = ai.color
         return acc
@@ -62,7 +62,7 @@ export const StackedAreaChart: React.FC = () => {
     const totalTurns = game?.statistics.length ?? 0
     const colors = getColors(state)
 
-    const newData = game?.statistics[0].map(({ aiEntity }, aiIndex) => {
+    const newData = game?.statistics?.[0]?.map(({ aiEntity }, aiIndex) => {
       const color = colors[aiEntity] ?? [0, 0, 0]
       const points = game?.statistics.map((turnData, turnNumber) => {
         const { boxesSum } = turnData[aiIndex]
@@ -77,7 +77,7 @@ export const StackedAreaChart: React.FC = () => {
 
       return {
         color,
-        points: [...points, `${width},${height}`].join(' '),
+        points: [`${0},${height}`, ...points, `${width},${height}`].join(' '),
         aiEntity,
       }
     })

@@ -1,4 +1,4 @@
-import { Box, name, State } from '../../type'
+import { Box, gameComponent, State } from '../../type'
 import { LogoEvent } from '../logoSystem'
 import { logoGrid } from './logoGrid'
 import { createComponent, emitEvent, setEntity } from '@arekrado/canvas-engine'
@@ -21,7 +21,7 @@ export const create = ({ state }: { state: State }): State => {
         return createComponent<Box, State>({
           state: acc2,
           data: {
-            name: name.box,
+            name: gameComponent.box,
             entity: boxEntity,
             isAnimating: false,
             dots: 0,

@@ -5,8 +5,9 @@ import { gameEntity, gameSystem } from './systems/gameSystem'
 import { markerSystem } from './systems/markerSystem'
 import { logoSystem } from './systems/logoSystem'
 import { setScene } from './systems/gameSystem/handleCleanScene'
+import { tutorialSystem } from './systems/tutorialSystem'
 import { getSavedData } from './utils/localDb'
-import { AI, Game, GameMap, name, Page, State } from './type'
+import { AI, Game, GameMap, gameComponent, Page, State } from './type'
 import {
   addEventHandler,
   Camera,
@@ -57,13 +58,14 @@ export const getState = ({
   state = gameSystem(state)
   state = markerSystem(state)
   state = logoSystem(state)
+  state = tutorialSystem(state)
 
   state = setEntity({ state, entity: humanPlayerEntity })
   state = createComponent<AI, State>({
     state,
     data: {
       entity: humanPlayerEntity,
-      name: name.ai,
+      name: gameComponent.ai,
       human: true,
       level: AIDifficulty.hard,
       color: [0, 0, 1],
@@ -77,11 +79,11 @@ export const getState = ({
   state = gameMapsBlueprint({ state, savedData })
 
   const maps = Object.values(
-    getComponentsByName<GameMap>({ state, name: name.gameMap }) ?? {},
+    getComponentsByName<GameMap>({ state, name: gameComponent.gameMap }) ?? {},
   )
   const firstMapEntity = maps.find(
     ({ campaignNumber }) => campaignNumber === -1,
-  )
+  )?.entity
 
   state = setEntity({ state, entity: gameEntity })
   state = createComponent<Game, State>({
@@ -91,10 +93,11 @@ export const getState = ({
       page: Page.mainMenu,
       lastBoxClickTimestamp: 0,
       entity: gameEntity,
-      name: name.game,
+      name: gameComponent.game,
       moves: 0,
       grid: [],
       round: 0,
+      currentCampaignLevelEntity: '',
       currentPlayer: humanPlayerEntity,
       gameStarted: false,
       playersQueue: [],
@@ -105,7 +108,7 @@ export const getState = ({
         players: savedData.players,
         difficulty: savedData.difficulty,
         quickStart: savedData.quickStart,
-        mapEntity: savedData.mapEntity || firstMapEntity?.entity || '',
+        mapEntity: savedData.mapEntity || firstMapEntity || '',
       },
     },
   })

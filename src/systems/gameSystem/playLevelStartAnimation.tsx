@@ -1,4 +1,4 @@
-import { AI, Box, name, State } from '../../type'
+import { AI, Box, gameComponent, State } from '../../type'
 import { BoxEvent, BoxRotationDirection } from '../boxSystem'
 import { getTextureSet } from '../boxSystem/getTextureSet'
 import { getGame } from '../gameSystem'
@@ -154,13 +154,13 @@ export const playLevelStartAnimation = ({ state }: { state: State }) => {
     const box = getComponent<Box>({
       state,
       entity: boxEntity,
-      name: name.box,
+      name: gameComponent.box,
     })
 
     const ai = getComponent<AI>({
       state,
       entity: box?.player || '',
-      name: name.ai,
+      name: gameComponent.ai,
     })
 
     if (box && ai) {

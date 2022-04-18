@@ -1,5 +1,5 @@
 import { createSystem } from '@arekrado/canvas-engine'
-import { AI, Box, name, State } from '../type'
+import { AI, Box, gameComponent, State } from '../type'
 
 export enum AIDifficulty {
   // campaign ai
@@ -29,6 +29,6 @@ export type DataGrid = EnhancedBox[][]
 export const aiSystem = (state: State) =>
   createSystem<AI, State>({
     state,
-    name: name.ai,
-    componentName: name.ai,
+    name: gameComponent.ai,
+    componentName: gameComponent.ai,
   })

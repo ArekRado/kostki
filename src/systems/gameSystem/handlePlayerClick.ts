@@ -4,7 +4,7 @@ import {
   getComponent,
   Transform,
 } from '@arekrado/canvas-engine'
-import { AI, Box, name, State } from '../../type'
+import { AI, Box, gameComponent, State } from '../../type'
 import { onClickBox } from '../boxSystem/onClickBox'
 import { GameEvent, getGame } from '../gameSystem'
 import { setMarker } from '../markerSystem'
@@ -22,7 +22,7 @@ export const handlePlayerClick: EventHandler<
 
   const box = getComponent<Box, State>({
     state,
-    name: name.box,
+    name: gameComponent.box,
     entity: event.payload.boxEntity,
   })
 
@@ -37,7 +37,7 @@ export const handlePlayerClick: EventHandler<
 
   if (boxTransform && gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
     const ai = getComponent<AI, State>({
-      name: name.ai,
+      name: gameComponent.ai,
       state,
       entity: currentPlayer,
     })

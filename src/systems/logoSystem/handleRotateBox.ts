@@ -1,5 +1,5 @@
 import { emitEvent, EventHandler, getComponent } from '@arekrado/canvas-engine'
-import { Page, State, name } from '../../type'
+import { Page, State, gameComponent } from '../../type'
 import { white } from '../../utils/colors'
 import { set1 } from '../../utils/textureSets'
 import {
@@ -38,7 +38,7 @@ export const handleRotateRandomLogoBox: EventHandler<
   const sceneRef = state.babylonjs.sceneRef
   const isLogoDefined = getComponent({
     state,
-    name: name.logo,
+    name: gameComponent.logo,
     entity: logoEntity,
   })
   const game = getGame({ state })

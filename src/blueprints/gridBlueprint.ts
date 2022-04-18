@@ -1,4 +1,4 @@
-import { Box, name, State } from '../type'
+import { Box, gameComponent, State } from '../type'
 import { createComponent, Entity, setEntity } from '@arekrado/canvas-engine'
 import { setCamera } from '../wrappers/setCamera'
 import { getGame, setGame } from '../systems/gameSystem'
@@ -23,7 +23,7 @@ export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
         acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
-            name: name.box,
+            name: gameComponent.box,
             entity,
             isAnimating: false,
             dots,

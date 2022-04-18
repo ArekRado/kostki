@@ -1,4 +1,4 @@
-import { AI, Box, name, State } from '../../type'
+import { AI, Box, gameComponent, State } from '../../type'
 import { BoxEvent } from '../boxSystem'
 import { removeBoxFromRotationQueue } from './removeBoxFromRotationQueue'
 import {
@@ -21,7 +21,7 @@ export const handleRotationEnd: EventHandler<
   const { boxEntity, texture, color, nextTurn, shouldExplode } = event.payload
   const box = getComponent<Box, State>({
     state,
-    name: name.box,
+    name: gameComponent.box,
     entity: boxEntity,
   })
   const transform = getComponent<Transform>({
@@ -63,7 +63,7 @@ export const handleRotationEnd: EventHandler<
 
   state = updateComponent<Box, State>({
     state,
-    name: name.box,
+    name: gameComponent.box,
     entity: boxEntity,
     update: () => ({
       isAnimating: false,
@@ -73,7 +73,7 @@ export const handleRotationEnd: EventHandler<
   const game = getGame({ state })
   const ai = getComponent<AI, State>({
     state,
-    name: name.ai,
+    name: gameComponent.ai,
     entity: box?.player || '',
   })
 

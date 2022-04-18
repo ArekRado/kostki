@@ -1,5 +1,5 @@
 import { getComponent } from '@arekrado/canvas-engine'
-import { Box, name, State } from '../../type'
+import { Box, gameComponent, State } from '../../type'
 import { DataGrid } from '../aiSystem'
 import { getGame } from './../gameSystem'
 
@@ -10,7 +10,7 @@ export const getDataGrid: GetDataGrid = ({ state }) => {
   if (game) {
     const grid: DataGrid = game.grid.reduce((acc, entity) => {
       const box = getComponent<Box>({
-        name: name.box,
+        name: gameComponent.box,
         state,
         entity,
       })

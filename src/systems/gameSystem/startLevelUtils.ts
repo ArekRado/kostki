@@ -4,8 +4,7 @@ import {
   Game,
   State,
   Marker,
-  Page,
-  name,
+  gameComponent,
   GameMap,
   CustomLevelSettingsDifficulty,
 } from '../../type'
@@ -88,7 +87,7 @@ const centerCameraInMapCenter = ({
 }) => {
   const gameMap = getComponent<GameMap>({
     state,
-    name: name.gameMap,
+    name: gameComponent.gameMap,
     entity: mapEntity,
   })
 
@@ -111,7 +110,7 @@ const createGrid = ({
   gameMap: GameMap
 }): State => {
   const players = Object.values(
-    getComponentsByName<AI>({ state, name: name.ai }) ?? {},
+    getComponentsByName<AI>({ state, name: gameComponent.ai }) ?? {},
   )
 
   const getPlayer = (index: number | undefined) => {
@@ -140,7 +139,7 @@ const createGrid = ({
         acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
-            name: name.box,
+            name: gameComponent.box,
             entity,
             isAnimating: false,
             dots: box.dots,
@@ -179,7 +178,7 @@ export const setLevelFromGameSettings: SetLevelFromGameSettings = ({
 
   const gameMap = getComponent<GameMap, State>({
     state,
-    name: name.gameMap,
+    name: gameComponent.gameMap,
     entity: game.customLevelSettings.mapEntity,
   })
 
@@ -218,7 +217,7 @@ export const setLevelFromMapEntity: SetLevelFromMapEntity = ({
 
   const gameMap = getComponent<GameMap, State>({
     state,
-    name: name.gameMap,
+    name: gameComponent.gameMap,
     entity: mapEntity,
   })
 
@@ -230,7 +229,7 @@ export const setLevelFromMapEntity: SetLevelFromMapEntity = ({
     state,
     ai: gameMap.players.map((ai, i) => ({
       ...ai,
-      name: name.ai,
+      name: gameComponent.ai,
       entity: generateEntity({ name: 'ai' }),
       active: true,
       textureSet: playersList()[i].textureSet,
@@ -256,7 +255,7 @@ export const runQuickStart: RunQuickStart = ({ state }) => {
 
       const currentAi = getComponent<AI>({
         state: acc,
-        name: name.ai,
+        name: gameComponent.ai,
         entity: game?.currentPlayer || '',
       })
 
@@ -276,7 +275,7 @@ export const runQuickStart: RunQuickStart = ({ state }) => {
 
       acc = updateComponent<Box, State>({
         state: acc,
-        name: name.box,
+        name: gameComponent.box,
         entity: box.entity,
         update: () => ({
           player: currentAi.entity,
@@ -286,7 +285,7 @@ export const runQuickStart: RunQuickStart = ({ state }) => {
 
       acc = updateComponent<Game, State>({
         state: acc,
-        name: name.game,
+        name: gameComponent.game,
         entity: gameEntity,
         update: () => ({
           currentPlayer: getNextPlayer({ state: acc })?.entity || '',
@@ -312,17 +311,9 @@ export const startLevel = ({
 }) => {
   playLevelStartAnimation({ state })
 
-  state = setGame({
-    state,
-    data: {
-      gameStarted: true,
-      page: Page.customLevel,
-    },
-  })
-
   const currentAi = getComponent<AI>({
     state,
-    name: name.ai,
+    name: gameComponent.ai,
     entity: getGame({ state })?.currentPlayer || '',
   })
 
@@ -339,7 +330,7 @@ export const startLevel = ({
     state,
     data: {
       entity: markerEntity,
-      name: name.marker,
+      name: gameComponent.marker,
       color: [1, 1, 1],
       position: [0, 0],
     },
@@ -360,7 +351,7 @@ export const startLevel = ({
 
   state = updateComponent<Game, State>({
     state,
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     update: () => ({
       lastBoxClickTimestamp: getTime({ state })?.timeNow || 0,

@@ -1,4 +1,4 @@
-import { AI, Box, name, State } from '../../type'
+import { AI, Box, gameComponent, State } from '../../type'
 import { createRotationBoxAnimation } from './createRotationBoxAnimation'
 import { getTextureSet } from './getTextureSet'
 import { pushBoxToRotationQueue } from './pushBoxToRotationQueue'
@@ -27,7 +27,7 @@ export const onClickBox: OnClickBox = ({ state, ai, box }) => {
 
   state = updateComponent<Box, State>({
     state,
-    name: name.box,
+    name: gameComponent.box,
     entity,
     update: () => ({
       isAnimating: true,

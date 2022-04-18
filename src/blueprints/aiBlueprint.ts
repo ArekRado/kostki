@@ -1,11 +1,11 @@
-import { AI, Game, name, State } from '../type'
+import { AI, Game, gameComponent, State } from '../type'
 import { getGame } from '../systems/gameSystem'
 import { createComponent, setEntity } from '@arekrado/canvas-engine'
 import { removeEntitiesByComponentName } from '../systems/gameSystem/handleCleanScene'
 
 type AiBlueprint = (params: { state: State; ai: AI[] }) => State
 export const aiBlueprint: AiBlueprint = ({ state, ai }) => {
-  state = removeEntitiesByComponentName({ state, name: name.ai })
+  state = removeEntitiesByComponentName({ state, name: gameComponent.ai })
 
   const game = getGame({ state })
 

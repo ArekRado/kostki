@@ -29,7 +29,7 @@ export const Main: React.FC = () => {
           gridColumn: '2 / 3',
         }}
       >
-        {/* <Button
+        <Button
           css={{ maxWidth: '500px', width: '100%' }}
           onClick={() => {
             emitEvent<GameEvent.CleanSceneEvent>({
@@ -41,7 +41,7 @@ export const Main: React.FC = () => {
           }}
         >
           Start
-        </Button> */}
+        </Button>
         <Button
           css={{ marginTop: '100px', maxWidth: '500px', width: '100%' }}
           onClick={() => {

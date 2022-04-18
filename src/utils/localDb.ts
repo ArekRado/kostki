@@ -2,7 +2,7 @@ import {
   CustomLevelSettingsDifficulty,
   Game,
   GameMap,
-  name,
+  gameComponent,
   State,
 } from '../type'
 import { getGame } from '../systems/gameSystem'
@@ -66,7 +66,7 @@ export const saveStateToData = (state: State) => {
   const game = getGame({ state })
   const maps = Object.values(
     getComponentsByName<GameMap>({
-      name: name.gameMap,
+      name: gameComponent.gameMap,
       state,
     }) ?? {},
   )

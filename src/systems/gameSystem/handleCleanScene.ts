@@ -9,7 +9,7 @@ import {
 } from '@arekrado/canvas-engine'
 import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
 import { cameraEntity } from '@arekrado/canvas-engine/system/camera'
-import { Logo, name, Page, State } from '../../type'
+import { Logo, gameComponent, Page, State } from '../../type'
 import { eventBusDispatch } from '../../utils/eventBus'
 import { GameEvent, setGame } from '../gameSystem'
 import { logoEntity } from '../logoSystem'
@@ -47,11 +47,12 @@ export const handleCleanScene: EventHandler<
       gameStarted: false,
     },
   })
-  state = removeEntitiesByComponentName({ name: name.box, state })
-  state = removeEntitiesByComponentName({ name: name.ai, state })
-  state = removeEntitiesByComponentName({ name: name.marker, state })
-  state = removeEntitiesByComponentName({ name: name.background, state })
-  state = removeEntitiesByComponentName({ name: name.logo, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.box, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.ai, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.marker, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.background, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.logo, state })
+  state = removeEntitiesByComponentName({ name: gameComponent.tutorial, state })
 
   state = setScene({ state, page: event.payload.newPage })
 
@@ -77,7 +78,7 @@ export const setScene = ({ state, page }: { state: State; page: Page }) => {
       state,
       data: {
         entity: logoEntity,
-        name: name.logo,
+        name: gameComponent.logo,
       },
     })
   }

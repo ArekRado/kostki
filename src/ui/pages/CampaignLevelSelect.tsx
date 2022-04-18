@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameMap, name, Page, State } from '../../type'
+import { GameMap, gameComponent, Page, State } from '../../type'
 import { GameEvent } from '../../systems/gameSystem'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
@@ -19,10 +19,12 @@ export const CampaignLevelSelect: React.FC = () => {
 
   const allMaps = getComponentsByName<GameMap, State>({
     state: gameState,
-    name: name.gameMap,
+    name: gameComponent.gameMap,
   })
 
-  const campaignMaps = Object.values(allMaps ?? {})
+  const campaignMaps = Object.values(allMaps ?? {}).filter(
+    ({ campaignNumber }) => campaignNumber !== -1,
+  )
 
   const startCampaignMap = (mapEntity: Entity) =>
     emitEvent<GameEvent.StartCampaignLevelEvent>({

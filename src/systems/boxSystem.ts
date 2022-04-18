@@ -1,5 +1,5 @@
 import { ECSEvent, createSystem, Entity } from '@arekrado/canvas-engine'
-import { Box, Color, name, State } from '../type'
+import { Box, Color, gameComponent, State } from '../type'
 import { create } from './boxSystem/create'
 import { remove } from './boxSystem/remove'
 
@@ -43,8 +43,8 @@ export namespace BoxEvent {
 export const boxSystem = (state: State) =>
   createSystem<Box, State>({
     state,
-    name: name.box,
-    componentName: name.box,
+    name: gameComponent.box,
+    componentName: gameComponent.box,
     create,
     remove,
   })

@@ -1,4 +1,4 @@
-import { AI, Color, CustomLevelSettingsDifficulty, Game, name, State } from '../../type'
+import { AI, Color, CustomLevelSettingsDifficulty, Game, gameComponent, State } from '../../type'
 import { AIDifficulty } from '../aiSystem'
 import {
   gray,
@@ -34,7 +34,7 @@ export const basicAI = (
   level = AIDifficulty.easy,
 ): AI => ({
   entity,
-  name: name.ai,
+  name: gameComponent.ai,
   human,
   level,
   color,
@@ -70,7 +70,7 @@ export const handleChangePlayers: EventHandler<
   state = updateComponent<Game, State>({
     state,
     entity: gameEntity,
-    name: name.game,
+    name: gameComponent.game,
     update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
@@ -113,7 +113,7 @@ export const handleChangeDifficulty: EventHandler<
   state = updateComponent<Game, State>({
     state,
     entity: gameEntity,
-    name: name.game,
+    name: gameComponent.game,
     update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
@@ -135,7 +135,7 @@ export const handleChangeQuickStart: EventHandler<
   state = updateComponent<Game, State>({
     state,
     entity: gameEntity,
-    name: name.game,
+    name: gameComponent.game,
     update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,
@@ -157,7 +157,7 @@ export const handleChangeColorBlindMode: EventHandler<
   state = updateComponent<Game, State>({
     state,
     entity: gameEntity,
-    name: name.game,
+    name: gameComponent.game,
     update: (game) => ({
       colorBlindMode: !game.colorBlindMode,
     }),
@@ -181,7 +181,7 @@ export const handleChangeMapType: EventHandler<
   state = updateComponent<Game, State>({
     state,
     entity: gameEntity,
-    name: name.game,
+    name: gameComponent.game,
     update: (game) => ({
       customLevelSettings: {
         ...game.customLevelSettings,

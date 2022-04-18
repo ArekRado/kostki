@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { AI, Box, Game, name, Page, State } from '../../type'
+import { Box, Game, gameComponent, Page, State } from '../../type'
 import { GameEvent, getGame } from '../../systems/gameSystem'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
@@ -9,144 +9,11 @@ import { PageContainer } from '../components/PageContainer'
 import { TurnIndicator, TurnIndicatorItem } from '../components/TurnIndicator'
 import { Typography } from '../components/Typography'
 import { useGameState } from '../hooks/useGameState'
-import { Component, emitEvent, getComponent } from '@arekrado/canvas-engine'
-import { AIDifficulty } from '../../systems/aiSystem'
+import { emitEvent, getComponent } from '@arekrado/canvas-engine'
 import { StackedAreaChart } from '../components/StackedAreaChart'
-
-const getAiList = (state: State): TurnIndicatorItem[] => {
-  const game = getGame({ state })
-
-  const aiList = game?.playersQueue
-    .map((entity) =>
-      getComponent<AI>({
-        state,
-        name: name.ai,
-        entity,
-      }),
-    )
-    .filter((ai) => !!ai) as Component<AI>[]
-
-  return aiList.map((ai) => {
-    let name = ''
-
-    if (ai.human) {
-      name = 'You'
-    } else {
-      switch (ai.level) {
-        case AIDifficulty.disabled:
-          name = 'Enemy disabled'
-          break
-        case AIDifficulty.easy:
-          name = 'Enemy easy'
-          break
-        case AIDifficulty.medium:
-          name = 'Enemy medium'
-          break
-        case AIDifficulty.hard:
-          name = 'Enemy hard'
-          break
-        case AIDifficulty.random:
-          name = 'Enemy random'
-          break
-      }
-    }
-
-    return {
-      entity: ai.entity,
-      color: ai.color,
-      active: ai.active,
-      human: ai.human,
-      hasCurrentTurn: game?.currentPlayer === ai.entity,
-      name,
-    }
-  })
-}
-
-const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
-  onClose,
-}) => (
-  <Modal
-    css={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-    }}
-  >
-    <Typography css={{ textAlign: 'center' }}>
-      Are you sure you want to finish the game?
-    </Typography>
-
-    <Flex css={{ justifyContent: 'space-evenly' }}>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          onClose(false)
-        }}
-      >
-        No
-      </Button>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          emitEvent<GameEvent.CleanSceneEvent>({
-            type: GameEvent.Type.cleanScene,
-            payload: { newPage: Page.mainMenu },
-          })
-        }}
-      >
-        Yes
-      </Button>
-    </Flex>
-  </Modal>
-)
-
-const PlayerLostModal: FC = () => (
-  <Modal
-    css={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-    }}
-  >
-    <Typography css={{ textAlign: 'center' }}>You lost</Typography>
-
-    <Flex
-      css={{
-        width: '90%',
-        height: '90%',
-        alignSelf: 'center',
-        margin: '1rem',
-      }}
-    >
-      <StackedAreaChart />
-    </Flex>
-
-    <Flex css={{ justifyContent: 'space-evenly' }}>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          emitEvent<GameEvent.CleanSceneEvent>({
-            type: GameEvent.Type.cleanScene,
-            payload: { newPage: Page.mainMenu },
-          })
-        }}
-      >
-        Back to main menu
-      </Button>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          emitEvent<GameEvent.PlayAgainCustomLevelEvent>({
-            type: GameEvent.Type.playAgainCustomLevel,
-            payload: null,
-          })
-        }}
-      >
-        Play again
-      </Button>
-    </Flex>
-  </Modal>
-)
+import { BackToMainMenuModal } from '../components/BackToMainMenuModal'
+import { PlayerLostModal } from '../components/PlayerLostModal'
+import { getAiList } from '../utils/getAiList'
 
 const PlayerWonModal: FC = () => (
   <Modal
@@ -219,7 +86,7 @@ const getGameStatus = ({
   const amountOfCapturedBoxes = game.grid.reduce((acc, boxEntity) => {
     const box = getComponent<Box>({
       state,
-      name: name.box,
+      name: gameComponent.box,
       entity: boxEntity,
     })
 

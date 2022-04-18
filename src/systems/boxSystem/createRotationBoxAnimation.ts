@@ -1,4 +1,4 @@
-import { Box, Color, name, State } from '../../type'
+import { Box, Color, gameComponent, State } from '../../type'
 import { setMeshTexture } from '../../utils/setMeshTexture'
 import { BoxEvent, BoxRotationDirection } from '../boxSystem'
 import {
@@ -55,7 +55,7 @@ export const createRotationBoxAnimation = ({
   if (boxMesh) {
     state = updateComponent<Box, State>({
       state,
-      name: name.box,
+      name: gameComponent.box,
       entity: boxUniqueId,
       update: (box) => ({
         ...box,

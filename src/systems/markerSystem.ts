@@ -1,5 +1,5 @@
 import markerTexture from '../assets/marker.png'
-import { Marker, name, State } from '../type'
+import { Marker, gameComponent, State } from '../type'
 import {
   componentName,
   createGetSetForUniqComponent,
@@ -33,7 +33,7 @@ export namespace MarkerEvent {
 
 const markerGetSet = createGetSetForUniqComponent<Marker, State>({
   entity: markerEntity,
-  name: name.marker,
+  name: gameComponent.marker,
 })
 
 export const getMarker = markerGetSet.getComponent
@@ -123,8 +123,8 @@ export const setMarker = ({
 export const markerSystem = (state: State) =>
   createSystem<Marker, State>({
     state,
-    name: name.marker,
-    componentName: name.marker,
+    name: gameComponent.marker,
+    componentName: gameComponent.marker,
     create: ({ state, component }) => {
       const sceneRef = state.babylonjs.sceneRef
       if (!sceneRef) {

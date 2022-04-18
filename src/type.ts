@@ -30,7 +30,7 @@ export type Breakpoints<Value = number> = [Value, Value, Value]
 
 export type Color = [number, number, number]
 
-export enum name {
+export enum gameComponent {
   box = 'box',
   ai = 'ai',
   game = 'game',
@@ -38,6 +38,7 @@ export enum name {
   background = 'background',
   logo = 'logo',
   gameMap = 'gameMap',
+  tutorial = 'tutorial',
 }
 
 // Component
@@ -68,6 +69,7 @@ export enum Scene {
 
 export enum Page {
   mainMenu = 'mainMenu',
+  campaignLevel = 'campaignLevel',
   campaignLevelSelect = 'campaignLevelSelect',
   customLevel = 'customLevel',
   customLevelSettings = 'customLevelSettings',
@@ -93,6 +95,7 @@ export type Game = Component<{
   playersQueue: Entity[]
   boxRotationQueue: Entity[]
   gameStarted: boolean
+  currentCampaignLevelEntity: Entity
   statistics: {
     aiEntity: Entity
     // dotsSum: number

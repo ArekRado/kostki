@@ -1,8 +1,10 @@
-import { Game, State, name } from '../../type'
-import { gameEntity, GameEvent, setGame } from '../gameSystem'
+import { Game, State, gameComponent, Page } from '../../type'
+import { gameEntity, GameEvent } from '../gameSystem'
 import { getNextPlayer } from './getNextPlayer'
 import { EventHandler, updateComponent } from '@arekrado/canvas-engine'
 import { setLevelFromMapEntity, startLevel } from './startLevelUtils'
+import { handleCleanScene } from './handleCleanScene'
+import { collectTurnStatistics } from './handleNextTurn'
 
 export const handleStartCampaignLevel: EventHandler<
   GameEvent.StartCampaignLevelEvent,
@@ -13,30 +15,37 @@ export const handleStartCampaignLevel: EventHandler<
     payload: { mapEntity },
   },
 }) => {
-  state = updateComponent<Game, State>({
+  state = handleCleanScene({
     state,
-    name: name.game,
-    entity: gameEntity,
-    update: () => ({
-      statistics: [],
-    }),
-  })
-
-  state = setLevelFromMapEntity({ state, mapEntity })
-
-  state = setGame({
-    state,
-    data: {
-      currentPlayer: getNextPlayer({ state })?.entity,
+    event: {
+      type: GameEvent.Type.cleanScene,
+      payload: {
+        newPage: Page.campaignLevel,
+      },
     },
   })
 
   state = updateComponent<Game, State>({
     state,
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     update: () => ({
+      statistics: [],
+      gameStarted: true,
+    }),
+  })
+
+  state = setLevelFromMapEntity({ state, mapEntity })
+  state = collectTurnStatistics({ state })
+
+  state = updateComponent<Game, State>({
+    state,
+    name: gameComponent.game,
+    entity: gameEntity,
+    update: () => ({
+      
       currentPlayer: getNextPlayer({ state })?.entity,
+      currentCampaignLevelEntity: mapEntity,
     }),
   })
 

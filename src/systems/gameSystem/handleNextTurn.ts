@@ -1,4 +1,4 @@
-import { AI, Box, Game, name, State } from '../../type'
+import { AI, Box, Game, gameComponent, State } from '../../type'
 import { eventBusDispatch } from '../../utils/eventBus'
 import { getAiMove } from '../aiSystem/getAiMove'
 import { onClickBox } from '../boxSystem/onClickBox'
@@ -17,10 +17,10 @@ import { getTime } from '@arekrado/canvas-engine/system/time'
 
 export const collectTurnStatistics = ({ state }: { state: State }): State => {
   const aiList = Object.values(
-    getComponentsByName<AI>({ state, name: name.ai }) ?? {},
+    getComponentsByName<AI>({ state, name: gameComponent.ai }) ?? {},
   )
   const allBoxes = Object.values(
-    getComponentsByName<Box>({ state, name: name.box }) ?? {},
+    getComponentsByName<Box>({ state, name: gameComponent.box }) ?? {},
   )
 
   const turnStatistics: Game['statistics'][0] = aiList.map((ai) => {
@@ -34,7 +34,7 @@ export const collectTurnStatistics = ({ state }: { state: State }): State => {
   })
 
   state = updateComponent<Game, State>({
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     state,
     update: (game) => ({
@@ -45,18 +45,27 @@ export const collectTurnStatistics = ({ state }: { state: State }): State => {
   return state
 }
 
-const sumAiBoxes = ({ state, ai }: { state: State; ai: AI }): number => {
+const sumAiAndEmptyBoxes = ({
+  state,
+  ai,
+}: {
+  state: State
+  ai: AI
+}): number => {
   const game = getGame({ state })
 
   return (
     game?.grid.reduce((acc, boxEntity) => {
       const box = getComponent<Box, State>({
         state,
-        name: name.box,
+        name: gameComponent.box,
         entity: boxEntity,
       })
 
-      return box?.player === ai.entity ? acc + 1 : acc
+      const isEmpty = box?.player === undefined
+      const isPlayer = box?.player === ai.entity
+
+      return isEmpty || isPlayer ? acc + 1 : acc
     }, 0) || 0
   )
 }
@@ -65,7 +74,7 @@ type AiLost = (params: { state: State; ai: AI }) => State
 const aiLost: AiLost = ({ state, ai }) => {
   state = updateComponent<AI, State>({
     state,
-    name: name.ai,
+    name: gameComponent.ai,
     entity: ai.entity,
     update: () => ({
       active: false,
@@ -74,7 +83,7 @@ const aiLost: AiLost = ({ state, ai }) => {
 
   const allAI = getComponentsByName<AI, State>({
     state,
-    name: name.ai,
+    name: gameComponent.ai,
   })
 
   const amountOfActivedAi = Object.values(allAI || {}).reduce(
@@ -86,7 +95,7 @@ const aiLost: AiLost = ({ state, ai }) => {
   if (amountOfActivedAi === 1) {
     state = updateComponent<Game, State>({
       state,
-      name: name.game,
+      name: gameComponent.game,
       entity: gameEntity,
       update: () => ({
         gameStarted: false,
@@ -114,7 +123,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
 
   state = updateComponent<Game, State>({
     state,
-    name: name.game,
+    name: gameComponent.game,
     entity: gameEntity,
     update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
   })
@@ -127,7 +136,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
     }
 
     const ai = getComponent<AI, State>({
-      name: name.ai,
+      name: gameComponent.ai,
       state,
       entity: nextPlayer.entity,
     })
@@ -138,7 +147,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
 
     state = updateComponent<Game, State>({
       state,
-      name: name.game,
+      name: gameComponent.game,
       entity: gameEntity,
       update: (game) => ({
         currentPlayer: ai.entity,
@@ -149,7 +158,7 @@ export const startNextTurn = ({ state }: { state: State }) => {
     if (ai.active) {
       state = collectTurnStatistics({ state })
 
-      const boxesAmount = sumAiBoxes({ state, ai })
+      const boxesAmount = sumAiAndEmptyBoxes({ state, ai })
 
       if (boxesAmount === 0) {
         state = aiLost({ state, ai })
