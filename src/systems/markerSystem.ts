@@ -44,78 +44,76 @@ export const setMarker = ({
   state: State
   data: Partial<Marker>
 }) => {
-  if (state.babylonjs.sceneRef) {
-    state = updateComponent<Material, State>({
-      state,
-      name: componentName.material,
-      entity: markerEntity,
-      update: (material) => ({
-        diffuseColor: data.color
-          ? [data.color[0], data.color[1], data.color[2], 0]
-          : material.diffuseColor,
-      }),
-    })
+  state = updateComponent<Material, State>({
+    state,
+    name: componentName.material,
+    entity: markerEntity,
+    update: (material) => ({
+      diffuseColor: data.color
+        ? [data.color[0], data.color[1], data.color[2], 0]
+        : material.diffuseColor,
+    }),
+  })
 
-    state = updateComponent<Transform, State>({
-      state,
-      entity: markerEntity,
-      name: componentName.transform,
-      update: (transform) => ({
-        position: data.position
-          ? [data.position[0], data.position[1], -1]
-          : transform.position,
-      }),
-    })
+  state = updateComponent<Transform, State>({
+    state,
+    entity: markerEntity,
+    name: componentName.transform,
+    update: (transform) => ({
+      position: data.position
+        ? [data.position[0], data.position[1], -1]
+        : transform.position,
+    }),
+  })
 
-    const appearAnimationEnd: MarkerEvent.AppearAnimationEndEvent = {
-      type: MarkerEvent.Type.appearAnimationEnd,
-      payload: null,
-    }
-
-    state = createComponent<Animation.AnimationComponent, State>({
-      state,
-      data: {
-        name: componentName.animation,
-        entity: markerEntity,
-        deleteWhenFinished: true,
-        isPlaying: true,
-        isFinished: false,
-        currentTime: 0,
-        wrapMode: Animation.WrapMode.once,
-        timingMode: Animation.TimingMode.smooth,
-        properties: [
-          {
-            path: 'scale',
-            component: componentName.transform,
-            entity: markerEntity,
-            keyframes: [
-              {
-                duration: boxRotationAnimationTime - 100,
-                timingFunction: 'Linear',
-                valueRange: [
-                  [2, 2, 1],
-                  [0.9, 0.9, 1],
-                ],
-                endFrameEvent: appearAnimationEnd,
-              },
-            ],
-          },
-          {
-            path: 'alpha',
-            component: componentName.material,
-            entity: markerEntity,
-            keyframes: [
-              {
-                duration: boxRotationAnimationTime - 100,
-                timingFunction: 'Linear',
-                valueRange: [0, 1],
-              },
-            ],
-          },
-        ],
-      },
-    })
+  const appearAnimationEnd: MarkerEvent.AppearAnimationEndEvent = {
+    type: MarkerEvent.Type.appearAnimationEnd,
+    payload: null,
   }
+
+  state = createComponent<Animation.AnimationComponent, State>({
+    state,
+    data: {
+      name: componentName.animation,
+      entity: markerEntity,
+      deleteWhenFinished: true,
+      isPlaying: true,
+      isFinished: false,
+      currentTime: 0,
+      wrapMode: Animation.WrapMode.once,
+      timingMode: Animation.TimingMode.smooth,
+      properties: [
+        {
+          path: 'scale',
+          component: componentName.transform,
+          entity: markerEntity,
+          keyframes: [
+            {
+              duration: boxRotationAnimationTime - 100,
+              timingFunction: 'Linear',
+              valueRange: [
+                [2, 2, 1],
+                [0.9, 0.9, 1],
+              ],
+              endFrameEvent: appearAnimationEnd,
+            },
+          ],
+        },
+        {
+          path: 'alpha',
+          component: componentName.material,
+          entity: markerEntity,
+          keyframes: [
+            {
+              duration: boxRotationAnimationTime - 100,
+              timingFunction: 'Linear',
+              valueRange: [0, 1],
+            },
+          ],
+        },
+      ],
+    },
+  })
 
   return markerGetSet.setComponent({ state, data })
 }
@@ -126,11 +124,6 @@ export const markerSystem = (state: State) =>
     name: gameComponent.marker,
     componentName: gameComponent.marker,
     create: ({ state, component }) => {
-      const sceneRef = state.babylonjs.sceneRef
-      if (!sceneRef) {
-        return state
-      }
-
       const size = boxGap + boxSize + boxGap
 
       state = createComponent<Transform, State>({

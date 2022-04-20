@@ -194,26 +194,3 @@ export const handleChangeMapType: EventHandler<
 
   return state
 }
-
-export const handleShowNewVersion: EventHandler<
-  GameEvent.ShowNewVersionEvent,
-  State
-> = ({ state }) => {
-  // state = updateComponent<Game, State>({
-  //   state,
-  //   entity: gameEntity,
-  //   name: name.game,
-  //   update: () => ({
-  //     newVersionAvailable: true,
-  //   }),
-  // })
-
-  return state
-}
-
-export const handleReload: EventHandler<GameEvent.ReloadEvent, State> = ({
-  state,
-}) => {
-  window.location.reload()
-  return state
-}

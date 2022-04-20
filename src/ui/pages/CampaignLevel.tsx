@@ -146,6 +146,7 @@ export const CampaignLevel: React.FC = () => {
       entity: tutorialEntity,
       name: gameComponent.tutorial,
     })
+
   const aiList = state ? getAiList(state) : []
 
   const [showModal, setShowModal] = useState(false)

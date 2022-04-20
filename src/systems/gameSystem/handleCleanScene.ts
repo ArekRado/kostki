@@ -39,7 +39,7 @@ export const handleCleanScene: EventHandler<
     state,
     data: {
       page: event.payload.newPage,
-      round: 0,
+      turn: 0,
       grid: [],
       currentPlayer: '',
       playersQueue: [],

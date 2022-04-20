@@ -10,7 +10,7 @@ import {
 import { Game, gameComponent } from '../../type'
 import { gameEntity } from '../gameSystem'
 import { updateComponent } from '@arekrado/canvas-engine'
-import { collectTurnStatistics } from './handleNextTurn'
+import { collectTurnStatistics } from './startNextTurn'
 
 export const handleStartCustomLevel: EventHandler<
   GameEvent.StartCustomLevelEvent,

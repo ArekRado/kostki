@@ -12,12 +12,7 @@ import { logoGrid } from './logoGrid'
 export const boxScaleFactor = 3.2
 
 export const updateLogoPosition = ({ state }: { state: State }): State => {
-  const sceneRef = state.babylonjs.sceneRef
-  if (!sceneRef) {
-    return state
-  }
-
-  const camera = getCamera({ state })
+   const camera = getCamera({ state })
 
   if (!camera) {
     return state

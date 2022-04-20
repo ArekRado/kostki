@@ -39,7 +39,7 @@ import { playersList } from './handleChangeSettings'
 import { clamp } from '../../utils/js/clamp'
 import { boxGap, boxWithGap } from '../boxSystem/boxSizes'
 import { AIDifficulty } from '../aiSystem'
-import { collectTurnStatistics } from './handleNextTurn'
+import { collectTurnStatistics } from './startNextTurn'
 
 const mapCustomLevelSettingsDifficultyToAIDifficulty = (
   customLevelSettingsDifficulty: CustomLevelSettingsDifficulty,

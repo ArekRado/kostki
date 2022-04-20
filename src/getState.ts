@@ -96,7 +96,7 @@ export const getState = ({
       name: gameComponent.game,
       moves: 0,
       grid: [],
-      round: 0,
+      turn: 0,
       currentCampaignLevelEntity: '',
       currentPlayer: humanPlayerEntity,
       gameStarted: false,

@@ -14,6 +14,7 @@ import {
   updateComponent,
 } from '@arekrado/canvas-engine'
 import { getTime } from '@arekrado/canvas-engine/system/time'
+import { updateTutorial } from '../tutorialSystem/updateTutorial'
 
 export const collectTurnStatistics = ({ state }: { state: State }): State => {
   const aiList = Object.values(
@@ -125,7 +126,10 @@ export const startNextTurn = ({ state }: { state: State }) => {
     state,
     name: gameComponent.game,
     entity: gameEntity,
-    update: () => ({ lastBoxClickTimestamp: getTime({ state })?.timeNow || 0 }),
+    update: (game) => ({
+      turn: game.turn + 1,
+      lastBoxClickTimestamp: getTime({ state })?.timeNow || 0,
+    }),
   })
 
   if (gameStarted && boxRotationQueue.length === 0) {
@@ -189,6 +193,8 @@ export const startNextTurn = ({ state }: { state: State }) => {
           state = startNextTurn({ state })
         }
       }
+
+      state = updateTutorial({ state })
     }
   }
 

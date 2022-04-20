@@ -9,8 +9,6 @@ import {
   handleChangeMapType,
   handleChangePlayers,
   handleChangeQuickStart,
-  handleReload,
-  handleShowNewVersion,
 } from './systems/gameSystem/handleChangeSettings'
 import { handleCleanScene } from './systems/gameSystem/handleCleanScene'
 import { handlePlayerClick } from './systems/gameSystem/handlePlayerClick'
@@ -79,10 +77,6 @@ export const eventHandler = ({
       return handleChangeColorBlindMode({ state, event })
     case GameEvent.Type.changeMapType:
       return handleChangeMapType({ state, event })
-    case GameEvent.Type.showNewVersion:
-      return handleShowNewVersion({ state, event })
-    case GameEvent.Type.reload:
-      return handleReload({ state, event })
     case GameEvent.Type.shakeAiBoxes:
       return handleShakeAiBoxes({ state, event })
     case GameEvent.Type.playAgainCustomLevel:

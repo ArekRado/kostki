@@ -10,6 +10,7 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
 import { ActionManager } from '@babylonjs/core/Actions/actionManager'
 import { ExecuteCodeAction } from '@babylonjs/core/Actions/directActions'
 import { emitEvent } from '@arekrado/canvas-engine'
+import { InterpolateValueAction } from '@babylonjs/core/Actions/interpolateValueAction'
 
 // let planeCache: Mesh | undefined;
 // const createPlane = ({ name, size }: { name: string; size: number }) => {

@@ -11,7 +11,7 @@ import { Transform } from '@arekrado/canvas-engine'
 import { setMeshTexture } from '../../utils/setMeshTexture'
 import { boxExplosion } from './boxExplosion'
 import { getGame } from '../gameSystem'
-import { startNextTurn } from '../gameSystem/handleNextTurn'
+import { startNextTurn } from '../gameSystem/startNextTurn'
 
 export const handleRotationEnd: EventHandler<
   BoxEvent.RotationEndEvent,

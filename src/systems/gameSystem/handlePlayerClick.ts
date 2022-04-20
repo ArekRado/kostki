@@ -35,7 +35,12 @@ export const handlePlayerClick: EventHandler<
     state,
   })
 
-  if (boxTransform && gameStarted && boxRotationQueue.length === 0 && canClickOnBox) {
+  if (
+    boxTransform &&
+    gameStarted &&
+    boxRotationQueue.length === 0 &&
+    canClickOnBox
+  ) {
     const ai = getComponent<AI, State>({
       name: gameComponent.ai,
       state,
@@ -47,12 +52,10 @@ export const handlePlayerClick: EventHandler<
         state,
         data: {
           color: ai.color,
-          position: [
-            boxTransform.position[0],
-            boxTransform.position[1]
-          ]
+          position: [boxTransform.position[0], boxTransform.position[1]],
         },
       })
+
       state = onClickBox({ box, state, ai })
     }
   }

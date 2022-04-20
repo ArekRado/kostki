@@ -8,9 +8,10 @@ import {
 } from '@arekrado/canvas-engine'
 import { setLevelFromMapEntity, startLevel } from './startLevelUtils'
 import { handleCleanScene } from './handleCleanScene'
-import { collectTurnStatistics } from './handleNextTurn'
+import { collectTurnStatistics } from './startNextTurn'
 import { tutorialEntity } from '../tutorialSystem'
 import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
+import { updateTutorial } from '../tutorialSystem/updateTutorial'
 
 export const handleStartCampaignLevel: EventHandler<
   GameEvent.StartCampaignLevelEvent,
@@ -63,6 +64,7 @@ export const handleStartCampaignLevel: EventHandler<
     },
   })
 
+  state = updateTutorial({ state })
   state = startLevel({ state, mapEntity })
 
   return state

@@ -89,7 +89,7 @@ export type Game = Component<{
   page: Page
   moves: number
   lastBoxClickTimestamp: number
-  round: number
+  turn: number
   grid: Entity[]
   currentPlayer: Entity
   playersQueue: Entity[]

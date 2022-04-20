@@ -26,8 +26,6 @@ export namespace GameEvent {
     changeQuickStart = 'GameEvent-changeQuickStart',
     changeColorBlindMode = 'GameEvent-changeColorBlindMode',
     changeMapType = 'GameEvent-changeMapType',
-    showNewVersion = 'GameEvent-showNewVersion',
-    reload = 'GameEvent-reload',
     startCampaignLevel = 'GameEvent-startCampaignLevel',
   }
 
@@ -40,8 +38,6 @@ export namespace GameEvent {
     | ChangeQuickStartEvent
     | ChangeColorBlindModeEvent
     | ChangeMapTypeEvent
-    | ShowNewVersionEvent
-    | ReloadEvent
     | PlayAgainCustomLevelEvent
     | ShakeAiBoxesEvent
     | StartCampaignLevelEvent
@@ -70,8 +66,6 @@ export namespace GameEvent {
     { gameMapEntity: Entity }
   >
 
-  export type ShowNewVersionEvent = ECSEvent<Type.showNewVersion, null>
-  export type ReloadEvent = ECSEvent<Type.reload, null>
   export type StartCampaignLevelEvent = ECSEvent<
     Type.startCampaignLevel,
     { mapEntity: Entity }
