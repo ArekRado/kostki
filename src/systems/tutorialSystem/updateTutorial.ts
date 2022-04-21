@@ -155,7 +155,7 @@ export const updateTutorial = ({ state }: { state: State }) => {
       state = forceUserToClickOnBox({ state, gridPosition: [1, 2] })
       state = showTip({
         state,
-        tipText: 'Tap on dice to increase number of dots and end your turn.',
+        tipText: 'Tap on dice to increase number of their dots and end your turn.',
       })
     } else if (turn === 2) {
       state = cleanUpTutorial({ state })
@@ -170,14 +170,14 @@ export const updateTutorial = ({ state }: { state: State }) => {
       state = showTip({
         state,
         tipText:
-          'Six dot dices have a special ability. They can capture adjacent dices and increase their dots by one. Notice that a six dot dice resets its dots count to one. Tap on your dice to capture red dice',
+          'Six dot dices have a special ability. They can capture adjacent dices and increase their dots by one. Notice that a six dot dice resets its dots count to one. Tap on your dice to capture a red dice',
       })
     } else if (turn === 6) {
       state = cleanUpTutorial({ state })
       state = forceUserToClickOnBox({ state, gridPosition: [2, 2] })
       state = showTip({
         state,
-        tipText: 'Great! Now this dice has blue color and you can tap on it',
+        tipText: 'Great! Now this dice has a blue color and you can tap on it',
       })
     } else if (turn === 8) {
       state = cleanUpTutorial({ state })
@@ -229,7 +229,7 @@ export const updateTutorial = ({ state }: { state: State }) => {
       state = showTip({
         state,
         tipText:
-          "Now you know the basics. Try to capture last dice by yourself. You don't have to hurry, there is no move limit",
+          "Now you know the basics. Try to capture last dice by yourself. You don't have to hurry, there is no move limit. Tap on any blue dice",
       })
     } else {
       state = cleanUpTutorial({ state })

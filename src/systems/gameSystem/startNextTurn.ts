@@ -15,6 +15,7 @@ import {
 } from '@arekrado/canvas-engine'
 import { getTime } from '@arekrado/canvas-engine/system/time'
 import { updateTutorial } from '../tutorialSystem/updateTutorial'
+import { unlockNextMap } from './unlockNextMap'
 
 export const collectTurnStatistics = ({ state }: { state: State }): State => {
   const aiList = Object.values(
@@ -103,6 +104,7 @@ const aiLost: AiLost = ({ state, ai }) => {
       }),
     })
 
+    state = unlockNextMap({ state })
     eventBusDispatch('setUIState', state)
 
     return state

@@ -18,6 +18,7 @@ export type SavedData = {
   quickStart: Game['customLevelSettings']['quickStart']
   mapEntity: Game['customLevelSettings']['mapEntity']
   colorBlindMode: Game['colorBlindMode']
+  version: Game['version']
 }
 
 export const getSavedData = (): SavedData => {
@@ -50,6 +51,7 @@ export const getSavedData = (): SavedData => {
       players: maybeData?.players ?? playersList().slice(0, 4),
       quickStart: maybeData?.quickStart ?? true,
       mapEntity: maybeData?.mapEntity ?? '',
+      version: maybeData?.version ?? '',
     }
   }
   return {
@@ -59,6 +61,7 @@ export const getSavedData = (): SavedData => {
     players: playersList().slice(0, 4),
     quickStart: true,
     mapEntity: '',
+    version: '',
   }
 }
 
@@ -85,6 +88,7 @@ export const saveStateToData = (state: State) => {
       quickStart: game.customLevelSettings.quickStart,
       mapEntity: game.customLevelSettings.mapEntity,
       colorBlindMode: game.colorBlindMode,
+      version: game.version,
     })
 }
 

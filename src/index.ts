@@ -169,7 +169,7 @@ if (process.env.NODE_ENV !== 'test') {
   // - eslint-prettier
   // done - babylonjs tree shacking
   // - beautify ui - use tailwind?
-  // - pre-create boxes and reuse part of them when starts level
-  // - add author and github link
+  // nope no idea how to do it - pre-create boxes and reuse part of them when starts level
+  // - add  author and github link in last end level modal
   // - end - optimization
 }

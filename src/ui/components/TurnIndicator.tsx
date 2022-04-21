@@ -80,7 +80,7 @@ export const TurnIndicator: React.FC<{ ai: TurnIndicatorItem[] }> = ({
             css={{
               fontSize: '0.75rem',
               textDecoration: active ? '' : 'line-through',
-              color: active ? '$gray900' : '$gray500',
+              color: active ? '$gray900' : '$gray700',
               '@bp2': { fontSize: '1.5rem' },
             }}
           >

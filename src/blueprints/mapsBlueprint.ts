@@ -17,8 +17,13 @@ import { campaign0 } from './maps/campaign0'
 import { campaign1 } from './maps/campaign1'
 import { campaign2 } from './maps/campaign2'
 import { campaign3 } from './maps/campaign3'
+import { campaign4 } from './maps/campaign4'
+import { campaign5 } from './maps/campaign5'
+import { campaign6 } from './maps/campaign6'
+import { campaign7 } from './maps/campaign7'
+import { campaign8 } from './maps/campaign8'
 
-const maps: Omit<GameMap, 'name'>[] = [
+export const allMaps: Omit<GameMap, 'name'>[] = [
   small0,
   small1,
   small2,
@@ -31,10 +36,18 @@ const maps: Omit<GameMap, 'name'>[] = [
   huge3,
   huge4,
 
+  // Campaign tutorial
   campaign0,
   campaign1,
   campaign2,
   campaign3,
+
+  // Campaign
+  campaign4,
+  campaign5,
+  campaign6,
+  campaign7,
+  campaign8,
 ]
 
 export const gameMapsBlueprint = ({
@@ -44,7 +57,7 @@ export const gameMapsBlueprint = ({
   state: State
   savedData: SavedData
 }): State => {
-  maps.forEach((map) => {
+  allMaps.forEach((map) => {
     state = createEntity({ state, entity: map.entity })
 
     const locked = !savedData.unlockedCampaignMapEntities.find(
