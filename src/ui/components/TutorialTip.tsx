@@ -21,9 +21,10 @@ export const TutorialTipBody = styled('div', {
   border: '5px solid black',
   background: 'rgba(255,255,255,0.9)',
   padding: '1rem',
+  overflowY: 'auto',
 
   alignSelf: 'end',
-  marginBottom: '50px',
+  marginBottom: '10px',
 
   '@bp1': {
     width: '80%',

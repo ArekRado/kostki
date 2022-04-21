@@ -15,21 +15,15 @@ export const campaign2: Omit<GameMap, 'name'> = {
     {
       human: false,
       color: red,
-      level: AIDifficulty.random,
+      level: AIDifficulty.disabled,
     },
   ],
   grid: [
     [
-      { player: 1, dots: 3 },
-      { player: 1, dots: 2 },
-      { player: 1, dots: 1 },
-      { player: 1, dots: 1 },
-    ],
-    [
-      { player: 1, dots: 6 },
-      { player: 1, dots: 5 },
-      { player: 1, dots: 6 },
-      { player: 1, dots: 3 },
+      { player: 0, dots: 6 },
+      { player: 0, dots: 6 },
+      { player: 0, dots: 3 },
+      { player: 0, dots: 2 },
     ],
     [
       { player: 1, dots: 5 },
@@ -38,10 +32,16 @@ export const campaign2: Omit<GameMap, 'name'> = {
       { player: 1, dots: 5 },
     ],
     [
-      { player: 0, dots: 6 },
-      { player: 0, dots: 6 },
-      { player: 0, dots: 3 },
-      { player: 0, dots: 2 },
+      { player: 1, dots: 6 },
+      { player: 1, dots: 5 },
+      { player: 1, dots: 6 },
+      { player: 1, dots: 3 },
+    ],
+    [
+      { player: 1, dots: 3 },
+      { player: 1, dots: 2 },
+      { player: 1, dots: 1 },
+      { player: 1, dots: 1 },
     ],
   ],
 }

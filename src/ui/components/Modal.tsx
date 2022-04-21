@@ -34,7 +34,7 @@ export const ModalBody = styled('div', {
 
   '@bp1': {
     width: '80%',
-    height: '60%',
+    height: '40%',
   },
   '@bp2': {
     width: '70%',
@@ -42,7 +42,7 @@ export const ModalBody = styled('div', {
   },
   '@bp3': {
     width: '40%',
-    height: '40%',
+    height: '50%',
   },
 
   animation: `${popup.toString()} 300ms`,
