@@ -22,6 +22,17 @@ import { campaign5 } from './maps/campaign5'
 import { campaign6 } from './maps/campaign6'
 import { campaign7 } from './maps/campaign7'
 import { campaign8 } from './maps/campaign8'
+import { campaign9 } from './maps/campaign9'
+import { campaign10 } from './maps/campaign10'
+import { campaign11 } from './maps/campaign11'
+import { campaign12 } from './maps/campaign12'
+import { campaign13 } from './maps/campaign13'
+import { campaign14 } from './maps/campaign14'
+import { campaign15 } from './maps/campaign15'
+import { campaign16 } from './maps/campaign16'
+import { campaign17 } from './maps/campaign17'
+import { campaign18 } from './maps/campaign18'
+import { campaign19 } from './maps/campaign19'
 
 export const allMaps: Omit<GameMap, 'name'>[] = [
   small0,
@@ -48,6 +59,17 @@ export const allMaps: Omit<GameMap, 'name'>[] = [
   campaign6,
   campaign7,
   campaign8,
+  campaign9,
+  campaign10,
+  campaign11,
+  campaign12,
+  campaign13,
+  campaign14,
+  campaign15,
+  campaign16,
+  campaign17,
+  campaign18,
+  campaign19,
 ]
 
 export const gameMapsBlueprint = ({
@@ -76,3 +98,93 @@ export const gameMapsBlueprint = ({
 
   return state
 }
+
+// ⚪
+// 🔵
+// 🔴
+// 🟢
+// 🟡
+// 🟠
+// 🌺
+// 💿
+// 🟣
+
+// type GridElement =
+//   | ['⚪', number]
+//   | ['🔵', number]
+//   | ['🔴', number]
+//   | ['🟢', number]
+//   | ['🟡', number]
+//   | ['🟠', number]
+//   | ['🌺', number]
+//   | ['💿', number]
+//   | ['🟣', number]
+
+// const map = [
+
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+//   // [['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0],['⚪', 0]],
+
+
+
+// ]
+
+// (() => {
+//   const mapGenerator = (gird) => {
+//   const list = []
+
+//   gird.reverse().forEach((row) => {
+//     const rowList = []
+//     row.forEach((box) => {
+//       if(box===undefined){
+//         rowList.push(undefined)
+//         return
+//       }
+//       switch (box[0]) {
+//         case '⚪':
+//           rowList.push({ player: -1, dots: box[1] })
+//           break
+//         case '🔵':
+//           rowList.push({ player: 0, dots: box[1] })
+//           break
+//         case '🔴':
+//           rowList.push({ player: 1, dots: box[1] })
+//           break
+//         case '🟢':
+//           rowList.push({ player: 2, dots: box[1] })
+//           break
+//         case '🟡':
+//           rowList.push({ player: 3, dots: box[1] })
+//           break
+//         case '🟠':
+//           rowList.push({ player: 4, dots: box[1] })
+//           break
+//         case '🌺':
+//           rowList.push({ player: 5, dots: box[1] })
+//           break
+//         case '💿':
+//           rowList.push({ player: 6, dots: box[1] })
+//           break
+//         case '🟣':
+//           rowList.push({ player: 7, dots: box[1] })
+//           break
+//       }
+//     })
+
+//     list.push(rowList)
+//   })
+
+//   return list
+// }
+
+// })()
