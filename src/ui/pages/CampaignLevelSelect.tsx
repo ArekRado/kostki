@@ -57,6 +57,7 @@ export const CampaignLevelSelect: React.FC = () => {
             gridTemplateColumns: 'repeat(10, 1fr)',
             gridGap: '1rem',
           },
+          overflow: 'auto',
         }}
       >
         {campaignMaps.map((gameMap) => (
@@ -72,11 +73,7 @@ export const CampaignLevelSelect: React.FC = () => {
               backgroundColor: 'rgba(255,255,255,0.5)',
             }}
           >
-            {gameMap.locked ? (
-              <Lock />
-            ) : (
-              <MapGrid gameMap={gameMap} />
-            )}
+            {gameMap.locked ? <Lock /> : <MapGrid gameMap={gameMap} />}
           </Button>
         ))}
       </Grid>
