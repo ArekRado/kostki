@@ -5,7 +5,7 @@ import { AIDifficulty } from '../../systems/aiSystem'
 export const campaign28: Omit<GameMap, 'name'> = {
   entity: 'gameMap-campaign-28',
   campaignNumber: 28,
-  locked: false,
+  locked: true,
   players: [
     {
       human: true,
