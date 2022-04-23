@@ -57,7 +57,8 @@ export const CampaignLevelSelect: React.FC = () => {
             gridTemplateColumns: 'repeat(10, 1fr)',
             gridGap: '1rem',
           },
-          overflow: 'auto',
+          overflowY: 'auto',
+          pointerEvents: 'all',
         }}
       >
         {campaignMaps.map((gameMap) => (
