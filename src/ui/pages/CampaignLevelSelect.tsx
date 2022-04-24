@@ -59,6 +59,7 @@ export const CampaignLevelSelect: React.FC = () => {
           },
           overflowY: 'auto',
           pointerEvents: 'all',
+          overflowX: 'hidden',
         }}
       >
         {campaignMaps.map((gameMap) => (
