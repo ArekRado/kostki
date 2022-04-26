@@ -1,11 +1,11 @@
-const webpack = require('webpack');
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const WebpackPwaManifest = require('webpack-pwa-manifest')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const config = {
   mode: 'production',
@@ -82,9 +82,15 @@ const config = {
       favicon: './src/assets/icon.png',
     }),
     new ImageMinimizerPlugin({
-      minimizerOptions: {
-        plugins: [['optipng', { optimizationLevel: 9 }]],
+      minimizer: {
+        implementation: ImageMinimizerPlugin.imageminMinify,
+        options: {
+          plugins: [['optipng', { optimizationLevel: 9 }]],
+        },
       },
+      // minimizerOptions: {
+      //   plugins: [['optipng', { optimizationLevel: 9 }]],
+      // },
     }),
     // new WorkboxPlugin.GenerateSW({
     //   clientsClaim: true,
@@ -156,6 +162,6 @@ const config = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
-};
+}
 
-module.exports = config;
+module.exports = config

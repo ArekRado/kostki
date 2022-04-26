@@ -30,11 +30,11 @@ import {
   generateEntity,
   getComponent,
   getComponentsByName,
-  setEntity,
+  createEntity,
   updateComponent,
 } from '@arekrado/canvas-engine'
 import { setCamera } from '../../wrappers/setCamera'
-import { getTime } from '@arekrado/canvas-engine/system/time'
+import { getTime } from '@arekrado/canvas-engine/system/time/time'
 import { playersList } from './handleChangeSettings'
 import { clamp } from '../../utils/js/clamp'
 import { boxGap, boxWithGap } from '../boxSystem/boxSizes'
@@ -135,7 +135,7 @@ const createGrid = ({
         }
 
         const entity = generateId().toString()
-        acc2 = setEntity({ state: acc2, entity })
+        acc2 = createEntity({ state: acc2, entity })
         acc2 = createComponent<Box, State>({
           state: acc2,
           data: {
@@ -325,7 +325,7 @@ export const startLevel = ({
     }
   }
 
-  state = setEntity({ state, entity: markerEntity })
+  state = createEntity({ state, entity: markerEntity })
   state = createComponent<Marker, State>({
     state,
     data: {

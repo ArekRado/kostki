@@ -1,5 +1,5 @@
 import { Box, gameComponent, State } from '../type'
-import { createComponent, Entity, setEntity } from '@arekrado/canvas-engine'
+import { createComponent, Entity, createEntity } from '@arekrado/canvas-engine'
 import { setCamera } from '../wrappers/setCamera'
 import { getGame, setGame } from '../systems/gameSystem'
 import { getGridDimensions } from '../systems/gameSystem/startLevelUtils'
@@ -19,7 +19,7 @@ export const gridBlueprint: GridBlueprint = ({ dataGrid, state }) => {
     (acc1, row, x) =>
       row.reduce((acc2, { dots, player }, y) => {
         const entity = Math.random().toString()
-        acc2 = setEntity({ state: acc2, entity })
+        acc2 = createEntity({ state: acc2, entity })
         acc2 = createComponent<Box, State>({
           state: acc2,
           data: {

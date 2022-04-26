@@ -13,7 +13,7 @@ import {
   Transform,
   updateComponent,
 } from '@arekrado/canvas-engine'
-import { getTime } from '@arekrado/canvas-engine/system/time'
+import { getTime } from '@arekrado/canvas-engine/system/time/time'
 import { updateTutorial } from '../tutorialSystem/updateTutorial'
 import { unlockNextMap } from './unlockNextMap'
 

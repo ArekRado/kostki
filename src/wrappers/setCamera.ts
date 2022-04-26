@@ -2,7 +2,7 @@ import { Camera } from '@arekrado/canvas-engine'
 import {
   getCamera,
   setCamera as setCanvasEngineCamera,
-} from '@arekrado/canvas-engine/system/camera'
+} from '@arekrado/canvas-engine/system/camera/camera'
 import { updateLogoPosition } from '../systems/logoSystem/updateLogoPosition'
 import { State } from '../type'
 

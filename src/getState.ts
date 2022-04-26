@@ -15,9 +15,9 @@ import {
   createComponent,
   getComponentsByName,
   getState as getCanvaasEngineState,
-  setEntity,
+  createEntity,
 } from '@arekrado/canvas-engine'
-import { cameraEntity } from '@arekrado/canvas-engine/system/camera'
+import { cameraEntity } from '@arekrado/canvas-engine/system/camera/camera'
 import { getCameraSize } from './systems/cameraSystem/getCameraSize'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
@@ -48,7 +48,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.24'
+  const version = '0.0.25'
 
   addEventHandler(eventHandler)
 
@@ -60,7 +60,7 @@ export const getState = ({
   state = logoSystem(state)
   state = tutorialSystem(state)
 
-  state = setEntity({ state, entity: humanPlayerEntity })
+  state = createEntity({ state, entity: humanPlayerEntity })
   state = createComponent<AI, State>({
     state,
     data: {
@@ -85,7 +85,7 @@ export const getState = ({
     ({ campaignNumber }) => campaignNumber === -1,
   )?.entity
 
-  state = setEntity({ state, entity: gameEntity })
+  state = createEntity({ state, entity: gameEntity })
   state = createComponent<Game, State>({
     state,
     data: {

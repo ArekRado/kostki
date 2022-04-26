@@ -1,4 +1,4 @@
-import { getCamera } from '@arekrado/canvas-engine/system/camera'
+import { getCamera } from '@arekrado/canvas-engine/system/camera/camera'
 import { State } from '../../type'
 import { boxWithGap } from '../boxSystem/boxSizes'
 

@@ -11,7 +11,7 @@ import { Camera } from '@babylonjs/core/Cameras/camera'
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { emitEvent, runOneFrame } from '@arekrado/canvas-engine'
-import { CameraEvent } from '@arekrado/canvas-engine/system/camera'
+import { CameraEvent } from '@arekrado/canvas-engine/system/camera/camera'
 import { doNothing } from './utils/js/doNothing'
 
 const canvas = document.getElementById('game') as HTMLCanvasElement

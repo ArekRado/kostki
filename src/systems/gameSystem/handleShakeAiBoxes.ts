@@ -9,7 +9,7 @@ import {
   Animation,
   emitEvent,
 } from '@arekrado/canvas-engine'
-import { getTime } from '@arekrado/canvas-engine/system/time'
+import { getTime } from '@arekrado/canvas-engine/system/time/time'
 
 const idleTime = shakeAnimationTimeout * 2
 

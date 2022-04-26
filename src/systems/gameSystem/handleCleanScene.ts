@@ -8,7 +8,7 @@ import {
   updateComponent,
 } from '@arekrado/canvas-engine'
 import { createEntity } from '@arekrado/canvas-engine/entity/createEntity'
-import { cameraEntity } from '@arekrado/canvas-engine/system/camera'
+import { cameraEntity } from '@arekrado/canvas-engine/system/camera/camera'
 import { Logo, gameComponent, Page, State } from '../../type'
 import { eventBusDispatch } from '../../utils/eventBus'
 import { GameEvent, setGame } from '../gameSystem'
