@@ -55,6 +55,8 @@ import { campaign38 } from './maps/campaign38'
 import { campaign39 } from './maps/campaign39'
 import { campaign40 } from './maps/campaign40'
 import { campaign41 } from './maps/campaign41'
+import { campaign42 } from './maps/campaign42'
+import { campaign43 } from './maps/campaign43'
 
 export const allMaps: Omit<GameMap, 'name'>[] = [
   small0,
@@ -114,6 +116,8 @@ export const allMaps: Omit<GameMap, 'name'>[] = [
   campaign39,
   campaign40,
   campaign41,
+  campaign42,
+  campaign43,
 ]
 
 export const gameMapsBlueprint = ({
@@ -174,20 +178,6 @@ export const gameMapsBlueprint = ({
 //   // [['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0]],
 //   // [['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0]],
 //   // [['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['⚪',0]],
-  
-  
-//   [undefined,undefined,['🟢',1],['🟢',1],['⚪',0],['🔵',1],['🔵',1],['⚪',0]],
-//   [undefined,['⚪',0],['🟢',1],['🟢',1],['⚪',0],['🔵',1],['🔵',1],['⚪',0]],
-//   [['🟣',1],['🟣',1],['⚪',0],['⚪',0],['⚪',0],['⚪',0],['🌺',1],['🌺',1]],
-//   [['🟣',1],['🟣',1],undefined,['⚪',0],['🟡',1],['🟡',1],['🌺',1],['🌺',1]],
-//   [['⚪',0],undefined,undefined,undefined,['🟡',1],['🟡',1],undefined,['⚪',0]],
-//   [['⚪',0],['⚪',0],undefined,['⚪',0],['⚪',0],undefined,undefined,undefined],
-//   [['🟠',1],['🟠',1],['🔴',1],['🔴',1],['💿',1],['💿',1],undefined,['⚪',0]],
-//   [['🟠',1],['🟠',1],['🔴',1],['🔴',1],['💿',1],['💿',1],['⚪',0],['⚪',0]],
-
-  
-
-
 // ]
 
 // (() => {
