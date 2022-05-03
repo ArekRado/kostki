@@ -162,8 +162,9 @@ if (process.env.NODE_ENV !== 'test') {
   // done fix level end
   // done custom leve settings - add more maps
   // done when webgl is not supported use css gradient
-  // - campaign
+  // done campaign
   // nope change gradiens when user changes color
+  // done display graph axis
   // - update dependencies
   // done - move ecs to new project package
   // - eslint-prettier

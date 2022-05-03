@@ -1,15 +1,13 @@
 import React, { FC } from 'react'
-import { Page } from '../../type'
-import { GameEvent } from '../../systems/gameSystem'
 import { Button } from '../components/Button'
 import { Flex } from '../components/Flex'
 import { Modal } from '../components/Modal'
 import { Typography } from '../components/Typography'
-import { emitEvent } from '@arekrado/canvas-engine'
 
-export const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
-  onClose,
-}) => (
+export const BackToMainMenuModal: FC<{
+  onCancel: (flag: boolean) => void
+  onAccept: (flag: boolean) => void
+}> = ({ onCancel, onAccept }) => (
   <Modal
     css={{
       display: 'flex',
@@ -22,23 +20,10 @@ export const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
     </Typography>
 
     <Flex css={{ justifyContent: 'space-evenly' }}>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          onClose(false)
-        }}
-      >
+      <Button css={{ width: '40%' }} onClick={onCancel}>
         No
       </Button>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          emitEvent<GameEvent.CleanSceneEvent>({
-            type: GameEvent.Type.cleanScene,
-            payload: { newPage: Page.mainMenu },
-          })
-        }}
-      >
+      <Button css={{ width: '40%' }} onClick={onAccept}>
         Yes
       </Button>
     </Flex>

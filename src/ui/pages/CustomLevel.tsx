@@ -119,7 +119,17 @@ export const CustomLevel: React.FC = () => {
         flex: 1,
       }}
     >
-      {showModal && <BackToMainMenuModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <BackToMainMenuModal
+          onCancel={() => setShowModal(false)}
+          onAccept={() =>
+            emitEvent<GameEvent.CleanSceneEvent>({
+              type: GameEvent.Type.cleanScene,
+              payload: { newPage: Page.mainMenu },
+            })
+          }
+        />
+      )}
       {gameStatus === GameStatus.playerWon && <PlayerWonModal />}
       {gameStatus === GameStatus.playerLost && <PlayerLostModal />}
 

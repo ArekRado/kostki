@@ -21,44 +21,37 @@ import { getAiList } from '../utils/getAiList'
 import { PlayerLostModal } from '../components/PlayerLostModal'
 import { tutorialEntity } from '../../systems/tutorialSystem'
 import { TutorialTip } from '../components/TutorialTip'
+import { BackToMainMenuModal } from '../components/BackToMainMenuModal'
 
-const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
-  onClose,
-}) => (
-  <Modal
-    css={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-    }}
-  >
-    <Typography css={{ textAlign: 'center' }}>
-      Are you sure you want to finish the game?
-    </Typography>
+// const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
+//   onClose,
+// }) => (
+//   <Modal
+//     css={{
+//       display: 'flex',
+//       flexDirection: 'column',
+//       justifyContent: 'space-around',
+//     }}
+//   >
+//     <Typography css={{ textAlign: 'center' }}>
+//       Are you sure you want to finish the game?
+//     </Typography>
 
-    <Flex css={{ justifyContent: 'space-evenly' }}>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          onClose(false)
-        }}
-      >
-        No
-      </Button>
-      <Button
-        css={{ width: '40%' }}
-        onClick={() => {
-          emitEvent<GameEvent.CleanSceneEvent>({
-            type: GameEvent.Type.cleanScene,
-            payload: { newPage: Page.mainMenu },
-          })
-        }}
-      >
-        Yes
-      </Button>
-    </Flex>
-  </Modal>
-)
+//     <Flex css={{ justifyContent: 'space-evenly' }}>
+//       <Button
+//         css={{ width: '40%' }}
+//         onClick={() => {
+//           onClose(false)
+//         }}
+//       >
+//         No
+//       </Button>
+//       <Button css={{ width: '40%' }} onClick={() => {}}>
+//         Yes
+//       </Button>
+//     </Flex>
+//   </Modal>
+// )
 
 const PlayerWonModal: FC<{ nextMapEntity: Entity | undefined }> = ({
   nextMapEntity,
@@ -164,7 +157,17 @@ export const CampaignLevel: React.FC = () => {
         flex: 1,
       }}
     >
-      {showModal && <BackToMainMenuModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <BackToMainMenuModal
+          onCancel={() => setShowModal(false)}
+          onAccept={() =>
+            emitEvent<GameEvent.CleanSceneEvent>({
+              type: GameEvent.Type.cleanScene,
+              payload: { newPage: Page.mainMenu },
+            })
+          }
+        />
+      )}
       {gameStatus === GameStatus.playerWon && (
         <PlayerWonModal
           nextMapEntity={

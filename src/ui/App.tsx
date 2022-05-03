@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import React, { FC } from 'react'
 import { Main } from './pages/Main'
 import { useOutline } from './hooks/useOutline'
@@ -10,6 +9,7 @@ import { CustomLevel } from './pages/CustomLevel'
 import { globalCss } from '@stitches/react'
 import { CampaignLevelSelect } from './pages/CampaignLevelSelect'
 import { CampaignLevel } from './pages/CampaignLevel'
+import { createRoot } from 'react-dom/client'
 
 const globalStyles = globalCss({
   '*': {
@@ -49,10 +49,13 @@ const App: FC<{ state: State }> = ({ state }) => {
 }
 
 export const mountGameUI = ({ state }: { state: State }) => {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App state={state} />
-    </React.StrictMode>,
-    document.getElementById('gameUi'),
-  )
+  const container = document.getElementById('gameUi')
+  if (container) {
+    const root = createRoot(container)
+    root.render(
+      <React.StrictMode>
+        <App state={state} />
+      </React.StrictMode>,
+    )
+  }
 }
