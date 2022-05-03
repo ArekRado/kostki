@@ -22,36 +22,7 @@ import { PlayerLostModal } from '../components/PlayerLostModal'
 import { tutorialEntity } from '../../systems/tutorialSystem'
 import { TutorialTip } from '../components/TutorialTip'
 import { BackToMainMenuModal } from '../components/BackToMainMenuModal'
-
-// const BackToMainMenuModal: FC<{ onClose: (flag: boolean) => void }> = ({
-//   onClose,
-// }) => (
-//   <Modal
-//     css={{
-//       display: 'flex',
-//       flexDirection: 'column',
-//       justifyContent: 'space-around',
-//     }}
-//   >
-//     <Typography css={{ textAlign: 'center' }}>
-//       Are you sure you want to finish the game?
-//     </Typography>
-
-//     <Flex css={{ justifyContent: 'space-evenly' }}>
-//       <Button
-//         css={{ width: '40%' }}
-//         onClick={() => {
-//           onClose(false)
-//         }}
-//       >
-//         No
-//       </Button>
-//       <Button css={{ width: '40%' }} onClick={() => {}}>
-//         Yes
-//       </Button>
-//     </Flex>
-//   </Modal>
-// )
+import { Github } from '../components/icons/Github'
 
 const PlayerWonModal: FC<{ nextMapEntity: Entity | undefined }> = ({
   nextMapEntity,
@@ -63,7 +34,24 @@ const PlayerWonModal: FC<{ nextMapEntity: Entity | undefined }> = ({
       justifyContent: 'space-around',
     }}
   >
-    <Typography css={{ textAlign: 'center' }}>You won</Typography>
+    {nextMapEntity ? (
+      <Typography css={{ textAlign: 'center' }}>You won</Typography>
+    ) : (
+      <div>
+        <p>Thank you for a playing my game!</p>
+        <Flex>
+          <p>
+            Game is open sourced, click{' '}
+            <a href="https://github.com/ArekRado/kostki/">this link</a> to see
+            code. Every contribution is welcome
+          </p>
+
+          <a href="https://github.com/ArekRado/kostki/">
+            <Github />
+          </a>
+        </Flex>
+      </div>
+    )}
 
     <Flex
       css={{

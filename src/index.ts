@@ -165,12 +165,12 @@ if (process.env.NODE_ENV !== 'test') {
   // done campaign
   // nope change gradiens when user changes color
   // done display graph axis
-  // - update dependencies
+  // done update dependencies
   // done - move ecs to new project package
-  // - eslint-prettier
+  // ?done - eslint-prettier
   // done - babylonjs tree shacking
-  // - beautify ui - use tailwind?
+  // nope beautify ui - use tailwind?
   // nope no idea how to do it - pre-create boxes and reuse part of them when starts level
-  // - add  author and github link in last end level modal
+  // done add  author and github link in last end level modal
   // - end - optimization
 }
