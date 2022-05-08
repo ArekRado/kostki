@@ -24,9 +24,10 @@ import { TutorialTip } from '../components/TutorialTip'
 import { BackToMainMenuModal } from '../components/BackToMainMenuModal'
 import { Github } from '../components/icons/Github'
 
-const PlayerWonModal: FC<{ nextMapEntity: Entity | undefined }> = ({
-  nextMapEntity,
-}) => (
+const PlayerWonModal: FC<{
+  nextMapEntity: Entity | undefined
+  showGraph: boolean
+}> = ({ nextMapEntity, showGraph }) => (
   <Modal
     css={{
       display: 'flex',
@@ -43,26 +44,30 @@ const PlayerWonModal: FC<{ nextMapEntity: Entity | undefined }> = ({
           <p>
             Game is open sourced, click{' '}
             <a href="https://github.com/ArekRado/kostki/">this link</a> to see
-            code. Every contribution is welcome
+            code. Any contribution is welcome!
           </p>
 
-          <a href="https://github.com/ArekRado/kostki/">
-            <Github />
-          </a>
+          <Flex css={{ alignItems: 'center' }}>
+            <a href="https://github.com/ArekRado/kostki/">
+              <Github />
+            </a>
+          </Flex>
         </Flex>
       </div>
     )}
 
-    <Flex
-      css={{
-        width: '90%',
-        height: '90%',
-        alignSelf: 'center',
-        margin: '1rem',
-      }}
-    >
-      <StackedAreaChart />
-    </Flex>
+    {showGraph ? (
+      <Flex
+        css={{
+          width: '90%',
+          height: '90%',
+          alignSelf: 'center',
+          margin: '1rem',
+        }}
+      >
+        <StackedAreaChart />
+      </Flex>
+    ) : null}
 
     <Flex css={{ justifyContent: 'space-evenly' }}>
       <Button
@@ -158,6 +163,7 @@ export const CampaignLevel: React.FC = () => {
       )}
       {gameStatus === GameStatus.playerWon && (
         <PlayerWonModal
+          showGraph={(game?.statistics.length ?? 0) > 5}
           nextMapEntity={
             state
               ? getNextMapEntity({

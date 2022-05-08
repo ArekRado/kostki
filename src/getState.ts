@@ -48,7 +48,7 @@ export const getState = ({
     Color3,
   }) as State
 
-  const version = '0.0.25'
+  const version = '0.0.26'
 
   addEventHandler(eventHandler)
 

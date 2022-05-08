@@ -127,50 +127,5 @@ if (process.env.NODE_ENV !== 'test') {
     engine.resize()
   })
 
-  // window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
-
-  // todo
-  // done- better gradient colors - rgb to hsv
-  // done- hide highligter on resize and create
-  // done- new logo
-  // nope - gradients - should represent most common colors - 1 color === 10%
-  // done - turn indicator - disable lost players
-  // done highlighter - add horizontal gradient - right side should be transparent so nobody will see that it's too short or too long
-  // done game should not stop when player lose
-  // done add win modal
-  // done save basic settings in localstorage
-  // nope- install game button
-  // ?done- new ui
-  // done question modal when user clicks on X button
-  // nope xD- handle back same as websites and apps
-  // nope- responsive images
-  // done- buttons with images
-  // done- butons/controls with aspect ratio size
-  // done - close button should be recttangle
-  // done - ui should has max container size when screen is too wide
-  // done "pop" box animation when level starts
-  // done fix marker xD
-  // done event handlers should be moved to separated folders and start with "handle" prefix
-  // done need devtools - remove all components by entity because by name may keep some leftovers
-  // done replace setComponent by create/update
-  // done when player is not clicking then "shake boxes"
-  // done shake should not stop rotation animation
-  // nope AND smoothly quickly back to roattion 000 when user does action
-  // done AND not shake white boxes
-  // done AND should wait for 8 seconds of no user events
-  // done fix click on white boxes
-  // done fix level end
-  // done custom leve settings - add more maps
-  // done when webgl is not supported use css gradient
-  // done campaign
-  // nope change gradiens when user changes color
-  // done display graph axis
-  // done update dependencies
-  // done - move ecs to new project package
-  // ?done - eslint-prettier
-  // done - babylonjs tree shacking
-  // nope beautify ui - use tailwind?
-  // nope no idea how to do it - pre-create boxes and reuse part of them when starts level
-  // done add  author and github link in last end level modal
-  // - end - optimization
+  window.addEventListener('contextmenu', (e) => e.preventDefault(), false);
 }

@@ -145,7 +145,7 @@ type Components = {
   ai: Dictionary<AI>
   game: Dictionary<Game>
   marker: Dictionary<Marker>
-  logo: Dictionary<Logo> // todo remove?
+  logo: Dictionary<Logo>
   gameMap: Dictionary<GameMap>
   tutorial: Dictionary<Tutorial>
 }
